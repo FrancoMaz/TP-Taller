@@ -191,7 +191,7 @@ int main()
         do {
             recv(server, buffer, bufsize, 0);
             cout << buffer << " ";
-            if (*buffer == '#') {
+            if (*buffer == '$') {
                 *buffer = '*';
                 isExit = true;
             }
@@ -213,9 +213,9 @@ int main()
             do {
                 recv(server, buffer, bufsize, 0);
                 cout << buffer << " ";
-                if (*buffer == '#') {
-                    *buffer == '*';
-                    isExit = true;
+                if (*buffer == '$') {
+                    *buffer = '*';
+                    close(client);
                 }
             } while (*buffer != '*');
         } while (!isExit);
