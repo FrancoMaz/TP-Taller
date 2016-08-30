@@ -9,7 +9,7 @@
 #define TP1_CLIENTE_H_
 
 #include <string>
-#include "pthread.h"
+#include <pthread.h>
 #include <list>
 using namespace std;
 
@@ -32,10 +32,10 @@ private:
 	string direccionIP;
 	int puertoServidor;
 	string nombre;
-	socket socket;
-	pthread threadComunicacion;
-	pthread threadProcesador;
-	pthread threadChecker;
+	int socket;
+	pthread_t threadComunicacion;
+	pthread_t threadProcesador;
+	pthread_t threadChecker;
 };
 
 #endif /* TP1_CLIENTE_H_ */
