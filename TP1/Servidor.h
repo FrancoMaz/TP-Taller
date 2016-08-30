@@ -22,6 +22,8 @@ public:
 	void guardarLog();
 	list<string> obtenerMensajes(Cliente cliente);
 	void crearMensaje(Cliente clienteOrigen, Cliente clienteDestinatario);
+	void comenzarEscucha();
+	void finalizarEscucha();
 
 private:
 	int puerto;

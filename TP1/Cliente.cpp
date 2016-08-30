@@ -61,27 +61,30 @@ void Cliente::elegirOpcionDelMenu(int opcion){
 }
 
 list<Cliente> Cliente::conectar(string nombre, string contrasenia) {
-//Se establece la conexion con el servidor mediante autenticacion. El servidor devuelve la lista con todos los usuarios disponibles
+	//Se establece la conexion con el servidor mediante autenticacion. El servidor devuelve la lista con todos los usuarios disponibles
 }
 
 void Cliente::desconectar() {
-//Se cierra la conexion con el servidor
+	//Se cierra la conexion con el servidor
 }
 
 void Cliente::salir() {
-//Se termina la ejecucion del programa
+	//Se termina la ejecucion del programa
 }
 
 void Cliente::enviar(string mensaje, string destinatario) {
-//Se envia un mensaje a un usuario o a todos (este ultimo caso sucede cuando el destinatario es el string "Todos"
-//Hay que realizar el submenu dinamico con todos los usuarios disponibles
+	//Se envia un mensaje a un usuario o a todos (este ultimo caso sucede cuando el destinatario es el string "Todos".
+	//Hay que realizar el submenu dinamico con todos los usuarios disponibles.
+	//Requiere una conexion abierta.
 }
 
 list<string> Cliente::recibir() {
-//Se reciben todos los mensajes en la secuencia en la que fueron enviados (creo que habria que usar una cola)
+	//Se reciben todos los mensajes en la secuencia en la que fueron enviados (creo que habria que usar una cola)
+	//Requiere una conexion abierta.
 }
 
 void loremIpsum(int frecuenciaDeEnvios, int cantidadMaximaDeEnvios){
-//Toma el texto de un archivo y se envian mensajes en forma ciclica. El tamanio de mensajes y el destinatario son aleatorios
-//Cuando todo el texto fue transmitido, se empieza otra vez desde el inicio
+	//Toma el texto de un archivo y se envian mensajes en forma ciclica. El tamanio de mensajes y el destinatario son aleatorios
+	//Cuando todo el texto fue transmitido, se empieza otra vez desde el inicio
+	//Requiere una conexion abierta.
 }
