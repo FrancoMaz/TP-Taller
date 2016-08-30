@@ -15,6 +15,7 @@ using namespace std;
 class Servidor {
 public:
 	Servidor();
+	Servidor(string nombreArchivoDeUsuarios, int puerto);
 	virtual ~Servidor();
 	list<Cliente> autenticar(string nombre, string contrasenia);
 	list<Cliente> obtenerClientes();
