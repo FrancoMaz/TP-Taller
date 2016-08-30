@@ -17,6 +17,10 @@ Servidor::Servidor(string nombreArchivoDeUsuarios, int puerto) {
 Servidor::~Servidor() {
 }
 
+Servidor::Servidor(int puerto){
+	this->puerto = puerto;
+}
+
 list<Cliente> Servidor::autenticar(string nombre, string contrasenia) {
 
 }
@@ -36,4 +40,12 @@ list<string> Servidor::obtenerMensajes(Cliente cliente) {
 
 void crearMensaje(Cliente clienteOrigen, Cliente clienteDestinatario) {
 
+}
+
+void comenzarEscucha(){
+	//Metodo que pone al servidor a escuchar si alguien requiere algo.
+}
+
+void finalizarEscucha(){
+	//Metodo que finaliza la escucha del servidor.
 }

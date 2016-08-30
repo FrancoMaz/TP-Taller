@@ -10,11 +10,14 @@
 
 #include <string>
 #include <list>
+#include <queue>
 using namespace std;
 
 class Servidor {
 public:
 	Servidor();
+	Servidor(int puerto);
+	Servidor(string nombreArchivoDeUsuarios, int puerto);
 	virtual ~Servidor();
 	list<Cliente> autenticar(string nombre, string contrasenia);
 	list<Cliente> obtenerClientes();
@@ -28,8 +31,8 @@ private:
 	int puerto;
 	int socket;
 	ArchivoUsuario archivoUsuarios;
-	Cola colaMensajesNoProcesados;
-	TablaDeHash hashMensajesNoProcesados;
+	queue<string> colaMensajesNoProcesados;
+	TablaDeHash hashMensajesProcesados;
 	Log archivoLog;
 	pthread_t threadProcesador;
 	pthread_t threadChecker;
