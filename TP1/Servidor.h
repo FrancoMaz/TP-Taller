@@ -11,6 +11,8 @@
 #include <string>
 #include <list>
 #include <queue>
+#include <unordered_map>
+#include <stdio.h>
 using namespace std;
 
 class Servidor {
@@ -31,9 +33,9 @@ public:
 private:
 	int puerto;
 	int socket;
-	ArchivoUsuario archivoUsuarios;
+	FILE* archivoUsuarios;
 	queue<string> colaMensajesNoProcesados;
-	TablaDeHash hashMensajesProcesados;
+	unordered_map<Cliente,queue<string>> hashMensajesProcesados;
 	Log archivoLog;
 	pthread_t threadProcesador;
 	pthread_t threadChecker;
