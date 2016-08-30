@@ -41,7 +41,8 @@ int main()
 
 	}
 	while(servidor.escuchando);
-
+	return 0;
+}
 
 
 

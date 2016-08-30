@@ -26,6 +26,8 @@ int main()
 	cin >> ip;
 	Cliente cliente = new Cliente(ip, puerto);
 	Servidor servidor = new Servidor(puerto);
+	return 0;
+}
 
 
 

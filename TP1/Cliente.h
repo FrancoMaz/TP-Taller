@@ -11,6 +11,14 @@
 #include <string>
 #include <pthread.h>
 #include <list>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <netdb.h>
+
 using namespace std;
 
 class Cliente {
@@ -36,6 +44,7 @@ private:
 	pthread_t threadComunicacion;
 	pthread_t threadProcesador;
 	pthread_t threadChecker;
+	struct sockaddr_in direccionServidor;
 };
 
 #endif /* TP1_CLIENTE_H_ */
