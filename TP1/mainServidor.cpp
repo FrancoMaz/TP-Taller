@@ -19,20 +19,28 @@
 
 using namespace std;
 
+Servidor inicializarServidor()
+{
+	int puerto;
+	string archivoUsers;
+	cout << "Ingrese el puerto de escucha de la conexion: ";
+	cin >> puerto;
+	cout << "Ingrese el path del archivo de usuarios:";
+	cin >> archivoUsers;
+	return new Servidor(archivoUsers,puerto);
+}
+
 int main()
 {
+	Servidor servidor;
+	do{
+		servidor = inicializarServidor();
+	}
+	while(!servidor.escuchando); //mientras el servidor no este escuchando, intento inicializarlo pidiendo los parametros de entrada.
+	do{
 
-
-
-
-
-
-
-
-
-
-
-
+	}
+	while(servidor.escuchando);
 
 
 
