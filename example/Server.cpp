@@ -13,6 +13,9 @@
 #include <netinet/in.h>
 #include <string.h>
 #include <arpa/inet.h>
+#include <iostream>
+
+using namespace std;
 
 int main(){
   int welcomeSocket, newSocket;
@@ -20,6 +23,9 @@ int main(){
   struct sockaddr_in serverAddr;
   struct sockaddr_storage serverStorage;
   socklen_t addr_size;
+  char* aMsg;
+  char* anotherMsg;
+  char* msgConcatenated;
 
   /*---- Create the socket. The three arguments are: ----*/
   /* 1) Internet domain 2) Stream socket 3) Default protocol (TCP in this case) */
@@ -31,7 +37,7 @@ int main(){
   /* Set port number, using htons function to use proper byte order */
   serverAddr.sin_port = htons(7891);
   /* Set IP address to localhost */
-  serverAddr.sin_addr.s_addr = inet_addr("127.0.0.1");
+  serverAddr.sin_addr.s_addr = inet_addr("192.168.1.10");
   /* Set all bits of the padding field to 0 */
   memset(serverAddr.sin_zero, '\0', sizeof serverAddr.sin_zero);
 
@@ -49,8 +55,13 @@ int main(){
   newSocket = accept(welcomeSocket, (struct sockaddr *) &serverStorage, &addr_size);
 
   /*---- Send message to the socket of the incoming connection ----*/
-  strcpy(buffer,"Hello World\n");
-  send(newSocket,buffer,13,0);
+  aMsg = "Gordo mau\n"; // size == 11
+  anotherMsg = "Sos re maauuu\n"; // size == 14
+  //msgConcatenated = strcat(aMsg, anotherMsg);
+  strcpy(buffer, aMsg);
+  //cout << msgConcatenated << endl;
+  // se suma 1 al strlen(msg) para que tome el \n
+  send(newSocket, buffer, strlen(aMsg) + 1, 0);
 
   return 0;
 }
