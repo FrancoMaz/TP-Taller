@@ -5,7 +5,7 @@
  *      Author: franco
  */
 
-#include "Log.h"
+#include <Log.h>
 #include <string>
 using namespace std;
 
@@ -22,6 +22,6 @@ void Log::guardarMensajeDeError(string mensaje) {
 
 }
 
-void Log::gurdarMensajeDeExito(string mensaje) {
+void Log::guardarMensajeDeExito(string mensaje) {
 
 }
