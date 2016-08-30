@@ -24,13 +24,13 @@ public:
 
 private:
 	int puerto;
-	socket socket;
+	int socket;
 	ArchivoUsuario archivoUsuarios;
 	Cola colaMensajesNoProcesados;
 	TablaDeHash hashMensajesNoProcesados;
 	Log archivoLog;
-	pthread threadProcesador;
-	pthread threadChecker;
+	pthread_t threadProcesador;
+	pthread_t threadChecker;
 	TablaDeHash hashThreadsClientes;
 };
 
