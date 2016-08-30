@@ -4,3 +4,5 @@
 .classpath
 .metadata
 .autotools
+
+*.out
