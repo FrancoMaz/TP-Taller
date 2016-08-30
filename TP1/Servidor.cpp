@@ -17,20 +17,20 @@ Servidor::Servidor(string nombreArchivoDeUsuarios, int puerto) {
 Servidor::~Servidor() {
 }
 
-list<Cliente> Cliente::autenticar(string nombre, string contrasenia) {
+list<Cliente> Servidor::autenticar(string nombre, string contrasenia) {
 
 }
 
-list<Cliente> Cliente::obtenerClientes() {
+list<Cliente> Servidor::obtenerClientes() {
 
 }
 
-void Cliente::guardarLog() {
+void Servidor::guardarLog() {
 //Guarda toda la actividad en un archivo de texto
 
 }
 
-list<string> Cliente::obtenerMensajes(Cliente cliente) {
+list<string> Servidor::obtenerMensajes(Cliente cliente) {
 
 }
 
