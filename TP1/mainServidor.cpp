@@ -48,12 +48,12 @@ int main()
 
 	  /****************************************************************************************/
 	 /***************** ACA ABAJO ESTA EL EJEMPLO QUE ESTABA EN INTERNET *********************/
-	/****************************************************************************************/
+	/***************************************************************************************
 
 
-	/* ---------- INITIALIZING VARIABLES ---------- */
+	 ---------- INITIALIZING VARIABLES ----------
 
-    /*
+
        1. client/server are two file descriptors
        These two variables store the values returned
        by the socket system call and the accept system call.
@@ -86,7 +86,7 @@ int main()
         7. socklen_t  is an intr type of width of at least 32 bits
 
 
-    */
+
     int client, server;
     int portNum = 1500;
     bool isExit = false;
@@ -96,8 +96,8 @@ int main()
     struct sockaddr_in server_addr;
     socklen_t size;
 
-    /* ---------- ESTABLISHING SOCKET CONNECTION ----------*/
-    /* --------------- socket() function ------------------*/
+     ---------- ESTABLISHING SOCKET CONNECTION ----------
+     --------------- socket() function ------------------
 
     client = socket(AF_INET, SOCK_STREAM, 0);
 
@@ -107,7 +107,7 @@ int main()
         exit(1);
     }
 
-    /*
+
         The socket() function creates a new socket.
         It takes 3 arguments,
 
@@ -121,11 +121,11 @@ int main()
             references to this socket. If the socket call fails,
             it returns -1.
 
-    */
+
 
     cout << "\n=> Socket server has been created..." << endl;
 
-    /*
+
         The variable serv_addr is a structure of sockaddr_in.
         sin_family contains a code for the address family.
         It should always be set to AF_INET.
@@ -137,14 +137,14 @@ int main()
         htons() converts the port number from host byte order
         to a port number in network byte order.
 
-    */
+
 
     server_addr.sin_family = AF_INET;
     server_addr.sin_addr.s_addr = htons(INADDR_ANY);
     server_addr.sin_port = htons(portNum);
 
-    /* ---------- BINDING THE SOCKET ---------- */
-    /* ---------------- bind() ---------------- */
+     ---------- BINDING THE SOCKET ----------
+     ---------------- bind() ----------------
 
 
     if ((bind(client, (struct sockaddr*)&server_addr,sizeof(server_addr))) < 0)
@@ -153,24 +153,24 @@ int main()
         return -1;
     }
 
-    /*
+
         The bind() system call binds a socket to an address,
         in this case the address of the current host and port number
         on which the server will run. It takes three arguments,
         the socket file descriptor. The second argument is a pointer
         to a structure of type sockaddr, this must be cast to
         the correct type.
-    */
+
 
     size = sizeof(server_addr);
     cout << "=> Looking for clients..." << endl;
 
-    /* ------------- LISTENING CALL ------------- */
-    /* ---------------- listen() ---------------- */
+     ------------- LISTENING CALL -------------
+     ---------------- listen() ----------------
 
     listen(client, 1);
 
-    /*
+
         The listen system call allows the process to listen
         on the socket for connections.
 
@@ -184,12 +184,12 @@ int main()
         connection. The maximum size permitted by most
         systems is 5.
 
-    */
 
-    /* ------------- ACCEPTING CLIENTS  ------------- */
-    /* ----------------- listen() ------------------- */
 
-    /*
+     ------------- ACCEPTING CLIENTS  -------------
+     ----------------- listen() -------------------
+
+
         The accept() system call causes the process to block
         until a client connects to the server. Thus, it wakes
         up the process when a connection from a client has been
@@ -199,7 +199,7 @@ int main()
         reference pointer to the address of the client on the other
         end of the connection, and the third argument is the size
         of this structure.
-    */
+
 
     int clientCount = 1;
     server = accept(client,(struct sockaddr *)&server_addr,&size);
@@ -215,7 +215,7 @@ int main()
         cout << "=> Connected with the client #" << clientCount << ", you are good to go..." << endl;
         cout << "\n=> Enter # to end the connection\n" << endl;
 
-        /*
+
             Note that we would only get to this point after a
             client has successfully connected to our server.
             This reads from the socket. Note that the read()
@@ -225,7 +225,7 @@ int main()
 
             It will read either the total number of characters
             in the socket or 1024
-        */
+
 
         cout << "Client: ";
         do {
@@ -260,22 +260,22 @@ int main()
             } while (*buffer != '*');
         } while (!isExit);
 
-        /*
+
             Once a connection has been established, both ends
             can both read and write to the connection. Naturally,
             everything written by the client will be read by the
             server, and everything written by the server will be
             read by the client.
-        */
 
-        /* ---------------- CLOSE CALL ------------- */
-        /* ----------------- close() --------------- */
 
-        /*
+         ---------------- CLOSE CALL -------------
+         ----------------- close() ---------------
+
+
             Once the server presses # to end the connection,
             the loop will break and it will close the server
             socket connection and the client connection.
-        */
+
 
         // inet_ntoa converts packet data to IP, which was taken from client
         cout << "\n\n=> Connection terminated with IP " << inet_ntoa(server_addr.sin_addr);
@@ -287,4 +287,4 @@ int main()
 
     close(client);
     return 0;
-}
+}*/
