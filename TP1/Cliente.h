@@ -40,7 +40,7 @@ private:
 	string direccionIP;
 	int puertoServidor;
 	string nombre;
-	int socket;
+	int socketCliente;
 	pthread_t threadComunicacion;
 	pthread_t threadProcesador;
 	pthread_t threadChecker;

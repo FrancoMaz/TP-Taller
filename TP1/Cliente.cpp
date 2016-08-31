@@ -10,7 +10,7 @@ Cliente::Cliente(string ip, int puerto) {
 	this->direccionIP = ip;
 	this->puertoServidor = puerto;
 	this->mostrarMenu(); //Muestra el menu con todas las acciones que puede realizar el cliente
-	this -> socket = socket(AF_INET, SOCK_STREAM, 0); //Crea el socket. ME TIRA "EXPRESSION CANNOT BE USED AS A FUNCTION" Y NI IDEA POR QUE
+	this -> socketCliente = socket(AF_INET, SOCK_STREAM, 0);
 	direccionServidor.sin_family = AF_INET;
 	direccionServidor.sin_port = htons(this -> puertoServidor);
 }
@@ -70,14 +70,14 @@ list<Cliente> Cliente::conectar(string nombre, string contrasenia) {
 	cin >> nombre;
 	cout << "Ingrese contrasenia: ";
 	cin >> contrasenia;
-	if (connect(socket,(struct sockaddr *)&direccionServidor, sizeof(direccionServidor)) == 0)
+	if (connect(socketCliente,(struct sockaddr *)&direccionServidor, sizeof(direccionServidor)) == 0)
 	        cout << "Conectandose al puerto: " << this -> puertoServidor << endl;
 	//Faltaria que el servidor devuelve la lista con los usuarios disponibles y que confirme la autenticacion del cliente
 }
 
 void Cliente::desconectar() {
 	//Se cierra la conexion con el servidor
-	close(socket);
+	close(socketCliente);
 }
 
 void Cliente::salir() {
