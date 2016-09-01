@@ -38,7 +38,7 @@ public:
 	list<Cliente> obtenerClientes();
 	void guardarLog();
 	list<string> obtenerMensajes(Cliente cliente);
-	void crearMensaje(Cliente clienteOrigen, Cliente clienteDestinatario, string mensaje);
+	void crearMensaje(Mensaje mensaje);
 	void comenzarEscucha();
 	void finalizarEscucha();
 };

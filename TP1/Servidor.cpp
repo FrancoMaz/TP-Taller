@@ -41,7 +41,7 @@ list<string> Servidor::obtenerMensajes(Cliente cliente) {
 
 }
 
-void crearMensaje(Cliente clienteOrigen, Cliente clienteDestinatario) {
+void crearMensaje(Mensaje mensaje) {
 
 }
 

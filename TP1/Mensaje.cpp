@@ -7,8 +7,10 @@
 
 #include "Mensaje.h"
 
-Mensaje::Mensaje() {
-	// TODO Auto-generated constructor stub
+Mensaje::Mensaje(Cliente remitente, Cliente destinatario, string textoMensaje) {
+	this -> clienteRemitente = remitente;
+	this -> clienteDestinatario = destinatario;
+	this -> textoMensaje = textoMensaje
 
 }
 
