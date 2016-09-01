@@ -11,10 +11,12 @@
 #include <string>
 #include <list>
 #include <queue>
-#include <unordered_map>
 #include <stdio.h>
 #include <fstream>
 #include <sstream>
+#include "Cliente.h"
+#include "Mensaje.h"
+#include "Log.h"
 using namespace std;
 
 class Servidor {
@@ -24,8 +26,8 @@ private:
 	int socket;
 	string nombreArchivo;
 	FILE* archivoUsuarios;
-	queue<string> colaMensajesNoProcesados;
-	unordered_map<Cliente,queue<string>> hashMensajesProcesados;
+	queue<Mensaje> colaMensajesNoProcesados;
+	list<Mensaje> listaMensajesProcesados;
 	Log archivoLog;
 	pthread_t threadProcesador;
 	pthread_t threadChecker;
@@ -40,10 +42,11 @@ public:
 	list<Cliente> autenticar(string nombre, string contrasenia);
 	list<Cliente> obtenerClientes();
 	void guardarLog();
-	list<string> obtenerMensajes(Cliente cliente);
-	void crearMensaje(Cliente clienteOrigen, Cliente clienteDestinatario, string mensaje);
+	list<Mensaje> obtenerMensajes(Cliente cliente);
+	void crearMensaje(Mensaje mensaje);
 	void comenzarEscucha();
 	void finalizarEscucha();
+	queue<Mensaje> getColaMensajesNoProcesados();
 };
 
 #endif /* TP1_SERVIDOR_H_ */

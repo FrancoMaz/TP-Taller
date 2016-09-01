@@ -6,8 +6,6 @@
  */
 
 #include "Servidor.h"
-#include "Cliente.h"
-#include <string>
 using namespace std;
 
 #define PATH "lala"
@@ -66,12 +64,12 @@ void Servidor::guardarLog() {
 
 }
 
-list<string> Servidor::obtenerMensajes(Cliente cliente) {
+list<Mensaje> Servidor::obtenerMensajes(Cliente cliente) {
 
 }
 
-void crearMensaje(Cliente clienteOrigen, Cliente clienteDestinatario) {
-
+void crearMensaje(Mensaje mensaje) {
+	this -> colaMensajesNoProcesados.push(mensaje);
 }
 
 void comenzarEscucha(){
@@ -80,4 +78,8 @@ void comenzarEscucha(){
 
 void finalizarEscucha(){
 	//Metodo que finaliza la escucha del servidor.
+}
+
+queue<Mensaje> getColaMensajesNoProcesados(){
+	return this -> colaMensajesNoProcesados;
 }

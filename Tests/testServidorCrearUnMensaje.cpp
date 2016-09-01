@@ -16,6 +16,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <netdb.h>
+#include <queue>
 
 using namespace std;
 int main()
@@ -26,7 +27,8 @@ int main()
 	cliente.nombre = "fulano";
 	Cliente cliente2 = new Cliente();
 	cliente.nombre = "mengano";
-	servidor.crearMensaje(cliente,cliente2,"Hola como te va?");
-	cout << (servidor.colaMensajesNoProcesados.size == 1) << endl;
+	Mensaje mensaje = new Mensaje(cliente,cliente2,"Hola como te va?");
+	servidor.crearMensaje(mensaje);
+	cout << (servidor.getColaMensajesNoProcesados.size() == 1) << endl;
 	return 0;
 }
