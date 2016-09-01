@@ -13,6 +13,8 @@
 #include <queue>
 #include <unordered_map>
 #include <stdio.h>
+#include <fstream>
+#include <sstream>
 using namespace std;
 
 class Servidor {
@@ -20,6 +22,7 @@ class Servidor {
 private:
 	int puerto;
 	int socket;
+	string nombreArchivo;
 	FILE* archivoUsuarios;
 	queue<string> colaMensajesNoProcesados;
 	unordered_map<Cliente,queue<string>> hashMensajesProcesados;
