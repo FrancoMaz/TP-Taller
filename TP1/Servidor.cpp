@@ -7,7 +7,6 @@
 
 #include "Servidor.h"
 #include "Cliente.h"
-#include <string>
 using namespace std;
 
 #define PATH "lala"
@@ -42,6 +41,7 @@ list<string> Servidor::obtenerMensajes(Cliente cliente) {
 }
 
 void crearMensaje(Mensaje mensaje) {
+	this -> colaMensajesNoProcesados.push(mensaje);
 
 }
 
@@ -51,4 +51,8 @@ void comenzarEscucha(){
 
 void finalizarEscucha(){
 	//Metodo que finaliza la escucha del servidor.
+}
+
+queue<Mensaje> getColaMensajesNoProcesados(){
+	return this -> colaMensajesNoProcesados;
 }

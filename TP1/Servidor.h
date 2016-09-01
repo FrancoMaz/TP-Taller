@@ -21,7 +21,7 @@ private:
 	int puerto;
 	int socket;
 	FILE* archivoUsuarios;
-	queue<string> colaMensajesNoProcesados;
+	queue<Mensaje> colaMensajesNoProcesados;
 	unordered_map<Cliente,queue<string>> hashMensajesProcesados;
 	Log archivoLog;
 	pthread_t threadProcesador;
@@ -41,6 +41,7 @@ public:
 	void crearMensaje(Mensaje mensaje);
 	void comenzarEscucha();
 	void finalizarEscucha();
+	queue<Mensaje> getColaMensajesNoProcesados();
 };
 
 #endif /* TP1_SERVIDOR_H_ */
