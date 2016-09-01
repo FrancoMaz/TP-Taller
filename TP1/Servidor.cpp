@@ -6,7 +6,6 @@
  */
 
 #include "Servidor.h"
-#include "Cliente.h"
 using namespace std;
 
 #define PATH "lala"
@@ -36,13 +35,12 @@ void Servidor::guardarLog() {
 
 }
 
-list<string> Servidor::obtenerMensajes(Cliente cliente) {
+list<Mensaje> Servidor::obtenerMensajes(Cliente cliente) {
 
 }
 
 void crearMensaje(Mensaje mensaje) {
 	this -> colaMensajesNoProcesados.push(mensaje);
-
 }
 
 void comenzarEscucha(){
