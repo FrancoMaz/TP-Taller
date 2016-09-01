@@ -9,10 +9,12 @@ Cliente::Cliente(string ip, int puerto) {
 //El cliente se crea con la direccion IP y el puerto en el cual se encuentra disponible el servidor
 	this->direccionIP = ip;
 	this->puertoServidor = puerto;
-	this->mostrarMenu(); //Muestra el menu con todas las acciones que puede realizar el cliente
 	this -> socketCliente = socket(AF_INET, SOCK_STREAM, 0);
 	direccionServidor.sin_family = AF_INET;
 	direccionServidor.sin_port = htons(this -> puertoServidor);
+	direccionServidor.sin_addr.s_addr = inet_addr((const char*) ip);
+	memset(direccionServidor.sin_zero, '\0', sizeof direccionServidor.sin_zero);
+	this->mostrarMenu(); //Muestra el menu con todas las acciones que puede realizar el cliente
 }
 
 Cliente::~Cliente() {
@@ -71,7 +73,7 @@ list<Cliente> Cliente::conectar(string nombre, string contrasenia) {
 	cout << "Ingrese contrasenia: ";
 	cin >> contrasenia;
 	if (connect(socketCliente,(struct sockaddr *)&direccionServidor, sizeof(direccionServidor)) == 0)
-	        cout << "Conectandose al puerto: " << this -> puertoServidor << endl;
+	        cout << "ConectandosedireccionServidor.sin_family = AF_INET al puerto: " << this -> puertoServidor << endl;
 	//Faltaria que el servidor devuelve la lista con los usuarios disponibles y que confirme la autenticacion del cliente
 }
 

@@ -5,9 +5,6 @@
  *      Author: franco
  */
 
-
-
-
 #include <iostream>
 #include <string.h>
 #include <sys/types.h>
@@ -37,6 +34,7 @@ int main()
 		servidor = inicializarServidor();
 	}
 	while(!servidor.escuchando); //mientras el servidor no este escuchando, intento inicializarlo pidiendo los parametros de entrada.
+
 	do{
 
 	}

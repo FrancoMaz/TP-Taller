@@ -22,6 +22,17 @@
 using namespace std;
 
 class Cliente {
+private:
+	int opcionMenu;
+	string direccionIP;
+	int puertoServidor;
+	string nombre;
+	int socketCliente;
+	pthread_t threadComunicacion;
+	pthread_t threadProcesador;
+	pthread_t threadChecker;
+	struct sockaddr_in direccionServidor;
+
 public:
 	Cliente();
 	Cliente(string ip, int puerto);
@@ -34,17 +45,6 @@ public:
 	void enviar(string mensaje, string destinatario);
 	list<string> recibir();
 	void loremIpsum(int frecuenciaDeEnvios,int cantidadMaximaDeEnvios);
-
-private:
-	int opcionMenu;
-	string direccionIP;
-	int puertoServidor;
-	string nombre;
-	int socketCliente;
-	pthread_t threadComunicacion;
-	pthread_t threadProcesador;
-	pthread_t threadChecker;
-	struct sockaddr_in direccionServidor;
 };
 
 #endif /* TP1_CLIENTE_H_ */

@@ -16,6 +16,18 @@
 using namespace std;
 
 class Servidor {
+
+private:
+	int puerto;
+	int socket;
+	FILE* archivoUsuarios;
+	queue<string> colaMensajesNoProcesados;
+	unordered_map<Cliente,queue<string>> hashMensajesProcesados;
+	Log archivoLog;
+	pthread_t threadProcesador;
+	pthread_t threadChecker;
+	TablaDeHash hashThreadsClientes;
+
 public:
 	Servidor();
 	Servidor(int puerto);
@@ -29,17 +41,6 @@ public:
 	void crearMensaje(Cliente clienteOrigen, Cliente clienteDestinatario);
 	void comenzarEscucha();
 	void finalizarEscucha();
-
-private:
-	int puerto;
-	int socket;
-	FILE* archivoUsuarios;
-	queue<string> colaMensajesNoProcesados;
-	unordered_map<Cliente,queue<string>> hashMensajesProcesados;
-	Log archivoLog;
-	pthread_t threadProcesador;
-	pthread_t threadChecker;
-	TablaDeHash hashThreadsClientes;
 };
 
 #endif /* TP1_SERVIDOR_H_ */
