@@ -68,15 +68,15 @@ list<Mensaje> Servidor::obtenerMensajes(Cliente cliente) {
 
 }
 
-void crearMensaje(Mensaje mensaje) {
-	//this -> colaMensajesNoProcesados.push(mensaje);
+void Servidor::crearMensaje(Mensaje mensaje) {
+	this -> colaMensajesNoProcesados.push(mensaje);
 }
 
-void comenzarEscucha(){
+void Servidor::comenzarEscucha(){
 	//Metodo que pone al servidor a escuchar si alguien requiere algo.
 }
 
-void finalizarEscucha(){
+void Servidor::finalizarEscucha(){
 	//Metodo que finaliza la escucha del servidor.
 }
 
