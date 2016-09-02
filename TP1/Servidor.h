@@ -31,7 +31,6 @@ private:
 	Log archivoLog;
 	pthread_t threadProcesador;
 	pthread_t threadChecker;
-	TablaDeHash hashThreadsClientes;
 
 public:
 	Servidor();

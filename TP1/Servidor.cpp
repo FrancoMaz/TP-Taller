@@ -69,7 +69,7 @@ list<Mensaje> Servidor::obtenerMensajes(Cliente cliente) {
 }
 
 void crearMensaje(Mensaje mensaje) {
-	this -> colaMensajesNoProcesados.push(mensaje);
+	//this -> colaMensajesNoProcesados.push(mensaje);
 }
 
 void comenzarEscucha(){
@@ -80,6 +80,6 @@ void finalizarEscucha(){
 	//Metodo que finaliza la escucha del servidor.
 }
 
-queue<Mensaje> getColaMensajesNoProcesados(){
+queue<Mensaje> Servidor::getColaMensajesNoProcesados(){
 	return this -> colaMensajesNoProcesados;
 }
