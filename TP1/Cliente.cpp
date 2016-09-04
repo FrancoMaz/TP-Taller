@@ -14,7 +14,7 @@ Cliente::Cliente(string ip, int puerto) {
 	direccionServidor.sin_port = htons(this -> puertoServidor);
 	direccionServidor.sin_addr.s_addr = inet_addr((const char*) ip);
 	memset(direccionServidor.sin_zero, '\0', sizeof direccionServidor.sin_zero);
-	pthread_create(&(this->threadComunicacion), NULL, &cicloConexion,&this );
+
 	this->mostrarMenu(); //Muestra el menu con todas las acciones que puede realizar el cliente
 }
 
@@ -22,9 +22,18 @@ Cliente::~Cliente() {
 	// TODO Auto-generated destructor stub
 }
 
+int Cliente::inicializarThreadConexion()
+{
+	return pthread_create(&(this->threadComunicacion), NULL, &(cicloConexion),&this );
+}
+
 void* cicloConexion(void* arg)
 {
 	Cliente cliente = *(Cliente*)arg;
+	while(cliente.opcionMenu != 5 and cliente.opcionMenu != 4) //mientras la opcion del menu no sea salir o desconectar..
+	{
+		cliente.mostrarMenu();
+	}
 	return NULL;
 }
 
@@ -41,14 +50,13 @@ void Cliente::mostrarMenu() {
 	this -> elegirOpcionDelMenu(opcionMenu);
 }
 
-void comenzarEnvio()
 
-void Cliente::elegirOpcionDelMenu(int opcion, list<Cliente> clientesDisponibles){
+void Cliente::elegirOpcionDelMenu(int opcion){
 	int frecuenciaDeEnvios = 0;
 	int cantidadMaximaDeEnvios = 0;
 	switch (opcion) {
 		case 1:
-			this -> comenzarEnvio(clientesDisponibles);
+			this -> enviar("","");
 			break;
 		case 2:
 			this->recibir();

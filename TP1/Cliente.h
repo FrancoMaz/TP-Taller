@@ -32,12 +32,14 @@ private:
 	pthread_t threadProcesador;
 	pthread_t threadChecker;
 	struct sockaddr_in direccionServidor;
+	list<Cliente> clientesDisponibles = NULL;
 
 public:
 	Cliente();
 	Cliente(string ip, int puerto);
 	virtual ~Cliente();
 	void mostrarMenu();
+	int inicializarThreadConexion();
 	void elegirOpcionDelMenu(int opcion);
 	list<Cliente> conectar(string nombre, string contrasenia);
 	void desconectar();
@@ -45,7 +47,6 @@ public:
 	void enviar(string mensaje, string destinatario);
 	list<string> recibir();
 	void loremIpsum(int frecuenciaDeEnvios,int cantidadMaximaDeEnvios);
-	void* comenzarCicloConexion(void* arg);
 };
 
 #endif /* TP1_CLIENTE_H_ */
