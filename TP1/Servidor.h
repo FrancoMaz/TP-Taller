@@ -9,11 +9,14 @@
 #define TP1_SERVIDOR_H_
 
 #include <string>
+#include <iostream>
 #include <list>
 #include <queue>
 #include <stdio.h>
 #include <fstream>
 #include <sstream>
+#include <stdio.h>
+#include <stdlib.h>
 #include "Cliente.h"
 #include "Mensaje.h"
 #include "Log.h"

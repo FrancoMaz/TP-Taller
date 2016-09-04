@@ -25,11 +25,11 @@ list<Cliente> Servidor::autenticar(string nombre, string contrasenia) {
 	int nroItem;
 	bool autenticacionOK = false;
 
-	ifstream archivoCSV(this->nombreArchivo);
+	ifstream myfile(this->nombreArchivo);
 
-	if (archivoCSV.is_open()) {
+	if (myfile.is_open()) {
 
-			while (getline(archivoCSV,linea) && !autenticacionOK) {
+			while (getline(myfile,linea) && !autenticacionOK) {
 				nroItem = 0;
 				istringstream lineaActual(linea);
 
@@ -44,7 +44,7 @@ list<Cliente> Servidor::autenticar(string nombre, string contrasenia) {
 				}
 			}
 	}
-	archivoCSV.close();
+	myfile.close();
 
 	if (autenticacionOK) cout << "Autenticación OK wachin" << endl;
 	else cout << "Error de autenticación, no nos hackees wachin" << endl;
