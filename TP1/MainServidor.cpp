@@ -13,32 +13,33 @@
 #include <arpa/inet.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include "Servidor.h"
 
 using namespace std;
 
-Servidor inicializarServidor()
+Servidor* inicializarServidor()
 {
 	int puerto;
-	string archivoUsers;
+	char* archivoUsers;
 	cout << "Ingrese el puerto de escucha de la conexion: ";
 	cin >> puerto;
-	cout << "Ingrese el path del archivo de usuarios:";
+	cout << "Ingrese el nombre del archivo de usuarios: ";
 	cin >> archivoUsers;
 	return new Servidor(archivoUsers,puerto);
 }
 
 int main()
 {
-	Servidor servidor;
+	Servidor* servidor;
 	do{
 		servidor = inicializarServidor();
 	}
-	while(!servidor.escuchando); //mientras el servidor no este escuchando, intento inicializarlo pidiendo los parametros de entrada.
+	while(!servidor->escuchando); //mientras el servidor no este escuchando, intento inicializarlo pidiendo los parametros de entrada.
 
 	do{
 
 	}
-	while(servidor.escuchando);
+	while(servidor->escuchando);
 	return 0;
 }
 
