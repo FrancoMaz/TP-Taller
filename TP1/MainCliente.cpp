@@ -63,7 +63,7 @@ int main()
 		cin >> nombre;
 		cout << "Ingrese contrasenia: ";
 		cin >> contrasenia;
-		cliente->getClientesDisponibles() = cliente->conectar(nombre,contrasenia);
+		cliente->setClientesDisponibles(nombre,contrasenia);
 		if (cliente->getClientesDisponibles().empty())
 		{
 			//si despues de intentar conectar, sigue siendo NULL, muestro error y pido nuevamente.

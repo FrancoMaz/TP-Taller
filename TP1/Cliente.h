@@ -56,6 +56,7 @@ public:
 	int getOpcionMenu();
 	void* cicloConexion(void* arg);
 	list<Cliente> getClientesDisponibles();
+	void setClientesDisponibles(string nombre, string contrasenia);
 };
 
 #endif /* TP1_CLIENTE_H_ */

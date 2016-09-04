@@ -168,3 +168,7 @@ list<Cliente> Cliente::getClientesDisponibles(){
 	return this->clientesDisponibles;
 
 }
+
+void Cliente::setClientesDisponibles(string nombre, string contrasenia){
+	this -> clientesDisponibles = this -> conectar(nombre,contrasenia);
+}
