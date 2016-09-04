@@ -57,13 +57,14 @@ void Cliente::mostrarMenu() {
 	this -> elegirOpcionDelMenu(opcionMenu);
 }
 
+void comenzarEnvio()
 
 void Cliente::elegirOpcionDelMenu(int opcion, list<Cliente> clientesDisponibles){
 	int frecuenciaDeEnvios = 0;
 	int cantidadMaximaDeEnvios = 0;
 	switch (opcion) {
 		case 1:
-			this -> mostrarClientesDisponibles(clientesDisponibles);
+			this -> comenzarEnvio(clientesDisponibles);
 			break;
 		case 2:
 			this->recibir();
