@@ -18,6 +18,11 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <netdb.h>
+#include <iostream>
+#include <fstream>
+#include <time.h>
+#include <iterator>
+#include "Mensaje.h"
 
 using namespace std;
 
@@ -32,7 +37,7 @@ private:
 	pthread_t threadProcesador;
 	pthread_t threadChecker;
 	struct sockaddr_in direccionServidor;
-	list<Cliente> clientesDisponibles = NULL;
+	list<Cliente> clientesDisponibles;
 
 public:
 	Cliente();
@@ -47,6 +52,7 @@ public:
 	void enviar(string mensaje, string destinatario);
 	list<string> recibir();
 	void loremIpsum(int frecuenciaDeEnvios,int cantidadMaximaDeEnvios);
+	string getNombre();
 };
 
 #endif /* TP1_CLIENTE_H_ */

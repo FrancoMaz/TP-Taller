@@ -14,6 +14,7 @@ Cliente::Cliente(string ip, int puerto) {
 	direccionServidor.sin_port = htons(this -> puertoServidor);
 	direccionServidor.sin_addr.s_addr = inet_addr((const char*) ip);
 	memset(direccionServidor.sin_zero, '\0', sizeof direccionServidor.sin_zero);
+	this -> clientesDisponibles = NULL;
 
 	this->mostrarMenu(); //Muestra el menu con todas las acciones que puede realizar el cliente
 }
@@ -56,12 +57,24 @@ void Cliente::elegirOpcionDelMenu(int opcion){
 	int cantidadMaximaDeEnvios = 0;
 	switch (opcion) {
 		case 1:
-			this -> enviar("","");
+			string destinatario;
+			string mensajeAEnviar;
+			cout << "Escriba el nombre del destinatario del mensaje: " << endl;
+			cin >> destinatario;
+			cout << "Escriba su mensaje: " << endl;
+			cin >> mensajeAEnviar;
+			this -> enviar(mensajeAEnviar,destinatario);
 			break;
 		case 2:
 			this->recibir();
 			break;
 		case 3:
+			int frecuenciaDeEnvios;
+			int cantidadMaximaDeEnvios;
+			cout << "Escriba la frecuencia de envios: " << endl;
+			cin >> frecuenciaDeEnvios;
+			cout << "Escriba la cantidad maxima de envios: " << endl;
+			cin >> cantidadMaximaDeEnvios;
 			this->loremIpsum(frecuenciaDeEnvios, cantidadMaximaDeEnvios);
 			break;
 		case 4:
@@ -101,6 +114,8 @@ void Cliente::enviar(string mensaje, string destinatario) {
 	//Se envia un mensaje a un usuario o a todos (este ultimo caso sucede cuando el destinatario es el string "Todos".
 	//Hay que realizar el submenu dinamico con todos los usuarios disponibles.
 	//Requiere una conexion abierta.
+	Mensaje *mensajeAEnviar = new Mensaje(this->nombre, destinatario, mensaje);
+
 }
 
 list<string> Cliente::recibir() {
@@ -108,8 +123,28 @@ list<string> Cliente::recibir() {
 	//Requiere una conexion abierta.
 }
 
-void loremIpsum(int frecuenciaDeEnvios, int cantidadMaximaDeEnvios){
+void Cliente::loremIpsum(int frecuenciaDeEnvios, int cantidadMaximaDeEnvios){
 	//Toma el texto de un archivo y se envian mensajes en forma ciclica. El tamanio de mensajes y el destinatario son aleatorios
 	//Cuando todo el texto fue transmitido, se empieza otra vez desde el inicio
 	//Requiere una conexion abierta.
+	for (int i = 0; i < cantidadMaximaDeEnvios; i++)
+		{
+			int tamanioMensaje;
+			int numeroDeClienteAEnviar;
+			char cadena[tamanioMensaje];
+			srand(time(NULL));
+			tamanioMensaje = rand();
+			numeroDeClienteAEnviar = rand() % this->clientesDisponibles.size();
+			ifstream archivo("LoremIpsum.txt");
+			archivo.getline(cadena,tamanioMensaje);
+			list<Cliente>::iterator iterador = this->clientesDisponibles.begin();
+			advance(iterador,numeroDeClienteAEnviar);
+			string clienteAleatorioAEnviar = *iterador.getNombre();
+			this -> enviar(cadena,clienteAleatorioAEnviar);
+		}
+
+}
+
+string Cliente::getNombre() {
+	return this->nombre;
 }

@@ -7,7 +7,7 @@
 
 #include "Mensaje.h"
 
-Mensaje::Mensaje(Cliente remitente, Cliente destinatario, string textoMensaje) {
+Mensaje::Mensaje(string remitente, string destinatario, string textoMensaje) {
 	this -> clienteRemitente = remitente;
 	this -> clienteDestinatario = destinatario;
 	this -> textoMensaje = textoMensaje;

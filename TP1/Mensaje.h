@@ -13,12 +13,12 @@ using namespace std;
 
 class Mensaje {
 public:
-	Mensaje(Cliente remitente, Cliente destinatario, string textoMensaje);
+	Mensaje(string remitente, string destinatario, string textoMensaje);
 	virtual ~Mensaje();
 
 private:
-	Cliente clienteRemitente;
-	Cliente clienteDestinatario;
+	string clienteRemitente;
+	string clienteDestinatario;
 	string textoMensaje;
 };
 
