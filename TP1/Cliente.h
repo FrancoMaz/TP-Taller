@@ -29,7 +29,7 @@ using namespace std;
 class Cliente {
 private:
 	int opcionMenu;
-	string direccionIP;
+	char* direccionIP;
 	int puertoServidor;
 	string nombre;
 	int socketCliente;
@@ -41,7 +41,7 @@ private:
 
 public:
 	Cliente();
-	Cliente(string ip, int puerto);
+	Cliente(char* ip, int puerto);
 	virtual ~Cliente();
 	void mostrarMenu();
 	int inicializarThreadConexion();
@@ -53,6 +53,9 @@ public:
 	list<string> recibir();
 	void loremIpsum(int frecuenciaDeEnvios,int cantidadMaximaDeEnvios);
 	string getNombre();
+	int getOpcionMenu();
+	void* cicloConexion(void* arg);
+	list<Cliente> getClientesDisponibles();
 };
 
 #endif /* TP1_CLIENTE_H_ */

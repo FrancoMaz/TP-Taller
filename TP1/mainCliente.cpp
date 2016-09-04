@@ -18,9 +18,14 @@
 
 using namespace std;
 
+bool chequearSocket(string ip, int puerto)
+{
+	return false;
+}
+
 int main()
 {
-	string ip;
+	char* ip;
 	int puerto, accion;
 	bool socketOk = false;
 	while(!socketOk)
@@ -37,7 +42,7 @@ int main()
 		}
 	}
 	cout << "SOCKET OK" << endl;
-	Cliente cliente = new Cliente(ip, puerto);
+	Cliente *cliente = new Cliente(ip, puerto);
 	string nombre, contrasenia;
 	cout << "SISTEMA DE MENSAJERIA" << endl;
 	while (accion < 1 or accion > 2)
@@ -52,49 +57,32 @@ int main()
 		return 0;
 	}
 	//si no es salir, intento conectar pidiendo usuario y contraseña.
-	while (cliente.clientesDisponibles == NULL)
+	while (cliente->getClientesDisponibles().empty())
 	{
 		cout << "Ingrese nombre de usuario: ";
 		cin >> nombre;
 		cout << "Ingrese contrasenia: ";
 		cin >> contrasenia;
-		cliente.clientesDisponibles = cliente.conectar(nombre,contrasenia);
-		if (cliente.clientesDisponibles == NULL)
+		cliente->getClientesDisponibles() = cliente->conectar(nombre,contrasenia);
+		if (cliente->getClientesDisponibles().empty())
 		{
 			//si despues de intentar conectar, sigue siendo NULL, muestro error y pido nuevamente.
 			cout << "Error al intentar autenticar. Ingrese un nombre de usuario y una contrasenia validos." << endl;
 		}
 	}
 	cout << "Autenticación OK. Bienvenido al sistema de mensajería. ¿Qué acción desea realizar?" << endl;
-	int threadOk = cliente.inicializarThreadConexion();
+	/*int threadOk = cliente->inicializarThreadConexion();
 	if (threadOk != 0)
 	{
 		cout << "Error al inicializar la conexion." << endl;
-	}
-	/*
-	struct sockaddr_in direccionServidor;
-	int socketCliente = socket(AF_INET, SOCK_STREAM,0);
-	if (socketCliente < 0)
-	{
-		cout << "\nError estableciendo el socket..." << endl;
-	    exit(1);
-	}
-	direccionServidor.sin_family = AF_INET;
-	direccionServidor.sin_port = htons(cliente.puertoServidor);
-	if (connect(socketCliente,(struct sockaddr *)&direccionServidor, sizeof(direccionServidor)) == 0)
-	{
-		cout << "=> Conexion en el puerto: " << cliente.puertoServidor << endl;
-	}
-	*/
+	}*/
+
 	return 0;
 }
 
 
 
-bool chequearSocket(string ip, int puerto)
-{
-	return false;
-}
+
 
 
 

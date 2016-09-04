@@ -5,7 +5,7 @@
 
 using namespace std;
 
-Cliente::Cliente(string ip, int puerto) {
+Cliente::Cliente(char* ip, int puerto) {
 //El cliente se crea con la direccion IP y el puerto en el cual se encuentra disponible el servidor
 	this->direccionIP = ip;
 	this->puertoServidor = puerto;
@@ -14,7 +14,6 @@ Cliente::Cliente(string ip, int puerto) {
 	direccionServidor.sin_port = htons(this -> puertoServidor);
 	direccionServidor.sin_addr.s_addr = inet_addr((const char*) ip);
 	memset(direccionServidor.sin_zero, '\0', sizeof direccionServidor.sin_zero);
-	this -> clientesDisponibles = NULL;
 
 	this->mostrarMenu(); //Muestra el menu con todas las acciones que puede realizar el cliente
 }
@@ -23,20 +22,20 @@ Cliente::~Cliente() {
 	// TODO Auto-generated destructor stub
 }
 
-int Cliente::inicializarThreadConexion()
+/*int Cliente::inicializarThreadConexion()
 {
 	return pthread_create(&(this->threadComunicacion), NULL, &(cicloConexion),&this );
 }
 
-void* cicloConexion(void* arg)
+void* Cliente::cicloConexion(void* arg)
 {
 	Cliente cliente = *(Cliente*)arg;
-	while(cliente.opcionMenu != 5 and cliente.opcionMenu != 4) //mientras la opcion del menu no sea salir o desconectar..
+	while(cliente.getOpcionMenu() != 5 and cliente.getOpcionMenu() != 4) //mientras la opcion del menu no sea salir o desconectar..
 	{
 		cliente.mostrarMenu();
 	}
 	return NULL;
-}
+}*/
 
 void Cliente::mostrarMenu() {
 	do {
@@ -57,6 +56,7 @@ void Cliente::elegirOpcionDelMenu(int opcion){
 	int cantidadMaximaDeEnvios = 0;
 	switch (opcion) {
 		case 1:
+		{
 			string destinatario;
 			string mensajeAEnviar;
 			cout << "Escriba el nombre del destinatario del mensaje: " << endl;
@@ -65,10 +65,14 @@ void Cliente::elegirOpcionDelMenu(int opcion){
 			cin >> mensajeAEnviar;
 			this -> enviar(mensajeAEnviar,destinatario);
 			break;
+		}
 		case 2:
+		{
 			this->recibir();
 			break;
+		}
 		case 3:
+		{
 			int frecuenciaDeEnvios;
 			int cantidadMaximaDeEnvios;
 			cout << "Escriba la frecuencia de envios: " << endl;
@@ -77,12 +81,17 @@ void Cliente::elegirOpcionDelMenu(int opcion){
 			cin >> cantidadMaximaDeEnvios;
 			this->loremIpsum(frecuenciaDeEnvios, cantidadMaximaDeEnvios);
 			break;
+		}
 		case 4:
+		{
 			this->desconectar();
 			break;
+		}
 		case 5:
+		{
 			this->salir();
 			break;
+		}
 		default:
 			break;
 	}
@@ -91,13 +100,14 @@ void Cliente::elegirOpcionDelMenu(int opcion){
 list<Cliente> Cliente::conectar(string nombre, string contrasenia) {
 	//Se establece la conexion con el servidor mediante autenticacion. El servidor devuelve la lista con todos los usuarios disponibles
 
+	list<Cliente> clientesDisponibles;
 	if (connect(socketCliente,(struct sockaddr *)&direccionServidor, sizeof(direccionServidor)) == 0){
-	        cout << "ConectandosedireccionServidor.sin_family = AF_INET al puerto: " << this -> puertoServidor << endl;
-	        return new list<Cliente>(new Cliente());
+	    cout << "ConectandosedireccionServidor.sin_family = AF_INET al puerto: " << this -> puertoServidor << endl;
 	}
 	else{
-		return NULL;
+		cout << "Error conectandose al puerto" << endl;
 	}
+	return clientesDisponibles;
 	//Faltaria que el servidor devuelve la lista con los usuarios disponibles y que confirme la autenticacion del cliente
 }
 
@@ -132,6 +142,7 @@ void Cliente::loremIpsum(int frecuenciaDeEnvios, int cantidadMaximaDeEnvios){
 			int tamanioMensaje;
 			int numeroDeClienteAEnviar;
 			char cadena[tamanioMensaje];
+			string clienteAleatorioAEnviar;
 			srand(time(NULL));
 			tamanioMensaje = rand();
 			numeroDeClienteAEnviar = rand() % this->clientesDisponibles.size();
@@ -139,12 +150,21 @@ void Cliente::loremIpsum(int frecuenciaDeEnvios, int cantidadMaximaDeEnvios){
 			archivo.getline(cadena,tamanioMensaje);
 			list<Cliente>::iterator iterador = this->clientesDisponibles.begin();
 			advance(iterador,numeroDeClienteAEnviar);
-			string clienteAleatorioAEnviar = *iterador.getNombre();
-			this -> enviar(cadena,clienteAleatorioAEnviar);
+			/*clienteAleatorioAEnviar = *iterador->getNombre();
+			this -> enviar(cadena,clienteAleatorioAEnviar);*/
 		}
 
 }
 
 string Cliente::getNombre() {
 	return this->nombre;
+}
+
+int Cliente::getOpcionMenu(){
+	return this -> opcionMenu;
+}
+
+list<Cliente> Cliente::getClientesDisponibles(){
+	return this->clientesDisponibles;
+
 }
