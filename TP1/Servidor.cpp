@@ -10,17 +10,12 @@ using namespace std;
 
 #define PATH "lala"
 
-Servidor::Servidor(string nombreArchivoDeUsuarios, int puerto) {
+Servidor::Servidor(char* nombreArchivoDeUsuarios, int puerto) {
 	this->puerto = puerto;
-	archivoUsuarios = fopen((const char*)PATH + (const char*)nombreArchivoDeUsuarios + (const char*)".csv", "r");
 	this->nombreArchivo = nombreArchivoDeUsuarios;
 }
 
 Servidor::~Servidor() {
-}
-
-Servidor::Servidor(int puerto){
-	this->puerto = puerto;
 }
 
 list<Cliente> Servidor::autenticar(string nombre, string contrasenia) {

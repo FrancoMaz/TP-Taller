@@ -24,8 +24,7 @@ class Servidor {
 private:
 	int puerto;
 	int socket;
-	string nombreArchivo;
-	FILE* archivoUsuarios;
+	char* nombreArchivo;
 	queue<Mensaje> colaMensajesNoProcesados;
 	list<Mensaje> listaMensajesProcesados;
 	Log archivoLog;
@@ -34,8 +33,7 @@ private:
 
 public:
 	Servidor();
-	Servidor(int puerto);
-	Servidor(string nombreArchivoDeUsuarios, int puerto);
+	Servidor(char* nombreArchivoDeUsuarios, int puerto);
 	virtual ~Servidor();
 	bool escuchando = false; //representa si el servidor esta disponible para escuchar pedidos
 	list<Cliente> autenticar(string nombre, string contrasenia);
