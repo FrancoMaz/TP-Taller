@@ -20,13 +20,42 @@ using namespace std;
 int main()
 {
 	string ip;
-	int puerto;
+	int puerto, accion;
 	cout << "Ingrese el puerto para la conexion: ";
 	cin >> puerto;
 	cout << "Ingrese la ip del servidor:";
 	cin >> ip;
 	Cliente cliente = new Cliente(ip, puerto);
+	string nombre, contrasenia;
+	list<Cliente> clientesDisponibles = NULL;
+	cout << "SISTEMA DE MENSAJERIA" << endl;
+	while (accion < 1 or accion > 2)
+		{
+			cout << "1) Conectar" << endl;
+			cout << "2) Salir" << endl;
+			cin >> accion;
+		}
+		if (accion == 2)
+		{
+			break;
+		}
+		while (clientesDisponibles == NULL)
+		{
+			cout << "Ingrese nombre de usuario: ";
+			cin >> nombre;
+			cout << "Ingrese contrasenia: ";
+			cin >> contrasenia;
+			clientesDisponibles = cliente.conectar(nombre,contrasenia);
+			if (clientesDisponibles == NULL)
+			{
+				cout << "Error al intentar autenticar. Ingrese un nombre de usuario y una contrasenia validos." << endl;
+			}
+		}
+		cout << "Autenticación OK. Bienvenido al sistema de mensajería. ¿Qué acción desea realizar?" << endl;
+		while(cliente.opcionMenu != 2)
+		{
 
+		}
 	/*
 	struct sockaddr_in direccionServidor;
 	int socketCliente = socket(AF_INET, SOCK_STREAM,0);

@@ -24,23 +24,7 @@ Cliente::~Cliente() {
 
 void* cicloConexion(void* arg)
 {
-	string nombre, contrasenia;
-	list<Cliente> clientesDisponibles = NULL;
 	Cliente cliente = *(Cliente*)arg;
-	while (clientesDisponibles == NULL)
-	{
-		cout << "Ingrese nombre de usuario: ";
-		cin >> nombre;
-		cout << "Ingrese contrasenia: ";
-		cin >> contrasenia;
-		clientesDisponibles = cliente.conectar(nombre,contrasenia);
-		if (clientesDisponibles == NULL)
-		{
-			cout << "Error al intentar autenticar. Ingrese un nombre de usuario y una contrasenia validos." << endl;
-		}
-	}
-	cout << "Autenticación OK. Bienvenido al sistema de mensajería. ¿Qué acción desea realizar?" << endl;
-	cliente.mostrarMenu();
 	return NULL;
 }
 
