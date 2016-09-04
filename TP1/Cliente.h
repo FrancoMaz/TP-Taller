@@ -45,6 +45,7 @@ public:
 	void enviar(string mensaje, string destinatario);
 	list<string> recibir();
 	void loremIpsum(int frecuenciaDeEnvios,int cantidadMaximaDeEnvios);
+	void* comenzarCicloConexion(void* arg);
 };
 
 #endif /* TP1_CLIENTE_H_ */

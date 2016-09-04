@@ -26,6 +26,8 @@ int main()
 	cout << "Ingrese la ip del servidor:";
 	cin >> ip;
 	Cliente cliente = new Cliente(ip, puerto);
+
+	/*
 	struct sockaddr_in direccionServidor;
 	int socketCliente = socket(AF_INET, SOCK_STREAM,0);
 	if (socketCliente < 0)
@@ -39,6 +41,7 @@ int main()
 	{
 		cout << "=> Conexion en el puerto: " << cliente.puertoServidor << endl;
 	}
+	*/
 	return 0;
 }
 
