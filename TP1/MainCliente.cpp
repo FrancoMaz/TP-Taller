@@ -71,6 +71,7 @@ int main()
 		}
 	}
 	cout << "Autenticación OK. Bienvenido al sistema de mensajería. ¿Qué acción desea realizar?" << endl;
+	cliente->mostrarMenu();
 	/*int threadOk = cliente->inicializarThreadConexion();
 	if (threadOk != 0)
 	{

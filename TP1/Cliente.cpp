@@ -13,9 +13,8 @@ Cliente::Cliente(char* ip, int puerto) {
 	direccionServidor.sin_family = AF_INET;
 	direccionServidor.sin_port = htons(this -> puertoServidor);
 	direccionServidor.sin_addr.s_addr = inet_addr((const char*) ip);
-	void* memset(direccionServidor.sin_zero, '\0', sizeof direccionServidor.sin_zero);
+	memset(direccionServidor.sin_zero, '\0', sizeof direccionServidor.sin_zero);
 
-	this->mostrarMenu(); //Muestra el menu con todas las acciones que puede realizar el cliente
 }
 
 Cliente::~Cliente() {
