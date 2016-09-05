@@ -130,7 +130,7 @@ void Cliente::loremIpsum(int frecuenciaDeEnvios, int cantidadMaximaDeEnvios){
 		{
 			int tamanioMensaje;
 			srand(time(NULL));
-			tamanioMensaje = (int) (rand() % 30);
+			tamanioMensaje = (int) (rand() % 30); //Por ahora puse que el tamanio de los mensajes este entre 0 y 30, pero mas adelante eso se tiene que modificar
 			char cadena[tamanioMensaje];
 			int numeroDeClienteAEnviar;
 			string clienteAleatorioAEnviar;
@@ -151,6 +151,7 @@ void Cliente::loremIpsum(int frecuenciaDeEnvios, int cantidadMaximaDeEnvios){
 			}
 			cout << cadena << endl;
 		}
+	archivo.close();
 }
 
 string Cliente::getNombre() {
