@@ -25,12 +25,7 @@ Servidor::Servidor(char* nombreArchivoDeUsuarios, int puerto) {
 	/*---- Bind the address struct to the socket ----*/
 	bind(this->welcomeSocket, (struct sockaddr *) &serverAddr, sizeof(serverAddr));
 	/*---- Listen on the socket, with 5 max connection requests queued ----*/
-	this->escuchando = listen(this->welcomeSocket, 6) == 0;
-	if (escuchando) {
-		printf("Listening\n");
-	} else {
-		printf("Error\n");
-	}
+	this->comenzarEscucha();
 }
 
 Servidor::~Servidor() {
@@ -103,6 +98,12 @@ void Servidor::crearMensaje(Mensaje mensaje) {
 }
 
 void Servidor::comenzarEscucha() {
+	this->escuchando = (listen(this->welcomeSocket, 6) == 0);
+	if (escuchando) {
+		printf("Listening\n");
+	} else {
+		printf("Error\n");
+	}
 	//Metodo que pone al servidor a escuchar si alguien requiere algo.
 }
 
