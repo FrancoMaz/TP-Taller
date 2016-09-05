@@ -29,10 +29,10 @@ Servidor* inicializarServidor() {
 
 int main() {
 	Servidor* servidor;
-	//do{
-	servidor = inicializarServidor();
-	//}
-	//while(!servidor->escuchando); //mientras el servidor no este escuchando, intento inicializarlo pidiendo los parametros de entrada.
+	do{
+		servidor = inicializarServidor();
+	}
+	while(!servidor->escuchando); //mientras el servidor no este escuchando, intento inicializarlo pidiendo los parametros de entrada.
 
 	//do{
 
