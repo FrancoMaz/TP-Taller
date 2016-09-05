@@ -20,7 +20,17 @@ using namespace std;
 
 bool chequearSocket(string ip, int puerto)
 {
-	return false;
+	return true;
+}
+
+void* cicloConexion(void* arg)
+{
+	Cliente cliente = *(Cliente*)arg;
+	while(cliente.getOpcionMenu() != 5 and cliente.getOpcionMenu() != 4) //mientras la opcion del menu no sea salir o desconectar..
+	{
+		cliente.mostrarMenuYProcesarOpcion();
+	}
+	return NULL;
 }
 
 int main()
@@ -49,6 +59,7 @@ int main()
 	{
 		cout << "1) Conectar" << endl;
 		cout << "2) Salir" << endl;
+		cout << "Que desea hacer? " << endl;
 		cin >> accion;
 	}
 	if (accion == 2)
@@ -57,7 +68,7 @@ int main()
 		return 0;
 	}
 	//si no es salir, intento conectar pidiendo usuario y contraseña.
-	while (cliente->getClientesDisponibles().empty())
+	/*while (cliente->getClientesDisponibles().empty())
 	{
 		cout << "Ingrese nombre de usuario: ";
 		cin >> nombre;
@@ -69,15 +80,23 @@ int main()
 			//si despues de intentar conectar, sigue siendo una lista vacia, muestro error y pido nuevamente.
 			cout << "Error al intentar autenticar. Ingrese un nombre de usuario y una contrasenia validos." << endl;
 		}
+	}*/
+	string opc = "";
+	while (opc == "")
+	{
+		cout << "hola" << endl;
+		cin >> opc;
 	}
 	//cout << "Autenticación OK. Bienvenido al sistema de mensajería. ¿Qué acción desea realizar?" << endl;
 	//cliente->mostrarMenu();
-	int threadOk = cliente->inicializarThreadConexion();
+	pthread_t thrComu = cliente->getThreadComunicacion();
+	int threadOk = pthread_create(&thrComu,NULL, &cicloConexion,cliente );
 	if (threadOk != 0)
 	{
 		cout << "Error al inicializar la conexion." << endl;
 	}
 	else{
+		cout << "Thread comu ok" << endl;
 		pthread_join(cliente->getThreadComunicacion(), NULL);
 	}
 	return 0;

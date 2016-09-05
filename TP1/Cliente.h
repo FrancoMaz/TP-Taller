@@ -37,16 +37,15 @@ private:
 	pthread_t threadProcesador;
 	pthread_t threadChecker;
 	struct sockaddr_in direccionServidor;
-	list<Cliente> clientesDisponibles;
+	list<string> clientesDisponibles;
 
 public:
 	Cliente();
 	Cliente(char* ip, int puerto);
 	virtual ~Cliente();
 	void mostrarMenuYProcesarOpcion();
-	int inicializarThreadConexion();
 	void elegirOpcionDelMenu(int opcion);
-	list<Cliente> conectar(string nombre, string contrasenia);
+	list<string> conectar(string nombre, string contrasenia);
 	void desconectar();
 	void salir();
 	void enviar(string mensaje, string destinatario);
@@ -54,7 +53,7 @@ public:
 	void loremIpsum(int frecuenciaDeEnvios,int cantidadMaximaDeEnvios);
 	string getNombre();
 	int getOpcionMenu();
-	list<Cliente> getClientesDisponibles();
+	list<string> getClientesDisponibles();
 	void setClientesDisponibles(string nombre, string contrasenia);
 	pthread_t getThreadComunicacion();
 };

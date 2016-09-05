@@ -8,8 +8,6 @@
 #include "Servidor.h"
 using namespace std;
 
-#define PATH "lala"
-
 Servidor::Servidor(char* nombreArchivoDeUsuarios, int puerto) {
 	this->puerto = puerto;
 	this->nombreArchivo = nombreArchivoDeUsuarios;
@@ -18,36 +16,51 @@ Servidor::Servidor(char* nombreArchivoDeUsuarios, int puerto) {
 Servidor::~Servidor() {
 }
 
-list<Cliente> Servidor::autenticar(string nombre, string contrasenia) {
+list<string>* Servidor::autenticar(string nombre, string contrasenia) {
 
 	string linea, csvItem;
 	string nombreCapturado, contraseniaCapturada;
 	int nroItem;
 	bool autenticacionOK = false;
+	list<string> usuarios;
+	list<string>* users = &usuarios;
 
 	ifstream myfile(this->nombreArchivo);
 
 	if (myfile.is_open()) {
 
-			while (getline(myfile,linea) && !autenticacionOK) {
+			while (getline(myfile,linea)) {
 				nroItem = 0;
 				istringstream lineaActual(linea);
 
 				while(getline(lineaActual,csvItem,',')) {
 
-					if (nroItem == 0) nombreCapturado = csvItem;
+					if (nroItem == 0) {
+						nombreCapturado = csvItem;
+						usuarios.push_back(csvItem);
+					}
 					if (nroItem == 1) contraseniaCapturada = csvItem;
 					nroItem++;
 				}
 				if ((nombre == nombreCapturado) && (contrasenia == contraseniaCapturada)) {
+					usuarios.remove(nombre);
 					autenticacionOK = true;
 				}
 			}
 	}
 	myfile.close();
 
-	if (autenticacionOK) cout << "Autenticación OK wachin" << endl;
-	else cout << "Error de autenticación, no nos hackees wachin" << endl;
+	if (autenticacionOK) {
+		cout << "Autenticación OK wachin" << endl;
+		for(std::list<std::string>::const_iterator i = usuarios.begin(); i != usuarios.end(); ++i) {
+		     printf("%s\n", i->c_str());
+		}
+		return users;
+	}
+	else {
+		cout << "Error de autenticación, no nos hackees wachin" << endl;
+		return new list<string>();
+	}
 }
 
 list<Cliente> Servidor::obtenerClientes() {

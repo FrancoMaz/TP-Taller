@@ -14,26 +14,11 @@ Cliente::Cliente(char* ip, int puerto) {
 	direccionServidor.sin_port = htons(this -> puertoServidor);
 	direccionServidor.sin_addr.s_addr = inet_addr((const char*) ip);
 	memset(direccionServidor.sin_zero, '\0', sizeof direccionServidor.sin_zero);
-
+	this->opcionMenu = 0;
 }
 
 Cliente::~Cliente() {
 	// TODO Auto-generated destructor stub
-}
-
-int Cliente::inicializarThreadConexion()
-{
-	return pthread_create(&(this->threadComunicacion), NULL, &(cicloConexion),&this );
-}
-
-void* cicloConexion(void* arg)
-{
-	Cliente cliente = *(Cliente*)arg;
-	while(cliente.getOpcionMenu() != 5 and cliente.getOpcionMenu() != 4) //mientras la opcion del menu no sea salir o desconectar..
-	{
-		cliente.mostrarMenuYProcesarOpcion();
-	}
-	return NULL;
 }
 
 void Cliente::mostrarMenuYProcesarOpcion() {
@@ -43,7 +28,7 @@ void Cliente::mostrarMenuYProcesarOpcion() {
 		cout << "3) Lorem Ipsum" << endl;
 		cout << "4) Desconectar" << endl;
 		cout << "5) Salir" << endl;
-		cout << "Elija la accion que desea realizar: ";
+		cout << "Elija la accion que desea realizar: " << endl;
 		cin >> opcionMenu;
 		} while (opcionMenu < 1 && opcionMenu > 5);
 	this -> elegirOpcionDelMenu(opcionMenu);
@@ -51,8 +36,6 @@ void Cliente::mostrarMenuYProcesarOpcion() {
 
 
 void Cliente::elegirOpcionDelMenu(int opcion){
-	int frecuenciaDeEnvios = 0;
-	int cantidadMaximaDeEnvios = 0;
 	switch (opcion) {
 		case 1:
 		{
@@ -96,12 +79,12 @@ void Cliente::elegirOpcionDelMenu(int opcion){
 	}
 }
 
-list<Cliente> Cliente::conectar(string nombre, string contrasenia) {
+list<string> Cliente::conectar(string nombre, string contrasenia) {
 	//Se establece la conexion con el servidor mediante autenticacion. El servidor devuelve la lista con todos los usuarios disponibles
 
-	list<Cliente> clientesDisponibles;
+	list<string> clientesDisponibles;
 	if (connect(socketCliente,(struct sockaddr *)&direccionServidor, sizeof(direccionServidor)) == 0){
-	    cout << "ConectandosedireccionServidor.sin_family = AF_INET al puerto: " << this -> puertoServidor << endl;
+	    cout << "Conectandose al puerto: " << this -> puertoServidor << endl;
 	}
 	else{
 		cout << "Error conectandose al puerto" << endl;
@@ -147,10 +130,10 @@ void Cliente::loremIpsum(int frecuenciaDeEnvios, int cantidadMaximaDeEnvios){
 			numeroDeClienteAEnviar = rand() % this->clientesDisponibles.size();
 			ifstream archivo("LoremIpsum.txt");
 			archivo.getline(cadena,tamanioMensaje);
-			list<Cliente>::iterator iterador = this->clientesDisponibles.begin();
+			list<string>::iterator iterador = this->clientesDisponibles.begin();
 			advance(iterador,numeroDeClienteAEnviar);
-			/*clienteAleatorioAEnviar = *iterador->getNombre();
-			this -> enviar(cadena,clienteAleatorioAEnviar);*/
+			clienteAleatorioAEnviar = *iterador;
+			this -> enviar(cadena,clienteAleatorioAEnviar);
 		}
 
 }
@@ -163,7 +146,12 @@ int Cliente::getOpcionMenu(){
 	return this -> opcionMenu;
 }
 
-list<Cliente> Cliente::getClientesDisponibles(){
+pthread_t Cliente::getThreadComunicacion()
+{
+	return this->threadComunicacion;
+}
+
+list<string> Cliente::getClientesDisponibles(){
 	return this->clientesDisponibles;
 
 }
