@@ -107,12 +107,17 @@ void Cliente::enviar(string mensaje, string destinatario) {
 	//Hay que realizar el submenu dinamico con todos los usuarios disponibles.
 	//Requiere una conexion abierta.
 	Mensaje *mensajeAEnviar = new Mensaje(this->nombre, destinatario, mensaje);
+	send(this->socketCliente,reinterpret_cast<const char*>(&mensajeAEnviar),sizeof(mensajeAEnviar),0);
+	//HAY QUE VER SI ESTE METODO FUNCIONA CORRECTAMENTE
 
 }
 
-list<string> Cliente::recibir() {
-	//Se reciben todos los mensajes en la secuencia en la que fueron enviados (creo que habria que usar una cola)
+queue<Mensaje> Cliente::recibir() {
+	//Se reciben todos los mensajes en la secuencia en la que fueron enviados
 	//Requiere una conexion abierta.
+	queue<Mensaje> *colaMensajes = new queue<Mensaje>;
+	recv(this->socketCliente,reinterpret_cast<char*>(&colaMensajes),sizeof(colaMensajes),0); //HAY QUE VER SI ESTE METODO FUNCIONA CORRECTAMENTE
+	return *colaMensajes;
 }
 
 void Cliente::loremIpsum(int frecuenciaDeEnvios, int cantidadMaximaDeEnvios){

@@ -23,6 +23,7 @@
 #include <time.h>
 #include <iterator>
 #include "Mensaje.h"
+#include <queue>
 
 using namespace std;
 
@@ -49,7 +50,7 @@ public:
 	void desconectar();
 	void salir();
 	void enviar(string mensaje, string destinatario);
-	list<string> recibir();
+	queue<Mensaje> recibir();
 	void loremIpsum(int frecuenciaDeEnvios,int cantidadMaximaDeEnvios);
 	string getNombre();
 	int getOpcionMenu();
