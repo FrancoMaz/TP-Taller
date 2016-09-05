@@ -39,7 +39,7 @@ public:
 	Servidor(char* nombreArchivoDeUsuarios, int puerto);
 	virtual ~Servidor();
 	bool escuchando = false; //representa si el servidor esta disponible para escuchar pedidos
-	list<Cliente> autenticar(string nombre, string contrasenia);
+	list<string>* autenticar(string nombre, string contrasenia);
 	list<Cliente> obtenerClientes();
 	void guardarLog();
 	list<Mensaje> obtenerMensajes(Cliente cliente);
