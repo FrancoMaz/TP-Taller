@@ -168,6 +168,11 @@ list<string> Cliente::getClientesDisponibles(){
 
 }
 
+void Cliente::setThreadComunicacion(pthread_t thrComu)
+{
+	this->threadComunicacion = thrComu;
+}
+
 void Cliente::setClientesDisponibles(string nombre, string contrasenia){
 	this -> clientesDisponibles = this -> conectar(nombre,contrasenia);
 }

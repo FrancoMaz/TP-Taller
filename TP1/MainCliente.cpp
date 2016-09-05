@@ -25,12 +25,17 @@ bool chequearSocket(string ip, int puerto)
 
 void* cicloConexion(void* arg)
 {
+	//Funcion que cicla para las opciones del cliente dentro del thread de comunicacion. Devuelve 0 si la opcion es desconectar, 1 si es salir.
 	Cliente cliente = *(Cliente*)arg;
 	while(cliente.getOpcionMenu() != 5 and cliente.getOpcionMenu() != 4) //mientras la opcion del menu no sea salir o desconectar..
 	{
 		cliente.mostrarMenuYProcesarOpcion();
 	}
-	return NULL;
+	if (cliente.getOpcionMenu() == 4)
+	{
+		return (void*)0;
+	}
+	return (void*)1;
 }
 
 int main()
@@ -38,6 +43,8 @@ int main()
 	char* ip;
 	int puerto, accion;
 	bool socketOk = false;
+	pthread_t thrComu;
+	string nombre, contrasenia;
 	while(!socketOk)
 	{
 		cout << "Ingrese el puerto para la conexion: ";
@@ -53,22 +60,24 @@ int main()
 	}
 	cout << "SOCKET OK" << endl;
 	Cliente *cliente = new Cliente(ip, puerto);
-	string nombre, contrasenia;
 	cout << "SISTEMA DE MENSAJERIA" << endl;
-	while (accion < 1 or accion > 2)
+	do
 	{
 		cout << "1) Conectar" << endl;
 		cout << "2) Salir" << endl;
 		cout << "Que desea hacer? " << endl;
 		cin >> accion;
-	}
+	}while (accion < 1 or accion > 2);
 	if (accion == 2)
 	{
 		//si la accion es salir, devuelvo 0 y salgo del programa.
+		cout << "Saliendo del programa.. Gracias, vuelva prontoss!" << endl;
 		return 0;
 	}
+
 	//si no es salir, intento conectar pidiendo usuario y contraseña.
-	/*while (cliente->getClientesDisponibles().empty())
+	/*
+	 * while (cliente->getClientesDisponibles().empty())
 	{
 		cout << "Ingrese nombre de usuario: ";
 		cin >> nombre;
@@ -80,24 +89,26 @@ int main()
 			//si despues de intentar conectar, sigue siendo una lista vacia, muestro error y pido nuevamente.
 			cout << "Error al intentar autenticar. Ingrese un nombre de usuario y una contrasenia validos." << endl;
 		}
-	}*/
-	string opc = "";
-	while (opc == "")
-	{
-		cout << "hola" << endl;
-		cin >> opc;
 	}
-	//cout << "Autenticación OK. Bienvenido al sistema de mensajería. ¿Qué acción desea realizar?" << endl;
-	//cliente->mostrarMenu();
-	pthread_t thrComu = cliente->getThreadComunicacion();
+	*/
 	int threadOk = pthread_create(&thrComu,NULL, &cicloConexion,cliente );
 	if (threadOk != 0)
 	{
 		cout << "Error al inicializar la conexion." << endl;
 	}
 	else{
-		cout << "Thread comu ok" << endl;
-		pthread_join(cliente->getThreadComunicacion(), NULL);
+		cliente->setThreadComunicacion(thrComu);
+		void** resultado;
+		pthread_join(cliente->getThreadComunicacion(),(void**) &resultado);
+		int salir = *((int*)(&resultado));
+		if (salir == 0) //si es 0, es desconectar
+		{
+			cout << "Desconectado del servidor.." << endl;
+		}
+		else{
+			cout << "Saliendo del programa.. Gracias, vuelva prontoss!" << endl;
+			return 0;
+		}
 	}
 	return 0;
 }

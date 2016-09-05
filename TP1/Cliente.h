@@ -56,6 +56,7 @@ public:
 	list<string> getClientesDisponibles();
 	void setClientesDisponibles(string nombre, string contrasenia);
 	pthread_t getThreadComunicacion();
+	void setThreadComunicacion(pthread_t thrComu);
 };
 
 #endif /* TP1_CLIENTE_H_ */
