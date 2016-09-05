@@ -66,18 +66,20 @@ int main()
 		cliente->setClientesDisponibles(nombre,contrasenia);
 		if (cliente->getClientesDisponibles().empty())
 		{
-			//si despues de intentar conectar, sigue siendo NULL, muestro error y pido nuevamente.
+			//si despues de intentar conectar, sigue siendo una lista vacia, muestro error y pido nuevamente.
 			cout << "Error al intentar autenticar. Ingrese un nombre de usuario y una contrasenia validos." << endl;
 		}
 	}
-	cout << "Autenticación OK. Bienvenido al sistema de mensajería. ¿Qué acción desea realizar?" << endl;
-	cliente->mostrarMenu();
-	/*int threadOk = cliente->inicializarThreadConexion();
+	//cout << "Autenticación OK. Bienvenido al sistema de mensajería. ¿Qué acción desea realizar?" << endl;
+	//cliente->mostrarMenu();
+	int threadOk = cliente->inicializarThreadConexion();
 	if (threadOk != 0)
 	{
 		cout << "Error al inicializar la conexion." << endl;
-	}*/
-
+	}
+	else{
+		pthread_join(cliente->getThreadComunicacion(), NULL);
+	}
 	return 0;
 }
 

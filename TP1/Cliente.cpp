@@ -21,22 +21,22 @@ Cliente::~Cliente() {
 	// TODO Auto-generated destructor stub
 }
 
-/*int Cliente::inicializarThreadConexion()
+int Cliente::inicializarThreadConexion()
 {
 	return pthread_create(&(this->threadComunicacion), NULL, &(cicloConexion),&this );
 }
 
-void* Cliente::cicloConexion(void* arg)
+void* cicloConexion(void* arg)
 {
 	Cliente cliente = *(Cliente*)arg;
 	while(cliente.getOpcionMenu() != 5 and cliente.getOpcionMenu() != 4) //mientras la opcion del menu no sea salir o desconectar..
 	{
-		cliente.mostrarMenu();
+		cliente.mostrarMenuYProcesarOpcion();
 	}
 	return NULL;
-}*/
+}
 
-void Cliente::mostrarMenu() {
+void Cliente::mostrarMenuYProcesarOpcion() {
 	do {
 		cout << "1) Enviar Mensaje" << endl;
 		cout << "2) Recibir Mensajes" << endl;

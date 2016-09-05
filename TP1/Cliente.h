@@ -43,7 +43,7 @@ public:
 	Cliente();
 	Cliente(char* ip, int puerto);
 	virtual ~Cliente();
-	void mostrarMenu();
+	void mostrarMenuYProcesarOpcion();
 	int inicializarThreadConexion();
 	void elegirOpcionDelMenu(int opcion);
 	list<Cliente> conectar(string nombre, string contrasenia);
@@ -54,9 +54,9 @@ public:
 	void loremIpsum(int frecuenciaDeEnvios,int cantidadMaximaDeEnvios);
 	string getNombre();
 	int getOpcionMenu();
-	void* cicloConexion(void* arg);
 	list<Cliente> getClientesDisponibles();
 	void setClientesDisponibles(string nombre, string contrasenia);
+	pthread_t getThreadComunicacion();
 };
 
 #endif /* TP1_CLIENTE_H_ */
