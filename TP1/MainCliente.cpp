@@ -49,6 +49,7 @@ int main()
 	{
 		cout << "1) Conectar" << endl;
 		cout << "2) Salir" << endl;
+		cout << "Que desea hacer? " << endl;
 		cin >> accion;
 	}
 	if (accion == 2)

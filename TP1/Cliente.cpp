@@ -51,8 +51,6 @@ void Cliente::mostrarMenu() {
 
 
 void Cliente::elegirOpcionDelMenu(int opcion){
-	int frecuenciaDeEnvios = 0;
-	int cantidadMaximaDeEnvios = 0;
 	switch (opcion) {
 		case 1:
 		{
@@ -96,12 +94,12 @@ void Cliente::elegirOpcionDelMenu(int opcion){
 	}
 }
 
-list<Cliente> Cliente::conectar(string nombre, string contrasenia) {
+list<string> Cliente::conectar(string nombre, string contrasenia) {
 	//Se establece la conexion con el servidor mediante autenticacion. El servidor devuelve la lista con todos los usuarios disponibles
 
-	list<Cliente> clientesDisponibles;
+	list<string> clientesDisponibles;
 	if (connect(socketCliente,(struct sockaddr *)&direccionServidor, sizeof(direccionServidor)) == 0){
-	    cout << "ConectandosedireccionServidor.sin_family = AF_INET al puerto: " << this -> puertoServidor << endl;
+	    cout << "Conectandose al puerto: " << this -> puertoServidor << endl;
 	}
 	else{
 		cout << "Error conectandose al puerto" << endl;
@@ -147,10 +145,10 @@ void Cliente::loremIpsum(int frecuenciaDeEnvios, int cantidadMaximaDeEnvios){
 			numeroDeClienteAEnviar = rand() % this->clientesDisponibles.size();
 			ifstream archivo("LoremIpsum.txt");
 			archivo.getline(cadena,tamanioMensaje);
-			list<Cliente>::iterator iterador = this->clientesDisponibles.begin();
+			list<string>::iterator iterador = this->clientesDisponibles.begin();
 			advance(iterador,numeroDeClienteAEnviar);
-			/*clienteAleatorioAEnviar = *iterador->getNombre();
-			this -> enviar(cadena,clienteAleatorioAEnviar);*/
+			clienteAleatorioAEnviar = *iterador;
+			this -> enviar(cadena,clienteAleatorioAEnviar);
 		}
 
 }
@@ -163,7 +161,7 @@ int Cliente::getOpcionMenu(){
 	return this -> opcionMenu;
 }
 
-list<Cliente> Cliente::getClientesDisponibles(){
+list<string> Cliente::getClientesDisponibles(){
 	return this->clientesDisponibles;
 
 }
