@@ -14,36 +14,21 @@ Cliente::Cliente(char* ip, int puerto) {
 	direccionServidor.sin_port = htons(this -> puertoServidor);
 	direccionServidor.sin_addr.s_addr = inet_addr((const char*) ip);
 	memset(direccionServidor.sin_zero, '\0', sizeof direccionServidor.sin_zero);
-
+	this->opcionMenu = 0;
 }
 
 Cliente::~Cliente() {
 	// TODO Auto-generated destructor stub
 }
 
-/*int Cliente::inicializarThreadConexion()
-{
-	return pthread_create(&(this->threadComunicacion), NULL, &(cicloConexion),&this );
-}
-
-void* Cliente::cicloConexion(void* arg)
-{
-	Cliente cliente = *(Cliente*)arg;
-	while(cliente.getOpcionMenu() != 5 and cliente.getOpcionMenu() != 4) //mientras la opcion del menu no sea salir o desconectar..
-	{
-		cliente.mostrarMenu();
-	}
-	return NULL;
-}*/
-
-void Cliente::mostrarMenu() {
+void Cliente::mostrarMenuYProcesarOpcion() {
 	do {
 		cout << "1) Enviar Mensaje" << endl;
 		cout << "2) Recibir Mensajes" << endl;
 		cout << "3) Lorem Ipsum" << endl;
 		cout << "4) Desconectar" << endl;
 		cout << "5) Salir" << endl;
-		cout << "Elija la accion que desea realizar: ";
+		cout << "Elija la accion que desea realizar: " << endl;
 		cin >> opcionMenu;
 		} while (opcionMenu < 1 && opcionMenu > 5);
 	this -> elegirOpcionDelMenu(opcionMenu);
@@ -171,6 +156,11 @@ string Cliente::getNombre() {
 
 int Cliente::getOpcionMenu(){
 	return this -> opcionMenu;
+}
+
+pthread_t Cliente::getThreadComunicacion()
+{
+	return this->threadComunicacion;
 }
 
 list<string> Cliente::getClientesDisponibles(){

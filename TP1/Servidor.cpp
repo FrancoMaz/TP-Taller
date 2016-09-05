@@ -26,10 +26,11 @@ Servidor::Servidor(char* nombreArchivoDeUsuarios, int puerto) {
 	bind(this->welcomeSocket, (struct sockaddr *) &serverAddr, sizeof(serverAddr));
 	/*---- Listen on the socket, with 5 max connection requests queued ----*/
 	this->escuchando = listen(this->welcomeSocket, 6) == 0;
-	if (escuchando)
+	if (escuchando) {
 		printf("Listening\n");
-	else
+	} else {
 		printf("Error\n");
+	}
 }
 
 Servidor::~Servidor() {

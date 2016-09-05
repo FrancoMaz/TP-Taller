@@ -34,10 +34,10 @@ int main() {
 	}
 	while(!servidor->escuchando); //mientras el servidor no este escuchando, intento inicializarlo pidiendo los parametros de entrada.
 
-	//do{
 
-	//}
-	//while(servidor->escuchando);
+	/*do{
+
+	} while(servidor->escuchando);*/
 
 	string user, pass;
 	cout << "Ingrese el nombre del usuario: ";
