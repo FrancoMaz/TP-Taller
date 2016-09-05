@@ -55,7 +55,7 @@ void Cliente::elegirOpcionDelMenu(int opcion){
 		}
 		case 3:
 		{
-			double frecuenciaDeEnvios;
+			int frecuenciaDeEnvios;
 			int cantidadMaximaDeEnvios;
 			cout << "Escriba la frecuencia de envios: " << endl;
 			cin >> frecuenciaDeEnvios;
@@ -119,35 +119,38 @@ void Cliente::loremIpsum(int frecuenciaDeEnvios, int cantidadMaximaDeEnvios){
 	//Toma el texto de un archivo y se envian mensajes en forma ciclica. El tamanio de mensajes y el destinatario son aleatorios
 	//Cuando todo el texto fue transmitido, se empieza otra vez desde el inicio
 	//Requiere una conexion abierta.
-	clock_t tiempoInicio = clock();
+	time_t tiempoInicio = time(0);
 	ifstream archivo("LoremIpsum.txt");
-	while (!archivo.eof())
-	{
-		for (int i = 0; i < cantidadMaximaDeEnvios; i++)
+	this->clientesDisponibles.push_back("A");
+	this->clientesDisponibles.push_back("B");
+	this->clientesDisponibles.push_back("C");
+	this->clientesDisponibles.push_back("D");
+	//LAS CUATRO LINEAS DE ARRIBA LAS PUSE PARA PROBAR LA FUNCIONALIDAD. CUANTO TENGAMOS LA LISTA DE CLIENTES ES ESA LA LISTA QUE VAMOS A USAR
+	for (int i = 0; i < cantidadMaximaDeEnvios; i++)
+		{
+			int tamanioMensaje;
+			srand(time(NULL));
+			tamanioMensaje = (int) (rand() % 30);
+			char cadena[tamanioMensaje];
+			int numeroDeClienteAEnviar;
+			string clienteAleatorioAEnviar;
+			numeroDeClienteAEnviar = (int) (rand() % this->clientesDisponibles.size());
+			list<string>::iterator iterador = this->clientesDisponibles.begin();
+			advance(iterador,numeroDeClienteAEnviar);
+			clienteAleatorioAEnviar = *iterador;
+			do
 			{
-				int tamanioMensaje;
-				int numeroDeClienteAEnviar;
-				char cadena[tamanioMensaje];
-				string clienteAleatorioAEnviar;
-				srand(time(NULL));
-				tamanioMensaje = rand();
-				numeroDeClienteAEnviar = rand() % this->clientesDisponibles.size();
-				archivo.getline(cadena,tamanioMensaje);
-				list<string>::iterator iterador = this->clientesDisponibles.begin();
-				advance(iterador,numeroDeClienteAEnviar);
-				clienteAleatorioAEnviar = *iterador;
-				if ((clock() - tiempoInicio) == frecuenciaDeEnvios)
-				{
-					this -> enviar(cadena,clienteAleatorioAEnviar);
-					tiempoInicio = clock();
-				}
-				if (archivo.eof())
-				{
-					archivo.clear();
-					archivo.seekg(0, ios::beg);
-				}
+			} while ((time(0)-tiempoInicio) < frecuenciaDeEnvios); //este loop esta vacio porque quiero que no haga nada hasta que pase cierto tiempo. De ultima despues vemos de arreglarlo si no esta bien
+			archivo.get(cadena,tamanioMensaje);
+			this -> enviar(cadena,clienteAleatorioAEnviar);
+			tiempoInicio = time(0);
+			if (archivo.eof())
+			{
+				archivo.clear();
+				archivo.seekg(0, ios::beg);
 			}
-	}
+			cout << cadena << endl;
+		}
 }
 
 string Cliente::getNombre() {
