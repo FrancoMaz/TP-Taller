@@ -70,7 +70,7 @@ void Cliente::elegirOpcionDelMenu(int opcion){
 		}
 		case 3:
 		{
-			int frecuenciaDeEnvios;
+			double frecuenciaDeEnvios;
 			int cantidadMaximaDeEnvios;
 			cout << "Escriba la frecuencia de envios: " << endl;
 			cin >> frecuenciaDeEnvios;
@@ -134,23 +134,35 @@ void Cliente::loremIpsum(int frecuenciaDeEnvios, int cantidadMaximaDeEnvios){
 	//Toma el texto de un archivo y se envian mensajes en forma ciclica. El tamanio de mensajes y el destinatario son aleatorios
 	//Cuando todo el texto fue transmitido, se empieza otra vez desde el inicio
 	//Requiere una conexion abierta.
-	for (int i = 0; i < cantidadMaximaDeEnvios; i++)
-		{
-			int tamanioMensaje;
-			int numeroDeClienteAEnviar;
-			char cadena[tamanioMensaje];
-			string clienteAleatorioAEnviar;
-			srand(time(NULL));
-			tamanioMensaje = rand();
-			numeroDeClienteAEnviar = rand() % this->clientesDisponibles.size();
-			ifstream archivo("LoremIpsum.txt");
-			archivo.getline(cadena,tamanioMensaje);
-			list<string>::iterator iterador = this->clientesDisponibles.begin();
-			advance(iterador,numeroDeClienteAEnviar);
-			clienteAleatorioAEnviar = *iterador;
-			this -> enviar(cadena,clienteAleatorioAEnviar);
-		}
-
+	clock_t tiempoInicio = clock();
+	ifstream archivo("LoremIpsum.txt");
+	while (!archivo.eof())
+	{
+		for (int i = 0; i < cantidadMaximaDeEnvios; i++)
+			{
+				int tamanioMensaje;
+				int numeroDeClienteAEnviar;
+				char cadena[tamanioMensaje];
+				string clienteAleatorioAEnviar;
+				srand(time(NULL));
+				tamanioMensaje = rand();
+				numeroDeClienteAEnviar = rand() % this->clientesDisponibles.size();
+				archivo.getline(cadena,tamanioMensaje);
+				list<string>::iterator iterador = this->clientesDisponibles.begin();
+				advance(iterador,numeroDeClienteAEnviar);
+				clienteAleatorioAEnviar = *iterador;
+				if ((clock() - tiempoInicio) == frecuenciaDeEnvios)
+				{
+					this -> enviar(cadena,clienteAleatorioAEnviar);
+					tiempoInicio = clock();
+				}
+				if (archivo.eof())
+				{
+					archivo.clear();
+					archivo.seekg(0, ios::beg);
+				}
+			}
+	}
 }
 
 string Cliente::getNombre() {
