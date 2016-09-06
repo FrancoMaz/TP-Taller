@@ -86,6 +86,7 @@ list<string> Cliente::conectar(string nombre, string contrasenia) {
 		strcpy(buffer, nombreYPass);
 		send(socketCliente, buffer, strlen(nombreYPass) + 1, 0);
 		cout << "Conectandose al puerto: " << this->puertoServidor << endl;
+		//this->clientesDisponibles.push_front("hola"); //pongo cualquier cosa para comprobar el ciclo ok.
 	} else {
 		cout << "Error conectandose al puerto" << endl;
 	}
@@ -100,6 +101,7 @@ void Cliente::desconectar() {
 
 void Cliente::salir() {
 	//Se termina la ejecucion del programa
+	close(socketCliente);
 }
 
 void Cliente::enviar(string mensaje, string destinatario) {
