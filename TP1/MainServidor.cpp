@@ -19,12 +19,13 @@ using namespace std;
 
 Servidor* inicializarServidor() {
 	int puerto;
-	char* archivoUsers;
+	string archivoUsers;
 	cout << "Ingrese el puerto de escucha de la conexion: ";
 	cin >> puerto;
 	cout << "Ingrese el nombre del archivo de usuarios: ";
 	cin >> archivoUsers;
-	return new Servidor(archivoUsers, puerto);
+	char* archivo = strdup(archivoUsers.c_str());
+	return new Servidor(archivo, puerto);
 }
 /*
 void* escucharEnvio(void* arg){
