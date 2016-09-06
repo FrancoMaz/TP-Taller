@@ -31,20 +31,25 @@ int main() {
 	Servidor* servidor;
 	pthread_t threadListen;
 
-	do{
+	//do {
 		servidor = inicializarServidor();
-	}
-	while(!servidor->escuchando); //mientras el servidor no este escuchando, intento inicializarlo pidiendo los parametros de entrada.
+		/*---- Listen on the socket, with 6 max connection requests queued ----*/
+		servidor->comenzarEscucha();
+		servidor->aceptarConexiones();
+	//} while (!servidor->escuchando); //mientras el servidor no este escuchando, intento inicializarlo pidiendo los parametros de entrada.
 
-	do{
+	/*do {
 
-	} while(servidor->escuchando);
+	} while (servidor->escuchando);*/
 
+
+	// esto no va aca!
 	string user, pass;
 	cout << "Ingrese el nombre del usuario: ";
 	cin >> user;
 	cout << "Ingrese la password: ";
 	cin >> pass;
 	servidor->autenticar(user, pass);
+
 	return 0;
 }

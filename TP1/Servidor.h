@@ -50,8 +50,10 @@ public:
 	list<Mensaje> obtenerMensajes(Cliente cliente);
 	void crearMensaje(Mensaje mensaje);
 	void comenzarEscucha();
+	void aceptarConexiones();
 	void finalizarEscucha();
 	queue<Mensaje> getColaMensajesNoProcesados();
+	void splitDatos(char* datos,string* nombre,string* pass);
 };
 
 #endif /* TP1_SERVIDOR_H_ */

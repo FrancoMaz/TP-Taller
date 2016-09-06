@@ -33,10 +33,11 @@ private:
 	int puertoServidor;
 	string nombre;
 	int socketCliente;
+	struct sockaddr_in direccionServidor;
+	socklen_t addr_size;
 	pthread_t threadComunicacion;
 	pthread_t threadProcesador;
 	pthread_t threadChecker;
-	struct sockaddr_in direccionServidor;
 	list<string> clientesDisponibles;
 
 public:

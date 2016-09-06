@@ -19,13 +19,12 @@ Servidor::Servidor(char* nombreArchivoDeUsuarios, int puerto) {
 	/* Set port number, using htons function to use proper byte order */
 	this->serverAddr.sin_port = htons(puerto);
 	/* Set IP address to localhost */
-	this->serverAddr.sin_addr.s_addr = inet_addr("192.168.1.10");
+	this->serverAddr.sin_addr.s_addr = inet_addr("127.0.0.1");
 	/* Set all bits of the padding field to 0 */
 	memset(serverAddr.sin_zero, '\0', sizeof serverAddr.sin_zero);
 	/*---- Bind the address struct to the socket ----*/
-	bind(this->welcomeSocket, (struct sockaddr *) &serverAddr, sizeof(serverAddr));
-	/*---- Listen on the socket, with 5 max connection requests queued ----*/
-	this->comenzarEscucha();
+	bind(this->welcomeSocket, (struct sockaddr *) &serverAddr,
+			sizeof(serverAddr));
 }
 
 Servidor::~Servidor() {
@@ -39,7 +38,6 @@ list<string>* Servidor::autenticar(string nombre, string contrasenia) {
 	bool autenticacionOK = false;
 	list<string> usuarios;
 	list<string>* users = &usuarios;
-
 	ifstream myfile(this->nombreArchivo);
 
 	if (myfile.is_open()) {
@@ -54,13 +52,12 @@ list<string>* Servidor::autenticar(string nombre, string contrasenia) {
 					nombreCapturado = csvItem;
 					usuarios.push_back(csvItem);
 				}
-				if (nroItem == 1)
-					contraseniaCapturada = csvItem;
+				if (nroItem == 1) contraseniaCapturada = csvItem;
 				nroItem++;
 			}
-			if ((nombre == nombreCapturado)
-					&& (contrasenia == contraseniaCapturada)) {
-				usuarios.remove(nombre);
+			cout << nombreCapturado << contraseniaCapturada << endl;
+			if ((strcmp(nombre.c_str(), nombreCapturado.c_str()) == 0) && (strcmp(contrasenia.c_str(), contraseniaCapturada.c_str()) == 0)) {
+				usuarios.remove(nombreCapturado);
 				autenticacionOK = true;
 			}
 		}
@@ -69,8 +66,7 @@ list<string>* Servidor::autenticar(string nombre, string contrasenia) {
 
 	if (autenticacionOK) {
 		cout << "Autenticación OK wachin" << endl;
-		for (list<string>::const_iterator i = usuarios.begin();
-				i != usuarios.end(); ++i) {
+		for (list<string>::const_iterator i = usuarios.begin(); i != usuarios.end(); i++) {
 			printf("%s\n", i->c_str());
 		}
 		return users;
@@ -98,13 +94,34 @@ void Servidor::crearMensaje(Mensaje mensaje) {
 }
 
 void Servidor::comenzarEscucha() {
+	/*char buffer[1024];
+	 struct sockaddr_storage sender;
+	 socklen_t sendsize = sizeof(sender);*/
+
 	//Metodo que pone al servidor a escuchar si alguien requiere algo.
 	this->escuchando = (listen(this->welcomeSocket, 6) == 0);
 	if (escuchando) {
 		printf("Listening\n");
+		//string user, pass;
+		//recvfrom(newSocket, buffer, 1024, 0,(struct sockaddr*)&sender, &sendsize);
+		//cout << buffer << endl;
 	} else {
 		printf("Error\n");
 	}
+}
+
+void Servidor::aceptarConexiones() {
+	string nombre;
+	string pass;
+	char datosRecibidos[1024];
+	int newSocket;
+	this->addr_size = sizeof serverStorage;
+	cout << "Adentro de aceptarConexiones" << endl;
+	newSocket = accept(welcomeSocket, (struct sockaddr *) &this->serverStorage, &this->addr_size);
+	recv(newSocket, datosRecibidos, 1024, 0);
+	cout << datosRecibidos << "Datos recibidos" << endl;
+	splitDatos(datosRecibidos, &nombre, &pass);
+	this->autenticar(nombre, pass);
 }
 
 void Servidor::finalizarEscucha() {
@@ -113,4 +130,21 @@ void Servidor::finalizarEscucha() {
 
 queue<Mensaje> Servidor::getColaMensajesNoProcesados() {
 	return this->colaMensajesNoProcesados;
+}
+
+void Servidor::splitDatos(char* datos, string* nombre, string* pass) {
+	int pos = 0;
+	bool nombreCompleto = false;
+	bool termino = false;
+	while (pos < strlen(datos)) {
+		if (datos[pos] != ',' && !nombreCompleto) {
+			*nombre = *nombre + datos[pos];
+			pos++;
+		} else {
+			pos++;
+			nombreCompleto = true;
+			*pass = *pass + datos[pos];
+
+		}
+	}
 }
