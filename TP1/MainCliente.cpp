@@ -30,14 +30,14 @@ void* cicloConexion(void* arg) {
 	//Funcion que cicla para las opciones del cliente dentro del thread de comunicacion. Devuelve 1 si la opcion es desconectar, 0 si es salir.
 	Cliente* cliente = (Cliente*) arg;
 	string user, pass;
-	while (cliente->getClientesDisponibles().empty())
-	{
+	//while (cliente->getClientesDisponibles().empty())
+	//{
 		cout << "Ingrese el nombre del usuario: ";
 		cin >> user;
 		cout << "Ingrese la password: ";
 		cin >> pass;
 		cliente->conectar(user, pass);
-	}
+	//}
 	while (cliente->getOpcionMenu() != 5 and cliente->getOpcionMenu() != 4) //mientras la opcion del menu no sea salir o desconectar..
 	{
 		cliente->mostrarMenuYProcesarOpcion();

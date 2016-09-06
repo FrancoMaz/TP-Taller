@@ -9,12 +9,17 @@
 #define MENSAJE_H_
 
 #include <string>
+#include <string.h>
 using namespace std;
 
 class Mensaje {
 public:
 	Mensaje(string remitente, string destinatario, string textoMensaje);
+	Mensaje();
 	virtual ~Mensaje();
+	string getTexto();
+	char* getStringDatos();
+	void setearDatos(char* datosMensaje);
 
 private:
 	string clienteRemitente;

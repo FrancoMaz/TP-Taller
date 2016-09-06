@@ -58,9 +58,10 @@ int main() {
 		/*---- Listen on the socket, with 6 max connection requests queued ----*/
 		servidor->comenzarEscucha();
 		servidor->aceptarConexiones();
-	} while (!servidor->escuchando); //mientras el servidor no este escuchando, intento inicializarlo pidiendo los parametros de entrada.
-
-	do{
+	} while (!servidor->escuchando);
+	//mientras el servidor no este escuchando, intento inicializarlo pidiendo los parametros de entrada.
+	servidor->recibirMensaje();
+	/*do{
 	switch(variable){
 		case 1:{	//Enviar
 			pthread_create(&threadEnvio,NULL,&escucharEnvio,&servidor);
@@ -83,6 +84,6 @@ int main() {
 		default:
 			break;
 		}
-	} while(servidor->escuchando);
+	} while(servidor->escuchando);*/
 	return 0;
 }

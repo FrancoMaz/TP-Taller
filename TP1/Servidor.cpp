@@ -110,17 +110,16 @@ void Servidor::comenzarEscucha() {
 }
 
 void Servidor::aceptarConexiones() {
-	string nombre;
-	string pass;
-	char datosRecibidos[1024];
-	int newSocket;
-	this->addr_size = sizeof serverStorage;
-	cout << "Adentro de aceptarConexiones" << endl;
-	newSocket = accept(welcomeSocket, (struct sockaddr *) &this->serverStorage, &this->addr_size);
-	recv(newSocket, datosRecibidos, 1024, 0);
-	cout << datosRecibidos << "Datos recibidos" << endl;
-	splitDatos(datosRecibidos, &nombre, &pass);
-	this->autenticar(nombre, pass);
+		string nombre;
+		string pass;
+		char datosRecibidos[1024];
+		this->addr_size = sizeof serverStorage;
+		cout << "Adentro de aceptarConexiones" << endl;
+		this->socketServer = accept(welcomeSocket, (struct sockaddr *) &this->serverStorage, &this->addr_size);
+		recv(socketServer, datosRecibidos, 1024, 0);
+		cout << datosRecibidos << "Datos recibidos" << endl;
+		splitDatos(datosRecibidos, &nombre, &pass);
+		this->autenticar(nombre, pass);
 }
 
 void Servidor::finalizarEscucha() {
@@ -146,4 +145,14 @@ void Servidor::splitDatos(char* datos, string* nombre, string* pass) {
 
 		}
 	}
+}
+
+void Servidor::recibirMensaje()
+{
+	Mensaje* mensajeARecibir = new Mensaje();
+	char datosMensaje[1024];
+	cout << "Recibir mensaje" << endl;
+	recv(this->socketServer, datosMensaje,strlen(datosMensaje),0);
+	mensajeARecibir->setearDatos(datosMensaje);
+	cout << mensajeARecibir->getTexto() << endl;
 }

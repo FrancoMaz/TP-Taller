@@ -109,8 +109,10 @@ void Cliente::enviar(string mensaje, string destinatario) {
 	//Hay que realizar el submenu dinamico con todos los usuarios disponibles.
 	//Requiere una conexion abierta.
 	Mensaje *mensajeAEnviar = new Mensaje(this->nombre, destinatario, mensaje);
-	send(this->socketCliente, reinterpret_cast<const char*>(&mensajeAEnviar),
-			sizeof(mensajeAEnviar), 0);
+	char buffer[1024];
+	char* stringDatosMensaje = mensajeAEnviar->getStringDatos();
+	strcpy(buffer,stringDatosMensaje);
+	send(this->socketCliente, buffer, strlen(stringDatosMensaje)+1, 0);
 	//HAY QUE VER SI ESTE METODO FUNCIONA CORRECTAMENTE
 
 }

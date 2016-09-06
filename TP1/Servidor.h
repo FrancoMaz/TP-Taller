@@ -29,6 +29,7 @@ class Servidor {
 private:
 	int puerto;
 	int welcomeSocket;
+	int socketServer;
 	char* nombreArchivo;
 	queue<Mensaje> colaMensajesNoProcesados;
 	list<Mensaje> listaMensajesProcesados;
@@ -38,6 +39,7 @@ private:
 	socklen_t addr_size;
 	pthread_t threadProcesador;
 	pthread_t threadChecker;
+
 
 public:
 	Servidor();
@@ -54,6 +56,7 @@ public:
 	void finalizarEscucha();
 	queue<Mensaje> getColaMensajesNoProcesados();
 	void splitDatos(char* datos,string* nombre,string* pass);
+	void recibirMensaje();
 };
 
 #endif /* TP1_SERVIDOR_H_ */
