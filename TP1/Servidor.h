@@ -22,6 +22,7 @@
 #include "Cliente.h"
 #include "Mensaje.h"
 #include "Log.h"
+#define MAX_CANT_CLIENTES 6
 using namespace std;
 
 class Servidor {
@@ -30,6 +31,7 @@ private:
 	int puerto;
 	int welcomeSocket;
 	int socketServer;
+	int cantClientesConectados = 0;
 	char* nombreArchivo;
 	queue<Mensaje> colaMensajesNoProcesados;
 	list<Mensaje> listaMensajesProcesados;
@@ -57,6 +59,9 @@ public:
 	queue<Mensaje> getColaMensajesNoProcesados();
 	void splitDatos(char* datos,string* nombre,string* pass);
 	void recibirMensaje();
+	void setThreadProceso(pthread_t thrProceso);
+	int aceptarConexion();
+	int getCantConexiones();
 };
 
 #endif /* TP1_SERVIDOR_H_ */

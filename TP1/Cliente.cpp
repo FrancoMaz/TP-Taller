@@ -77,6 +77,7 @@ list<string> Cliente::conectar(string nombre, string contrasenia) {
 	//Se establece la conexion con el servidor mediante autenticacion. El servidor devuelve la lista con todos los usuarios disponibles
 	list<string> clientesDisponibles;
 	char buffer [1024];
+	char datosRecibidos [1024];
 	this->addr_size = sizeof direccionServidor;
 	char* nombreYPass = strdup((nombre + ',' + contrasenia).c_str());
 	cout << nombreYPass << endl;
@@ -86,7 +87,9 @@ list<string> Cliente::conectar(string nombre, string contrasenia) {
 		strcpy(buffer, nombreYPass);
 		send(socketCliente, buffer, strlen(nombreYPass) + 1, 0);
 		cout << "Conectandose al puerto: " << this->puertoServidor << endl;
-		//this->clientesDisponibles.push_front("hola"); //pongo cualquier cosa para comprobar el ciclo ok.
+		recv(socketCliente, datosRecibidos, 1024, 0);
+		cout << datosRecibidos << endl; //IMPRIMO LA RESPUESTA DEL SERVER, SI SE PUDO AUTENTICAR O NO. --> HAY QUE CAMBIAR ESTO PORQUE EN REALIDAD SE DEVUELVE LA LISTA DE USUARIOS.
+		//this->clientesDisponibles.push_front(datosRecibidos); //pongo cualquier cosa para que me autentique.
 	} else {
 		cout << "Error conectandose al puerto" << endl;
 	}
