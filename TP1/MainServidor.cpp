@@ -14,8 +14,10 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include "Servidor.h"
+#include <pthread.h>
 
 using namespace std;
+pthread_mutex_t mutex;
 
 Servidor* inicializarServidor() {
 	int puerto;
@@ -27,25 +29,29 @@ Servidor* inicializarServidor() {
 	char* archivo = strdup(archivoUsers.c_str());
 	return new Servidor(archivo, puerto);
 }
-/*
+
 void* escucharEnvio(void* arg){
+	Servidor* servidor = (Servidor*) arg;
 	pthread_mutex_lock(&mutex);
-	//Enviar
+	cout << "probandoEnvio" << endl;
+	//send(servidor->getSocket(), "Bienvenidos", 10, 0);
 	pthread_mutex_unlock(&mutex);
+	return NULL;
 }
 
 void* escucharRecibir(void* arg){
+	Servidor* servidor = (Servidor*) arg;
 	pthread_mutex_lock(&mutex);
-	//Recibir
+	cout << "probandoRecibir" << endl;
 	pthread_mutex_unlock(&mutex);
-}*/
+	return NULL;
+}
 
 int main() {
 	Servidor* servidor;
 	pthread_t threadEnvio;
 	pthread_t threadRecibir;
-	pthread_mutex_t mutex;
-	string variable;
+	int variable = 1;
 
 	do {
 		servidor = inicializarServidor();
@@ -54,47 +60,29 @@ int main() {
 		servidor->aceptarConexiones();
 	} while (!servidor->escuchando); //mientras el servidor no este escuchando, intento inicializarlo pidiendo los parametros de entrada.
 
-
-/*
 	do{
-	//Autenticar/enviar/recibir/desconectar
-	//pthread_create(&threadListen,NULL,&clicloEscuchar,NULL);
-
-	//Lo siguiente es un prototipo de la implementación
 	switch(variable){
-		case "Enviar":{
-			pthread_create(&threadEnvio,NULL,&escucharEnvio,NULL);
+		case 1:{	//Enviar
+			pthread_create(&threadEnvio,NULL,&escucharEnvio,&servidor);
 			pthread_join(threadEnvio,NULL);
 			break;
 		}
-		case "Recibir":{
+		case 2:{	//Recibir
 			pthread_create(&threadRecibir,NULL,&escucharRecibir,NULL);
 			pthread_join(threadRecibir,NULL);
 			break;
 		}
-		case "Autenticar":{
+		case 3:{	//Autenticar
 			servidor->autenticar("","");
 			break;
 		}
-		case "Desconectar":{
+		case 4:{	//Desconectar
 			servidor->finalizarEscucha();
 			break;
 		}
 		default:
 			break;
 		}
-
 	} while(servidor->escuchando);
-*/
-	/*
-	// esto no va aca!
-	string user, pass;
-	cout << "Ingrese el nombre del usuario: ";
-	cin >> user;
-	cout << "Ingrese la password: ";
-	cin >> pass;
-	servidor->autenticar(user, pass);
-	*/
-
 	return 0;
 }
