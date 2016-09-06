@@ -26,7 +26,7 @@ Servidor* inicializarServidor() {
 	cin >> archivoUsers;
 	return new Servidor(archivoUsers, puerto);
 }
-
+/*
 void* escucharEnvio(void* arg){
 	pthread_mutex_lock(&mutex);
 	//Enviar
@@ -37,13 +37,13 @@ void* escucharRecibir(void* arg){
 	pthread_mutex_lock(&mutex);
 	//Recibir
 	pthread_mutex_unlock(&mutex);
-}
+}*/
 
 int main() {
 	Servidor* servidor;
 	pthread_t threadEnvio;
 	pthread_t threadRecibir;
-	pthread_t mutex;
+	pthread_mutex_t mutex;
 	string variable;
 
 	do {
@@ -54,7 +54,7 @@ int main() {
 	} while (!servidor->escuchando); //mientras el servidor no este escuchando, intento inicializarlo pidiendo los parametros de entrada.
 
 
-
+/*
 	do{
 	//Autenticar/enviar/recibir/desconectar
 	//pthread_create(&threadListen,NULL,&clicloEscuchar,NULL);
@@ -84,7 +84,7 @@ int main() {
 		}
 
 	} while(servidor->escuchando);
-
+*/
 	/*
 	// esto no va aca!
 	string user, pass;
