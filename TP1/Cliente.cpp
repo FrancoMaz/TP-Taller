@@ -51,7 +51,7 @@ void Cliente::elegirOpcionDelMenu(int opcion) {
 		break;
 	}
 	case 3: {
-		double frecuenciaDeEnvios;
+		int frecuenciaDeEnvios;
 		int cantidadMaximaDeEnvios;
 		cout << "Escriba la frecuencia de envios: " << endl;
 		cin >> frecuenciaDeEnvios;
@@ -77,10 +77,11 @@ list<string> Cliente::conectar(string nombre, string contrasenia) {
 	//Se establece la conexion con el servidor mediante autenticacion. El servidor devuelve la lista con todos los usuarios disponibles
 	list<string> clientesDisponibles;
 	this->addr_size = sizeof direccionServidor;
-	const char* nombreYPass = (nombre+','+contrasenia).c_str();
+	const char* nombreYPass = (nombre + ',' + contrasenia).c_str();
 	cout << nombreYPass << endl;
 	cout << "Intentando conectarse con el servidor. . ." << endl;
-	if (connect(socketCliente, (struct sockaddr *) &direccionServidor, addr_size) == 0) {
+	if (connect(socketCliente, (struct sockaddr *) &direccionServidor,
+			addr_size) == 0) {
 		send(socketCliente, nombreYPass, strlen(nombreYPass) + 1, 0);
 		cout << "Conectandose al puerto: " << this->puertoServidor << endl;
 	} else {
@@ -104,66 +105,79 @@ void Cliente::enviar(string mensaje, string destinatario) {
 	//Hay que realizar el submenu dinamico con todos los usuarios disponibles.
 	//Requiere una conexion abierta.
 	Mensaje *mensajeAEnviar = new Mensaje(this->nombre, destinatario, mensaje);
+	send(this->socketCliente, reinterpret_cast<const char*>(&mensajeAEnviar),
+			sizeof(mensajeAEnviar), 0);
+	//HAY QUE VER SI ESTE METODO FUNCIONA CORRECTAMENTE
 
 }
 
-list<string> Cliente::recibir() {
-	//Se reciben todos los mensajes en la secuencia en la que fueron enviados (creo que habria que usar una cola)
+queue<Mensaje> Cliente::recibir() {
+	//Se reciben todos los mensajes en la secuencia en la que fueron enviados
 	//Requiere una conexion abierta.
+	queue<Mensaje> *colaMensajes = new queue<Mensaje>;
+	recv(this->socketCliente, reinterpret_cast<char*>(&colaMensajes),
+			sizeof(colaMensajes), 0); //HAY QUE VER SI ESTE METODO FUNCIONA CORRECTAMENTE
+	return *colaMensajes;
 }
 
 void Cliente::loremIpsum(int frecuenciaDeEnvios, int cantidadMaximaDeEnvios) {
 	//Toma el texto de un archivo y se envian mensajes en forma ciclica. El tamanio de mensajes y el destinatario son aleatorios
 	//Cuando todo el texto fue transmitido, se empieza otra vez desde el inicio
 	//Requiere una conexion abierta.
-	clock_t tiempoInicio = clock();
+	time_t tiempoInicio = time(0);
 	ifstream archivo("LoremIpsum.txt");
-	while (!archivo.eof()) {
-		for (int i = 0; i < cantidadMaximaDeEnvios; i++) {
-			int tamanioMensaje;
-			int numeroDeClienteAEnviar;
-			char cadena[tamanioMensaje];
-			string clienteAleatorioAEnviar;
-			srand(time(NULL));
-			tamanioMensaje = rand();
-			numeroDeClienteAEnviar = rand() % this->clientesDisponibles.size();
-			archivo.getline(cadena, tamanioMensaje);
-			list<string>::iterator iterador = this->clientesDisponibles.begin();
-			advance(iterador, numeroDeClienteAEnviar);
-			clienteAleatorioAEnviar = *iterador;
-			if ((clock() - tiempoInicio) == frecuenciaDeEnvios) {
-				this->enviar(cadena, clienteAleatorioAEnviar);
-				tiempoInicio = clock();
-			}
-			if (archivo.eof()) {
-				archivo.clear();
-				archivo.seekg(0, ios::beg);
-			}
+	this->clientesDisponibles.push_back("A");
+	this->clientesDisponibles.push_back("B");
+	this->clientesDisponibles.push_back("C");
+	this->clientesDisponibles.push_back("D");
+	//LAS CUATRO LINEAS DE ARRIBA LAS PUSE PARA PROBAR LA FUNCIONALIDAD. CUANTO TENGAMOS LA LISTA DE CLIENTES ES ESA LA LISTA QUE VAMOS A USAR
+	for (int i = 0; i < cantidadMaximaDeEnvios; i++) {
+		int tamanioMensaje;
+		srand(time(NULL));
+		tamanioMensaje = (int) (rand() % 30); //Por ahora puse que el tamanio de los mensajes este entre 0 y 30, pero mas adelante eso se tiene que modificar
+		char cadena[tamanioMensaje];
+		int numeroDeClienteAEnviar;
+		string clienteAleatorioAEnviar;
+		numeroDeClienteAEnviar = (int) (rand()
+				% this->clientesDisponibles.size());
+		list<string>::iterator iterador = this->clientesDisponibles.begin();
+		advance(iterador, numeroDeClienteAEnviar);
+		clienteAleatorioAEnviar = *iterador;
+		do {
+		} while ((time(0) - tiempoInicio) < frecuenciaDeEnvios); //este loop esta vacio porque quiero que no haga nada hasta que pase cierto tiempo. De ultima despues vemos de arreglarlo si no esta bien
+		archivo.get(cadena, tamanioMensaje);
+		this->enviar(cadena, clienteAleatorioAEnviar);
+		tiempoInicio = time(0);
+		if (archivo.eof()) {
+			archivo.clear();
+			archivo.seekg(0, ios::beg);
 		}
+		cout << cadena << endl;
 	}
+	archivo.close();
 }
 
 string Cliente::getNombre() {
-	return this->nombre;
+return this->nombre;
 }
 
 int Cliente::getOpcionMenu() {
-	return this->opcionMenu;
+return this->opcionMenu;
 }
 
 pthread_t Cliente::getThreadComunicacion() {
-	return this->threadComunicacion;
+return this->threadComunicacion;
 }
 
 list<string> Cliente::getClientesDisponibles() {
-	return this->clientesDisponibles;
+return this->clientesDisponibles;
 
 }
 
 void Cliente::setThreadComunicacion(pthread_t thrComu) {
-	this->threadComunicacion = thrComu;
+this->threadComunicacion = thrComu;
 }
 
 void Cliente::setClientesDisponibles(string nombre, string contrasenia) {
-	this->clientesDisponibles = this->conectar(nombre, contrasenia);
+this->clientesDisponibles = this->conectar(nombre, contrasenia);
 }
