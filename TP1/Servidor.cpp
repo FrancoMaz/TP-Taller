@@ -55,7 +55,6 @@ list<string>* Servidor::autenticar(string nombre, string contrasenia) {
 				if (nroItem == 1) contraseniaCapturada = csvItem;
 				nroItem++;
 			}
-			cout << nombreCapturado <<" "<< contraseniaCapturada << endl;
 			if ((strcmp(nombre.c_str(), nombreCapturado.c_str()) == 0) && (strcmp(contrasenia.c_str(), contraseniaCapturada.c_str()) == 0)) {
 				usuarios.remove(nombreCapturado);
 				autenticacionOK = true;

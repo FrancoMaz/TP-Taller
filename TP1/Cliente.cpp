@@ -76,13 +76,15 @@ void Cliente::elegirOpcionDelMenu(int opcion) {
 list<string> Cliente::conectar(string nombre, string contrasenia) {
 	//Se establece la conexion con el servidor mediante autenticacion. El servidor devuelve la lista con todos los usuarios disponibles
 	list<string> clientesDisponibles;
+	char buffer [1024];
 	this->addr_size = sizeof direccionServidor;
-	const char* nombreYPass = (nombre + ',' + contrasenia).c_str();
+	char* nombreYPass = strdup((nombre + ',' + contrasenia).c_str());
 	cout << nombreYPass << endl;
 	cout << "Intentando conectarse con el servidor. . ." << endl;
 	if (connect(socketCliente, (struct sockaddr *) &direccionServidor,
 			addr_size) == 0) {
-		send(socketCliente, nombreYPass, strlen(nombreYPass) + 1, 0);
+		strcpy(buffer, nombreYPass);
+		send(socketCliente, buffer, strlen(nombreYPass) + 1, 0);
 		cout << "Conectandose al puerto: " << this->puertoServidor << endl;
 	} else {
 		cout << "Error conectandose al puerto" << endl;
