@@ -99,7 +99,7 @@ int main() {
 			accion = 0; //si la accion es 2, la pongo en 0 para que salga del while
 		}
 	}while (accion != 0); //si la accion es 0, es salir.
-
+	cliente->salir(); //cierra el socket y realiza trabajos de limpieza de memoria
 	cout << "Saliendo del programa.. Gracias, vuelva prontoss!" << endl;
 	return 0;
 }
