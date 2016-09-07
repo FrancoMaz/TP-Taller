@@ -37,7 +37,14 @@ void Cliente::mostrarMenuYProcesarOpcion() {
 void Cliente::elegirOpcionDelMenu(int opcion) {
 	switch (opcion) {
 	case 1: {
-		string destinatario;
+		char* mensaje = "CLIENTE: Te pregunto";
+		char buffer [1024];
+		char datosRecibidos[1024];
+		strcpy(buffer,mensaje);
+		send(socketCliente, buffer, strlen(mensaje) + 1, 0);
+		recv(socketCliente,datosRecibidos,1024,0);
+		cout << "Recibi: " << datosRecibidos << endl;
+		/*string destinatario;
 		string mensajeAEnviar;
 		cout << "Escriba el nombre del destinatario del mensaje: " << endl;
 		cin >> destinatario;
@@ -45,6 +52,7 @@ void Cliente::elegirOpcionDelMenu(int opcion) {
 		cin >> mensajeAEnviar;
 		this->enviar(mensajeAEnviar, destinatario);
 		break;
+		*/
 	}
 	case 2: {
 		this->recibir();

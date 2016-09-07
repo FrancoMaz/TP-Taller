@@ -32,9 +32,16 @@ void* cicloEscuchaCliente(void* arg)
 	struct parametrosThreadCliente* parametros = (parametrosThreadCliente*)arg;
 	Servidor* servidor = parametros->serv;
 	int socketCliente = parametros->socketCli;
+	char buffer [1024];
+	char datosRecibidos[1024];
+	char* mensaje = "SERVER: Te respondo";
 	while (1)
 	{
 		//en este loop se van a gestionar los send y receive del cliente. aca se va a distinguir que es lo que quiere hacer y actuar segun lo que quiera el cliente.
+		recv(socketCliente,datosRecibidos,1024,0);
+		cout << "Recibi: " << datosRecibidos << endl;
+		strcpy(buffer,mensaje);
+		send(socketCliente, buffer, strlen(mensaje) + 1, 0);
 
 	}
 }
@@ -83,35 +90,9 @@ int inicializarServidor() {
 	return threadOk;
 }
 
-void* escucharEnvio(void* arg){
-	Servidor* servidor = (Servidor*) arg;
-	pthread_mutex_lock(&mutex);
-	cout << "probandoEnvio" << endl;
-	//send(servidor->getSocket(), "Bienvenidos", 10, 0);
-	pthread_mutex_unlock(&mutex);
-	return NULL;
-}
-
-void* escucharRecibir(void* arg){
-	Servidor* servidor = (Servidor*) arg;
-	pthread_mutex_lock(&mutex);
-	cout << "probandoRecibir" << endl;
-	pthread_mutex_unlock(&mutex);
-	return NULL;
-}
-
 int main() {
 	Servidor* servidor;
-	pthread_t threadEnvio;
-	pthread_t threadRecibir;
-	int variable = 1;
-/*
-	do { //MIENTRAS NO ESTA ESCUCHANDO, TRATA DE INICIALIZAR EL SERVIDOR Y COMENZAR LA ESCUCHA.
-		servidor = inicializarServidor();
 
-
-	} while (!servidor->escuchando);
-*/
 	int ok =inicializarServidor();
 	if (ok != 0){
 		cout << "Error inicializando el thread de proceso" << endl;
@@ -123,63 +104,5 @@ int main() {
 	{
 		sleep(5); //esto esta a modo de prueba para que no corte los otros threads.
 	}
-
-
-
-
-		/*---- Listen on the socket, with 6 max connection requests queued ----*/
-		//servidor->comenzarEscucha();
-		//servidor->aceptarConexiones();
-/*
-	while (servidor->escuchando)
-	{
-		switch(variable){
-				case 1:{	//Enviar.
-					//servidor->crearMensaje();
-					break;
-				}
-				case 2:{	//Recibir. Crea un thread que se auto destruye una vez finalizado.
-					pthread_create(&threadRecibir,NULL,&escucharRecibir,NULL);
-					pthread_detach(threadRecibir);
-					break;
-				}
-				case 3:{	//Autenticar.
-					servidor->aceptarConexiones();
-					break;
-				}
-				case 4:{	//Desconectar
-					servidor->finalizarEscucha();
-					break;
-				}
-				default:
-					break;
-				}
-	}
-*/
-	//servidor->recibirMensaje();
-	/*do{
-	switch(variable){
-		case 1:{	//Enviar
-			pthread_create(&threadEnvio,NULL,&escucharEnvio,&servidor);
-			pthread_join(threadEnvio,NULL);
-			break;
-		}
-		case 2:{	//Recibir
-			pthread_create(&threadRecibir,NULL,&escucharRecibir,NULL);
-			pthread_join(threadRecibir,NULL);
-			break;
-		}
-		case 3:{	//Autenticar
-			servidor->autenticar("","");
-			break;
-		}
-		case 4:{	//Desconectar
-			servidor->finalizarEscucha();
-			break;
-		}
-		default:
-			break;
-		}
-	} while(servidor->escuchando);*/
 	return 0;
 }
