@@ -10,6 +10,7 @@
 
 #include <string>
 #include <string.h>
+#include <sstream>
 using namespace std;
 
 class Mensaje {
@@ -20,6 +21,8 @@ public:
 	string getTexto();
 	char* getStringDatos();
 	void setearDatos(char* datosMensaje);
+	string getRemitente();
+	string getDestinatario();
 
 private:
 	string clienteRemitente;

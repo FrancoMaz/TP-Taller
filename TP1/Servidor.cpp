@@ -154,5 +154,7 @@ void Servidor::recibirMensaje()
 	cout << "Recibir mensaje" << endl;
 	recv(this->socketServer, datosMensaje,strlen(datosMensaje),0);
 	mensajeARecibir->setearDatos(datosMensaje);
-	cout << mensajeARecibir->getTexto() << endl;
+	cout << "Remitente: " << mensajeARecibir->getRemitente() << endl;
+	cout << "Destinatario: " << mensajeARecibir->getDestinatario() << endl;
+	cout << "Mensaje: " << mensajeARecibir->getTexto() << endl;
 }
