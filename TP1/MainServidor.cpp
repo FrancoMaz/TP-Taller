@@ -30,8 +30,8 @@ void* cicloEscuchaCliente(void* arg)
 	//esta funcion es la que se va a encargar de hacer send y recv de los enviar/recibir/desconectar
 	//es decir, esta funcion es la que va a estar constantemente haciendo send y recv del socket del cliente y detectando lo que quiere hacer.
 	struct parametrosThreadCliente* parametros = (parametrosThreadCliente*)arg;
-	Servidor* servidor = &parametros->serv;
-	int socketCliente = &parametros->socketCli;
+	Servidor* servidor = parametros->serv;
+	int socketCliente = parametros->socketCli;
 	while (1)
 	{
 		//en este loop se van a gestionar los send y receive del cliente. aca se va a distinguir que es lo que quiere hacer y actuar segun lo que quiera el cliente.
@@ -73,7 +73,7 @@ void* cicloEscucharConexionesNuevasThreadProceso(void* arg)
 			parametrosThreadCliente parametrosCliente;
 			parametrosCliente.socketCli = socketCliente;
 			parametrosCliente.serv = servidor;
-			pthread_create(&thread_id[servidor->getCantConexiones()],NULL,&cicloEscuchaCliente,&parametrosThreadCliente); //optimizar ya que si un cliente se desconecta podria causar un problema
+			pthread_create(&thread_id[servidor->getCantConexiones()],NULL,&cicloEscuchaCliente,&parametrosCliente); //optimizar ya que si un cliente se desconecta podria causar un problema
 		}
 	}
 }
