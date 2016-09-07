@@ -93,20 +93,8 @@ void Servidor::crearMensaje(Mensaje mensaje) {
 }
 
 void Servidor::comenzarEscucha() {
-	/*char buffer[1024];
-	 struct sockaddr_storage sender;
-	 socklen_t sendsize = sizeof(sender);*/
-
 	//Metodo que pone al servidor a escuchar si alguien requiere algo.
-	this->escuchando = (listen(this->welcomeSocket, 6) == 0);
-	if (escuchando) {
-		printf("Listening\n");
-		//string user, pass;
-		//recvfrom(newSocket, buffer, 1024, 0,(struct sockaddr*)&sender, &sendsize);
-		//cout << buffer << endl;
-	} else {
-		printf("Error\n");
-	}
+	this->escuchando = (listen(this->welcomeSocket, MAX_CANT_CLIENTES) == 0);
 }
 
 void Servidor::aceptarConexiones() {
@@ -120,6 +108,32 @@ void Servidor::aceptarConexiones() {
 		cout << datosRecibidos << "Datos recibidos" << endl;
 		splitDatos(datosRecibidos, &nombre, &pass);
 		this->autenticar(nombre, pass);
+}
+
+int Servidor::aceptarConexion() {
+	//esta funcion acepta las conexiones para cada cliente que lo solicita si es autenticado y devuelve el socket de dicho cliente.
+	string nombre, pass;
+	char buffer [1024];
+	char datosRecibidos[1024];
+	this->addr_size = sizeof serverStorage;
+	cout << "Escuchando conexiones entrantes.." << endl;
+	int socketCliente;
+	socketCliente = accept(welcomeSocket, (struct sockaddr *) &this->serverStorage, &this->addr_size);
+	recv(socketCliente, datosRecibidos, 1024, 0);
+	cout << datosRecibidos << "Datos recibidos" << endl;
+	splitDatos(datosRecibidos, &nombre, &pass);
+	list<string>* clientes = this->autenticar(nombre, pass);
+	char* autenticacionOk;
+	this->cantClientesConectados += 1;
+	if (clientes->empty())
+		autenticacionOk = "SERVER: NO SE PUDO AUTENTICAR";
+	else
+		autenticacionOk = "SERVER: AUTENTICACION OK";
+	strcpy(buffer,autenticacionOk);
+	//le respondo al cliente un mensaje que dice si se pudo autenticar o no. hay que cambiar esto para qe le mande al cliente la lista que corresponde.
+	send(socketCliente, buffer, strlen(autenticacionOk) + 1, 0);
+	//FALTA HACER QUE UNA VEZ QUE SE AUTENTIQUE, ESTA FUNCION HAGA SEND AL CLIENTE DE LA LISTA DE USUARIOS DISPONIBLES.
+	return socketCliente;
 }
 
 void Servidor::finalizarEscucha() {
@@ -157,4 +171,13 @@ void Servidor::recibirMensaje()
 	cout << "Remitente: " << mensajeARecibir->getRemitente() << endl;
 	cout << "Destinatario: " << mensajeARecibir->getDestinatario() << endl;
 	cout << "Mensaje: " << mensajeARecibir->getTexto() << endl;
+}
+
+void Servidor::setThreadProceso(pthread_t thrProceso)
+{
+	this->threadProcesador = thrProceso;
+}
+
+int Servidor::getCantConexiones(){
+	return this->cantClientesConectados;
 }
