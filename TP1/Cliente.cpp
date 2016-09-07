@@ -38,12 +38,13 @@ void Cliente::elegirOpcionDelMenu(int opcion) {
 	switch (opcion) {
 	case 1: {
 		char* mensaje = "CLIENTE: Te pregunto";
-		char buffer [1024];
-		char datosRecibidos[1024];
+		char buffer [BUFFER_MAX_SIZE];
+		char datosRecibidos[BUFFER_MAX_SIZE];
 		strcpy(buffer,mensaje);
 		send(socketCliente, buffer, strlen(mensaje) + 1, 0);
-		recv(socketCliente,datosRecibidos,1024,0);
+		recv(socketCliente,datosRecibidos,BUFFER_MAX_SIZE,0);
 		cout << "Recibi: " << datosRecibidos << endl;
+		break;
 		/*string destinatario;
 		string mensajeAEnviar;
 		cout << "Escriba el nombre del destinatario del mensaje: " << endl;
@@ -84,8 +85,8 @@ void Cliente::elegirOpcionDelMenu(int opcion) {
 list<string> Cliente::conectar(string nombre, string contrasenia) {
 	//Se establece la conexion con el servidor mediante autenticacion. El servidor devuelve la lista con todos los usuarios disponibles
 	list<string> clientesDisponibles;
-	char buffer [1024];
-	char datosRecibidos [1024];
+	char buffer [BUFFER_MAX_SIZE];
+	char datosRecibidos [BUFFER_MAX_SIZE];
 	this->addr_size = sizeof direccionServidor;
 	char* nombreYPass = strdup((nombre + ',' + contrasenia).c_str());
 	cout << nombreYPass << endl;
@@ -97,7 +98,7 @@ list<string> Cliente::conectar(string nombre, string contrasenia) {
 		cout << "Conectandose al puerto: " << this->puertoServidor << endl;
 		this->nombre = nombre;
 		//this->clientesDisponibles.push_front("hola"); //pongo cualquier cosa para comprobar el ciclo ok.
-		recv(socketCliente, datosRecibidos, 1024, 0);
+		recv(socketCliente, datosRecibidos, BUFFER_MAX_SIZE, 0);
 		cout << datosRecibidos << endl; //IMPRIMO LA RESPUESTA DEL SERVER, SI SE PUDO AUTENTICAR O NO. --> HAY QUE CAMBIAR ESTO PORQUE EN REALIDAD SE DEVUELVE LA LISTA DE USUARIOS.
 		//this->clientesDisponibles.push_front(datosRecibidos); //pongo cualquier cosa para que me autentique.
 	} else {
@@ -122,7 +123,7 @@ void Cliente::enviar(string mensaje, string destinatario) {
 	//Hay que realizar el submenu dinamico con todos los usuarios disponibles.
 	//Requiere una conexion abierta.
 	Mensaje *mensajeAEnviar = new Mensaje(this->nombre, destinatario, mensaje);
-	char buffer[1024];
+	char buffer[BUFFER_MAX_SIZE];
 	char* stringDatosMensaje = mensajeAEnviar->getStringDatos();
 	strcpy(buffer,stringDatosMensaje);
 	send(this->socketCliente, buffer, strlen(stringDatosMensaje)+1, 0);
