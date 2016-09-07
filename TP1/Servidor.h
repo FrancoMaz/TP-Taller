@@ -23,6 +23,7 @@
 #include "Mensaje.h"
 #include "Log.h"
 #define MAX_CANT_CLIENTES 6
+#define BUFFER_MAX_SIZE 1024
 using namespace std;
 
 class Servidor {
