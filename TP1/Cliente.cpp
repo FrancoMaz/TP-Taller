@@ -50,9 +50,9 @@ void Cliente::elegirOpcionDelMenu(int opcion) {
 		cin >> destinatario;
 		cout << "Escriba su mensaje: " << endl;
 		cin >> mensajeAEnviar;
-		this->enviar(mensajeAEnviar, destinatario);
+		this->enviar(mensajeAEnviar, destinatario);*/
 		break;
-		*/
+
 	}
 	case 2: {
 		this->recibir();
