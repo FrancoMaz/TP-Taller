@@ -30,8 +30,7 @@ Servidor::Servidor(char* nombreArchivoDeUsuarios, int puerto) {
 Servidor::~Servidor() {
 }
 
-void Servidor::autenticar(string nombre, string contrasenia,
-		list<string>& usuarios) {
+void Servidor::autenticar(string nombre, string contrasenia, list<string>& usuarios) {
 
 	string linea, csvItem;
 	string nombreCapturado, contraseniaCapturada;
@@ -56,9 +55,7 @@ void Servidor::autenticar(string nombre, string contrasenia,
 					contraseniaCapturada = csvItem;
 				nroItem++;
 			}
-			if ((strcmp(nombre.c_str(), nombreCapturado.c_str()) == 0)
-					&& (strcmp(contrasenia.c_str(),
-							contraseniaCapturada.c_str()) == 0)) {
+			if ((strcmp(nombre.c_str(), nombreCapturado.c_str()) == 0) && (strcmp(contrasenia.c_str(), contraseniaCapturada.c_str()) == 0)) {
 				usuarios.remove(nombreCapturado);
 				autenticacionOK = true;
 			}
@@ -66,11 +63,10 @@ void Servidor::autenticar(string nombre, string contrasenia,
 	}
 	myfile.close();
 
-	list<string>* users = &usuarios;
-
 	if (autenticacionOK) {
 		cout << "Autenticación OK wachin" << endl;
 	} else {
+		usuarios.clear();
 		cout << "Error de autenticación, no nos hackees wachin" << endl;
 	}
 }
@@ -119,11 +115,10 @@ int Servidor::aceptarConexion() {
 
 	this->addr_size = sizeof serverStorage;
 	cout << "Escuchando conexiones entrantes.." << endl;
-	int socketCliente;
-	socketCliente = accept(welcomeSocket,
-			(struct sockaddr *) &this->serverStorage, &this->addr_size);
 
+	int socketCliente = accept(welcomeSocket, (struct sockaddr *) &this->serverStorage, &this->addr_size);
 	recv(socketCliente, datosRecibidos, 1024, 0);
+
 	cout << "Datos recibidos: " << datosRecibidos << endl;
 	splitDatos(datosRecibidos, &nombre, &pass);
 
@@ -133,24 +128,16 @@ int Servidor::aceptarConexion() {
 
 	if (this->usuarios.empty()) {
 		resultadoDeLaAutenticacion = "No se pudo autenticar";
+		cout << resultadoDeLaAutenticacion << endl;
+		strcpy(buffer, "Desconectar");
+		send(socketCliente, buffer, 1024, 0);
 		// si no se puede autenticar debe desconectarse al usuario
-	} else
+	} else {
 		resultadoDeLaAutenticacion = "Autenticacion OK";
-
-	//strcpy(buffer, resultadoDeLaAutenticacion);
-	strcpy(buffer, this->serializarLista(this->usuarios));
-	/*for (list<string>::iterator i = usuarios.begin(); i != usuarios.end(); i++) {
-	 //cout << (*i) << endl;
-	 strcat(buffer, strdup((*i).c_str()));
-	 strcat(buffer,",");
-	 }*/
-
-	string buff = buffer;
-	cout << buff << endl;
-	//le respondo al cliente un mensaje que dice si se pudo autenticar o no. hay que cambiar esto para qe le mande al cliente la lista que corresponde.
-	//send(socketCliente, buffer, strlen(resultadoDeLaAutenticacion) + 1, 0);
-	send(socketCliente, buffer, 1024, 0);
-	//FALTA HACER QUE UNA VEZ QUE SE AUTENTIQUE, ESTA FUNCION HAGA SEND AL CLIENTE DE LA LISTA DE USUARIOS DISPONIBLES.
+		cout << resultadoDeLaAutenticacion << endl;
+		strcpy(buffer, this->serializarLista(this->usuarios));
+		send(socketCliente, buffer, 1024, 0);
+	}
 	return socketCliente;
 }
 

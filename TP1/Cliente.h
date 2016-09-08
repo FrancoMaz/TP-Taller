@@ -59,6 +59,7 @@ public:
 	void setClientesDisponibles(string nombre, string contrasenia);
 	pthread_t getThreadComunicacion();
 	void setThreadComunicacion(pthread_t thrComu);
+	void splitUsuarios(string datosRecibidos);
 };
 
 #endif /* TP1_CLIENTE_H_ */
