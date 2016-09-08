@@ -116,12 +116,10 @@ int Servidor::aceptarConexion() {
 	this->addr_size = sizeof serverStorage;
 	cout << "Escuchando conexiones entrantes.." << endl;
 	int socketCliente;
-	socketCliente = accept(welcomeSocket,
-			(struct sockaddr *) &this->serverStorage, &this->addr_size);
+	socketCliente = accept(welcomeSocket, (struct sockaddr *) &this->serverStorage, &this->addr_size);
 	recv(socketCliente, datosRecibidos, 1024, 0);
 	cout << "Datos recibidos: " << datosRecibidos << endl;
 	splitDatos(datosRecibidos, &nombre, &pass);
-	//list<string>* clientes = this->autenticar(nombre, pass, this->usuarios);
 	this->autenticar(nombre, pass, this->usuarios);
 	char* resultadoDeLaAutenticacion;
 	this->cantClientesConectados += 1;
@@ -130,13 +128,15 @@ int Servidor::aceptarConexion() {
 	// si no se puede autenticar debe desconectarse al usuario
 	} else resultadoDeLaAutenticacion = "Autenticacion OK";
 
-	strcpy(buffer, resultadoDeLaAutenticacion);
+	//strcpy(buffer, resultadoDeLaAutenticacion);
 
-	for (list<string>::iterator i = usuarios.begin(); i != usuarios.end(); ++i) {
-		cout << (*i) << endl;
-		//strcpy(buffer, strdup((*i).c_str()));
+	for (list<string>::iterator i = usuarios.begin(); i != usuarios.end(); i++) {
+		//cout << (*i) << endl;
+		strcat(buffer, strdup((*i).c_str()));
 	}
 
+	string buff = buffer;
+	cout << buff << endl;
 	//le respondo al cliente un mensaje que dice si se pudo autenticar o no. hay que cambiar esto para qe le mande al cliente la lista que corresponde.
 	//send(socketCliente, buffer, strlen(resultadoDeLaAutenticacion) + 1, 0);
 	send(socketCliente, buffer, 1024, 0);
