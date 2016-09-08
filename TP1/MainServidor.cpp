@@ -26,6 +26,14 @@ struct parametrosThreadCliente {
 	int socketCli;
 };
 
+void* encolarMensaje(void* arg){
+	Mensaje mensaje = *(Mensaje*) arg; //No sé si esto funciona bien pero al menos compila
+	pthread_mutex_lock(&mutex);
+	//servidor->crearMensaje(mensaje);
+	pthread_mutex_unlock(&mutex);
+	return NULL;
+}
+
 void* cicloEscuchaCliente(void* arg) {
 	//esta funcion es la que se va a encargar de hacer send y recv de los enviar/recibir/desconectar
 	//es decir, esta funcion es la que va a estar constantemente haciendo send y recv del socket del cliente y detectando lo que quiere hacer.
@@ -34,13 +42,29 @@ void* cicloEscuchaCliente(void* arg) {
 	int socketCliente = parametros->socketCli;
 	char buffer[1024];
 	char datosRecibidos[1024];
-	char* mensaje = "SERVER: Te respondo";
+	//char* mensaje = "SERVER: Te respondo";
+	pthread_t threadEncolarMensaje;
 	while (1) {
 		//en este loop se van a gestionar los send y receive del cliente. aca se va a distinguir que es lo que quiere hacer y actuar segun lo que quiera el cliente.
 		recv(socketCliente, datosRecibidos, 1024, 0);
-		cout << "Recibi: " << datosRecibidos << endl;
-		strcpy(buffer, mensaje);
-		send(socketCliente, buffer, strlen(mensaje) + 1, 0);
+
+		//largodelmensaje | metodo (puede ser un numero) | remitente | destinatario | mensaje #
+		char* largoDelMensaje = strtok(datosRecibidos,"|");
+		char* metodo = strtok(NULL,"|");
+		char* remitente = strtok(NULL,"|");
+		char* destinatario = strtok(NULL,"|");
+		char* mensaje = strtok(NULL,"#");
+
+		//Puede que después sea necesario liberar memoria acá, ya que estamos creando objetos en un ciclo
+		Mensaje* mensajeNoProcesado = new Mensaje(remitente,destinatario,mensaje);
+
+		//Debería crear una estructura para pasarla como argumento al thread
+		//Que contenga mensajeNoProcesado, y el servidor para invocar el crearMensaje
+
+		pthread_create(&threadEncolarMensaje,NULL,&encolarMensaje,&mensajeNoProcesado);
+		//cout << "Recibi: " << datosRecibidos << endl;
+		//strcpy(buffer, mensaje);
+		//send(socketCliente, buffer, strlen(mensaje) + 1, 0);
 	}
 }
 
