@@ -88,11 +88,10 @@ list<string> Cliente::conectar(string nombre, string contrasenia) {
 	char buffer [BUFFER_MAX_SIZE];
 	char datosRecibidos [BUFFER_MAX_SIZE];
 	this->addr_size = sizeof direccionServidor;
-	char* nombreYPass = strdup((nombre + ',' + contrasenia).c_str());
+	char* nombreYPass = strdup((nombre + ',' + contrasenia).c_str()); // convierte el string de const char* a char*
 	cout << nombreYPass << endl;
 	cout << "Intentando conectarse con el servidor. . ." << endl;
-	if (connect(socketCliente, (struct sockaddr *) &direccionServidor,
-			addr_size) == 0) {
+	if (connect(socketCliente, (struct sockaddr *) &direccionServidor, addr_size) == 0) {
 		strcpy(buffer, nombreYPass);
 		send(socketCliente, buffer, strlen(nombreYPass) + 1, 0);
 		cout << "Conectandose al puerto: " << this->puertoServidor << endl;
