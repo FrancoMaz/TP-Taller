@@ -47,7 +47,7 @@ public:
 	virtual ~Cliente();
 	void mostrarMenuYProcesarOpcion();
 	void elegirOpcionDelMenu(int opcion);
-	list<string> conectar(string nombre, string contrasenia);
+	void conectar(string nombre, string contrasenia);
 	void desconectar();
 	void salir();
 	void enviar(string mensaje, string destinatario);

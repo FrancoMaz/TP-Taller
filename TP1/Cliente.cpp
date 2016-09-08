@@ -81,9 +81,8 @@ void Cliente::elegirOpcionDelMenu(int opcion) {
 	}
 }
 
-list<string> Cliente::conectar(string nombre, string contrasenia) {
+void Cliente::conectar(string nombre, string contrasenia) {
 	//Se establece la conexion con el servidor mediante autenticacion. El servidor devuelve la lista con todos los usuarios disponibles
-	list<string> clientesDisponibles;
 	char buffer[BUFFER_MAX_SIZE];
 	char datosRecibidos[BUFFER_MAX_SIZE];
 	this->addr_size = sizeof direccionServidor;
@@ -109,7 +108,6 @@ list<string> Cliente::conectar(string nombre, string contrasenia) {
 	} else {
 		cout << "Error conectandose al puerto" << endl;
 	}
-	return clientesDisponibles;
 	//Faltaria que el servidor devuelve la lista con los usuarios disponibles y que confirme la autenticacion del cliente
 }
 
@@ -120,6 +118,7 @@ void Cliente::splitUsuarios(string datos) {
 	char* pch = strtok(str, ",");
 	cout << "Los usuarios disponibles son: " << endl;
 	while (pch != NULL) {
+		this->clientesDisponibles.push_back(pch);
 		cout << pch << endl;
 		pch = strtok(NULL, ",");
 	}
@@ -161,12 +160,6 @@ queue<Mensaje> Cliente::recibir() {
 void Cliente::loremIpsum(double frecuenciaDeEnvios, double cantidadMaximaDeEnvios) {
 	//Toma el texto de un archivo y se envian mensajes en forma ciclica. El tamanio de mensajes y el destinatario son aleatorios
 	//Cuando todo el texto fue transmitido, se empieza otra vez desde el inicio
-	this->clientesDisponibles.push_back("A");
-	this->clientesDisponibles.push_back("B");
-	this->clientesDisponibles.push_back("C");
-	this->clientesDisponibles.push_back("D");
-	//LAS CUATRO LINEAS DE ARRIBA LAS PUSE PARA PROBAR LA FUNCIONALIDAD. Si las saco ahora va a tirar excepcion de coma flotante
-	//CUANDO TENGAMOS LA LISTA DE CLIENTES ES ESA LA LISTA QUE VAMOS A USAR
 	FILE* archivo;
 	int tamanioMensaje;
 	int numeroDeClienteAEnviar;
@@ -209,6 +202,7 @@ void Cliente::loremIpsum(double frecuenciaDeEnvios, double cantidadMaximaDeEnvio
 			//DESPUES HAY QUE DESCOMENTAR LA LINEA DE ABAJO. Falta terminar el metodo enviar, por lo que para probar la funcionalidad la deje comentada
 
 			//this->enviar(cadena, clienteAleatorioAEnviar);
+			cout << clienteAleatorioAEnviar << endl;
 			cout << cadena << endl;
 			//Al enviar un mensaje el tiempo de referencia es el actual
 			tiempoInicio = clock();
@@ -238,5 +232,5 @@ void Cliente::setThreadComunicacion(pthread_t thrComu) {
 }
 
 void Cliente::setClientesDisponibles(string nombre, string contrasenia) {
-	this->clientesDisponibles = this->conectar(nombre, contrasenia);
+	//this->clientesDisponibles = this->conectar(nombre, contrasenia);
 }
