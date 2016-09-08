@@ -169,6 +169,9 @@ void Cliente::loremIpsum(double frecuenciaDeEnvios, double cantidadMaximaDeEnvio
 				char c = fgetc(archivo);
 				if (c != '\n' && c != EOF) {
 					cadena[j] = c;}
+				if (c == '\n') {
+					cadena[j] = ' ';
+				}
 				if (c == EOF) {
 					cadena[j] = ' ';
 					fclose(archivo);
