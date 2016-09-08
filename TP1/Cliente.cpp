@@ -52,7 +52,6 @@ void Cliente::elegirOpcionDelMenu(int opcion) {
 		cout << "Escriba su mensaje: " << endl;
 		cin >> mensajeAEnviar;
 		this->enviar(mensajeAEnviar, destinatario);*/
-		break;
 
 	}
 	case 2: {
@@ -60,8 +59,8 @@ void Cliente::elegirOpcionDelMenu(int opcion) {
 		break;
 	}
 	case 3: {
-		int frecuenciaDeEnvios;
-		int cantidadMaximaDeEnvios;
+		double frecuenciaDeEnvios;
+		double cantidadMaximaDeEnvios;
 		cout << "Escriba la frecuencia de envios: " << endl;
 		cin >> frecuenciaDeEnvios;
 		cout << "Escriba la cantidad maxima de envios: " << endl;
@@ -140,41 +139,46 @@ queue<Mensaje> Cliente::recibir() {
 	return *colaMensajes;
 }
 
-void Cliente::loremIpsum(int frecuenciaDeEnvios, int cantidadMaximaDeEnvios) {
+void Cliente::loremIpsum(double frecuenciaDeEnvios, double cantidadMaximaDeEnvios) {
 	//Toma el texto de un archivo y se envian mensajes en forma ciclica. El tamanio de mensajes y el destinatario son aleatorios
 	//Cuando todo el texto fue transmitido, se empieza otra vez desde el inicio
 	//Requiere una conexion abierta.
-	time_t tiempoInicio = time(0);
-	ifstream archivo("LoremIpsum.txt");
+	FILE* archivo;
+	archivo = fopen("LoremIpsum.txt","r");
 	this->clientesDisponibles.push_back("A");
 	this->clientesDisponibles.push_back("B");
 	this->clientesDisponibles.push_back("C");
 	this->clientesDisponibles.push_back("D");
 	//LAS CUATRO LINEAS DE ARRIBA LAS PUSE PARA PROBAR LA FUNCIONALIDAD. CUANTO TENGAMOS LA LISTA DE CLIENTES ES ESA LA LISTA QUE VAMOS A USAR
+	int tamanioMensaje;
+	srand(time(NULL));
+	tamanioMensaje = (int) (rand() % 30); //Por ahora puse que el tamanio de los mensajes este entre 0 y 30, pero mas adelante eso se tiene que modificar
+	int numeroDeClienteAEnviar;
+	string clienteAleatorioAEnviar;
+	numeroDeClienteAEnviar = (int) (rand()% this->clientesDisponibles.size());
+	list<string>::iterator iterador = this->clientesDisponibles.begin();
+	advance(iterador, numeroDeClienteAEnviar);
+	clienteAleatorioAEnviar = *iterador;
+	double tiempoPorMensaje = (frecuenciaDeEnvios/cantidadMaximaDeEnvios);
+	clock_t tiempoInicio = clock();
 	for (int i = 0; i < cantidadMaximaDeEnvios; i++) {
-		int tamanioMensaje;
-		srand(time(NULL));
-		tamanioMensaje = (int) (rand() % 30); //Por ahora puse que el tamanio de los mensajes este entre 0 y 30, pero mas adelante eso se tiene que modificar
 		char cadena[tamanioMensaje];
-		int numeroDeClienteAEnviar;
-		string clienteAleatorioAEnviar;
-		numeroDeClienteAEnviar = (int) (rand()
-				% this->clientesDisponibles.size());
-		list<string>::iterator iterador = this->clientesDisponibles.begin();
-		advance(iterador, numeroDeClienteAEnviar);
-		clienteAleatorioAEnviar = *iterador;
 		do {
-		} while ((time(0) - tiempoInicio) < frecuenciaDeEnvios); //este loop esta vacio porque quiero que no haga nada hasta que pase cierto tiempo. De ultima despues vemos de arreglarlo si no esta bien
-		archivo.get(cadena, tamanioMensaje);
-		this->enviar(cadena, clienteAleatorioAEnviar);
-		tiempoInicio = time(0);
-		if (archivo.eof()) {
-			archivo.clear();
-			archivo.seekg(0, ios::beg);
-		}
-		cout << cadena << endl;
+		} while (((double)(clock()-tiempoInicio)/CLOCKS_PER_SEC) < tiempoPorMensaje);
+			for (int j=0; j < tamanioMensaje; j++) {
+				char c = fgetc(archivo);
+				if (c != '\n' && c != EOF) {
+					cadena[j] = c;}
+				if (c == EOF) {
+					cadena[j] = ' ';
+					fclose(archivo);
+					archivo = fopen("LoremIpsum.txt","r"); }
+				}
+			//this->enviar(cadena, clienteAleatorioAEnviar);
+			cout << cadena << endl;
+			tiempoInicio = clock();
 	}
-	archivo.close();
+	fclose(archivo);
 }
 
 string Cliente::getNombre() {

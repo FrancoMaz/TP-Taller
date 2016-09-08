@@ -52,7 +52,7 @@ public:
 	void salir();
 	void enviar(string mensaje, string destinatario);
 	queue<Mensaje> recibir();
-	void loremIpsum(int frecuenciaDeEnvios,int cantidadMaximaDeEnvios);
+	void loremIpsum(double frecuenciaDeEnvios,double cantidadMaximaDeEnvios);
 	string getNombre();
 	int getOpcionMenu();
 	list<string> getClientesDisponibles();
