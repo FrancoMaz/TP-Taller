@@ -32,9 +32,9 @@ void* cicloConexion(void* arg) {
 	string user, pass;
 	//while (cliente->getClientesDisponibles().empty())
 	//{
-	cout << "Ingrese el nombre del usuario: ";
+	cout << "Ingrese nombre de usuario: ";
 	cin >> user;
-	cout << "Ingrese la password: ";
+	cout << "Ingrese password: ";
 	cin >> pass;
 	cliente->conectar(user, pass);
 	//}

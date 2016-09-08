@@ -63,6 +63,7 @@ public:
 	void setThreadProceso(pthread_t thrProceso);
 	int aceptarConexion();
 	int getCantConexiones();
+	const char* serializarLista(list<string> datos);
 };
 
 #endif /* TP1_SERVIDOR_H_ */

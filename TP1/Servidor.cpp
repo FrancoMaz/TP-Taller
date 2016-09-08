@@ -30,7 +30,8 @@ Servidor::Servidor(char* nombreArchivoDeUsuarios, int puerto) {
 Servidor::~Servidor() {
 }
 
-void Servidor::autenticar(string nombre, string contrasenia, list<string>& usuarios) {
+void Servidor::autenticar(string nombre, string contrasenia,
+		list<string>& usuarios) {
 
 	string linea, csvItem;
 	string nombreCapturado, contraseniaCapturada;
@@ -55,7 +56,9 @@ void Servidor::autenticar(string nombre, string contrasenia, list<string>& usuar
 					contraseniaCapturada = csvItem;
 				nroItem++;
 			}
-			if ((strcmp(nombre.c_str(), nombreCapturado.c_str()) == 0) && (strcmp(contrasenia.c_str(), contraseniaCapturada.c_str()) == 0)) {
+			if ((strcmp(nombre.c_str(), nombreCapturado.c_str()) == 0)
+					&& (strcmp(contrasenia.c_str(),
+							contraseniaCapturada.c_str()) == 0)) {
 				usuarios.remove(nombreCapturado);
 				autenticacionOK = true;
 			}
@@ -113,27 +116,34 @@ int Servidor::aceptarConexion() {
 	string nombre, pass;
 	char buffer[1024];
 	char datosRecibidos[1024];
+
 	this->addr_size = sizeof serverStorage;
 	cout << "Escuchando conexiones entrantes.." << endl;
 	int socketCliente;
-	socketCliente = accept(welcomeSocket, (struct sockaddr *) &this->serverStorage, &this->addr_size);
+	socketCliente = accept(welcomeSocket,
+			(struct sockaddr *) &this->serverStorage, &this->addr_size);
+
 	recv(socketCliente, datosRecibidos, 1024, 0);
 	cout << "Datos recibidos: " << datosRecibidos << endl;
 	splitDatos(datosRecibidos, &nombre, &pass);
+
 	this->autenticar(nombre, pass, this->usuarios);
 	char* resultadoDeLaAutenticacion;
 	this->cantClientesConectados += 1;
+
 	if (this->usuarios.empty()) {
 		resultadoDeLaAutenticacion = "No se pudo autenticar";
-	// si no se puede autenticar debe desconectarse al usuario
-	} else resultadoDeLaAutenticacion = "Autenticacion OK";
+		// si no se puede autenticar debe desconectarse al usuario
+	} else
+		resultadoDeLaAutenticacion = "Autenticacion OK";
 
 	//strcpy(buffer, resultadoDeLaAutenticacion);
-
-	for (list<string>::iterator i = usuarios.begin(); i != usuarios.end(); i++) {
-		//cout << (*i) << endl;
-		strcat(buffer, strdup((*i).c_str()));
-	}
+	strcpy(buffer, this->serializarLista(this->usuarios));
+	/*for (list<string>::iterator i = usuarios.begin(); i != usuarios.end(); i++) {
+	 //cout << (*i) << endl;
+	 strcat(buffer, strdup((*i).c_str()));
+	 strcat(buffer,",");
+	 }*/
 
 	string buff = buffer;
 	cout << buff << endl;
@@ -185,4 +195,14 @@ void Servidor::setThreadProceso(pthread_t thrProceso) {
 
 int Servidor::getCantConexiones() {
 	return this->cantClientesConectados;
+}
+
+const char* Servidor::serializarLista(list<string> datos) {
+	char* buffer;
+	for (list<string>::iterator i = datos.begin(); i != datos.end(); i++) {
+		cout << (*i) << endl;
+		strcat(buffer, strdup((*i).c_str()));
+		strcat(buffer, ",");
+	}
+	return buffer;
 }
