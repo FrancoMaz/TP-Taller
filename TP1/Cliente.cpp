@@ -118,7 +118,7 @@ void Cliente::conectar(string nombre, string contrasenia) {
 
 void Cliente::splitUsuarios(string datos) {
 	string datosASplitear = datos.substr(0, datos.length() - 1);
-	char str[1024];
+	char str[BUFFER_MAX_SIZE];
 	strcpy(str, datosASplitear.c_str());
 	char* pch = strtok(str, ",");
 	cout << "Los usuarios disponibles son: " << endl;
@@ -158,13 +158,27 @@ void Cliente::enviar(string mensaje, string destinatario) {
 	}
 }
 
-queue<Mensaje> Cliente::recibir() {
+void Cliente::recibir() {
 	//Se reciben todos los mensajes en la secuencia en la que fueron enviados
-	//Requiere una conexion abierta.
-	queue<Mensaje> *colaMensajes = new queue<Mensaje>;
-	recv(this->socketCliente, reinterpret_cast<char*>(&colaMensajes),
-			sizeof(colaMensajes), 0); //HAY QUE VER SI ESTE METODO FUNCIONA CORRECTAMENTE
-	return *colaMensajes;
+	char colaMensajes[BUFFER_MAX_SIZE];
+	string metodo = "Recibir|";
+	char* metodoYNombre = strdup((metodo + this -> nombre).c_str());
+	send(this->socketCliente, metodoYNombre, strlen(metodoYNombre) + 1, 0);
+	recv(this->socketCliente, colaMensajes, strlen(colaMensajes), 0);
+	this -> mostrarUltimosMensajes(colaMensajes);
+}
+
+void Cliente::mostrarUltimosMensajes(string colaMensajes)
+{
+	string mensajesASplitear = colaMensajes.substr(0, colaMensajes.length() - 1);
+	char str[BUFFER_MAX_SIZE];
+	strcpy(str, colaMensajes.c_str());
+	char* mensaje = strtok(str, "||");
+	cout << "Ultimos mensajes recibidos: " << endl;
+	while (mensaje != NULL) {
+		cout << mensaje << endl;
+		mensaje = strtok(NULL, "||");
+	}
 }
 
 void Cliente::loremIpsum(double frecuenciaDeEnvios, double cantidadMaximaDeEnvios) {
