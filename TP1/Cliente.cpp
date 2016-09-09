@@ -37,21 +37,24 @@ void Cliente::mostrarMenuYProcesarOpcion() {
 void Cliente::elegirOpcionDelMenu(int opcion) {
 	switch (opcion) {
 	case 1: {
-		char* mensaje = "CLIENTE: Te pregunto";
+		/*char* mensaje = "CLIENTE: Te pregunto";
 		char buffer[BUFFER_MAX_SIZE];
 		char datosRecibidos[BUFFER_MAX_SIZE];
 		strcpy(buffer, mensaje);
 		send(socketCliente, buffer, strlen(mensaje) + 1, 0);
 		recv(socketCliente, datosRecibidos, BUFFER_MAX_SIZE, 0);
 		cout << "Recibi: " << datosRecibidos << endl;
+		break;*/
+		string destinatario;
+		string mensajeAEnviar;
+		this -> mostrarClientesDisponibles();
+		cout << "Escriba el nombre del destinatario del mensaje " << endl;
+		cout <<	"(si quiere mandarle mensaje a todos los usuarios de la lista escriba Todos): " << endl;
+		cin >> destinatario;
+		cout << "Escriba su mensaje: " << endl;
+		cin >> mensajeAEnviar;
+		this->enviar(mensajeAEnviar, destinatario);
 		break;
-		/*string destinatario;
-		 string mensajeAEnviar;
-		 cout << "Escriba el nombre del destinatario del mensaje: " << endl;
-		 cin >> destinatario;
-		 cout << "Escriba su mensaje: " << endl;
-		 cin >> mensajeAEnviar;
-		 this->enviar(mensajeAEnviar, destinatario);*/
 
 	}
 	case 2: {
@@ -136,16 +139,21 @@ void Cliente::salir() {
 }
 
 void Cliente::enviar(string mensaje, string destinatario) {
-	//Se envia un mensaje a un usuario o a todos (este ultimo caso sucede cuando el destinatario es el string "Todos".
-	//Hay que realizar el submenu dinamico con todos los usuarios disponibles.
-	//Requiere una conexion abierta.
-	Mensaje *mensajeAEnviar = new Mensaje(this->nombre, destinatario, mensaje);
-	char buffer[BUFFER_MAX_SIZE];
-	char* stringDatosMensaje = mensajeAEnviar->getStringDatos();
-	strcpy(buffer, stringDatosMensaje);
-	send(this->socketCliente, buffer, strlen(stringDatosMensaje) + 1, 0);
-	//HAY QUE VER SI ESTE METODO FUNCIONA CORRECTAMENTE
-
+	//Se envia un mensaje a un usuario o a todos (este ultimo caso sucede cuando el destinatario es el string "Todos").
+	char* mensajeCadena = strdup(mensaje.c_str());
+	string metodo = "Enviar";
+	for (int i = 0; i < strlen(mensajeCadena); i += BUFFER_MAX_SIZE) {
+		Mensaje *mensajeAEnviar = new Mensaje(this->nombre, destinatario, mensaje);
+		char buffer[BUFFER_MAX_SIZE];
+		string largoMensaje;
+		stringstream conversion;
+		conversion << strlen(mensajeCadena);
+		largoMensaje = conversion.str();
+		char* stringDatosMensaje = strdup((largoMensaje + '|' + metodo + '|' + mensajeAEnviar->getStringDatos()).c_str());
+		cout << stringDatosMensaje;
+		strcpy(buffer, stringDatosMensaje);
+		send(this->socketCliente, buffer, strlen(stringDatosMensaje) + 1, 0);
+	}
 }
 
 queue<Mensaje> Cliente::recibir() {
@@ -233,4 +241,11 @@ void Cliente::setThreadComunicacion(pthread_t thrComu) {
 
 void Cliente::setClientesDisponibles(string nombre, string contrasenia) {
 	//this->clientesDisponibles = this->conectar(nombre, contrasenia);
+}
+
+void Cliente::mostrarClientesDisponibles(){
+	cout << "Los usuarios disponibles son: " << endl;
+	for (list<string>::iterator i = this->clientesDisponibles.begin(); i != this->clientesDisponibles.end(); i++) {
+		cout << (*i) << endl;
+	}
 }

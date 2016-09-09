@@ -9,6 +9,7 @@
 #define TP1_CLIENTE_H_
 
 #include <string>
+#include <string.h>
 #include <pthread.h>
 #include <list>
 #include <sys/types.h>
@@ -60,6 +61,7 @@ public:
 	pthread_t getThreadComunicacion();
 	void setThreadComunicacion(pthread_t thrComu);
 	void splitUsuarios(string datosRecibidos);
+	void mostrarClientesDisponibles();
 };
 
 #endif /* TP1_CLIENTE_H_ */
