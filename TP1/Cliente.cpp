@@ -150,7 +150,7 @@ void Cliente::enviar(string mensaje, string destinatario) {
 		conversion << strlen(mensajeCadena);
 		largoMensaje = conversion.str();
 		char* stringDatosMensaje = strdup((largoMensaje + '|' + metodo + '|' + mensajeAEnviar->getStringDatos()).c_str());
-		cout << stringDatosMensaje;
+		cout << stringDatosMensaje << endl;
 		strcpy(buffer, stringDatosMensaje);
 		send(this->socketCliente, buffer, strlen(stringDatosMensaje) + 1, 0);
 	}
@@ -209,9 +209,7 @@ void Cliente::loremIpsum(double frecuenciaDeEnvios, double cantidadMaximaDeEnvio
 			//Una vez que se tiene un mensaje completo se envia al cliente elegido aleatoriamente de la lista
 			//DESPUES HAY QUE DESCOMENTAR LA LINEA DE ABAJO. Falta terminar el metodo enviar, por lo que para probar la funcionalidad la deje comentada
 
-			//this->enviar(cadena, clienteAleatorioAEnviar);
-			cout << clienteAleatorioAEnviar << endl;
-			cout << cadena << endl;
+			this->enviar(cadena, clienteAleatorioAEnviar);
 			//Al enviar un mensaje el tiempo de referencia es el actual
 			tiempoInicio = clock();
 	}
