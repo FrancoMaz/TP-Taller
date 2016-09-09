@@ -45,14 +45,16 @@ void Cliente::elegirOpcionDelMenu(int opcion) {
 		recv(socketCliente, datosRecibidos, BUFFER_MAX_SIZE, 0);
 		cout << "Recibi: " << datosRecibidos << endl;
 		break;*/
+		string lectura;
 		string destinatario;
 		string mensajeAEnviar;
 		this -> mostrarClientesDisponibles();
 		cout << "Escriba el nombre del destinatario del mensaje " << endl;
 		cout <<	"(si quiere mandarle mensaje a todos los usuarios de la lista escriba Todos): " << endl;
 		cin >> destinatario;
+		cin.ignore();
 		cout << "Escriba su mensaje: " << endl;
-		cin >> mensajeAEnviar;
+		getline(cin,mensajeAEnviar);
 		this->enviar(mensajeAEnviar, destinatario);
 		break;
 
@@ -140,8 +142,8 @@ void Cliente::salir() {
 
 void Cliente::enviar(string mensaje, string destinatario) {
 	//Se envia un mensaje a un usuario o a todos (este ultimo caso sucede cuando el destinatario es el string "Todos").
-	char* mensajeCadena = strdup(mensaje.c_str());
 	string metodo = "Enviar";
+	char* mensajeCadena = strdup(mensaje.c_str());
 	for (int i = 0; i < strlen(mensajeCadena); i += BUFFER_MAX_SIZE) {
 		Mensaje *mensajeAEnviar = new Mensaje(this->nombre, destinatario, mensaje);
 		char buffer[BUFFER_MAX_SIZE];
