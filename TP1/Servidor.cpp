@@ -25,43 +25,56 @@ Servidor::Servidor(char* nombreArchivoDeUsuarios, int puerto) {
 	/*---- Bind the address struct to the socket ----*/
 	bind(this->welcomeSocket, (struct sockaddr *) &serverAddr,
 			sizeof(serverAddr));
+	this->datosUsuarios = new list<Datos>();
+	this->guardarDatosDeUsuarios();
 }
 
 Servidor::~Servidor() {
 }
-
-void Servidor::autenticar(string nombre, string contrasenia, list<string>& usuarios) {
+void Servidor::guardarDatosDeUsuarios() {
 
 	string linea, csvItem;
-	string nombreCapturado, contraseniaCapturada;
 	int nroItem;
-	bool autenticacionOK = false;
 
 	ifstream myfile(this->nombreArchivo);
-
 	if (myfile.is_open()) {
 
 		while (getline(myfile, linea)) {
+			Datos datosCapturados;
 			nroItem = 0;
 			istringstream lineaActual(linea);
 
 			while (getline(lineaActual, csvItem, ',')) {
-
 				if (nroItem == 0) {
-					nombreCapturado = csvItem;
-					usuarios.push_back(csvItem);
+					datosCapturados.nombre = csvItem;
 				}
-				if (nroItem == 1)
-					contraseniaCapturada = csvItem;
+				if (nroItem == 1) {
+					datosCapturados.contrasenia = csvItem;
+				}
 				nroItem++;
 			}
-			if ((strcmp(nombre.c_str(), nombreCapturado.c_str()) == 0) && (strcmp(contrasenia.c_str(), contraseniaCapturada.c_str()) == 0)) {
-				usuarios.remove(nombreCapturado);
-				autenticacionOK = true;
-			}
+			datosUsuarios->push_back(datosCapturados);
 		}
 	}
 	myfile.close();
+}
+
+void Servidor::autenticar(string nombre, string contrasenia,
+		list<string>& usuarios) {
+
+	bool autenticacionOK = false;
+	for (list<Datos>::iterator datoActual = datosUsuarios->begin();
+			datoActual != datosUsuarios->end(); datoActual++) {
+
+		Datos usuario;
+		usuario = *datoActual;
+		if ((strcmp(usuario.nombre.c_str(), nombre.c_str()) == 0)
+				&& (strcmp(usuario.contrasenia.c_str(), contrasenia.c_str())== 0)) {
+			autenticacionOK = true;
+		} else {
+			usuarios.push_back(usuario.nombre);
+		}
+	}
 
 	if (autenticacionOK) {
 		cout << "Autenticación OK wachin" << endl;
@@ -93,19 +106,6 @@ void Servidor::comenzarEscucha() {
 	this->escuchando = (listen(this->welcomeSocket, MAX_CANT_CLIENTES) == 0);
 }
 
-void Servidor::aceptarConexiones() {
-	string nombre;
-	string pass;
-	char datosRecibidos[1024];
-	this->addr_size = sizeof serverStorage;
-	cout << "Adentro de aceptarConexiones" << endl;
-	this->socketServer = accept(welcomeSocket,
-			(struct sockaddr *) &this->serverStorage, &this->addr_size);
-	recv(socketServer, datosRecibidos, 1024, 0);
-	cout << "Datos recibidos: " << datosRecibidos << endl;
-	splitDatos(datosRecibidos, &nombre, &pass);
-	this->autenticar(nombre, pass, this->usuarios);
-}
 
 int Servidor::aceptarConexion() {
 	//esta funcion acepta las conexiones para cada cliente que lo solicita si es autenticado y devuelve el socket de dicho cliente.
@@ -121,12 +121,13 @@ int Servidor::aceptarConexion() {
 
 	cout << "Datos recibidos: " << datosRecibidos << endl;
 	splitDatos(datosRecibidos, &nombre, &pass);
-
-	this->autenticar(nombre, pass, this->usuarios);
+	cout << "splitea bien los datos" << endl;
+	this->autenticar(nombre, pass, usuarios);
+	cout << "sale bien del autenticar" << endl;
 	char* resultadoDeLaAutenticacion;
 	this->cantClientesConectados += 1;
 
-	if (this->usuarios.empty()) {
+	if (usuarios.empty()) {
 		resultadoDeLaAutenticacion = "No se pudo autenticar";
 		cout << resultadoDeLaAutenticacion << endl;
 		strcpy(buffer, "Desconectar");
@@ -135,7 +136,9 @@ int Servidor::aceptarConexion() {
 	} else {
 		resultadoDeLaAutenticacion = "Autenticacion OK";
 		cout << resultadoDeLaAutenticacion << endl;
-		strcpy(buffer, this->serializarLista(this->usuarios));
+		strcpy(buffer, this->serializarLista(usuarios).c_str());
+		string bufferS = buffer;
+		cout << bufferS << endl;
 		send(socketCliente, buffer, 1024, 0);
 	}
 	return socketCliente;
@@ -184,12 +187,11 @@ int Servidor::getCantConexiones() {
 	return this->cantClientesConectados;
 }
 
-const char* Servidor::serializarLista(list<string> datos) {
-	char* buffer;
+string Servidor::serializarLista(list<string> datos) {
+	string buffer = "";
 	for (list<string>::iterator i = datos.begin(); i != datos.end(); i++) {
 		cout << (*i) << endl;
-		strcat(buffer, strdup((*i).c_str()));
-		strcat(buffer, ",");
+		buffer = buffer + *i + ",";
 	}
 	return buffer;
 }
