@@ -37,19 +37,21 @@ void Cliente::mostrarMenuYProcesarOpcion() {
 void Cliente::elegirOpcionDelMenu(int opcion) {
 	switch (opcion) {
 	case 1: {
-		string lectura;
-		string destinatario;
+		int numeroDestinatario;
 		string mensajeAEnviar;
 		this -> mostrarClientesDisponibles();
-		cout << "Escriba el nombre del destinatario del mensaje " << endl;
-		cout <<	"(si quiere mandarle mensaje a todos los usuarios de la lista escriba Todos): " << endl;
-		cin >> destinatario;
+		do {
+		cout << "Escriba el numero asociado al nombre del destinatario del mensaje: ";
+		cin >> numeroDestinatario;
 		cin.ignore();
+		} while (numeroDestinatario < 1 && numeroDestinatario > this->clientesDisponibles.size());
 		cout << "Escriba su mensaje: " << endl;
 		getline(cin,mensajeAEnviar);
-		this->enviar(mensajeAEnviar, destinatario);
+		if (numeroDestinatario != this->clientesDisponibles.size()){
+			string nombreDestinatario = this->devolverNombre(numeroDestinatario);
+			this->enviar(mensajeAEnviar, nombreDestinatario);
+		} else {this -> enviarMensajeATodos(mensajeAEnviar);}
 		break;
-
 	}
 	case 2: {
 		this->recibir();
@@ -144,6 +146,12 @@ void Cliente::enviar(string mensaje, string destinatario) {
 	while (largo > 0)
 	{
 		largo -= send(this->socketCliente, stringDatosMensaje, largo + 1, 0);
+	}
+}
+
+void Cliente::enviarMensajeATodos(string mensaje) {
+	for (list<string>::iterator i = this->clientesDisponibles.begin(); i != this->clientesDisponibles.end(); i++) {
+			this -> enviar(mensaje,*i);
 	}
 }
 
@@ -256,8 +264,16 @@ void Cliente::setClientesDisponibles(string nombre, string contrasenia) {
 }
 
 void Cliente::mostrarClientesDisponibles(){
+	int numeroCliente = 1;
 	cout << "Los usuarios disponibles son: " << endl;
 	for (list<string>::iterator i = this->clientesDisponibles.begin(); i != this->clientesDisponibles.end(); i++) {
-		cout << (*i) << endl;
-	}
+		cout << numeroCliente << ") " << (*i) << endl;
+		numeroCliente ++; }
+	cout << numeroCliente << ") Enviar mensaje a todos los usuarios" << endl;
+}
+
+string Cliente::devolverNombre(int numeroDestinatario) {
+	list<string>::iterator iterador = this->clientesDisponibles.begin();
+	advance(iterador, numeroDestinatario - 1);
+	return (*iterador);
 }
