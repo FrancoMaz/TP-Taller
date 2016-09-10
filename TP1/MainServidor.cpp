@@ -79,6 +79,8 @@ void* cicloEscucharConexionesNuevasThreadProceso(void* arg) {
 	char* archivo = strdup(archivoUsers.c_str());
 	do {
 		servidor = new Servidor(archivo, puerto);
+		//aca deberia verificar los datos del nombre de archivo usuarios y del puerto,
+		//para ver si mato al servidor o no.
 		servidor->comenzarEscucha();
 	} while (!servidor->escuchando);
 
@@ -93,6 +95,7 @@ void* cicloEscucharConexionesNuevasThreadProceso(void* arg) {
 		//genero un nuevo thread dinamicamente para este cliente
 		if (servidor->getCantConexiones() <= MAX_CANT_CLIENTES) {
 			cout << "Te conecte" << endl;
+			cout<< "cantidad de clientes: "<<servidor->getCantConexiones()<<endl;
 			//si todavia hay lugar en el servidor, creo el thread que va a escuchar los pedidos de este cliente
 			parametrosThreadCliente parametrosCliente;
 			parametrosCliente.socketCli = socketCliente;
@@ -101,6 +104,7 @@ void* cicloEscucharConexionesNuevasThreadProceso(void* arg) {
 
 			pthread_create(&thread_id[servidor->getCantConexiones()], NULL,
 					&cicloEscuchaCliente, &parametrosCliente); //optimizar ya que si un cliente se desconecta podria causar un problema
+
 		}
 	}
 }

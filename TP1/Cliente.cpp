@@ -5,14 +5,14 @@
 
 using namespace std;
 
-Cliente::Cliente(char* ip, int puerto) {
+Cliente::Cliente(string ip, int puerto) {
 //El cliente se crea con la direccion IP y el puerto en el cual se encuentra disponible el servidor
-	this->direccionIP = ip;
+	this->direccionIP = strdup(ip.c_str());
 	this->puertoServidor = puerto;
 	this->socketCliente = socket(PF_INET, SOCK_STREAM, 0);
 	direccionServidor.sin_family = AF_INET;
 	direccionServidor.sin_port = htons(puerto);
-	direccionServidor.sin_addr.s_addr = inet_addr(ip);
+	direccionServidor.sin_addr.s_addr = inet_addr(this->direccionIP);
 	memset(direccionServidor.sin_zero, '\0', sizeof direccionServidor.sin_zero);
 	this->opcionMenu = 0;
 }
@@ -94,10 +94,11 @@ void Cliente::conectar(string nombre, string contrasenia) {
 	char* nombreYPass = strdup((nombre + ',' + contrasenia).c_str()); // convierte el string de const char* a char*
 	cout << nombreYPass << endl;
 	cout << "Intentando conectarse con el servidor. . ." << endl;
-	if (connect(socketCliente, (struct sockaddr *) &direccionServidor,
-			addr_size) == 0) {
+	if (connect(socketCliente, (struct sockaddr *) &direccionServidor,addr_size) == 0) {
+
 		strcpy(buffer, nombreYPass);
 		send(socketCliente, buffer, strlen(nombreYPass) + 1, 0);
+
 		cout << "Conectandose al puerto: " << this->puertoServidor << endl;
 		this->nombre = nombre;
 		//this->clientesDisponibles.push_front("hola"); //pongo cualquier cosa para comprobar el ciclo ok.
