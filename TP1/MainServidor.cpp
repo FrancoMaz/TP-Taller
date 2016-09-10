@@ -32,17 +32,16 @@ void* cicloEscuchaCliente(void* arg)
 	struct parametrosThreadCliente* parametros = (parametrosThreadCliente*)arg;
 	Servidor* servidor = parametros->serv;
 	int socketCliente = parametros->socketCli;
-	char buffer [1024];
-	char datosRecibidos[1024];
+	char buffer [BUFFER_MAX_SIZE];
+	char datosRecibidos[BUFFER_MAX_SIZE];
 	char* mensaje = "SERVER: Te respondo";
 	while (1)
 	{
 		//en este loop se van a gestionar los send y receive del cliente. aca se va a distinguir que es lo que quiere hacer y actuar segun lo que quiera el cliente.
-		recv(socketCliente,datosRecibidos,1024,0);
+		recv(socketCliente,datosRecibidos,BUFFER_MAX_SIZE,0);
 		cout << "Recibi: " << datosRecibidos << endl;
 		strcpy(buffer,mensaje);
 		send(socketCliente, buffer, strlen(mensaje) + 1, 0);
-
 	}
 }
 
@@ -80,6 +79,7 @@ void* cicloEscucharConexionesNuevasThreadProceso(void* arg)
 			parametrosThreadCliente parametrosCliente;
 			parametrosCliente.socketCli = socketCliente;
 			parametrosCliente.serv = servidor;
+			pthread_detach(thread_id[servidor->getCantConexiones()]); //lo marco como detach
 			pthread_create(&thread_id[servidor->getCantConexiones()],NULL,&cicloEscuchaCliente,&parametrosCliente); //optimizar ya que si un cliente se desconecta podria causar un problema
 		}
 	}

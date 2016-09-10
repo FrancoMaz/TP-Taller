@@ -100,11 +100,11 @@ void Servidor::comenzarEscucha() {
 void Servidor::aceptarConexiones() {
 		string nombre;
 		string pass;
-		char datosRecibidos[1024];
+		char datosRecibidos[BUFFER_MAX_SIZE];
 		this->addr_size = sizeof serverStorage;
 		cout << "Adentro de aceptarConexiones" << endl;
 		this->socketServer = accept(welcomeSocket, (struct sockaddr *) &this->serverStorage, &this->addr_size);
-		recv(socketServer, datosRecibidos, 1024, 0);
+		recv(socketServer, datosRecibidos, BUFFER_MAX_SIZE, 0);
 		cout << datosRecibidos << "Datos recibidos" << endl;
 		splitDatos(datosRecibidos, &nombre, &pass);
 		this->autenticar(nombre, pass);
@@ -113,13 +113,13 @@ void Servidor::aceptarConexiones() {
 int Servidor::aceptarConexion() {
 	//esta funcion acepta las conexiones para cada cliente que lo solicita si es autenticado y devuelve el socket de dicho cliente.
 	string nombre, pass;
-	char buffer [1024];
-	char datosRecibidos[1024];
+	char buffer [BUFFER_MAX_SIZE];
+	char datosRecibidos[BUFFER_MAX_SIZE];
 	this->addr_size = sizeof serverStorage;
 	cout << "Escuchando conexiones entrantes.." << endl;
 	int socketCliente;
 	socketCliente = accept(welcomeSocket, (struct sockaddr *) &this->serverStorage, &this->addr_size);
-	recv(socketCliente, datosRecibidos, 1024, 0);
+	recv(socketCliente, datosRecibidos, BUFFER_MAX_SIZE, 0);
 	cout << datosRecibidos << "Datos recibidos" << endl;
 	splitDatos(datosRecibidos, &nombre, &pass);
 	list<string>* clientes = this->autenticar(nombre, pass);
@@ -164,7 +164,7 @@ void Servidor::splitDatos(char* datos, string* nombre, string* pass) {
 void Servidor::recibirMensaje()
 {
 	Mensaje* mensajeARecibir = new Mensaje();
-	char datosMensaje[1024];
+	char datosMensaje[BUFFER_MAX_SIZE];
 	cout << "Recibir mensaje" << endl;
 	recv(this->socketServer, datosMensaje,strlen(datosMensaje),0);
 	mensajeARecibir->setearDatos(datosMensaje);
