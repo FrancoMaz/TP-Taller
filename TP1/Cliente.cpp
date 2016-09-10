@@ -37,31 +37,35 @@ void Cliente::mostrarMenuYProcesarOpcion() {
 void Cliente::elegirOpcionDelMenu(int opcion) {
 	switch (opcion) {
 	case 1: {
-		char* mensaje = "CLIENTE: Te pregunto";
-		char buffer [BUFFER_MAX_SIZE];
+		/*char* mensaje = "CLIENTE: Te pregunto";
+		char buffer[BUFFER_MAX_SIZE];
 		char datosRecibidos[BUFFER_MAX_SIZE];
-		strcpy(buffer,mensaje);
+		strcpy(buffer, mensaje);
 		send(socketCliente, buffer, strlen(mensaje) + 1, 0);
-		recv(socketCliente,datosRecibidos,BUFFER_MAX_SIZE,0);
+		recv(socketCliente, datosRecibidos, BUFFER_MAX_SIZE, 0);
 		cout << "Recibi: " << datosRecibidos << endl;
-		break;
-		/*string destinatario;
+		break;*/
+		string lectura;
+		string destinatario;
 		string mensajeAEnviar;
-		cout << "Escriba el nombre del destinatario del mensaje: " << endl;
+		this -> mostrarClientesDisponibles();
+		cout << "Escriba el nombre del destinatario del mensaje " << endl;
+		cout <<	"(si quiere mandarle mensaje a todos los usuarios de la lista escriba Todos): " << endl;
 		cin >> destinatario;
+		cin.ignore();
 		cout << "Escriba su mensaje: " << endl;
-		cin >> mensajeAEnviar;
+		getline(cin,mensajeAEnviar);
 		this->enviar(mensajeAEnviar, destinatario);
 		break;
-		*/
+
 	}
 	case 2: {
 		this->recibir();
 		break;
 	}
 	case 3: {
-		int frecuenciaDeEnvios;
-		int cantidadMaximaDeEnvios;
+		double frecuenciaDeEnvios;
+		double cantidadMaximaDeEnvios;
 		cout << "Escriba la frecuencia de envios: " << endl;
 		cin >> frecuenciaDeEnvios;
 		cout << "Escriba la cantidad maxima de envios: " << endl;
@@ -82,13 +86,12 @@ void Cliente::elegirOpcionDelMenu(int opcion) {
 	}
 }
 
-list<string> Cliente::conectar(string nombre, string contrasenia) {
+void Cliente::conectar(string nombre, string contrasenia) {
 	//Se establece la conexion con el servidor mediante autenticacion. El servidor devuelve la lista con todos los usuarios disponibles
-	list<string> clientesDisponibles;
-	char buffer [BUFFER_MAX_SIZE];
-	char datosRecibidos [BUFFER_MAX_SIZE];
+	char buffer[BUFFER_MAX_SIZE];
+	char datosRecibidos[BUFFER_MAX_SIZE];
 	this->addr_size = sizeof direccionServidor;
-	char* nombreYPass = strdup((nombre + ',' + contrasenia).c_str());
+	char* nombreYPass = strdup((nombre + ',' + contrasenia).c_str()); // convierte el string de const char* a char*
 	cout << nombreYPass << endl;
 	cout << "Intentando conectarse con el servidor. . ." << endl;
 	if (connect(socketCliente, (struct sockaddr *) &direccionServidor,
@@ -99,13 +102,31 @@ list<string> Cliente::conectar(string nombre, string contrasenia) {
 		this->nombre = nombre;
 		//this->clientesDisponibles.push_front("hola"); //pongo cualquier cosa para comprobar el ciclo ok.
 		recv(socketCliente, datosRecibidos, BUFFER_MAX_SIZE, 0);
-		cout << datosRecibidos << endl; //IMPRIMO LA RESPUESTA DEL SERVER, SI SE PUDO AUTENTICAR O NO. --> HAY QUE CAMBIAR ESTO PORQUE EN REALIDAD SE DEVUELVE LA LISTA DE USUARIOS.
-		//this->clientesDisponibles.push_front(datosRecibidos); //pongo cualquier cosa para que me autentique.
+		string datos = datosRecibidos;
+		string desconectarse = "Desconectar";
+		if (strcmp(datos.c_str(), desconectarse.c_str()) == 0) {
+			this->desconectar();
+		} else {
+			cout << "Datos recibidos: " << datos << endl; //IMPRIMO LA RESPUESTA DEL SERVER, SI SE PUDO AUTENTICAR O NO. --> HAY QUE CAMBIAR ESTO PORQUE EN REALIDAD SE DEVUELVE LA LISTA DE USUARIOS.
+			splitUsuarios(datosRecibidos);
+		}
 	} else {
 		cout << "Error conectandose al puerto" << endl;
 	}
-	return clientesDisponibles;
 	//Faltaria que el servidor devuelve la lista con los usuarios disponibles y que confirme la autenticacion del cliente
+}
+
+void Cliente::splitUsuarios(string datos) {
+	string datosASplitear = datos.substr(0, datos.length() - 1);
+	char str[BUFFER_MAX_SIZE];
+	strcpy(str, datosASplitear.c_str());
+	char* pch = strtok(str, ",");
+	cout << "Los usuarios disponibles son: " << endl;
+	while (pch != NULL) {
+		this->clientesDisponibles.push_back(pch);
+		cout << pch << endl;
+		pch = strtok(NULL, ",");
+	}
 }
 
 void Cliente::desconectar() {
@@ -115,89 +136,130 @@ void Cliente::desconectar() {
 
 void Cliente::salir() {
 	//Se termina la ejecucion del programa
+	cout << "Desconectando al cliente" << endl;
 	close(socketCliente);
 }
 
 void Cliente::enviar(string mensaje, string destinatario) {
-	//Se envia un mensaje a un usuario o a todos (este ultimo caso sucede cuando el destinatario es el string "Todos".
-	//Hay que realizar el submenu dinamico con todos los usuarios disponibles.
-	//Requiere una conexion abierta.
-	Mensaje *mensajeAEnviar = new Mensaje(this->nombre, destinatario, mensaje);
-	char buffer[BUFFER_MAX_SIZE];
-	char* stringDatosMensaje = mensajeAEnviar->getStringDatos();
-	strcpy(buffer,stringDatosMensaje);
-	send(this->socketCliente, buffer, strlen(stringDatosMensaje)+1, 0);
-	//HAY QUE VER SI ESTE METODO FUNCIONA CORRECTAMENTE
-
+	//Se envia un mensaje a un usuario o a todos (este ultimo caso sucede cuando el destinatario es el string "Todos").
+	string metodo = "Enviar";
+	char* mensajeCadena = strdup(mensaje.c_str());
+	for (int i = 0; i < strlen(mensajeCadena); i += BUFFER_MAX_SIZE) {
+		Mensaje *mensajeAEnviar = new Mensaje(this->nombre, destinatario, mensaje);
+		char buffer[BUFFER_MAX_SIZE];
+		string largoMensaje;
+		stringstream conversion;
+		conversion << strlen(mensajeCadena);
+		largoMensaje = conversion.str();
+		char* stringDatosMensaje = strdup((largoMensaje + '|' + metodo + '|' + mensajeAEnviar->getStringDatos()).c_str());
+		cout << stringDatosMensaje << endl;
+		strcpy(buffer, stringDatosMensaje);
+		send(this->socketCliente, buffer, strlen(stringDatosMensaje) + 1, 0);
+	}
 }
 
-queue<Mensaje> Cliente::recibir() {
+void Cliente::recibir() {
 	//Se reciben todos los mensajes en la secuencia en la que fueron enviados
-	//Requiere una conexion abierta.
-	queue<Mensaje> *colaMensajes = new queue<Mensaje>;
-	recv(this->socketCliente, reinterpret_cast<char*>(&colaMensajes),
-			sizeof(colaMensajes), 0); //HAY QUE VER SI ESTE METODO FUNCIONA CORRECTAMENTE
-	return *colaMensajes;
+	char colaMensajes[BUFFER_MAX_SIZE];
+	string metodo = "Recibir|";
+	char* metodoYNombre = strdup((metodo + this -> nombre).c_str());
+	send(this->socketCliente, metodoYNombre, strlen(metodoYNombre) + 1, 0);
+	recv(this->socketCliente, colaMensajes, strlen(colaMensajes), 0);
+	this -> mostrarUltimosMensajes(colaMensajes);
 }
 
-void Cliente::loremIpsum(int frecuenciaDeEnvios, int cantidadMaximaDeEnvios) {
+void Cliente::mostrarUltimosMensajes(string colaMensajes)
+{
+	string mensajesASplitear = colaMensajes.substr(0, colaMensajes.length() - 1);
+	char str[BUFFER_MAX_SIZE];
+	strcpy(str, colaMensajes.c_str());
+	char* mensaje = strtok(str, "||");
+	cout << "Ultimos mensajes recibidos: " << endl;
+	while (mensaje != NULL) {
+		cout << mensaje << endl;
+		mensaje = strtok(NULL, "||");
+	}
+}
+
+void Cliente::loremIpsum(double frecuenciaDeEnvios, double cantidadMaximaDeEnvios) {
 	//Toma el texto de un archivo y se envian mensajes en forma ciclica. El tamanio de mensajes y el destinatario son aleatorios
 	//Cuando todo el texto fue transmitido, se empieza otra vez desde el inicio
-	//Requiere una conexion abierta.
-	time_t tiempoInicio = time(0);
-	ifstream archivo("LoremIpsum.txt");
-	this->clientesDisponibles.push_back("A");
-	this->clientesDisponibles.push_back("B");
-	this->clientesDisponibles.push_back("C");
-	this->clientesDisponibles.push_back("D");
-	//LAS CUATRO LINEAS DE ARRIBA LAS PUSE PARA PROBAR LA FUNCIONALIDAD. CUANTO TENGAMOS LA LISTA DE CLIENTES ES ESA LA LISTA QUE VAMOS A USAR
+	FILE* archivo;
+	int tamanioMensaje;
+	int numeroDeClienteAEnviar;
+	string clienteAleatorioAEnviar;
+	archivo = fopen("LoremIpsum.txt","r");
+	srand(time(NULL));
+	//Por ahora puse que el tamanio de los mensajes este entre 0 y 30, pero mas adelante eso se tiene que modificar
+	tamanioMensaje = (int) (rand() % 30);
+	//Se elige aleatoriamente el destinatario de la secuencia de mensajes
+	numeroDeClienteAEnviar = (int) (rand()% this->clientesDisponibles.size());
+	list<string>::iterator iterador = this->clientesDisponibles.begin();
+	advance(iterador, numeroDeClienteAEnviar);
+	clienteAleatorioAEnviar = *iterador;
+	//tiempoPorMensaje indica cada cuanto tiempo se manda un mensaje (en segundos)
+	double tiempoPorMensaje = (frecuenciaDeEnvios/cantidadMaximaDeEnvios);
+	//Indico el tiempo de inicio
+	clock_t tiempoInicio = clock();
 	for (int i = 0; i < cantidadMaximaDeEnvios; i++) {
-		int tamanioMensaje;
-		srand(time(NULL));
-		tamanioMensaje = (int) (rand() % 30); //Por ahora puse que el tamanio de los mensajes este entre 0 y 30, pero mas adelante eso se tiene que modificar
 		char cadena[tamanioMensaje];
-		int numeroDeClienteAEnviar;
-		string clienteAleatorioAEnviar;
-		numeroDeClienteAEnviar = (int) (rand()
-				% this->clientesDisponibles.size());
-		list<string>::iterator iterador = this->clientesDisponibles.begin();
-		advance(iterador, numeroDeClienteAEnviar);
-		clienteAleatorioAEnviar = *iterador;
+		//No tiene que ocurrir nada hasta que el tiempo transcurrido sea igual al tiempo estipulado de envio para cada mensaje
 		do {
-		} while ((time(0) - tiempoInicio) < frecuenciaDeEnvios); //este loop esta vacio porque quiero que no haga nada hasta que pase cierto tiempo. De ultima despues vemos de arreglarlo si no esta bien
-		archivo.get(cadena, tamanioMensaje);
-		this->enviar(cadena, clienteAleatorioAEnviar);
-		tiempoInicio = time(0);
-		if (archivo.eof()) {
-			archivo.clear();
-			archivo.seekg(0, ios::beg);
-		}
-		cout << cadena << endl;
+		} while (((double)(clock()-tiempoInicio)/CLOCKS_PER_SEC) < tiempoPorMensaje);
+		//Una vez que se transcurren tiempoPorMensaje segundos se empieza a leer caracteres del archivo
+			for (int j=0; j < tamanioMensaje; j++) {
+				char c = fgetc(archivo);
+				//Si no hay salto de linea o fin de archivo se guarda el caracter leido
+				if (c != '\n' && c != EOF) {
+					cadena[j] = c;}
+				//Si viene un salto de linea se guarda un espacio (si no hacia esto se imprimia un caracter random)
+				if (c == '\n') {
+					cadena[j] = ' ';
+				}
+				//Si viene un fin de archivo se guarda un espacio y se vuelven a leer caracteres del archivo desde el comienzo
+				if (c == EOF) {
+					cadena[j] = ' ';
+					fclose(archivo);
+					archivo = fopen("LoremIpsum.txt","r"); }
+				}
+			//Una vez que se tiene un mensaje completo se envia al cliente elegido aleatoriamente de la lista
+			//DESPUES HAY QUE DESCOMENTAR LA LINEA DE ABAJO. Falta terminar el metodo enviar, por lo que para probar la funcionalidad la deje comentada
+
+			this->enviar(cadena, clienteAleatorioAEnviar);
+			//Al enviar un mensaje el tiempo de referencia es el actual
+			tiempoInicio = clock();
 	}
-	archivo.close();
+	fclose(archivo);
 }
 
 string Cliente::getNombre() {
-return this->nombre;
+	return this->nombre;
 }
 
 int Cliente::getOpcionMenu() {
-return this->opcionMenu;
+	return this->opcionMenu;
 }
 
 pthread_t Cliente::getThreadComunicacion() {
-return this->threadComunicacion;
+	return this->threadComunicacion;
 }
 
 list<string> Cliente::getClientesDisponibles() {
-return this->clientesDisponibles;
+	return this->clientesDisponibles;
 
 }
 
 void Cliente::setThreadComunicacion(pthread_t thrComu) {
-this->threadComunicacion = thrComu;
+	this->threadComunicacion = thrComu;
 }
 
 void Cliente::setClientesDisponibles(string nombre, string contrasenia) {
-this->clientesDisponibles = this->conectar(nombre, contrasenia);
+	//this->clientesDisponibles = this->conectar(nombre, contrasenia);
+}
+
+void Cliente::mostrarClientesDisponibles(){
+	cout << "Los usuarios disponibles son: " << endl;
+	for (list<string>::iterator i = this->clientesDisponibles.begin(); i != this->clientesDisponibles.end(); i++) {
+		cout << (*i) << endl;
+	}
 }

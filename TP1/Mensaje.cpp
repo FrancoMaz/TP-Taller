@@ -26,8 +26,8 @@ string Mensaje::getTexto(){
 	return this->textoMensaje;
 }
 
-char* Mensaje::getStringDatos(){
-	return strdup((this->clienteRemitente + ',' + this->clienteDestinatario + ',' + this->textoMensaje).c_str());
+string Mensaje::getStringDatos(){
+	return (this->clienteRemitente + '|' + this->clienteDestinatario + '|' + this->textoMensaje + '#');
 }
 
 void Mensaje::setearDatos(char* datosMensaje){

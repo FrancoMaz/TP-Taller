@@ -1,1 +1,4 @@
-Probando archivo de texto Probando Lorem Ipsum Probando Probando ...
+Probando Lorem Ipsum
+Grupo taller Flan Chris Jochi Pablo Franco
+Funciona Lorem Ipsum
+Chau

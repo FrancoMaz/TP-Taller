@@ -9,6 +9,7 @@
 #define TP1_CLIENTE_H_
 
 #include <string>
+#include <string.h>
 #include <pthread.h>
 #include <list>
 #include <sys/types.h>
@@ -47,18 +48,21 @@ public:
 	virtual ~Cliente();
 	void mostrarMenuYProcesarOpcion();
 	void elegirOpcionDelMenu(int opcion);
-	list<string> conectar(string nombre, string contrasenia);
+	void conectar(string nombre, string contrasenia);
 	void desconectar();
 	void salir();
 	void enviar(string mensaje, string destinatario);
-	queue<Mensaje> recibir();
-	void loremIpsum(int frecuenciaDeEnvios,int cantidadMaximaDeEnvios);
+	void recibir();
+	void loremIpsum(double frecuenciaDeEnvios,double cantidadMaximaDeEnvios);
 	string getNombre();
 	int getOpcionMenu();
 	list<string> getClientesDisponibles();
 	void setClientesDisponibles(string nombre, string contrasenia);
 	pthread_t getThreadComunicacion();
 	void setThreadComunicacion(pthread_t thrComu);
+	void splitUsuarios(string datosRecibidos);
+	void mostrarClientesDisponibles();
+	void mostrarUltimosMensajes(string colaMensajes);
 };
 
 #endif /* TP1_CLIENTE_H_ */

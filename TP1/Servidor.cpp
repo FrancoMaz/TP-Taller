@@ -30,14 +30,13 @@ Servidor::Servidor(char* nombreArchivoDeUsuarios, int puerto) {
 Servidor::~Servidor() {
 }
 
-list<string>* Servidor::autenticar(string nombre, string contrasenia) {
+void Servidor::autenticar(string nombre, string contrasenia, list<string>& usuarios) {
 
 	string linea, csvItem;
 	string nombreCapturado, contraseniaCapturada;
 	int nroItem;
 	bool autenticacionOK = false;
-	list<string> usuarios;
-	list<string>* users = &usuarios;
+
 	ifstream myfile(this->nombreArchivo);
 
 	if (myfile.is_open()) {
@@ -52,7 +51,8 @@ list<string>* Servidor::autenticar(string nombre, string contrasenia) {
 					nombreCapturado = csvItem;
 					usuarios.push_back(csvItem);
 				}
-				if (nroItem == 1) contraseniaCapturada = csvItem;
+				if (nroItem == 1)
+					contraseniaCapturada = csvItem;
 				nroItem++;
 			}
 			if ((strcmp(nombre.c_str(), nombreCapturado.c_str()) == 0) && (strcmp(contrasenia.c_str(), contraseniaCapturada.c_str()) == 0)) {
@@ -65,13 +65,9 @@ list<string>* Servidor::autenticar(string nombre, string contrasenia) {
 
 	if (autenticacionOK) {
 		cout << "Autenticación OK wachin" << endl;
-		for (list<string>::const_iterator i = usuarios.begin(); i != usuarios.end(); i++) {
-			printf("%s\n", i->c_str());
-		}
-		return users;
 	} else {
+		usuarios.clear();
 		cout << "Error de autenticación, no nos hackees wachin" << endl;
-		return new list<string>();
 	}
 }
 
@@ -98,41 +94,50 @@ void Servidor::comenzarEscucha() {
 }
 
 void Servidor::aceptarConexiones() {
-		string nombre;
-		string pass;
-		char datosRecibidos[BUFFER_MAX_SIZE];
-		this->addr_size = sizeof serverStorage;
-		cout << "Adentro de aceptarConexiones" << endl;
-		this->socketServer = accept(welcomeSocket, (struct sockaddr *) &this->serverStorage, &this->addr_size);
-		recv(socketServer, datosRecibidos, BUFFER_MAX_SIZE, 0);
-		cout << datosRecibidos << "Datos recibidos" << endl;
-		splitDatos(datosRecibidos, &nombre, &pass);
-		this->autenticar(nombre, pass);
+	string nombre;
+	string pass;
+	char datosRecibidos[1024];
+	this->addr_size = sizeof serverStorage;
+	cout << "Adentro de aceptarConexiones" << endl;
+	this->socketServer = accept(welcomeSocket,
+			(struct sockaddr *) &this->serverStorage, &this->addr_size);
+	recv(socketServer, datosRecibidos, 1024, 0);
+	cout << "Datos recibidos: " << datosRecibidos << endl;
+	splitDatos(datosRecibidos, &nombre, &pass);
+	this->autenticar(nombre, pass, this->usuarios);
 }
 
 int Servidor::aceptarConexion() {
 	//esta funcion acepta las conexiones para cada cliente que lo solicita si es autenticado y devuelve el socket de dicho cliente.
 	string nombre, pass;
-	char buffer [BUFFER_MAX_SIZE];
-	char datosRecibidos[BUFFER_MAX_SIZE];
+	char buffer[1024];
+	char datosRecibidos[1024];
+
 	this->addr_size = sizeof serverStorage;
 	cout << "Escuchando conexiones entrantes.." << endl;
-	int socketCliente;
-	socketCliente = accept(welcomeSocket, (struct sockaddr *) &this->serverStorage, &this->addr_size);
-	recv(socketCliente, datosRecibidos, BUFFER_MAX_SIZE, 0);
-	cout << datosRecibidos << "Datos recibidos" << endl;
+
+	int socketCliente = accept(welcomeSocket, (struct sockaddr *) &this->serverStorage, &this->addr_size);
+	recv(socketCliente, datosRecibidos, 1024, 0);
+
+	cout << "Datos recibidos: " << datosRecibidos << endl;
 	splitDatos(datosRecibidos, &nombre, &pass);
-	list<string>* clientes = this->autenticar(nombre, pass);
-	char* autenticacionOk;
+
+	this->autenticar(nombre, pass, this->usuarios);
+	char* resultadoDeLaAutenticacion;
 	this->cantClientesConectados += 1;
-	if (clientes->empty())
-		autenticacionOk = "SERVER: NO SE PUDO AUTENTICAR";
-	else
-		autenticacionOk = "SERVER: AUTENTICACION OK";
-	strcpy(buffer,autenticacionOk);
-	//le respondo al cliente un mensaje que dice si se pudo autenticar o no. hay que cambiar esto para qe le mande al cliente la lista que corresponde.
-	send(socketCliente, buffer, strlen(autenticacionOk) + 1, 0);
-	//FALTA HACER QUE UNA VEZ QUE SE AUTENTIQUE, ESTA FUNCION HAGA SEND AL CLIENTE DE LA LISTA DE USUARIOS DISPONIBLES.
+
+	if (this->usuarios.empty()) {
+		resultadoDeLaAutenticacion = "No se pudo autenticar";
+		cout << resultadoDeLaAutenticacion << endl;
+		strcpy(buffer, "Desconectar");
+		send(socketCliente, buffer, 1024, 0);
+		// si no se puede autenticar debe desconectarse al usuario
+	} else {
+		resultadoDeLaAutenticacion = "Autenticacion OK";
+		cout << resultadoDeLaAutenticacion << endl;
+		strcpy(buffer, this->serializarLista(this->usuarios));
+		send(socketCliente, buffer, 1024, 0);
+	}
 	return socketCliente;
 }
 
@@ -156,28 +161,35 @@ void Servidor::splitDatos(char* datos, string* nombre, string* pass) {
 			pos++;
 			nombreCompleto = true;
 			*pass = *pass + datos[pos];
-
 		}
 	}
 }
 
-void Servidor::recibirMensaje()
-{
+void Servidor::recibirMensaje() {
 	Mensaje* mensajeARecibir = new Mensaje();
 	char datosMensaje[BUFFER_MAX_SIZE];
 	cout << "Recibir mensaje" << endl;
-	recv(this->socketServer, datosMensaje,strlen(datosMensaje),0);
+	recv(this->socketServer, datosMensaje, strlen(datosMensaje), 0);
 	mensajeARecibir->setearDatos(datosMensaje);
 	cout << "Remitente: " << mensajeARecibir->getRemitente() << endl;
 	cout << "Destinatario: " << mensajeARecibir->getDestinatario() << endl;
 	cout << "Mensaje: " << mensajeARecibir->getTexto() << endl;
 }
 
-void Servidor::setThreadProceso(pthread_t thrProceso)
-{
+void Servidor::setThreadProceso(pthread_t thrProceso) {
 	this->threadProcesador = thrProceso;
 }
 
-int Servidor::getCantConexiones(){
+int Servidor::getCantConexiones() {
 	return this->cantClientesConectados;
+}
+
+const char* Servidor::serializarLista(list<string> datos) {
+	char* buffer;
+	for (list<string>::iterator i = datos.begin(); i != datos.end(); i++) {
+		cout << (*i) << endl;
+		strcat(buffer, strdup((*i).c_str()));
+		strcat(buffer, ",");
+	}
+	return buffer;
 }
