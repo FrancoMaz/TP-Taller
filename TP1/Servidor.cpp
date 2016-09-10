@@ -19,6 +19,7 @@ Servidor::Servidor(char* nombreArchivoDeUsuarios, int puerto) {
 	/* Set port number, using htons function to use proper byte order */
 	this->serverAddr.sin_port = htons(puerto);
 	/* Set IP address to localhost */
+	//this->serverAddr.sin_addr.s_addr = inet_addr("192.168.1.10");
 	this->serverAddr.sin_addr.s_addr = inet_addr("127.0.0.1");
 	/* Set all bits of the padding field to 0 */
 	memset(serverAddr.sin_zero, '\0', sizeof serverAddr.sin_zero);
@@ -63,6 +64,7 @@ void Servidor::autenticar(string nombre, string contrasenia,
 		list<string>& usuarios) {
 
 	bool autenticacionOK = false;
+	this->usuarios.clear();
 	for (list<Datos>::iterator datoActual = datosUsuarios->begin();
 			datoActual != datosUsuarios->end(); datoActual++) {
 
