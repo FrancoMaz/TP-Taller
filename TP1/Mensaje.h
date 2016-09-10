@@ -19,7 +19,7 @@ public:
 	Mensaje();
 	virtual ~Mensaje();
 	string getTexto();
-	char* getStringDatos();
+	string getStringDatos();
 	void setearDatos(char* datosMensaje);
 	string getRemitente();
 	string getDestinatario();

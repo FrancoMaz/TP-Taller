@@ -9,6 +9,7 @@
 #define TP1_CLIENTE_H_
 
 #include <string>
+#include <string.h>
 #include <pthread.h>
 #include <list>
 #include <sys/types.h>
@@ -51,7 +52,7 @@ public:
 	void desconectar();
 	void salir();
 	void enviar(string mensaje, string destinatario);
-	queue<Mensaje> recibir();
+	void recibir();
 	void loremIpsum(double frecuenciaDeEnvios,double cantidadMaximaDeEnvios);
 	string getNombre();
 	int getOpcionMenu();
@@ -60,6 +61,8 @@ public:
 	pthread_t getThreadComunicacion();
 	void setThreadComunicacion(pthread_t thrComu);
 	void splitUsuarios(string datosRecibidos);
+	void mostrarClientesDisponibles();
+	void mostrarUltimosMensajes(string colaMensajes);
 };
 
 #endif /* TP1_CLIENTE_H_ */

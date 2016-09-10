@@ -26,10 +26,15 @@ struct parametrosThreadCliente {
 	int socketCli;
 };
 
+struct parametrosThreadEncolarMensaje{
+	Mensaje* mensajeNoProcesado;
+	Servidor* servidor;
+};
+
 void* encolarMensaje(void* arg){
-	Mensaje mensaje = *(Mensaje*) arg; //No sé si esto funciona bien pero al menos compila
+	parametrosThreadEncolarMensaje parametrosEncolarMensaje = *(parametrosThreadEncolarMensaje*) arg;
 	pthread_mutex_lock(&mutex);
-	//servidor->crearMensaje(mensaje);
+	parametrosEncolarMensaje.servidor->crearMensaje(*parametrosEncolarMensaje.mensajeNoProcesado);
 	pthread_mutex_unlock(&mutex);
 	return NULL;
 }
@@ -40,31 +45,26 @@ void* cicloEscuchaCliente(void* arg) {
 	struct parametrosThreadCliente* parametros = (parametrosThreadCliente*) arg;
 	Servidor* servidor = parametros->serv;
 	int socketCliente = parametros->socketCli;
-	char buffer[1024];
 	char datosRecibidos[1024];
-	//char* mensaje = "SERVER: Te respondo";
 	pthread_t threadEncolarMensaje;
 	while (1) {
 		//en este loop se van a gestionar los send y receive del cliente. aca se va a distinguir que es lo que quiere hacer y actuar segun lo que quiera el cliente.
 		recv(socketCliente, datosRecibidos, 1024, 0);
 
+		//el formato del mensaje recibido en datosRecibidos es el siguiente:
 		//largodelmensaje | metodo (puede ser un numero) | remitente | destinatario | mensaje #
+		//A continuación hago un split de cada campo
 		char* largoDelMensaje = strtok(datosRecibidos,"|");
 		char* metodo = strtok(NULL,"|");
 		char* remitente = strtok(NULL,"|");
 		char* destinatario = strtok(NULL,"|");
 		char* mensaje = strtok(NULL,"#");
 
-		//Puede que después sea necesario liberar memoria acá, ya que estamos creando objetos en un ciclo
-		Mensaje* mensajeNoProcesado = new Mensaje(remitente,destinatario,mensaje);
+		parametrosThreadEncolarMensaje parametrosEncolarMensaje;
+		parametrosEncolarMensaje.mensajeNoProcesado = new Mensaje(remitente,destinatario,mensaje);
+		parametrosEncolarMensaje.servidor = servidor;
 
-		//Debería crear una estructura para pasarla como argumento al thread
-		//Que contenga mensajeNoProcesado, y el servidor para invocar el crearMensaje
-
-		pthread_create(&threadEncolarMensaje,NULL,&encolarMensaje,&mensajeNoProcesado);
-		//cout << "Recibi: " << datosRecibidos << endl;
-		//strcpy(buffer, mensaje);
-		//send(socketCliente, buffer, strlen(mensaje) + 1, 0);
+		pthread_create(&threadEncolarMensaje,NULL,&encolarMensaje,&parametrosEncolarMensaje);
 	}
 }
 
