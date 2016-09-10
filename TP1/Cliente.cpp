@@ -5,14 +5,14 @@
 
 using namespace std;
 
-Cliente::Cliente(char* ip, int puerto) {
+Cliente::Cliente(string ip, int puerto) {
 //El cliente se crea con la direccion IP y el puerto en el cual se encuentra disponible el servidor
-	this->direccionIP = ip;
+	this->direccionIP = strdup(ip.c_str());
 	this->puertoServidor = puerto;
 	this->socketCliente = socket(PF_INET, SOCK_STREAM, 0);
 	direccionServidor.sin_family = AF_INET;
 	direccionServidor.sin_port = htons(puerto);
-	direccionServidor.sin_addr.s_addr = inet_addr(ip);
+	direccionServidor.sin_addr.s_addr = inet_addr(this->direccionIP);
 	memset(direccionServidor.sin_zero, '\0', sizeof direccionServidor.sin_zero);
 	this->opcionMenu = 0;
 }

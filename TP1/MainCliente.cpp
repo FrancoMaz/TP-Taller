@@ -49,7 +49,7 @@ void* cicloConexion(void* arg) {
 }
 
 int main() {
-	char* ip;
+	string ip;
 	int puerto, accion;
 	bool socketOk = false;
 	pthread_t thrComu;

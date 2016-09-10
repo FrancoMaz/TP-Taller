@@ -44,7 +44,7 @@ private:
 
 public:
 	Cliente();
-	Cliente(char* ip, int puerto);
+	Cliente(string ip, int puerto);
 	virtual ~Cliente();
 	void mostrarMenuYProcesarOpcion();
 	void elegirOpcionDelMenu(int opcion);
