@@ -53,6 +53,8 @@ void encolarMensaje(char* remitente, char* destinatario, char* mensaje, Servidor
 	parametrosEncolarMensaje.mensajeNoProcesado = new Mensaje(remitente,destinatario,mensaje);
 	parametrosEncolarMensaje.servidor = servidor;
 	cout << "Encolando mensaje: " + std::string(mensaje) + ". De: " + std::string(remitente) + ". Para: " + std::string(destinatario) + "." << endl;
+	servidor->mensajeStream << "Encolando mensaje: " + std::string(mensaje) + ". De: " + std::string(remitente) + ". Para: " + std::string(destinatario) + ". \n";
+	servidor->guardarLog(servidor->mensajeStream);
 	//pthread_detach(threadEncolarMensaje); //lo marco
 	pthread_create(&threadEncolarMensaje,NULL,&encolar,&parametrosEncolarMensaje);
 }
@@ -104,13 +106,19 @@ void* cicloEscucharConexionesNuevasThreadProceso(void* arg) {
 	int puerto;
 	string archivoUsers;
 	Servidor* servidor;
+	int modoLogger;
 	cout << "Ingrese el puerto de escucha de la conexion: " << endl;
 	cin >> puerto;
 	cout << "Ingrese el nombre del archivo de usuarios: " << endl;
 	cin >> archivoUsers;
+	cout << "Elija el modo en el que quiere loggear los eventos: " << endl;
+	cout << "1) INFO" << endl;
+	cout << "2) DEBUG" << endl;
+	cin >> modoLogger;
+
 	char* archivo = strdup(archivoUsers.c_str());
 	do {
-		servidor = new Servidor(archivo, puerto);
+		servidor = new Servidor(archivo, puerto, modoLogger);
 		//aca deberia verificar los datos del nombre de archivo usuarios y del puerto,
 		//para ver si mato al servidor o no.
 		servidor->comenzarEscucha();
