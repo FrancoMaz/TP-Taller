@@ -69,6 +69,7 @@ public:
 	int aceptarConexion();
 	int getCantConexiones();
 	string serializarLista(list<string> datos);
+	pthread_mutex_t mutex;
 };
 
 #endif /* TP1_SERVIDOR_H_ */

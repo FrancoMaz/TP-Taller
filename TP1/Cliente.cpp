@@ -37,14 +37,6 @@ void Cliente::mostrarMenuYProcesarOpcion() {
 void Cliente::elegirOpcionDelMenu(int opcion) {
 	switch (opcion) {
 	case 1: {
-		/*char* mensaje = "CLIENTE: Te pregunto";
-		char buffer[BUFFER_MAX_SIZE];
-		char datosRecibidos[BUFFER_MAX_SIZE];
-		strcpy(buffer, mensaje);
-		send(socketCliente, buffer, strlen(mensaje) + 1, 0);
-		recv(socketCliente, datosRecibidos, BUFFER_MAX_SIZE, 0);
-		cout << "Recibi: " << datosRecibidos << endl;
-		break;*/
 		string lectura;
 		string destinatario;
 		string mensajeAEnviar;
@@ -143,29 +135,34 @@ void Cliente::salir() {
 
 void Cliente::enviar(string mensaje, string destinatario) {
 	//Se envia un mensaje a un usuario o a todos (este ultimo caso sucede cuando el destinatario es el string "Todos").
-	string metodo = "Enviar";
+
 	char* mensajeCadena = strdup(mensaje.c_str());
-	for (int i = 0; i < strlen(mensajeCadena); i += BUFFER_MAX_SIZE) {
-		Mensaje *mensajeAEnviar = new Mensaje(this->nombre, destinatario, mensaje);
-		char buffer[BUFFER_MAX_SIZE];
-		string largoMensaje;
-		stringstream conversion;
-		conversion << strlen(mensajeCadena);
-		largoMensaje = conversion.str();
-		char* stringDatosMensaje = strdup((largoMensaje + '|' + metodo + '|' + mensajeAEnviar->getStringDatos()).c_str());
-		cout << stringDatosMensaje << endl;
-		strcpy(buffer, stringDatosMensaje);
-		send(this->socketCliente, buffer, strlen(stringDatosMensaje) + 1, 0);
+	Mensaje *mensajeAEnviar = new Mensaje(this->nombre, destinatario, mensaje);
+	char* stringDatosMensaje = strdup(("1|" + mensajeAEnviar->getStringDatos()).c_str()); //1 significa enviar.
+	int largo = strlen(stringDatosMensaje);
+	send(this->socketCliente, stringDatosMensaje, largo + 1, 0);
+	while (largo > 0)
+	{
+		largo -= send(this->socketCliente, stringDatosMensaje, largo + 1, 0);
 	}
 }
 
 void Cliente::recibir() {
 	//Se reciben todos los mensajes en la secuencia en la que fueron enviados
 	char colaMensajes[BUFFER_MAX_SIZE];
-	string metodo = "Recibir|";
-	char* metodoYNombre = strdup((metodo + this -> nombre).c_str());
-	send(this->socketCliente, metodoYNombre, strlen(metodoYNombre) + 1, 0);
-	recv(this->socketCliente, colaMensajes, strlen(colaMensajes), 0);
+	string metodo = "2|" + this->nombre + "#";
+	char* recibir = strdup(metodo.c_str()); //2 es recibir
+	send(this->socketCliente, recibir, strlen(recibir) + 1, 0);
+	string datosRecibidos;
+	int largoRequest = recv(this->socketCliente, colaMensajes, strlen(colaMensajes), 0);
+	datosRecibidos.append(colaMensajes,largoRequest);
+	while (largoRequest >= BUFFER_MAX_SIZE) //mientras el largoRequest sea del tamaño del max size, sigo pidiendo
+	{
+		//mientras haya cosas que leer, sigo recibiendo.
+		largoRequest = recv(socketCliente, colaMensajes, BUFFER_MAX_SIZE, 0);
+		cout << largoRequest << endl;
+		datosRecibidos.append(colaMensajes,largoRequest);
+	}
 	this -> mostrarUltimosMensajes(colaMensajes);
 }
 
