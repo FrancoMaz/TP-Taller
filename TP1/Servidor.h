@@ -36,7 +36,6 @@ private:
 	int cantClientesConectados = 0;
 	char* nombreArchivo;
 	queue<Mensaje> colaMensajesNoProcesados;
-	list<Mensaje> listaMensajesProcesados;
 	Logger* logger;
 	struct sockaddr_in serverAddr;
 	struct sockaddr_storage serverStorage;
@@ -48,7 +47,12 @@ private:
 				string nombre;
 				string contrasenia;
 			};
+	struct MensajesProcesados {
+			string destinatario;
+			queue<Mensaje>* mensajes;
+	};
 	list<Datos>* datosUsuarios;
+	list<MensajesProcesados>* listaMensajesProcesados;
 
 public:
 	Servidor();
@@ -73,6 +77,7 @@ public:
 	pthread_mutex_t mutex;
 	stringstream mensajeStream;
 	list<string> agregarDestinatarios(char* remitente);
+	void procesarMensaje(Mensaje mensaje);
 
 };
 

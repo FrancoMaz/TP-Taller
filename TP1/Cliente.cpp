@@ -30,7 +30,7 @@ void Cliente::mostrarMenuYProcesarOpcion() {
 		cout << "5) Salir" << endl;
 		cout << "Elija la accion que desea realizar: " << endl;
 		cin >> opcionMenu;
-	} while (opcionMenu < 1 && opcionMenu > 5);
+	} while (opcionMenu < 1 || opcionMenu > 5);
 	this->elegirOpcionDelMenu(opcionMenu);
 }
 
@@ -40,10 +40,11 @@ void Cliente::elegirOpcionDelMenu(int opcion) {
 		int numeroDestinatario;
 		string mensajeAEnviar;
 		this -> mostrarClientesDisponibles();
+		int cantidadClientesDisponibles = this->clientesDisponibles.size();
 		do {
 		cout << "Escriba el numero asociado al nombre del destinatario del mensaje: ";
 		cin >> numeroDestinatario;
-		} while (numeroDestinatario < 1 && numeroDestinatario > (this->clientesDisponibles.size()) + 1);
+		} while (numeroDestinatario < 1 || numeroDestinatario > (cantidadClientesDisponibles + 1));
 		cin.ignore();
 		cout << "Escriba su mensaje: " << endl;
 		getline(cin,mensajeAEnviar);
