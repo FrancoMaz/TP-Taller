@@ -9,9 +9,10 @@
 #include <string.h>
 using namespace std;
 
-Servidor::Servidor(char* nombreArchivoDeUsuarios, int puerto) {
+Servidor::Servidor(char* nombreArchivoDeUsuarios, int puerto, int modoLogger) {
 	this->puerto = puerto;
 	this->nombreArchivo = nombreArchivoDeUsuarios;
+	this->logger = new Logger(modoLogger);
 	this->welcomeSocket = socket(PF_INET, SOCK_STREAM, 0);
 	/*---- Configure settings of the server address struct ----*/
 	/* Address family = Internet */
@@ -24,10 +25,11 @@ Servidor::Servidor(char* nombreArchivoDeUsuarios, int puerto) {
 	/* Set all bits of the padding field to 0 */
 	memset(serverAddr.sin_zero, '\0', sizeof serverAddr.sin_zero);
 	/*---- Bind the address struct to the socket ----*/
-	bind(this->welcomeSocket, (struct sockaddr *) &serverAddr,
-			sizeof(serverAddr));
+	bind(this->welcomeSocket, (struct sockaddr *) &serverAddr, sizeof(serverAddr));
 	this->datosUsuarios = new list<Datos>();
 	this->guardarDatosDeUsuarios();
+	mensajeStream << "Se creó correctamente el servidor en el puerto: " << puerto << ", ip: 192.168.1.10" << "\n";
+	this->guardarLog(mensajeStream);
 }
 
 Servidor::~Servidor() {
@@ -58,6 +60,9 @@ void Servidor::guardarDatosDeUsuarios() {
 		}
 	}
 	myfile.close();
+
+	mensajeStream << "Se leyeron los datos de los usuarios desde el archivo usuarios.csv \n";
+	this->guardarLog(mensajeStream);
 }
 
 void Servidor::autenticar(string nombre, string contrasenia,
@@ -80,9 +85,13 @@ void Servidor::autenticar(string nombre, string contrasenia,
 
 	if (autenticacionOK) {
 		cout << "Autenticación OK wachin" << endl;
+		mensajeStream << "Autenticación OK \n";
+		this->guardarLog(mensajeStream);
 	} else {
 		usuarios.clear();
 		cout << "Error de autenticación, no nos hackees wachin" << endl;
+		mensajeStream << "Error de autenticación \n";
+		this->guardarLog(mensajeStream);
 	}
 }
 
@@ -90,9 +99,9 @@ list<Cliente> Servidor::obtenerClientes() {
 
 }
 
-void Servidor::guardarLog() {
-//Guarda toda la actividad en un archivo de texto
-
+void Servidor::guardarLog(stringstream &mensaje) {
+	string msj = mensajeStream.str();
+	this->logger->escribir(msj);
 }
 
 list<Mensaje> Servidor::obtenerMensajes(Cliente cliente) {
@@ -106,6 +115,9 @@ void Servidor::crearMensaje(Mensaje mensaje) {
 void Servidor::comenzarEscucha() {
 	//Metodo que pone al servidor a escuchar si alguien requiere algo.
 	this->escuchando = (listen(this->welcomeSocket, MAX_CANT_CLIENTES) == 0);
+	mensajeStream << "El servidor está escuchando... \n";
+	this->guardarLog(mensajeStream);
+	cout << "Escuchando conexiones entrantes.." << endl;
 }
 
 
@@ -116,31 +128,28 @@ int Servidor::aceptarConexion() {
 	char datosRecibidos[1024];
 
 	this->addr_size = sizeof serverStorage;
-	cout << "Escuchando conexiones entrantes.." << endl;
-
 	int socketCliente = accept(welcomeSocket, (struct sockaddr *) &this->serverStorage, &this->addr_size);
 	recv(socketCliente, datosRecibidos, 1024, 0);
 
 	cout << "Datos recibidos: " << datosRecibidos << endl;
+	mensajeStream << "Datos recibidos: " << datosRecibidos << "\n";
+	this->guardarLog(mensajeStream);
+
 	splitDatos(datosRecibidos, &nombre, &pass);
-	cout << "splitea bien los datos" << endl;
 	this->autenticar(nombre, pass, usuarios);
-	cout << "sale bien del autenticar" << endl;
 	char* resultadoDeLaAutenticacion;
 	this->cantClientesConectados += 1;
 
 	if (usuarios.empty()) {
-		resultadoDeLaAutenticacion = "No se pudo autenticar";
-		cout << resultadoDeLaAutenticacion << endl;
 		strcpy(buffer, "Desconectar");
+		mensajeStream << "Se desconecta al usuario " << nombre << " del servidor porque falló la autenticación... \n";
+		this->guardarLog(mensajeStream);
 		send(socketCliente, buffer, 1024, 0);
-		// si no se puede autenticar debe desconectarse al usuario
 	} else {
-		resultadoDeLaAutenticacion = "Autenticacion OK";
-		cout << resultadoDeLaAutenticacion << endl;
 		strcpy(buffer, this->serializarLista(usuarios).c_str());
 		string bufferS = buffer;
-		cout << bufferS << endl;
+		mensajeStream << "Enviándole al cliente " << nombre << " la lista de usuarios disponibles \n";
+		this->guardarLog(mensajeStream);
 		send(socketCliente, buffer, 1024, 0);
 	}
 	return socketCliente;

@@ -19,9 +19,10 @@
 #include <stdlib.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
+#include <sstream>
 #include "Cliente.h"
+#include "Logger.h"
 #include "Mensaje.h"
-#include "Log.h"
 #define MAX_CANT_CLIENTES 6
 #define BUFFER_MAX_SIZE 1024
 using namespace std;
@@ -36,7 +37,7 @@ private:
 	char* nombreArchivo;
 	queue<Mensaje> colaMensajesNoProcesados;
 	list<Mensaje> listaMensajesProcesados;
-	Log archivoLog;
+	Logger* logger;
 	struct sockaddr_in serverAddr;
 	struct sockaddr_storage serverStorage;
 	socklen_t addr_size;
@@ -51,13 +52,13 @@ private:
 
 public:
 	Servidor();
-	Servidor(char* nombreArchivoDeUsuarios, int puerto);
+	Servidor(char* nombreArchivoDeUsuarios, int puerto, int modoLogger);
 	virtual ~Servidor();
 	void guardarDatosDeUsuarios();
 	bool escuchando = false; //representa si el servidor esta disponible para escuchar pedidos
 	void autenticar(string nombre, string contrasenia, list<string>& usuarios);
 	list<Cliente> obtenerClientes();
-	void guardarLog();
+	void guardarLog(stringstream &mensaje);
 	list<Mensaje> obtenerMensajes(Cliente cliente);
 	void crearMensaje(Mensaje mensaje);
 	void comenzarEscucha();
@@ -70,6 +71,7 @@ public:
 	int getCantConexiones();
 	string serializarLista(list<string> datos);
 	pthread_mutex_t mutex;
+	stringstream mensajeStream;
 };
 
 #endif /* TP1_SERVIDOR_H_ */
