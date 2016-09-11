@@ -170,6 +170,7 @@ void Servidor::splitDatos(char* datos, string* nombre, string* pass) {
 	while (pos < strlen(datos)) {
 		if (datos[pos] != ',' && !nombreCompleto) {
 			*nombre = *nombre + datos[pos];
+
 			pos++;
 		} else {
 			pos++;
@@ -205,4 +206,16 @@ string Servidor::serializarLista(list<string> datos) {
 		buffer = buffer + *i + ",";
 	}
 	return buffer;
+}
+
+list<string> Servidor::agregarDestinatarios(char* remitente){
+	list<string> destinatarios;
+	for (list<Servidor::Datos>::iterator datoActual = datosUsuarios->begin(); datoActual != datosUsuarios->end(); datoActual++) {
+		Datos usuario;
+		usuario = *datoActual;
+		if (usuario.nombre != remitente){
+			destinatarios.push_back(usuario.nombre);
+				}
+			}
+	return destinatarios;
 }

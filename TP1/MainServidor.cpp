@@ -40,6 +40,7 @@ bool stringTerminaCon(std::string const &fullString,
 	}
 }
 
+
 void* encolar(void* arg) {
 	parametrosThreadEncolarMensaje parametrosEncolarMensaje =
 			*(parametrosThreadEncolarMensaje*) arg;
@@ -63,6 +64,17 @@ void encolarMensaje(char* remitente, char* destinatario, char* mensaje,
 	//pthread_detach(threadEncolarMensaje); //lo marco
 	pthread_create(&threadEncolarMensaje, NULL, &encolar,
 			&parametrosEncolarMensaje);
+}
+
+void encolarMensajeATodos(char* remitente, char* mensaje, list<string> destinatarios, Servidor* servidor){
+		for (list<string>::iterator datoActual = destinatarios.begin(); datoActual != destinatarios.end(); datoActual++) {
+				string usuario;
+				usuario = *datoActual;
+				if (usuario != remitente){
+					char* nombreUsuario = strdup((usuario).c_str());
+					encolarMensaje(remitente, nombreUsuario, mensaje, servidor);
+				}
+		}
 }
 
 void* cicloEscuchaCliente(void* arg) {
@@ -94,10 +106,15 @@ void* cicloEscuchaCliente(void* arg) {
 			int accion = atoi(metodo); //convierto a entero el metodo recibido por string
 			switch (accion) {
 			case 1: { //1 es enviar
-				char* remitente = strtok(NULL, "|");
-				char* destinatario = strtok(NULL, "|");
-				char* mensaje = strtok(NULL, "#");
-				encolarMensaje(remitente, destinatario, mensaje, servidor);
+				char* remitente = strtok(NULL,"|");
+				char* destinatario = strtok(NULL,"|");
+				char* mensaje = strtok(NULL,"#");
+				if (strcmp(destinatario, "Todos") != 0) {
+					encolarMensaje(remitente, destinatario, mensaje,servidor);}
+					else {
+						list<string> destinatarios = servidor -> agregarDestinatarios(remitente);
+						encolarMensajeATodos(remitente, mensaje, destinatarios, servidor);
+					}
 				break;
 			}
 			case 2: { //2 es recibir

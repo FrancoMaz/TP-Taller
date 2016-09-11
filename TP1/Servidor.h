@@ -45,9 +45,9 @@ private:
 	pthread_t threadChecker;
 	list<string> usuarios;
 	struct Datos{
-		string nombre;
-		string contrasenia;
-	};
+				string nombre;
+				string contrasenia;
+			};
 	list<Datos>* datosUsuarios;
 
 public:
@@ -72,6 +72,8 @@ public:
 	string serializarLista(list<string> datos);
 	pthread_mutex_t mutex;
 	stringstream mensajeStream;
+	list<string> agregarDestinatarios(char* remitente);
+
 };
 
 #endif /* TP1_SERVIDOR_H_ */

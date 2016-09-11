@@ -43,14 +43,14 @@ void Cliente::elegirOpcionDelMenu(int opcion) {
 		do {
 		cout << "Escriba el numero asociado al nombre del destinatario del mensaje: ";
 		cin >> numeroDestinatario;
+		} while (numeroDestinatario < 1 && numeroDestinatario > (this->clientesDisponibles.size()) + 1);
 		cin.ignore();
-		} while (numeroDestinatario < 1 && numeroDestinatario > this->clientesDisponibles.size());
 		cout << "Escriba su mensaje: " << endl;
 		getline(cin,mensajeAEnviar);
-		if (numeroDestinatario != this->clientesDisponibles.size()){
+		if (numeroDestinatario != (this->clientesDisponibles.size()) + 1){
 			string nombreDestinatario = this->devolverNombre(numeroDestinatario);
 			this->enviar(mensajeAEnviar, nombreDestinatario);
-		} else {this -> enviarMensajeATodos(mensajeAEnviar);}
+		} else {this -> enviar(mensajeAEnviar, "Todos");}
 		break;
 	}
 	case 2: {
@@ -142,7 +142,8 @@ void Cliente::enviar(string mensaje, string destinatario) {
 	Mensaje *mensajeAEnviar = new Mensaje(this->nombre, destinatario, mensaje);
 	char* stringDatosMensaje = strdup(("1|" + mensajeAEnviar->getStringDatos()).c_str()); //1 significa enviar.
 	int largo = strlen(stringDatosMensaje);
-	send(this->socketCliente, stringDatosMensaje, largo + 1, 0);
+	cout << mensaje << " " << destinatario << endl;
+	largo -= send(this->socketCliente, stringDatosMensaje, largo + 1, 0);
 	while (largo > 0)
 	{
 		largo -= send(this->socketCliente, stringDatosMensaje, largo + 1, 0);
@@ -274,6 +275,6 @@ void Cliente::mostrarClientesDisponibles(){
 
 string Cliente::devolverNombre(int numeroDestinatario) {
 	list<string>::iterator iterador = this->clientesDisponibles.begin();
-	advance(iterador, numeroDestinatario - 1);
+	advance(iterador, numeroDestinatario);
 	return (*iterador);
 }
