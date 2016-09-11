@@ -48,7 +48,7 @@ void Cliente::elegirOpcionDelMenu(int opcion) {
 		cout << "Escriba su mensaje: " << endl;
 		getline(cin,mensajeAEnviar);
 		if (numeroDestinatario != (this->clientesDisponibles.size()) + 1){
-			string nombreDestinatario = this->devolverNombre(numeroDestinatario);
+			string nombreDestinatario = this->devolverNombre(numeroDestinatario - 1);
 			this->enviar(mensajeAEnviar, nombreDestinatario);
 		} else {this -> enviar(mensajeAEnviar, "Todos");}
 		break;
