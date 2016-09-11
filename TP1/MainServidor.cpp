@@ -18,43 +18,52 @@
 
 using namespace std;
 
-
 struct parametrosThreadCliente {
 	//estructura que sirve para guardar los parametros que se le pasan a la funcion del thread.
 	Servidor* serv;
 	int socketCli;
 };
 
-struct parametrosThreadEncolarMensaje{
+struct parametrosThreadEncolarMensaje {
 	Mensaje* mensajeNoProcesado;
 	Servidor* servidor;
 };
 
-bool stringTerminaCon (std::string const &fullString, std::string const &ending) {
-    if (fullString.length() >= ending.length()) {
-        return (0 == fullString.compare (fullString.length() - ending.length(), ending.length(), ending));
-    } else {
-        return false;
-    }
+bool stringTerminaCon(std::string const &fullString,
+		std::string const &ending) {
+	if (fullString.length() >= ending.length()) {
+		return (0
+				== fullString.compare(fullString.length() - ending.length(),
+						ending.length(), ending));
+	} else {
+		return false;
+	}
 }
 
-void* encolar(void* arg){
-	parametrosThreadEncolarMensaje parametrosEncolarMensaje = *(parametrosThreadEncolarMensaje*) arg;
+void* encolar(void* arg) {
+	parametrosThreadEncolarMensaje parametrosEncolarMensaje =
+			*(parametrosThreadEncolarMensaje*) arg;
 	pthread_mutex_lock(&parametrosEncolarMensaje.servidor->mutex);
-	parametrosEncolarMensaje.servidor->crearMensaje(*parametrosEncolarMensaje.mensajeNoProcesado);
+	parametrosEncolarMensaje.servidor->crearMensaje(
+			*parametrosEncolarMensaje.mensajeNoProcesado);
 	pthread_mutex_unlock(&parametrosEncolarMensaje.servidor->mutex);
 	return NULL;
 }
 
-void encolarMensaje(char* remitente, char* destinatario, char* mensaje, Servidor* servidor)
-{
+void encolarMensaje(char* remitente, char* destinatario, char* mensaje,
+		Servidor* servidor) {
 	pthread_t threadEncolarMensaje;
 	parametrosThreadEncolarMensaje parametrosEncolarMensaje;
-	parametrosEncolarMensaje.mensajeNoProcesado = new Mensaje(remitente,destinatario,mensaje);
+	parametrosEncolarMensaje.mensajeNoProcesado = new Mensaje(remitente,
+			destinatario, mensaje);
 	parametrosEncolarMensaje.servidor = servidor;
-	cout << "Encolando mensaje: " + std::string(mensaje) + ". De: " + std::string(remitente) + ". Para: " + std::string(destinatario) + "." << endl;
+	cout
+			<< "Encolando mensaje: " + std::string(mensaje) + ". De: "
+					+ std::string(remitente) + ". Para: "
+					+ std::string(destinatario) + "." << endl;
 	//pthread_detach(threadEncolarMensaje); //lo marco
-	pthread_create(&threadEncolarMensaje,NULL,&encolar,&parametrosEncolarMensaje);
+	pthread_create(&threadEncolarMensaje, NULL, &encolar,
+			&parametrosEncolarMensaje);
 }
 
 void* cicloEscuchaCliente(void* arg) {
@@ -64,40 +73,48 @@ void* cicloEscuchaCliente(void* arg) {
 	Servidor* servidor = parametros->serv;
 	int socketCliente = parametros->socketCli;
 	char bufferRecibido[BUFFER_MAX_SIZE];
-	while (1) {
+	bool conectado = true;
+	while (conectado) {
 		//en este loop se van a gestionar los send y receive del cliente. aca se va a distinguir que es lo que quiere hacer y actuar segun lo que quiera el cliente.
 		string datosRecibidos;
-		int largoRequest = recv(socketCliente, bufferRecibido, BUFFER_MAX_SIZE, 0); //recibo por primera vez
-		datosRecibidos.append(bufferRecibido,largoRequest);
-		cout << largoRequest << endl;
-		while (largoRequest >= BUFFER_MAX_SIZE and !stringTerminaCon(datosRecibidos,"#"))
-		{
-			//mientras haya cosas que leer, sigo recibiendo.
-			largoRequest = recv(socketCliente, bufferRecibido, BUFFER_MAX_SIZE, 0);
-			datosRecibidos.append(bufferRecibido,largoRequest);
-		}
-		//en el formato siempre recibimos primero el metodo primero que es un entero.
-		//1 representa enviar un mensaje, 2 representa recibir mis mensajes, 3 desconectar.
-		char* metodo = strtok(strdup(datosRecibidos.c_str()),"|");
-		int accion = atoi(metodo); //convierto a entero el metodo recibido por string
-		switch (accion){
-		case 1:{ //1 es enviar
-			char* remitente = strtok(NULL,"|");
-			char* destinatario = strtok(NULL,"|");
-			char* mensaje = strtok(NULL,"#");
-			encolarMensaje(remitente, destinatario, mensaje,servidor);
-			break;
-		}
-		case 2: { //2 es recibir
-			char* usuarioQueSolicita = strtok(NULL,"|");
-			break;
-		}
-		case 3: { //3 es desconectar
-			break;
-		}
+		int largoRequest = recv(socketCliente, bufferRecibido, BUFFER_MAX_SIZE,
+				0); //recibo por primera vez
+		if (largoRequest != 0) {
+			datosRecibidos.append(bufferRecibido, largoRequest);
+			cout << largoRequest << endl;
+			while (largoRequest >= BUFFER_MAX_SIZE
+					and !stringTerminaCon(datosRecibidos, "#")) {
+				//mientras haya cosas que leer, sigo recibiendo.
+				largoRequest = recv(socketCliente, bufferRecibido,
+						BUFFER_MAX_SIZE, 0);
+				datosRecibidos.append(bufferRecibido, largoRequest);
+			}
+			//en el formato siempre recibimos primero el metodo primero que es un entero.
+			//1 representa enviar un mensaje, 2 representa recibir mis mensajes, 3 desconectar.
+			char* metodo = strtok(strdup(datosRecibidos.c_str()), "|");
+			int accion = atoi(metodo); //convierto a entero el metodo recibido por string
+			switch (accion) {
+			case 1: { //1 es enviar
+				char* remitente = strtok(NULL, "|");
+				char* destinatario = strtok(NULL, "|");
+				char* mensaje = strtok(NULL, "#");
+				encolarMensaje(remitente, destinatario, mensaje, servidor);
+				break;
+			}
+			case 2: { //2 es recibir
+				char* usuarioQueSolicita = strtok(NULL, "|");
+				break;
+			}
+			case 3: { //3 es desconectar
+				break;
+			}
 
+			}
+		} else {
+			conectado = false;
 		}
 	}
+
 }
 
 void* cicloEscucharConexionesNuevasThreadProceso(void* arg) {
@@ -140,7 +157,8 @@ void* cicloEscucharConexionesNuevasThreadProceso(void* arg) {
 }
 int inicializarServidor() {
 	pthread_t thrProceso;
-	int threadOk = pthread_create(&thrProceso, NULL, &cicloEscucharConexionesNuevasThreadProceso, NULL);
+	int threadOk = pthread_create(&thrProceso, NULL,
+			&cicloEscucharConexionesNuevasThreadProceso, NULL);
 	return threadOk;
 }
 
