@@ -143,7 +143,6 @@ void Cliente::enviar(string mensaje, string destinatario) {
 	Mensaje *mensajeAEnviar = new Mensaje(this->nombre, destinatario, mensaje);
 	char* stringDatosMensaje = strdup(("1|" + mensajeAEnviar->getStringDatos()).c_str()); //1 significa enviar.
 	int largo = strlen(stringDatosMensaje);
-	cout << mensaje << " " << destinatario << endl;
 	largo -= send(this->socketCliente, stringDatosMensaje, largo + 1, 0);
 	while (largo > 0)
 	{
@@ -200,19 +199,20 @@ void Cliente::loremIpsum(double frecuenciaDeEnvios, double cantidadMaximaDeEnvio
 	string clienteAleatorioAEnviar;
 	archivo = fopen("LoremIpsum.txt","r");
 	srand(time(NULL));
-	//Por ahora puse que el tamanio de los mensajes este entre 0 y 30, pero mas adelante eso se tiene que modificar
-	tamanioMensaje = (int) (rand() % 30);
+	//El tamanio de los mensajes este entre 0 y 200
+	tamanioMensaje = (int) (rand() % 200);
 	//Se elige aleatoriamente el destinatario de la secuencia de mensajes
 	numeroDeClienteAEnviar = (int) (rand()% this->clientesDisponibles.size());
 	list<string>::iterator iterador = this->clientesDisponibles.begin();
 	advance(iterador, numeroDeClienteAEnviar);
 	clienteAleatorioAEnviar = *iterador;
 	//tiempoPorMensaje indica cada cuanto tiempo se manda un mensaje (en segundos)
-	double tiempoPorMensaje = (frecuenciaDeEnvios/cantidadMaximaDeEnvios);
+	//Se mandan frecuenciaDeEnvios mensajes en 1 segundo, entonces un mensaje se manda en 1/frecuenciaDeEnvios segundos
+	double tiempoPorMensaje = (1/frecuenciaDeEnvios);
 	//Indico el tiempo de inicio
 	clock_t tiempoInicio = clock();
 	for (int i = 0; i < cantidadMaximaDeEnvios; i++) {
-		char cadena[tamanioMensaje];
+		string cadena;
 		//No tiene que ocurrir nada hasta que el tiempo transcurrido sea igual al tiempo estipulado de envio para cada mensaje
 		do {
 		} while (((double)(clock()-tiempoInicio)/CLOCKS_PER_SEC) < tiempoPorMensaje);
@@ -221,20 +221,18 @@ void Cliente::loremIpsum(double frecuenciaDeEnvios, double cantidadMaximaDeEnvio
 				char c = fgetc(archivo);
 				//Si no hay salto de linea o fin de archivo se guarda el caracter leido
 				if (c != '\n' && c != EOF) {
-					cadena[j] = c;}
+					cadena = cadena + c;}
 				//Si viene un salto de linea se guarda un espacio (si no hacia esto se imprimia un caracter random)
 				if (c == '\n') {
-					cadena[j] = ' ';
+					cadena = cadena + ' ';
 				}
 				//Si viene un fin de archivo se guarda un espacio y se vuelven a leer caracteres del archivo desde el comienzo
 				if (c == EOF) {
-					cadena[j] = ' ';
+					cadena = cadena + ' ';
 					fclose(archivo);
 					archivo = fopen("LoremIpsum.txt","r"); }
 				}
 			//Una vez que se tiene un mensaje completo se envia al cliente elegido aleatoriamente de la lista
-			//DESPUES HAY QUE DESCOMENTAR LA LINEA DE ABAJO. Falta terminar el metodo enviar, por lo que para probar la funcionalidad la deje comentada
-
 			this->enviar(cadena, clienteAleatorioAEnviar);
 			//Al enviar un mensaje el tiempo de referencia es el actual
 			tiempoInicio = clock();
