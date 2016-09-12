@@ -36,7 +36,6 @@ private:
 	int cantClientesConectados = 0;
 	char* nombreArchivo;
 	queue<Mensaje> colaMensajesNoProcesados;
-	list<Mensaje> listaMensajesProcesados;
 	Logger* logger;
 	struct sockaddr_in serverAddr;
 	struct sockaddr_storage serverStorage;
@@ -45,10 +44,15 @@ private:
 	pthread_t threadChecker;
 	list<string> usuarios;
 	struct Datos{
-		string nombre;
-		string contrasenia;
+				string nombre;
+				string contrasenia;
+			};
+	struct MensajesProcesados {
+			string destinatario;
+			queue<Mensaje>* mensajes;
 	};
 	list<Datos>* datosUsuarios;
+	list<MensajesProcesados>* listaMensajesProcesados;
 
 public:
 	Servidor();
@@ -70,8 +74,13 @@ public:
 	int aceptarConexion();
 	int getCantConexiones();
 	string serializarLista(list<string> datos);
-	pthread_mutex_t mutex;
+	pthread_mutex_t mutexColaNoProcesados;
+	pthread_mutex_t mutexListaProcesados;
 	stringstream mensajeStream;
+	list<string> agregarDestinatarios(string remitente);
+	void procesarMensaje(Mensaje mensaje);
+	void procesarMensajes();
+
 };
 
 #endif /* TP1_SERVIDOR_H_ */

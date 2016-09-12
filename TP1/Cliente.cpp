@@ -30,26 +30,29 @@ void Cliente::mostrarMenuYProcesarOpcion() {
 		cout << "5) Salir" << endl;
 		cout << "Elija la accion que desea realizar: " << endl;
 		cin >> opcionMenu;
-	} while (opcionMenu < 1 && opcionMenu > 5);
+	} while (opcionMenu < 1 || opcionMenu > 5);
 	this->elegirOpcionDelMenu(opcionMenu);
 }
 
 void Cliente::elegirOpcionDelMenu(int opcion) {
 	switch (opcion) {
 	case 1: {
-		string lectura;
-		string destinatario;
+		int numeroDestinatario;
 		string mensajeAEnviar;
 		this -> mostrarClientesDisponibles();
-		cout << "Escriba el nombre del destinatario del mensaje " << endl;
-		cout <<	"(si quiere mandarle mensaje a todos los usuarios de la lista escriba Todos): " << endl;
-		cin >> destinatario;
+		int cantidadClientesDisponibles = this->clientesDisponibles.size();
+		do {
+		cout << "Escriba el numero asociado al nombre del destinatario del mensaje: ";
+		cin >> numeroDestinatario;
+		} while (numeroDestinatario < 1 || numeroDestinatario > (cantidadClientesDisponibles + 1));
 		cin.ignore();
 		cout << "Escriba su mensaje: " << endl;
 		getline(cin,mensajeAEnviar);
-		this->enviar(mensajeAEnviar, destinatario);
+		if (numeroDestinatario != (this->clientesDisponibles.size()) + 1){
+			string nombreDestinatario = this->devolverNombre(numeroDestinatario - 1);
+			this->enviar(mensajeAEnviar, nombreDestinatario);
+		} else {this -> enviar(mensajeAEnviar, "Todos");}
 		break;
-
 	}
 	case 2: {
 		this->recibir();
@@ -140,10 +143,19 @@ void Cliente::enviar(string mensaje, string destinatario) {
 	Mensaje *mensajeAEnviar = new Mensaje(this->nombre, destinatario, mensaje);
 	char* stringDatosMensaje = strdup(("1|" + mensajeAEnviar->getStringDatos()).c_str()); //1 significa enviar.
 	int largo = strlen(stringDatosMensaje);
-	send(this->socketCliente, stringDatosMensaje, largo + 1, 0);
+	cout << mensaje << " " << destinatario << endl;
+	largo -= send(this->socketCliente, stringDatosMensaje, largo + 1, 0);
 	while (largo > 0)
 	{
 		largo -= send(this->socketCliente, stringDatosMensaje, largo + 1, 0);
+	}
+	free(mensajeCadena);
+	free(stringDatosMensaje);
+}
+
+void Cliente::enviarMensajeATodos(string mensaje) {
+	for (list<string>::iterator i = this->clientesDisponibles.begin(); i != this->clientesDisponibles.end(); i++) {
+			this -> enviar(mensaje,*i);
 	}
 }
 
@@ -256,8 +268,16 @@ void Cliente::setClientesDisponibles(string nombre, string contrasenia) {
 }
 
 void Cliente::mostrarClientesDisponibles(){
+	int numeroCliente = 1;
 	cout << "Los usuarios disponibles son: " << endl;
 	for (list<string>::iterator i = this->clientesDisponibles.begin(); i != this->clientesDisponibles.end(); i++) {
-		cout << (*i) << endl;
-	}
+		cout << numeroCliente << ") " << (*i) << endl;
+		numeroCliente ++; }
+	cout << numeroCliente << ") Enviar mensaje a todos los usuarios" << endl;
+}
+
+string Cliente::devolverNombre(int numeroDestinatario) {
+	list<string>::iterator iterador = this->clientesDisponibles.begin();
+	advance(iterador, numeroDestinatario);
+	return (*iterador);
 }

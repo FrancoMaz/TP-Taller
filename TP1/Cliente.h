@@ -63,6 +63,8 @@ public:
 	void splitUsuarios(string datosRecibidos);
 	void mostrarClientesDisponibles();
 	void mostrarUltimosMensajes(string colaMensajes);
+	string devolverNombre(int numeroDestinatario);
+	void enviarMensajeATodos(string mensaje);
 };
 
 #endif /* TP1_CLIENTE_H_ */

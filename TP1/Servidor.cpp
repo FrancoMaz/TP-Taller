@@ -27,6 +27,7 @@ Servidor::Servidor(char* nombreArchivoDeUsuarios, int puerto, int modoLogger) {
 	/*---- Bind the address struct to the socket ----*/
 	bind(this->welcomeSocket, (struct sockaddr *) &serverAddr, sizeof(serverAddr));
 	this->datosUsuarios = new list<Datos>();
+	this->listaMensajesProcesados = new list<MensajesProcesados>();
 	this->guardarDatosDeUsuarios();
 	mensajeStream << "Se creó correctamente el servidor en el puerto: " << puerto << ", ip: 192.168.1.10" << "\n";
 	this->guardarLog(mensajeStream);
@@ -44,19 +45,24 @@ void Servidor::guardarDatosDeUsuarios() {
 
 		while (getline(myfile, linea)) {
 			Datos datosCapturados;
+			MensajesProcesados mensajesProcesados;
 			nroItem = 0;
 			istringstream lineaActual(linea);
 
 			while (getline(lineaActual, csvItem, ',')) {
 				if (nroItem == 0) {
 					datosCapturados.nombre = csvItem;
+					mensajesProcesados.destinatario = csvItem;
 				}
 				if (nroItem == 1) {
 					datosCapturados.contrasenia = csvItem;
 				}
 				nroItem++;
 			}
+			queue<Mensaje>* colaMensajes = new queue<Mensaje>;
+			mensajesProcesados.mensajes = colaMensajes;
 			datosUsuarios->push_back(datosCapturados);
+			listaMensajesProcesados->push_back(mensajesProcesados);
 		}
 	}
 	myfile.close();
@@ -110,6 +116,26 @@ list<Mensaje> Servidor::obtenerMensajes(Cliente cliente) {
 
 void Servidor::crearMensaje(Mensaje mensaje) {
 	this->colaMensajesNoProcesados.push(mensaje);
+	//this->procesarMensaje(mensaje); //Por ahora invoco a este metodo aca pero deberia ir en un while(1) dentro del mainServidor, para que la cola se mensajes no procesados se procese infinitamente
+}
+
+void Servidor::procesarMensajes() {
+	if (!colaMensajesNoProcesados.empty()) {
+		pthread_mutex_lock(&mutexColaNoProcesados);
+		Mensaje mensaje = colaMensajesNoProcesados.front();
+		colaMensajesNoProcesados.pop();
+		pthread_mutex_unlock(&mutexColaNoProcesados);
+		for (list<MensajesProcesados>::iterator usuarioActual = listaMensajesProcesados->begin(); usuarioActual != listaMensajesProcesados->end(); usuarioActual++) {
+				MensajesProcesados listaMensajes;
+				listaMensajes = *usuarioActual;
+				if (listaMensajes.destinatario == mensaje.getDestinatario()){
+					pthread_mutex_lock(&mutexListaProcesados);
+					listaMensajes.mensajes->push(mensaje);
+					pthread_mutex_unlock(&mutexListaProcesados);
+					cout << "Procesado mensaje para " << listaMensajes.destinatario << endl;
+				}
+		}
+	}
 }
 
 void Servidor::comenzarEscucha() {
@@ -170,6 +196,7 @@ void Servidor::splitDatos(char* datos, string* nombre, string* pass) {
 	while (pos < strlen(datos)) {
 		if (datos[pos] != ',' && !nombreCompleto) {
 			*nombre = *nombre + datos[pos];
+
 			pos++;
 		} else {
 			pos++;
@@ -206,3 +233,16 @@ string Servidor::serializarLista(list<string> datos) {
 	}
 	return buffer;
 }
+
+list<string> Servidor::agregarDestinatarios(string remitente){
+	list<string> destinatarios;
+	for (list<Servidor::Datos>::iterator datoActual = datosUsuarios->begin(); datoActual != datosUsuarios->end(); datoActual++) {
+		Datos usuario;
+		usuario = *datoActual;
+		if (usuario.nombre != remitente){
+			destinatarios.push_back(usuario.nombre);
+				}
+			}
+	return destinatarios;
+}
+
