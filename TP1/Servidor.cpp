@@ -116,18 +116,24 @@ list<Mensaje> Servidor::obtenerMensajes(Cliente cliente) {
 
 void Servidor::crearMensaje(Mensaje mensaje) {
 	this->colaMensajesNoProcesados.push(mensaje);
-	this->procesarMensaje(mensaje); //Por ahora invoco a este metodo aca pero deberia ir en un while(1) dentro del mainServidor, para que la cola se mensajes no procesados se procese infinitamente
+	//this->procesarMensaje(mensaje); //Por ahora invoco a este metodo aca pero deberia ir en un while(1) dentro del mainServidor, para que la cola se mensajes no procesados se procese infinitamente
 }
 
-void Servidor::procesarMensaje(Mensaje mensaje) {
+void Servidor::procesarMensajes() {
 	if (!colaMensajesNoProcesados.empty()) {
+		pthread_mutex_lock(&mutexColaNoProcesados);
+		Mensaje mensaje = colaMensajesNoProcesados.front();
+		colaMensajesNoProcesados.pop();
+		pthread_mutex_unlock(&mutexColaNoProcesados);
 		for (list<MensajesProcesados>::iterator usuarioActual = listaMensajesProcesados->begin(); usuarioActual != listaMensajesProcesados->end(); usuarioActual++) {
 				MensajesProcesados listaMensajes;
 				listaMensajes = *usuarioActual;
 				if (listaMensajes.destinatario == mensaje.getDestinatario()){
+					pthread_mutex_lock(&mutexListaProcesados);
 					listaMensajes.mensajes->push(mensaje);
+					pthread_mutex_unlock(&mutexListaProcesados);
 					cout << "Procesado mensaje para " << listaMensajes.destinatario << endl;
-					}
+				}
 		}
 	}
 }
@@ -228,7 +234,7 @@ string Servidor::serializarLista(list<string> datos) {
 	return buffer;
 }
 
-list<string> Servidor::agregarDestinatarios(char* remitente){
+list<string> Servidor::agregarDestinatarios(string remitente){
 	list<string> destinatarios;
 	for (list<Servidor::Datos>::iterator datoActual = datosUsuarios->begin(); datoActual != datosUsuarios->end(); datoActual++) {
 		Datos usuario;

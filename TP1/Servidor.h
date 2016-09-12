@@ -74,10 +74,12 @@ public:
 	int aceptarConexion();
 	int getCantConexiones();
 	string serializarLista(list<string> datos);
-	pthread_mutex_t mutex;
+	pthread_mutex_t mutexColaNoProcesados;
+	pthread_mutex_t mutexListaProcesados;
 	stringstream mensajeStream;
-	list<string> agregarDestinatarios(char* remitente);
+	list<string> agregarDestinatarios(string remitente);
 	void procesarMensaje(Mensaje mensaje);
+	void procesarMensajes();
 
 };
 

@@ -149,6 +149,8 @@ void Cliente::enviar(string mensaje, string destinatario) {
 	{
 		largo -= send(this->socketCliente, stringDatosMensaje, largo + 1, 0);
 	}
+	free(mensajeCadena);
+	free(stringDatosMensaje);
 }
 
 void Cliente::enviarMensajeATodos(string mensaje) {
