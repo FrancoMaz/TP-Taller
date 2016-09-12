@@ -4,21 +4,4 @@ El servidor está escuchando...
 Datos recibidos: jochi,123456
 Autenticación OK 
 Enviándole al cliente jochi la lista de usuarios disponibles 
-Datos recibidos: christin,jochisoslomas
-Autenticación OK 
-Enviándole al cliente christin la lista de usuarios disponibles 
-Datos recibidos: pablo,aguantewindows
-Autenticación OK 
-Enviándole al cliente pablo la lista de usuarios disponibles 
-Datos recibidos: franco,123456
-Autenticación OK 
-Enviándole al cliente franco la lista de usuarios disponibles 
-Datos recibidos: flan,holasoyflan
-Autenticación OK 
-Enviándole al cliente flan la lista de usuarios disponibles 
-Datos recibidos: azcurra,aguantecmasmas
-Autenticación OK 
-Enviándole al cliente azcurra la lista de usuarios disponibles 
-Datos recibidos: jochi,123456
-Autenticación OK 
-Enviándole al cliente jochi la lista de usuarios disponibles 
+Encolando mensaje: hola flan. De: jochi. Para: flan. 

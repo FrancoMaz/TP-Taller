@@ -20,10 +20,11 @@ class Logger {
 public:
 	Logger(int modo);
 	virtual ~Logger();
-	void escribir(string mensaje);
+	void escribir(string mensaje, int nivelDeLog);
 
 private:
 	int modo;
+	FILE* archivoLog;
 };
 
 #endif /* TP1_LOGGER_H_ */
