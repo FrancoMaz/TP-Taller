@@ -167,14 +167,32 @@ void* cicloEscucharConexionesNuevasThreadProceso(void* arg) {
 	string archivoUsers;
 	Servidor* servidor;
 	int modoLogger;
-	cout << "Ingrese el puerto de escucha de la conexion: " << endl;
-	cin >> puerto;
+	bool puertoValido = false;
+	bool modoLoggerValido = false;
+	do {
+		cout << "Ingrese el puerto de escucha de la conexion: " << endl;
+		cin >> puerto;
+		if (cin.good()) {puertoValido = true;}
+			else {
+				cin.clear();
+				cin.ignore();
+				cout << "Error: el dato ingresado debe ser un numero" << endl;
+				}
+	} while (!puertoValido);
 	cout << "Ingrese el nombre del archivo de usuarios: " << endl;
 	cin >> archivoUsers;
-	cout << "Elija el modo en el que quiere loggear los eventos: " << endl;
-	cout << "1) INFO" << endl;
-	cout << "2) DEBUG" << endl;
-	cin >> modoLogger;
+	do {
+		cout << "Elija el modo en el que quiere loggear los eventos: " << endl;
+		cout << "1) INFO" << endl;
+		cout << "2) DEBUG" << endl;
+		cin >> modoLogger;
+		if (cin.good() && (modoLogger == 1 || modoLogger == 2)) {modoLoggerValido = true;}
+			else {
+				cin.clear();
+				cin.ignore();
+				cout << "Error: la opcion ingresada no es valida" << endl;
+				}
+	} while (!modoLoggerValido);
 
 	char* archivo = strdup(archivoUsers.c_str());
 	do {

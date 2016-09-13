@@ -22,21 +22,29 @@ Cliente::~Cliente() {
 }
 
 void Cliente::mostrarMenuYProcesarOpcion() {
-	do {
+	bool esValido = false;
 		cout << "1) Enviar Mensaje" << endl;
 		cout << "2) Recibir Mensajes" << endl;
 		cout << "3) Lorem Ipsum" << endl;
 		cout << "4) Desconectar" << endl;
 		cout << "5) Salir" << endl;
+	do {
 		cout << "Elija la accion que desea realizar: " << endl;
 		cin >> opcionMenu;
-	} while (opcionMenu < 1 || opcionMenu > 5);
+		if (cin.good() && (opcionMenu >= 1 && opcionMenu <= 5)) {esValido = true;}
+			else {
+				cin.clear();
+				cin.ignore();
+				cout << "Error: la opcion ingresada no es valida" << endl;
+			}
+	} while (!esValido);
 	this->elegirOpcionDelMenu(opcionMenu);
 }
 
 void Cliente::elegirOpcionDelMenu(int opcion) {
 	switch (opcion) {
 	case 1: {
+		bool esValido = false;
 		int numeroDestinatario;
 		string mensajeAEnviar;
 		this -> mostrarClientesDisponibles();
@@ -44,7 +52,14 @@ void Cliente::elegirOpcionDelMenu(int opcion) {
 		do {
 		cout << "Escriba el numero asociado al nombre del destinatario del mensaje: ";
 		cin >> numeroDestinatario;
-		} while (numeroDestinatario < 1 || numeroDestinatario > (cantidadClientesDisponibles + 1));
+		if (cin.good() && (numeroDestinatario >= 1 && numeroDestinatario <= (cantidadClientesDisponibles + 1)))
+		{esValido = true;}
+			else {
+				cin.clear();
+				cin.ignore();
+				cout << "Error: la opcion ingresada no es valida" << endl;
+			}
+		} while (!esValido);
 		cin.ignore();
 		cout << "Escriba su mensaje: " << endl;
 		getline(cin,mensajeAEnviar);
