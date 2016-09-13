@@ -135,15 +135,11 @@ void* cicloEscuchaCliente(void* arg) {
 				string mensajesProcesados = servidor->traerMensajesProcesados(usuarioQueSolicita);
 				cout<<"trae bien los mensajes procesados"<<endl;
 				char buffer[1024];
-				cout<< mensajesProcesados<<endl;
-				//buffer = strdup(mensajesProcesados.c_str());
 				strcpy(buffer,mensajesProcesados.c_str());//aca muere, el problema es este strcpy y el string y char*
-				cout<<"copia los mensajes al buffer"<<endl;
+
 				int largo = strlen(mensajesProcesados.c_str());
-				cout << "Cliente que solicita sus mensajes: " << usuarioQueSolicita << mensajesProcesados<<  endl;
-				cout<<"largo de mensaje enviado: "<<largo<<endl;
+				cout << "Cliente que solicita sus mensajes: " << usuarioQueSolicita<<"  " << mensajesProcesados<<  endl;
 				largo -= send(socketCliente, buffer, largo +1, 0);
-				cout<<"largo de mensaje enviado: "<<largo<<endl;
 					while (largo > 0)
 					{
 						largo -= send(socketCliente, buffer, largo + 1, 0);

@@ -286,6 +286,10 @@ string Servidor:: concatenarMensajes(queue<Mensaje>* colaDeMensajes){
 
 	Mensaje mensaje;
 	string mensajesConcatenados = "";
+	if(colaDeMensajes->empty()){
+		string noHayMensajes = "#noHayMensajes#";
+		mensajesConcatenados.append(noHayMensajes);
+	}
     while(!colaDeMensajes->empty()){
 		mensaje = colaDeMensajes->front();
 		colaDeMensajes->pop();
@@ -294,5 +298,6 @@ string Servidor:: concatenarMensajes(queue<Mensaje>* colaDeMensajes){
 		mensajesConcatenados.append(mensaje.getTexto());
 		mensajesConcatenados.append("#");
 	}
+
 	return mensajesConcatenados;
 }

@@ -172,16 +172,18 @@ void Cliente::recibir() {
 	{
 		//mientras haya cosas que leer, sigo recibiendo.
 		largoRequest = recv(socketCliente, colaMensajes, BUFFER_MAX_SIZE, 0);
-		cout << largoRequest << endl;
+		//cout << largoRequest << endl;
 		datosRecibidos.append(colaMensajes,largoRequest);
 	}
 	this -> mostrarUltimosMensajes(datosRecibidos);
 }
 
 void Cliente::mostrarUltimosMensajes(string colaMensajes)
-{
+{   string mensajeVacio = "#noHayMensajes#";
 	cout << "Ultimos mensajes recibidos: " << endl;
-	if(colaMensajes.empty() ){
+	if(strcmp(colaMensajes.c_str(), mensajeVacio.c_str()) == 0){
+		cout<<"No hay mensajes nuevos"<<endl; cout<<"Nadie te juna wachin"<<endl;}
+	else{
 		char str[colaMensajes.length()];
 		strcpy(str, colaMensajes.c_str());
 		char* texto = strtok(str, "|");
@@ -192,7 +194,7 @@ void Cliente::mostrarUltimosMensajes(string colaMensajes)
 			cout<<endl;
 			texto = strtok(NULL, "|");
 		}
-	}else{ cout<<"No hay mensajes nuevos"<<endl; cout<<"Nadie te juna wachin"<<endl;};
+	}
 }
 
 void Cliente::loremIpsum(double frecuenciaDeEnvios, double cantidadMaximaDeEnvios) {
