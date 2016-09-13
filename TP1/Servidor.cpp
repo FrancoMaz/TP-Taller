@@ -39,6 +39,7 @@ Servidor::Servidor(char* nombreArchivoDeUsuarios, int puerto, int modoLogger) {
 
 Servidor::~Servidor() {
 }
+
 void Servidor::guardarDatosDeUsuarios() {
 
 	string linea, csvItem;
@@ -101,7 +102,7 @@ void Servidor::autenticar(string nombre, string contrasenia,
 	} else {
 		usuarios.clear();
 		cout << "Error de autenticación, no nos hackees wachin" << endl;
-		string msj = "Error de autenticación \n";
+		string msj = "Error de autenticación: usuario y/o clave incorrectos \n";
 		this->guardarLog(msj, INFO);
 	}
 }
@@ -126,21 +127,21 @@ void Servidor::crearMensaje(Mensaje mensaje) {
 void Servidor::procesarMensajes() {
 	if (!colaMensajesNoProcesados.empty()) {
 		pthread_mutex_lock(&mutexColaNoProcesados);
-		Mensaje mensaje = colaMensajesNoProcesados.front();
+		Mensaje mensajeAProcesar = colaMensajesNoProcesados.front();
 		colaMensajesNoProcesados.pop();
 		pthread_mutex_unlock(&mutexColaNoProcesados);
-		for (list<MensajesProcesados>::iterator usuarioActual =
-				listaMensajesProcesados->begin();
+		for (list<MensajesProcesados>::iterator usuarioActual = listaMensajesProcesados->begin();
 				usuarioActual != listaMensajesProcesados->end();
 				usuarioActual++) {
 			MensajesProcesados listaMensajes;
 			listaMensajes = *usuarioActual;
-			if (listaMensajes.destinatario == mensaje.getDestinatario()) {
+			if (listaMensajes.destinatario == mensajeAProcesar.getDestinatario()) {
 				pthread_mutex_lock(&mutexListaProcesados);
-				listaMensajes.mensajes->push(mensaje);
+				listaMensajes.mensajes->push(mensajeAProcesar);
 				pthread_mutex_unlock(&mutexListaProcesados);
-				cout << "Procesado mensaje para " << listaMensajes.destinatario
-						<< endl;
+				this->mensaje = "Procesando mensaje para " + listaMensajes.destinatario;
+				this->guardarLog(mensaje, DEBUG);
+				cout << mensaje << endl;
 			}
 		}
 	}
@@ -183,8 +184,13 @@ int Servidor::aceptarConexion() {
 	} else {
 		strcpy(buffer, this->serializarLista(usuarios).c_str());
 		string bufferS = buffer;
-		mensaje = "Enviándole al cliente " + nombre
-				+ " la lista de usuarios disponibles \n";
+		mensaje = "Enviándole al cliente " + nombre + " la lista de usuarios disponibles \n";
+		this->guardarLog(mensaje, DEBUG);
+		mensaje = "La lista de usuarios disponibles es: ";
+		for (list<string>::iterator i = usuarios.begin(); i != usuarios.end(); i++) {
+			mensaje += (*i);
+			mensaje += " ";
+		}
 		this->guardarLog(mensaje, DEBUG);
 		send(socketCliente, buffer, 1024, 0);
 	}
@@ -232,6 +238,10 @@ void Servidor::setThreadProceso(pthread_t thrProceso) {
 }
 
 int Servidor::getCantConexiones() {
+	stringstream ss;
+	ss << this->cantClientesConectados;
+	mensaje = "Cantidad de clientes conectados: " + ss.str();
+	this->guardarLog(mensaje, DEBUG);
 	return this->cantClientesConectados;
 }
 

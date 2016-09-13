@@ -32,9 +32,7 @@ struct parametrosThreadEncolarMensaje {
 bool stringTerminaCon(std::string const &fullString,
 		std::string const &ending) {
 	if (fullString.length() >= ending.length()) {
-		return (0
-				== fullString.compare(fullString.length() - ending.length(),
-						ending.length(), ending));
+		return (0 == fullString.compare(fullString.length() - ending.length(), ending.length(), ending));
 	} else {
 		return false;
 	}
@@ -46,7 +44,9 @@ void* encolar(void* arg) {
 			*(parametrosThreadEncolarMensaje*) arg;
 	Servidor* servidor = parametrosEncolarMensaje.servidor;
 	Mensaje* mensaje = parametrosEncolarMensaje.mensajeNoProcesado;
-	cout << "Encolando mensaje: " + mensaje->getTexto() + ". De: " + mensaje->getRemitente() + ". Para: " + mensaje->getDestinatario() + ". \n" << endl;
+	servidor->mensaje = "Encolando mensaje: " + mensaje->getTexto() + ". De: " + mensaje->getRemitente() + ". Para: " + mensaje->getDestinatario() + ". \n";
+	servidor->guardarLog(servidor->mensaje, DEBUG);
+	cout << servidor->mensaje << endl;
 	if (mensaje->getDestinatario().compare("Todos") != 0) {
 		pthread_mutex_lock(&parametrosEncolarMensaje.servidor->mutexColaNoProcesados);
 		servidor->crearMensaje(*mensaje);

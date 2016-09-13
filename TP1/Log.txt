@@ -4,4 +4,4 @@ El servidor está escuchando...
 Datos recibidos: jochi,123456
 Autenticación OK 
 Enviándole al cliente jochi la lista de usuarios disponibles 
-Encolando mensaje: hola flan. De: jochi. Para: flan. 
+La lista de usuarios disponibles es : christin pablo flan franco azcurra 

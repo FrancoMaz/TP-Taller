@@ -23,12 +23,9 @@ Logger::~Logger() {
 }
 
 void Logger::escribir(string mensaje, int nivelDeLog) {
-	cout << "Modo del logger: " << modo << endl;
-	cout << "Nivel de log del mensaje: " << nivelDeLog << endl;
 	if (this->modo == 1) {
 		if (nivelDeLog == 1) {
 			this->archivoLog = fopen("Log.txt", "a");
-			cout << "Entro en modo INFO" << endl;
 			cout << mensaje << endl;
 			fputs(mensaje.c_str(), this->archivoLog);
 			fclose(this->archivoLog);
@@ -36,8 +33,6 @@ void Logger::escribir(string mensaje, int nivelDeLog) {
 	} else {
 		// si el modo del logger es DEBUG se debe loggear todoo
 		this->archivoLog = fopen("Log.txt", "a");
-		cout << "Entro en modo DEBUG" << endl;
-		cout << mensaje << endl;
 		fputs(mensaje.c_str(), this->archivoLog);
 		fclose(this->archivoLog);
 	}
