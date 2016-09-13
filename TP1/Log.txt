@@ -4,7 +4,4 @@ El servidor está escuchando...
 Datos recibidos: jochi,123456
 Autenticación OK 
 Enviándole al cliente jochi la lista de usuarios disponibles 
-Encolando mensaje: holi. De: jochi. Para: flan. 
-Encolando mensaje: holi. De: jochi. Para: flan. 
-Encolando mensaje: garca. De: jochi. Para: christin. 
-Encolando mensaje: hola. De: jochi. Para: franco. 
+Encolando mensaje: hola flan. De: jochi. Para: flan. 

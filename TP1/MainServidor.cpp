@@ -44,10 +44,31 @@ bool stringTerminaCon(std::string const &fullString,
 void* encolar(void* arg) {
 	parametrosThreadEncolarMensaje parametrosEncolarMensaje =
 			*(parametrosThreadEncolarMensaje*) arg;
-	pthread_mutex_lock(&parametrosEncolarMensaje.servidor->mutex);
-	parametrosEncolarMensaje.servidor->crearMensaje(
-			*parametrosEncolarMensaje.mensajeNoProcesado);
-	pthread_mutex_unlock(&parametrosEncolarMensaje.servidor->mutex);
+	Servidor* servidor = parametrosEncolarMensaje.servidor;
+	Mensaje* mensaje = parametrosEncolarMensaje.mensajeNoProcesado;
+	cout << "Encolando mensaje: " + mensaje->getTexto() + ". De: " + mensaje->getRemitente() + ". Para: " + mensaje->getDestinatario() + ". \n" << endl;
+	if (mensaje->getDestinatario().compare("Todos") != 0) {
+		pthread_mutex_lock(&parametrosEncolarMensaje.servidor->mutexColaNoProcesados);
+		servidor->crearMensaje(*mensaje);
+		pthread_mutex_unlock(&parametrosEncolarMensaje.servidor->mutexColaNoProcesados);
+		servidor->mensaje = "Encolando mensaje: " + mensaje->getTexto() + ". De: " + mensaje->getRemitente() + ". Para: " + mensaje->getDestinatario() + ". \n";
+		servidor->guardarLog(servidor->mensaje, DEBUG);
+	}
+	else {
+		list<string> destinatarios = servidor->agregarDestinatarios(mensaje->getRemitente());
+		for (list<string>::iterator datoActual = destinatarios.begin(); datoActual != destinatarios.end(); datoActual++) {
+			string usuario;
+			usuario = *datoActual;
+			if (usuario != mensaje->getRemitente()){
+				Mensaje* msj = new Mensaje(mensaje->getRemitente(),usuario,mensaje->getTexto());
+				pthread_mutex_lock(&parametrosEncolarMensaje.servidor->mutexColaNoProcesados);
+				parametrosEncolarMensaje.servidor->crearMensaje(*msj);
+				pthread_mutex_unlock(&parametrosEncolarMensaje.servidor->mutexColaNoProcesados);
+				servidor->mensaje = "Encolando mensaje: " + msj->getTexto() + ". De: " + msj->getRemitente() + ". Para: " + msj->getDestinatario() + ". \n";
+				servidor->guardarLog(servidor->mensaje, DEBUG);
+			}
+		}
+	}
 	return NULL;
 }
 
@@ -58,23 +79,18 @@ void encolarMensaje(char* remitente, char* destinatario, char* mensaje,
 	parametrosEncolarMensaje.mensajeNoProcesado = new Mensaje(remitente,
 			destinatario, mensaje);
 	parametrosEncolarMensaje.servidor = servidor;
-	cout << "Encolando mensaje: " + std::string(mensaje) + ". De: " + std::string(remitente) + ". Para: " + std::string(destinatario) + "." << endl;
-	servidor->mensajeStream << "Encolando mensaje: " + std::string(mensaje) + ". De: " + std::string(remitente) + ". Para: " + std::string(destinatario) + ". \n";
-	servidor->guardarLog(servidor->mensajeStream);
-	//pthread_detach(threadEncolarMensaje); //lo marco
 	pthread_create(&threadEncolarMensaje, NULL, &encolar,
 			&parametrosEncolarMensaje);
+	pthread_detach(threadEncolarMensaje); //lo marco
 }
 
-void encolarMensajeATodos(char* remitente, char* mensaje, list<string> destinatarios, Servidor* servidor){
-		for (list<string>::iterator datoActual = destinatarios.begin(); datoActual != destinatarios.end(); datoActual++) {
-				string usuario;
-				usuario = *datoActual;
-				if (usuario != remitente){
-					char* nombreUsuario = strdup((usuario).c_str());
-					encolarMensaje(remitente, nombreUsuario, mensaje, servidor);
-				}
-		}
+void* cicloProcesarMensajes(void* arg)
+{
+	Servidor* servidor = (Servidor*)arg;
+	while(1)
+	{
+		servidor->procesarMensajes();
+	}
 }
 
 void* cicloEscuchaCliente(void* arg) {
@@ -97,23 +113,20 @@ void* cicloEscuchaCliente(void* arg) {
 				//mientras haya cosas que leer, sigo recibiendo.
 				largoRequest = recv(socketCliente, bufferRecibido,
 						BUFFER_MAX_SIZE, 0);
+				cout << largoRequest << endl;
 				datosRecibidos.append(bufferRecibido, largoRequest);
 			}
 			//en el formato siempre recibimos primero el metodo que es un entero.
 			//1 representa enviar un mensaje, 2 representa recibir mis mensajes, 3 desconectar.
-			char* metodo = strtok(strdup(datosRecibidos.c_str()), "|");
+			char* datos = strdup(datosRecibidos.c_str());
+			char* metodo = strtok(datos, "|");
 			int accion = atoi(metodo); //convierto a entero el metodo recibido por string
 			switch (accion) {
 			case 1: { //1 es enviar
 				char* remitente = strtok(NULL,"|");
 				char* destinatario = strtok(NULL,"|");
 				char* mensaje = strtok(NULL,"#");
-				if (strcmp(destinatario, "Todos") != 0) {
-					encolarMensaje(remitente, destinatario, mensaje,servidor);}
-					else {
-						list<string> destinatarios = servidor -> agregarDestinatarios(remitente);
-						encolarMensajeATodos(remitente, mensaje, destinatarios, servidor);
-					}
+				encolarMensaje(remitente, destinatario, mensaje,servidor);
 				break;
 			}
 			case 2: { //2 es recibir
@@ -171,6 +184,10 @@ void* cicloEscucharConexionesNuevasThreadProceso(void* arg) {
 		servidor->comenzarEscucha();
 	} while (!servidor->escuchando);
 
+	pthread_t threadProceso;
+	pthread_create(&threadProceso,NULL,&cicloProcesarMensajes,(void*)servidor);
+	servidor->setThreadProceso(threadProceso);
+
 	pthread_t thread_id[MAX_CANT_CLIENTES]; //la cantidad maxima de clientes es 6, voy a crear, como mucho 6 threads para manejar dichas conexiones.
 	for (int i = 0; i < MAX_CANT_CLIENTES; i++) {
 		thread_id[i] = NULL; //inicializo todos en null
@@ -185,18 +202,19 @@ void* cicloEscucharConexionesNuevasThreadProceso(void* arg) {
 			parametrosThreadCliente parametrosCliente;
 			parametrosCliente.socketCli = socketCliente;
 			parametrosCliente.serv = servidor;
-			pthread_detach(thread_id[servidor->getCantConexiones()]); //lo marco como detach
 
 			pthread_create(&thread_id[servidor->getCantConexiones()], NULL,
 					&cicloEscuchaCliente, &parametrosCliente); //optimizar ya que si un cliente se desconecta podria causar un problema
-
+			pthread_detach(thread_id[servidor->getCantConexiones()]); //lo marco como detach
 		}
 	}
 }
+
 int inicializarServidor() {
-	pthread_t thrProceso;
-	int threadOk = pthread_create(&thrProceso, NULL,
+	pthread_t thrConexiones;
+	int threadOk = pthread_create(&thrConexiones, NULL,
 			&cicloEscucharConexionesNuevasThreadProceso, NULL);
+	pthread_detach(thrConexiones);
 	return threadOk;
 }
 

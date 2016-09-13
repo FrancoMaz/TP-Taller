@@ -25,6 +25,9 @@
 #include "Mensaje.h"
 #define MAX_CANT_CLIENTES 6
 #define BUFFER_MAX_SIZE 1024
+const int INFO = 1;
+const int DEBUG = 2;
+
 using namespace std;
 
 class Servidor {
@@ -62,7 +65,7 @@ public:
 	bool escuchando = false; //representa si el servidor esta disponible para escuchar pedidos
 	void autenticar(string nombre, string contrasenia, list<string>& usuarios);
 	list<Cliente> obtenerClientes();
-	void guardarLog(stringstream &mensaje);
+	void guardarLog(string mensaje, const int nivelDeLog);
 	list<Mensaje> obtenerMensajes(Cliente cliente);
 	void crearMensaje(Mensaje mensaje);
 	void comenzarEscucha();
@@ -74,13 +77,14 @@ public:
 	int aceptarConexion();
 	int getCantConexiones();
 	string serializarLista(list<string> datos);
-	pthread_mutex_t mutex;
-	stringstream mensajeStream;
-	list<string> agregarDestinatarios(char* remitente);
+	pthread_mutex_t mutexColaNoProcesados;
+	pthread_mutex_t mutexListaProcesados;
+	string mensaje;
+	list<string> agregarDestinatarios(string remitente);
 	void procesarMensaje(Mensaje mensaje);
 	string traerMensajesProcesados(char* nombreCliente);
 	string concatenarMensajes(queue<Mensaje>* colaDeMensajes);
-
+	void procesarMensajes();
 };
 
 #endif /* TP1_SERVIDOR_H_ */
