@@ -164,7 +164,8 @@ void Cliente::recibir() {
 	char* recibir = strdup(metodo.c_str()); //2 es recibir
 	send(this->socketCliente, recibir, strlen(recibir) + 1, 0);
 	string datosRecibidos;
-	int largoRequest = recv(this->socketCliente, colaMensajes, strlen(colaMensajes), 0);
+	int largoRequest = recv(this->socketCliente, colaMensajes, BUFFER_MAX_SIZE, 0);
+	cout<< "largo request: "<<largoRequest<<endl;
 	datosRecibidos.append(colaMensajes,largoRequest);
 	while (largoRequest >= BUFFER_MAX_SIZE) //mientras el largoRequest sea del tamaño del max size, sigo pidiendo
 	{
@@ -173,20 +174,24 @@ void Cliente::recibir() {
 		cout << largoRequest << endl;
 		datosRecibidos.append(colaMensajes,largoRequest);
 	}
-	this -> mostrarUltimosMensajes(colaMensajes);
+	this -> mostrarUltimosMensajes(datosRecibidos);
 }
 
 void Cliente::mostrarUltimosMensajes(string colaMensajes)
 {
-	string mensajesASplitear = colaMensajes.substr(0, colaMensajes.length() - 1);
-	char str[BUFFER_MAX_SIZE];
-	strcpy(str, colaMensajes.c_str());
-	char* mensaje = strtok(str, "||");
 	cout << "Ultimos mensajes recibidos: " << endl;
-	while (mensaje != NULL) {
-		cout << mensaje << endl;
-		mensaje = strtok(NULL, "||");
-	}
+	if(colaMensajes.empty() ){
+		char str[colaMensajes.length()];
+		strcpy(str, colaMensajes.c_str());
+		char* texto = strtok(str, "|");
+		while (texto != NULL) {
+			cout<<"Mensaje de "<<texto<<":"<<endl;
+			texto = strtok(NULL,"#");
+			cout << texto << endl;
+			cout<<endl;
+			texto = strtok(NULL, "|");
+		}
+	}else{ cout<<"No hay mensajes nuevos"<<endl; cout<<"Nadie te juna wachin"<<endl;};
 }
 
 void Cliente::loremIpsum(double frecuenciaDeEnvios, double cantidadMaximaDeEnvios) {

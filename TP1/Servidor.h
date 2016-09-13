@@ -78,6 +78,8 @@ public:
 	stringstream mensajeStream;
 	list<string> agregarDestinatarios(char* remitente);
 	void procesarMensaje(Mensaje mensaje);
+	string traerMensajesProcesados(char* nombreCliente);
+	string concatenarMensajes(queue<Mensaje>* colaDeMensajes);
 
 };
 
