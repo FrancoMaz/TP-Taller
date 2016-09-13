@@ -48,14 +48,24 @@ void* cicloConexion(void* arg) {
 }
 
 int main() {
+	bool esValido = false;
 	string ip;
 	int puerto, accion;
 	bool socketOk = false;
 	pthread_t thrComu;
 	string nombre, contrasenia;
 	while (!socketOk) {
-		cout << "Ingrese el puerto para la conexion: ";
-		cin >> puerto;
+		do {
+			cout << "Ingrese el puerto para la conexion: ";
+			cin >> puerto;
+			if (cin.good()) {esValido = true;}
+			else {
+				cin.clear();
+				cin.ignore();
+				cout << "Error: el dato ingresado debe ser un numero" << endl;
+				}
+			}
+		while (!esValido);
 		cout << "Ingrese la ip del servidor: ";
 		cin >> ip;
 		socketOk = chequearSocket(ip, puerto); //FALTA IMPLEMENTAR METODO DE CHEQUEAR IP/PUERTO. ESTA MAS ABAJO LA FUNCION.
@@ -69,12 +79,19 @@ int main() {
 	cout << "Bienvenido al sistema de mensajería" << endl;
 
 	do {
-		do {
+			bool accionValida = false;
 			cout << "1) Conectar" << endl;
 			cout << "2) Salir" << endl;
+		do {
 			cout << "¿Qué desea hacer? " << endl;
 			cin >> accion;
-		} while (accion < 1 or accion > 2);
+			if (cin.good() && (accion == 1 || accion == 2)) {accionValida = true;}
+				else {
+					cin.clear();
+					cin.ignore();
+					cout << "Error: la opcion ingresada no es valida" << endl;
+					}
+		} while (!accionValida);
 		if (accion != 2) {
 			//si no es salir, creo el thread de comunicacion que intenta conectar.
 			int threadOk = pthread_create(&thrComu, NULL, &cicloConexion,
