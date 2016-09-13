@@ -50,9 +50,9 @@ void* encolar(void* arg) {
 	if (mensaje->getDestinatario().compare("Todos") != 0) {
 		pthread_mutex_lock(&parametrosEncolarMensaje.servidor->mutexColaNoProcesados);
 		servidor->crearMensaje(*mensaje);
-		pthread_mutex_unlock(&parametrosEncolarMensaje.servidor->mutexColaNoProcesados);
 		servidor->mensaje = "Encolando mensaje: " + mensaje->getTexto() + ". De: " + mensaje->getRemitente() + ". Para: " + mensaje->getDestinatario() + ". \n";
 		servidor->guardarLog(servidor->mensaje, DEBUG);
+		pthread_mutex_unlock(&parametrosEncolarMensaje.servidor->mutexColaNoProcesados);
 	}
 	else {
 		list<string> destinatarios = servidor->agregarDestinatarios(mensaje->getRemitente());
@@ -63,9 +63,9 @@ void* encolar(void* arg) {
 				Mensaje* msj = new Mensaje(mensaje->getRemitente(),usuario,mensaje->getTexto());
 				pthread_mutex_lock(&parametrosEncolarMensaje.servidor->mutexColaNoProcesados);
 				parametrosEncolarMensaje.servidor->crearMensaje(*msj);
-				pthread_mutex_unlock(&parametrosEncolarMensaje.servidor->mutexColaNoProcesados);
 				servidor->mensaje = "Encolando mensaje: " + msj->getTexto() + ". De: " + msj->getRemitente() + ". Para: " + msj->getDestinatario() + ". \n";
 				servidor->guardarLog(servidor->mensaje, DEBUG);
+				pthread_mutex_unlock(&parametrosEncolarMensaje.servidor->mutexColaNoProcesados);
 			}
 		}
 	}
