@@ -26,14 +26,19 @@ void Logger::escribir(string mensaje, int nivelDeLog) {
 	if (this->modo == 1) {
 		if (nivelDeLog == 1) {
 			this->archivoLog = fopen("Log.txt", "a");
-			cout << mensaje << endl;
 			fputs(mensaje.c_str(), this->archivoLog);
 			fclose(this->archivoLog);
 		}
 	} else {
 		// si el modo del logger es DEBUG se debe loggear todoo
 		this->archivoLog = fopen("Log.txt", "a");
-		fputs(mensaje.c_str(), this->archivoLog);
+		stringstream ss;
+		time(&timer);
+		char buffer [80];
+		timeinfo = localtime(&timer);
+		strftime(buffer,80, "%H:%M:%S", timeinfo);
+		ss << buffer;
+		fputs(((ss.str() + " ") + mensaje).c_str(), this->archivoLog);
 		fclose(this->archivoLog);
 	}
 }

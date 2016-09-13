@@ -1,7 +1,9 @@
-Se leyeron los datos de los usuarios desde el archivo usuarios.csv 
-Se creó correctamente el servidor en el puerto: 7891, ip: 192.168.1.10
-El servidor está escuchando... 
-Datos recibidos: jochi,123456
-Autenticación OK 
-Enviándole al cliente jochi la lista de usuarios disponibles 
-La lista de usuarios disponibles es : christin pablo flan franco azcurra 
+23:35:11 Se leyeron los datos de los usuarios desde el archivo usuarios.csv 
+23:35:11 Se creó correctamente el servidor en el puerto: 7891, ip: 192.168.1.10
+23:35:11 El servidor está escuchando... 
+23:35:24 Datos recibidos: jochi,123456
+23:35:24 Autenticación OK 
+23:35:24 Enviándole al cliente jochi la lista de usuarios disponibles 
+23:35:24 La lista de usuarios disponibles es: christin pablo flan franco azcurra 23:35:24 Cantidad de clientes conectados: 1
+23:35:24 Cantidad de clientes conectados: 1
+23:35:24 Cantidad de clientes conectados: 1

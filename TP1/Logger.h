@@ -14,6 +14,7 @@
 #include <sstream>
 #include <stdio.h>
 #include <stdlib.h>
+#include <ctime>
 using namespace std;
 
 class Logger {
@@ -21,6 +22,8 @@ public:
 	Logger(int modo);
 	virtual ~Logger();
 	void escribir(string mensaje, int nivelDeLog);
+	time_t timer;
+	struct tm* timeinfo;
 
 private:
 	int modo;

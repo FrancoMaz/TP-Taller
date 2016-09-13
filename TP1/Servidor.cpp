@@ -139,7 +139,7 @@ void Servidor::procesarMensajes() {
 				pthread_mutex_lock(&mutexListaProcesados);
 				listaMensajes.mensajes->push(mensajeAProcesar);
 				pthread_mutex_unlock(&mutexListaProcesados);
-				this->mensaje = "Procesando mensaje para " + listaMensajes.destinatario;
+				this->mensaje = "Procesando mensaje para " + listaMensajes.destinatario + "\n";
 				this->guardarLog(mensaje, DEBUG);
 				cout << mensaje << endl;
 			}
@@ -240,7 +240,7 @@ void Servidor::setThreadProceso(pthread_t thrProceso) {
 int Servidor::getCantConexiones() {
 	stringstream ss;
 	ss << this->cantClientesConectados;
-	mensaje = "Cantidad de clientes conectados: " + ss.str();
+	mensaje = "Cantidad de clientes conectados: " + ss.str() + + "\n";
 	this->guardarLog(mensaje, DEBUG);
 	return this->cantClientesConectados;
 }
