@@ -9,16 +9,20 @@ Cliente::Cliente(string ip, int puerto) {
 //El cliente se crea con la direccion IP y el puerto en el cual se encuentra disponible el servidor
 	this->direccionIP = strdup(ip.c_str());
 	this->puertoServidor = puerto;
-	this->socketCliente = socket(PF_INET, SOCK_STREAM, 0);
-	direccionServidor.sin_family = AF_INET;
-	direccionServidor.sin_port = htons(puerto);
-	direccionServidor.sin_addr.s_addr = inet_addr(this->direccionIP);
-	memset(direccionServidor.sin_zero, '\0', sizeof direccionServidor.sin_zero);
+	//this->inicializarSocket();
 	this->opcionMenu = 0;
 }
 
 Cliente::~Cliente() {
 	// TODO Auto-generated destructor stub
+}
+
+void Cliente::inicializarSocket(){
+	this->socketCliente = socket(PF_INET, SOCK_STREAM, 0);
+	direccionServidor.sin_family = AF_INET;
+	direccionServidor.sin_port = htons(this->puertoServidor);
+	direccionServidor.sin_addr.s_addr = inet_addr(this->direccionIP);
+	memset(direccionServidor.sin_zero, '\0', sizeof direccionServidor.sin_zero);
 }
 
 void Cliente::mostrarMenuYProcesarOpcion() {
@@ -98,6 +102,7 @@ void Cliente::elegirOpcionDelMenu(int opcion) {
 
 void Cliente::conectar(string nombre, string contrasenia) {
 	//Se establece la conexion con el servidor mediante autenticacion. El servidor devuelve la lista con todos los usuarios disponibles
+	this->inicializarSocket();
 	char buffer[BUFFER_MAX_SIZE];
 	char datosRecibidos[BUFFER_MAX_SIZE];
 	this->addr_size = sizeof direccionServidor;
@@ -283,8 +288,8 @@ void Cliente::setThreadComunicacion(pthread_t thrComu) {
 	this->threadComunicacion = thrComu;
 }
 
-void Cliente::setClientesDisponibles(string nombre, string contrasenia) {
-	//this->clientesDisponibles = this->conectar(nombre, contrasenia);
+void Cliente::vaciarClientesDisponibles() {
+	this->clientesDisponibles.clear();
 }
 
 void Cliente::mostrarClientesDisponibles(){

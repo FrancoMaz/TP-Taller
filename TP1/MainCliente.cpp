@@ -37,10 +37,10 @@ void* cicloConexion(void* arg) {
 		cin >> pass;
 		cliente->conectar(user, pass);
 	}
-	while (cliente->getOpcionMenu() != 5 and cliente->getOpcionMenu() != 4) //mientras la opcion del menu no sea salir o desconectar..
+	do
 	{
 		cliente->mostrarMenuYProcesarOpcion();
-	}
+	} while (cliente->getOpcionMenu() != 5 and cliente->getOpcionMenu() != 4); //mientras la opcion del menu no sea salir o desconectar..
 	if (cliente->getOpcionMenu() == 4) {
 		return (void*) 1;
 	}
@@ -106,6 +106,7 @@ int main() {
 				accion = *((int*) (&resultado));
 				if (accion == 1) { //si es 1, es desconectar y vuelve a ingresar al loop que ofrece conectar y desconectar
 					cout << "Desconectado del servidor.." << endl;
+					cliente->vaciarClientesDisponibles();
 				} //si es 0, va a salir automaticamente del loop y del programa.
 			}
 		} else {
