@@ -266,4 +266,33 @@ list<string> Servidor::agregarDestinatarios(string remitente) {
 	}
 	return destinatarios;
 }
+string Servidor:: traerMensajesProcesados(char* nombreCliente){
 
+	queue<Mensaje>* colaDeMensajes;
+
+	for (list<Servidor::MensajesProcesados>::iterator datoActual = listaMensajesProcesados->begin(); datoActual != listaMensajesProcesados->end(); datoActual++) {
+
+			MensajesProcesados mensaje;
+			mensaje = *datoActual;
+			if(mensaje.destinatario == nombreCliente){colaDeMensajes = mensaje.mensajes;}
+	}
+
+	string mensajesConcatenados = concatenarMensajes(colaDeMensajes);
+
+	return mensajesConcatenados;
+
+}
+string Servidor:: concatenarMensajes(queue<Mensaje>* colaDeMensajes){
+
+	Mensaje mensaje;
+	string mensajesConcatenados = "";
+    while(!colaDeMensajes->empty()){
+		mensaje = colaDeMensajes->front();
+		colaDeMensajes->pop();
+		mensajesConcatenados.append(mensaje.getRemitente());
+		mensajesConcatenados.append("|");
+		mensajesConcatenados.append(mensaje.getTexto());
+		mensajesConcatenados.append("#");
+	}
+	return mensajesConcatenados;
+}

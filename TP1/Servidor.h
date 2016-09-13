@@ -82,8 +82,9 @@ public:
 	string mensaje;
 	list<string> agregarDestinatarios(string remitente);
 	void procesarMensaje(Mensaje mensaje);
+	string traerMensajesProcesados(char* nombreCliente);
+	string concatenarMensajes(queue<Mensaje>* colaDeMensajes);
 	void procesarMensajes();
-
 };
 
 #endif /* TP1_SERVIDOR_H_ */

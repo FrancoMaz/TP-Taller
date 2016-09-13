@@ -104,8 +104,7 @@ void* cicloEscuchaCliente(void* arg) {
 	while (conectado) {
 		//en este loop se van a gestionar los send y receive del cliente. aca se va a distinguir que es lo que quiere hacer y actuar segun lo que quiera el cliente.
 		string datosRecibidos;
-		int largoRequest = recv(socketCliente, bufferRecibido, BUFFER_MAX_SIZE,
-				0); //recibo por primera vez
+		int largoRequest = recv(socketCliente, bufferRecibido, BUFFER_MAX_SIZE,0); //recibo por primera vez
 		if (largoRequest != 0) {
 			datosRecibidos.append(bufferRecibido, largoRequest);
 			cout << largoRequest << endl;
@@ -117,7 +116,7 @@ void* cicloEscuchaCliente(void* arg) {
 				cout << largoRequest << endl;
 				datosRecibidos.append(bufferRecibido, largoRequest);
 			}
-			//en el formato siempre recibimos primero el metodo primero que es un entero.
+			//en el formato siempre recibimos primero el metodo que es un entero.
 			//1 representa enviar un mensaje, 2 representa recibir mis mensajes, 3 desconectar.
 			char* datos = strdup(datosRecibidos.c_str());
 			char* metodo = strtok(datos, "|");
@@ -131,7 +130,24 @@ void* cicloEscuchaCliente(void* arg) {
 				break;
 			}
 			case 2: { //2 es recibir
-				char* usuarioQueSolicita = strtok(NULL, "|");
+				char* usuarioQueSolicita = strtok(NULL, "#");
+				cout<<"le llega el mensaje de recibir al servidor, del cliente: "<<usuarioQueSolicita<<endl;
+				string mensajesProcesados = servidor->traerMensajesProcesados(usuarioQueSolicita);
+				cout<<"trae bien los mensajes procesados"<<endl;
+				char buffer[1024];
+				cout<< mensajesProcesados<<endl;
+				//buffer = strdup(mensajesProcesados.c_str());
+				strcpy(buffer,mensajesProcesados.c_str());//aca muere, el problema es este strcpy y el string y char*
+				cout<<"copia los mensajes al buffer"<<endl;
+				int largo = strlen(mensajesProcesados.c_str());
+				cout << "Cliente que solicita sus mensajes: " << usuarioQueSolicita << mensajesProcesados<<  endl;
+				cout<<"largo de mensaje enviado: "<<largo<<endl;
+				largo -= send(socketCliente, buffer, largo +1, 0);
+				cout<<"largo de mensaje enviado: "<<largo<<endl;
+					while (largo > 0)
+					{
+						largo -= send(socketCliente, buffer, largo + 1, 0);
+					}
 				break;
 			}
 			case 3: { //3 es desconectar
