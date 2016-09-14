@@ -155,10 +155,12 @@ void* cicloEscuchaCliente(void* arg) {
 			{
 				string mensaje = "Ocurrió un problema en el socket para el cliente: " + nombre + ". \n";
 				servidor->guardarLog(mensaje, DEBUG);
+				servidor->restarCantidadClientesConectados();
 			}
 			conectado = false;
 			string mensaje = "Se cerró la conexión del servidor por problemas de red. \n";
 			servidor->guardarLog(mensaje, DEBUG);
+			servidor->restarCantidadClientesConectados();
 		}
 	}
 

@@ -300,3 +300,7 @@ string Servidor::concatenarMensajes(queue<Mensaje>* colaDeMensajes) {
 
 	return mensajesConcatenados;
 }
+
+void Servidor::restarCantidadClientesConectados(){
+	this->cantClientesConectados -= 1;
+}

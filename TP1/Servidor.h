@@ -86,6 +86,7 @@ public:
 	string traerMensajesProcesados(char* nombreCliente);
 	string concatenarMensajes(queue<Mensaje>* colaDeMensajes);
 	void procesarMensajes();
+	void restarCantidadClientesConectados();
 };
 
 #endif /* TP1_SERVIDOR_H_ */
