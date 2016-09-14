@@ -38,7 +38,7 @@ void Logger::escribir(string mensaje, int nivelDeLog) {
 		timeinfo = localtime(&timer);
 		strftime(buffer,80, "%H:%M:%S", timeinfo);
 		ss << buffer;
-		fputs(((ss.str() + " ") + mensaje).c_str(), this->archivoLog);
+		fputs((("[" + ss.str() + "] ") + mensaje).c_str(), this->archivoLog);
 		fclose(this->archivoLog);
 	}
 }

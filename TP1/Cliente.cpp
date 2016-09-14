@@ -9,7 +9,6 @@ Cliente::Cliente(string ip, int puerto) {
 //El cliente se crea con la direccion IP y el puerto en el cual se encuentra disponible el servidor
 	this->direccionIP = strdup(ip.c_str());
 	this->puertoServidor = puerto;
-	//this->inicializarSocket();
 	this->opcionMenu = 0;
 }
 
@@ -107,29 +106,28 @@ void Cliente::conectar(string nombre, string contrasenia) {
 	char datosRecibidos[BUFFER_MAX_SIZE];
 	this->addr_size = sizeof direccionServidor;
 	char* nombreYPass = strdup((nombre + ',' + contrasenia).c_str()); // convierte el string de const char* a char*
-	cout << nombreYPass << endl;
 	cout << "Intentando conectarse con el servidor. . ." << endl;
 	if (connect(socketCliente, (struct sockaddr *) &direccionServidor,addr_size) == 0) {
 
 		strcpy(buffer, nombreYPass);
 		send(socketCliente, buffer, strlen(nombreYPass) + 1, 0);
-
-		cout << "Conectandose al puerto: " << this->puertoServidor << endl;
 		this->nombre = nombre;
 		//this->clientesDisponibles.push_front("hola"); //pongo cualquier cosa para comprobar el ciclo ok.
 		recv(socketCliente, datosRecibidos, BUFFER_MAX_SIZE, 0);
 		string datos = datosRecibidos;
 		string desconectarse = "Desconectar";
 		if (strcmp(datos.c_str(), desconectarse.c_str()) == 0) {
+			cout << "Usuario/clave incorrectos, inténtelo de nuevo" << endl;
 			this->desconectar();
 		} else {
+			cout << "Conectandose al puerto: " << this->puertoServidor << endl;
 			cout << "Datos recibidos: " << datos << endl; //IMPRIMO LA RESPUESTA DEL SERVER, SI SE PUDO AUTENTICAR O NO. --> HAY QUE CAMBIAR ESTO PORQUE EN REALIDAD SE DEVUELVE LA LISTA DE USUARIOS.
 			splitUsuarios(datosRecibidos);
 		}
 	} else {
 		cout << "Error conectandose al puerto" << endl;
 	}
-	//Faltaria que el servidor devuelve la lista con los usuarios disponibles y que confirme la autenticacion del cliente
+	free(nombreYPass);
 }
 
 void Cliente::splitUsuarios(string datos) {

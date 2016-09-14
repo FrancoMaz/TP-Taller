@@ -14,7 +14,6 @@ Servidor::Servidor(char* nombreArchivoDeUsuarios, int puerto, Logger* logger) {
 	this->puerto = puerto;
 	this->nombreArchivo = nombreArchivoDeUsuarios;
 	this->logger = logger;
-
 	this->welcomeSocket = socket(PF_INET, SOCK_STREAM, 0);
 	/*---- Configure settings of the server address struct ----*/
 	/* Address family = Internet */
@@ -27,8 +26,7 @@ Servidor::Servidor(char* nombreArchivoDeUsuarios, int puerto, Logger* logger) {
 	/* Set all bits of the padding field to 0 */
 	memset(serverAddr.sin_zero, '\0', sizeof serverAddr.sin_zero);
 	/*---- Bind the address struct to the socket ----*/
-	bind(this->welcomeSocket, (struct sockaddr *) &serverAddr,
-			sizeof(serverAddr));
+	bind(this->welcomeSocket, (struct sockaddr *) &serverAddr, sizeof(serverAddr));
 	this->datosUsuarios = new list<Datos>();
 	this->listaMensajesProcesados = new list<MensajesProcesados>();
 	stringstream ss;
@@ -66,10 +64,12 @@ void Servidor::guardarDatosDeUsuarios() {
 			datosUsuarios->push_back(datosCapturados);
 			listaMensajesProcesados->push_back(mensajesProcesados);
 		}
+
+		myfile.close();
+		mensaje = "Se leyeron los datos de los usuarios desde el archivo " + string(this->nombreArchivo) + "\n";
+		this->guardarLog(mensaje, DEBUG);
 	}
-	myfile.close();
-	mensaje = "Se leyeron los datos de los usuarios desde el archivo usuarios.csv \n";
-	this->guardarLog(mensaje, DEBUG);
+
 }
 
 void Servidor::autenticar(string nombre, string contrasenia,
@@ -91,32 +91,25 @@ void Servidor::autenticar(string nombre, string contrasenia,
 		}
 	}
 	if (autenticacionOK) {
-		cout << "Autenticación OK wachin" << endl;
+		cout << "Autenticación OK" << endl;
 		mensaje = "Autenticación OK \n";
 		this->guardarLog(mensaje, DEBUG);
 	} else {
 		usuarios.clear();
-		cout << "Error de autenticación, no nos hackees wachin" << endl;
+		cout << "Error de autenticación: usuario y/o clave incorrectos" << endl;
 		string msj = "Error de autenticación: usuario y/o clave incorrectos \n";
 		this->guardarLog(msj, INFO);
 	}
 }
 
-list<Cliente> Servidor::obtenerClientes() {
-
-}
 
 void Servidor::guardarLog(string mensaje, const int nivelDeLog) {
 	this->logger->escribir(mensaje, nivelDeLog);
 }
 
-list<Mensaje> Servidor::obtenerMensajes(Cliente cliente) {
-
-}
 
 void Servidor::crearMensaje(Mensaje mensaje) {
 	this->colaMensajesNoProcesados.push(mensaje);
-//this->procesarMensaje(mensaje); //Por ahora invoco a este metodo aca pero deberia ir en un while(1) dentro del mainServidor, para que la cola se mensajes no procesados se procese infinitamente
 }
 
 void Servidor::procesarMensajes() {
@@ -175,8 +168,8 @@ int Servidor::aceptarConexion() {
 
 	if (usuarios.empty()) {
 		strcpy(buffer, "Desconectar");
-		mensaje = "Se desconecta al usuario " + nombre
-				+ " del servidor porque falló la autenticación... \n";
+		mensaje = "Se desconecta al usuario " + nombre + " del servidor porque falló la autenticación... \n";
+		this->cantClientesConectados -= 1;
 		this->guardarLog(mensaje, INFO);
 		send(socketCliente, buffer, BUFFER_MAX_SIZE, 0);
 	} else {
@@ -191,7 +184,7 @@ int Servidor::aceptarConexion() {
 			mensaje += (*i);
 			mensaje += " ";
 		}
-		mensaje += "/n";
+		mensaje += "\n";
 		this->guardarLog(mensaje, DEBUG);
 		send(socketCliente, buffer, BUFFER_MAX_SIZE, 0);
 	}
@@ -199,7 +192,8 @@ int Servidor::aceptarConexion() {
 }
 
 void Servidor::finalizarEscucha() {
-//Metodo que finaliza la escucha del servidor.
+	escuchando = false;
+	close(welcomeSocket);
 }
 
 queue<Mensaje> Servidor::getColaMensajesNoProcesados() {
@@ -241,7 +235,7 @@ void Servidor::setThreadProceso(pthread_t thrProceso) {
 int Servidor::getCantConexiones() {
 	stringstream ss;
 	ss << this->cantClientesConectados;
-	mensaje = "Cantidad de clientes conectados: " + ss.str() + +"\n";
+	mensaje = "Cantidad de clientes conectados: " + ss.str() + "\n";
 	this->guardarLog(mensaje, DEBUG);
 	return this->cantClientesConectados;
 }
@@ -249,7 +243,7 @@ int Servidor::getCantConexiones() {
 string Servidor::serializarLista(list<string> datos) {
 	string buffer = "";
 	for (list<string>::iterator i = datos.begin(); i != datos.end(); i++) {
-		cout << (*i) << endl;
+		//cout << (*i) << endl;
 		buffer = buffer + *i + ",";
 	}
 	return buffer;

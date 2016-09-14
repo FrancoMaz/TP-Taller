@@ -114,6 +114,6 @@ int main() {
 		}
 	} while (accion != 0); //si la accion es 0, es salir.
 	cliente->salir(); //cierra el socket y realiza trabajos de limpieza de memoria
-	cout << "Saliendo del programa.. Gracias, vuelva prontoss!" << endl;
+	cout << "Saliendo del programa..." << endl;
 	return 0;
 }
