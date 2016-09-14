@@ -225,14 +225,18 @@ Servidor* inicializarServidor() {
 		}
 	} while (!modoLoggerValido);
 	Logger* logger = new Logger(modoLogger);
-	logger->escribir("El nivel de log seleccionado es :" + modoLogger + string(". \n"),INFO);
+	stringstream modo;
+	modo << modoLogger;
+	logger->escribir("El nivel de log seleccionado es: " + modo.str() + string(". \n"),INFO);
 	do {
 		cout << "Ingrese el puerto de escucha de la conexion: " << endl;
 		cin >> puerto;
 		if (cin.good())
 		{
 			puertoValido = true;
-			logger->escribir("Puerto ingresado: " + puerto + string("\n"),INFO);
+			stringstream puertoStr;
+			puertoStr << puerto;
+			logger->escribir("Puerto ingresado: " + puertoStr.str() + string(". \n"),INFO);
 		}
 		else
 		{
