@@ -192,8 +192,8 @@ int Servidor::aceptarConexion() {
 }
 
 void Servidor::finalizarEscucha() {
-	close(welcomeSocket);
 	escuchando = false;
+	close(welcomeSocket);
 }
 
 queue<Mensaje> Servidor::getColaMensajesNoProcesados() {

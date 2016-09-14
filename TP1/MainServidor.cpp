@@ -274,7 +274,9 @@ int main() {
 	while (servidor->escuchando) {
 		cin >> salir;
 		if (salir == "q"){
-			servidor->escuchando = false;
+			string mensaje = "Se ha cerrado el servidor";
+			servidor->guardarLog(mensaje,INFO);
+			servidor->finalizarEscucha();
 		}
 	}
 	return 0;
