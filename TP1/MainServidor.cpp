@@ -22,12 +22,14 @@ struct parametrosThreadCliente {
 	//estructura que sirve para guardar los parametros que se le pasan a la funcion del thread.
 	Servidor* serv;
 	int socketCli;
+	string nombre;
 };
 
 struct parametrosThreadEncolarMensaje {
 	Mensaje* mensajeNoProcesado;
 	Servidor* servidor;
 };
+
 
 bool stringTerminaCon(std::string const &fullString,
 		std::string const &ending) {
@@ -38,6 +40,10 @@ bool stringTerminaCon(std::string const &fullString,
 	}
 }
 
+bool fileExists(string fileName) {
+	ifstream infile(fileName.c_str());
+	return infile.good();
+}
 
 void* encolar(void* arg) {
 	parametrosThreadEncolarMensaje parametrosEncolarMensaje =
@@ -61,11 +67,11 @@ void* encolar(void* arg) {
 			usuario = *datoActual;
 			if (usuario != mensaje->getRemitente()){
 				Mensaje* msj = new Mensaje(mensaje->getRemitente(),usuario,mensaje->getTexto());
+				servidor->mensaje = "Encolando mensaje: " + msj->getTexto() + ". De: " + msj->getRemitente() + ". Para: " + msj->getDestinatario() + ". \n";
 				pthread_mutex_lock(&parametrosEncolarMensaje.servidor->mutexColaNoProcesados);
 				parametrosEncolarMensaje.servidor->crearMensaje(*msj);
-				servidor->mensaje = "Encolando mensaje: " + msj->getTexto() + ". De: " + msj->getRemitente() + ". Para: " + msj->getDestinatario() + ". \n";
-				servidor->guardarLog(servidor->mensaje, DEBUG);
 				pthread_mutex_unlock(&parametrosEncolarMensaje.servidor->mutexColaNoProcesados);
+				servidor->guardarLog(servidor->mensaje, DEBUG);
 			}
 		}
 	}
@@ -98,6 +104,7 @@ void* cicloEscuchaCliente(void* arg) {
 	//es decir, esta funcion es la que va a estar constantemente haciendo send y recv del socket del cliente y detectando lo que quiere hacer.
 	struct parametrosThreadCliente* parametros = (parametrosThreadCliente*) arg;
 	Servidor* servidor = parametros->serv;
+	string nombre = parametros->nombre;
 	int socketCliente = parametros->socketCli;
 	char bufferRecibido[BUFFER_MAX_SIZE];
 	bool conectado = true;
@@ -105,7 +112,7 @@ void* cicloEscuchaCliente(void* arg) {
 		//en este loop se van a gestionar los send y receive del cliente. aca se va a distinguir que es lo que quiere hacer y actuar segun lo que quiera el cliente.
 		string datosRecibidos;
 		int largoRequest = recv(socketCliente, bufferRecibido, BUFFER_MAX_SIZE,0); //recibo por primera vez
-		if (largoRequest != 0) {
+		if (largoRequest > 0) {
 			datosRecibidos.append(bufferRecibido, largoRequest);
 			cout << largoRequest << endl;
 			while (largoRequest >= BUFFER_MAX_SIZE
@@ -131,14 +138,11 @@ void* cicloEscuchaCliente(void* arg) {
 			}
 			case 2: { //2 es recibir
 				char* usuarioQueSolicita = strtok(NULL, "#");
-				cout<<"le llega el mensaje de recibir al servidor, del cliente: "<<usuarioQueSolicita<<endl;
 				string mensajesProcesados = servidor->traerMensajesProcesados(usuarioQueSolicita);
-				cout<<"trae bien los mensajes procesados"<<endl;
 				char buffer[1024];
 				strcpy(buffer,mensajesProcesados.c_str());//aca muere, el problema es este strcpy y el string y char*
 
 				int largo = strlen(mensajesProcesados.c_str());
-				cout << "Cliente que solicita sus mensajes: " << usuarioQueSolicita<<"  " << mensajesProcesados<<  endl;
 				largo -= send(socketCliente, buffer, largo +1, 0);
 					while (largo > 0)
 					{
@@ -152,51 +156,25 @@ void* cicloEscuchaCliente(void* arg) {
 
 			}
 		} else {
+			if (largoRequest == 0)
+			{
+
+			}
+			else if (largoRequest == -1)
+			{
+				string mensaje = "Ocurrió un problema en el socket para el cliente: " + nombre + ". \n";
+				servidor->guardarLog(mensaje, DEBUG);
+			}
 			conectado = false;
+			string mensaje = "Se cerró la conexión del servidor por problemas de red. \n";
+			servidor->guardarLog(mensaje, DEBUG);
 		}
 	}
 
 }
 
 void* cicloEscucharConexionesNuevasThreadProceso(void* arg) {
-	int puerto;
-	string archivoUsers;
-	Servidor* servidor;
-	int modoLogger;
-	bool puertoValido = false;
-	bool modoLoggerValido = false;
-	do {
-		cout << "Ingrese el puerto de escucha de la conexion: " << endl;
-		cin >> puerto;
-		if (cin.good()) {puertoValido = true;}
-			else {
-				cin.clear();
-				cin.ignore();
-				cout << "Error: el dato ingresado debe ser un numero" << endl;
-				}
-	} while (!puertoValido);
-	cout << "Ingrese el nombre del archivo de usuarios: " << endl;
-	cin >> archivoUsers;
-	do {
-		cout << "Elija el modo en el que quiere loggear los eventos: " << endl;
-		cout << "1) INFO" << endl;
-		cout << "2) DEBUG" << endl;
-		cin >> modoLogger;
-		if (cin.good() && (modoLogger == 1 || modoLogger == 2)) {modoLoggerValido = true;}
-			else {
-				cin.clear();
-				cin.ignore();
-				cout << "Error: la opcion ingresada no es valida" << endl;
-				}
-	} while (!modoLoggerValido);
-
-	char* archivo = strdup(archivoUsers.c_str());
-	do {
-		servidor = new Servidor(archivo, puerto, modoLogger);
-		//aca deberia verificar los datos del nombre de archivo usuarios y del puerto,
-		//para ver si mato al servidor o no.
-		servidor->comenzarEscucha();
-	} while (!servidor->escuchando);
+	Servidor* servidor = (Servidor*)arg;
 
 	pthread_t threadProceso;
 	pthread_create(&threadProceso,NULL,&cicloProcesarMensajes,(void*)servidor);
@@ -206,10 +184,9 @@ void* cicloEscucharConexionesNuevasThreadProceso(void* arg) {
 	for (int i = 0; i < MAX_CANT_CLIENTES; i++) {
 		thread_id[i] = NULL; //inicializo todos en null
 	}
-	while (1) {
+	while (servidor->escuchando) {
 		//se va a generar un thread para que cada cliente tenga su comunicacion con el servidor.
-		int socketCliente;
-		socketCliente = servidor->aceptarConexion();
+		int socketCliente = servidor->aceptarConexion();
 		//genero un nuevo thread dinamicamente para este cliente
 		if (servidor->getCantConexiones() <= MAX_CANT_CLIENTES) {
 			//si todavia hay lugar en el servidor, creo el thread que va a escuchar los pedidos de este cliente
@@ -224,25 +201,86 @@ void* cicloEscucharConexionesNuevasThreadProceso(void* arg) {
 	}
 }
 
-int inicializarServidor() {
+Servidor* inicializarServidor() {
 	pthread_t thrConexiones;
+	int puerto;
+	string archivoUsers;
+	int modoLogger;
+	bool puertoValido = false;
+	bool modoLoggerValido = false;
+	do {
+		cout << "Elija el modo en el que quiere loggear los eventos: " << endl;
+		cout << "1) INFO" << endl;
+		cout << "2) DEBUG" << endl;
+		cin >> modoLogger;
+		if (cin.good() && (modoLogger == 1 || modoLogger == 2))
+		{
+			modoLoggerValido = true;
+		}
+		else
+		{
+			cin.clear();
+			cin.ignore();
+			cout << "Error: la opcion ingresada no es valida" << endl;
+		}
+	} while (!modoLoggerValido);
+	Logger* logger = new Logger(modoLogger);
+	logger->escribir("El nivel de log seleccionado es :" + modoLogger + string(". \n"),INFO);
+	do {
+		cout << "Ingrese el puerto de escucha de la conexion: " << endl;
+		cin >> puerto;
+		if (cin.good())
+		{
+			puertoValido = true;
+			logger->escribir("Puerto ingresado: " + puerto + string("\n"),INFO);
+		}
+		else
+		{
+			cin.clear();
+			cin.ignore();
+			cout << "Error: el dato ingresado debe ser un numero" << endl;
+			logger->escribir("ERROR: Puerto inválido. \n",INFO);
+		}
+	} while (!puertoValido);
+	bool existeArchivo;
+	do{
+		cout << "Ingrese el nombre del archivo de usuarios: " << endl;
+		cin >> archivoUsers;
+		logger->escribir("Archivo ingresado: " + archivoUsers + string(". \n"),INFO);
+		existeArchivo = fileExists(archivoUsers);
+		if (!existeArchivo){
+			logger->escribir("ERROR: El archivo no existe. \n",INFO);
+			cout << "Error: El archivo no existe." << endl;
+		}
+	} while (!existeArchivo);
+	logger->escribir("Archivo encontrado.\n",DEBUG);
+	char* archivo = strdup(archivoUsers.c_str());
+	Servidor* servidor = new Servidor(archivo, puerto, logger);
+
+	do {
+		//aca deberia verificar los datos del nombre de archivo usuarios y del puerto,
+		//para ver si mato al servidor o no.
+		servidor->comenzarEscucha();
+	} while (!servidor->escuchando);
+
 	int threadOk = pthread_create(&thrConexiones, NULL,
-			&cicloEscucharConexionesNuevasThreadProceso, NULL);
+		&cicloEscucharConexionesNuevasThreadProceso, servidor);
+	if (threadOk != 0){
+		cout << "Error inicializando el thread de proceso" << endl;
+	}
 	pthread_detach(thrConexiones);
-	return threadOk;
+	return servidor;
 }
 
 int main() {
-	Servidor* servidor;
-
-	int ok = inicializarServidor();
-	if (ok != 0) {
-		cout << "Error inicializando el thread de proceso" << endl;
-	} else {
-		cout << "Thread inicializado OK" << endl;
-	}
-	while (1) {
-		sleep(5); //esto esta a modo de prueba para que no corte los otros threads.
+	Servidor* servidor = inicializarServidor();
+	cout << "Escriba q y presione enter para salir.. \n";
+	string salir = "";
+	while (servidor->escuchando) {
+		cin >> salir;
+		if (salir == "q"){
+			servidor->escuchando = false;
+		}
 	}
 	return 0;
 }

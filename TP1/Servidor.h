@@ -59,7 +59,7 @@ private:
 
 public:
 	Servidor();
-	Servidor(char* nombreArchivoDeUsuarios, int puerto, int modoLogger);
+	Servidor(char* nombreArchivoDeUsuarios, int puerto, Logger* logger);
 	virtual ~Servidor();
 	void guardarDatosDeUsuarios();
 	bool fileExists(string fileName);

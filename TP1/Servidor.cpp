@@ -10,10 +10,10 @@
 #include <stdlib.h>
 using namespace std;
 
-Servidor::Servidor(char* nombreArchivoDeUsuarios, int puerto, int modoLogger) {
+Servidor::Servidor(char* nombreArchivoDeUsuarios, int puerto, Logger* logger) {
 	this->puerto = puerto;
 	this->nombreArchivo = nombreArchivoDeUsuarios;
-	this->logger = new Logger(modoLogger);
+	this->logger = logger;
 
 	this->welcomeSocket = socket(PF_INET, SOCK_STREAM, 0);
 	/*---- Configure settings of the server address struct ----*/
@@ -41,54 +41,35 @@ Servidor::Servidor(char* nombreArchivoDeUsuarios, int puerto, int modoLogger) {
 Servidor::~Servidor() {
 }
 
-bool Servidor::fileExists(string fileName) {
-	ifstream infile(fileName.c_str());
-	if (infile.good()) {
-		mensaje = "Archivo encontrado \n";
-		this->guardarLog(mensaje, DEBUG);
-	} else {
-		// aca se deberia cerrar el servidor
-		mensaje = "El archivo ingresado no existe, se procede a cerrar el servidor \n";
-		cout << mensaje << endl;
-		this->guardarLog(mensaje, INFO);
-	}
-	return infile.good();
-}
-
 void Servidor::guardarDatosDeUsuarios() {
-
-	if (this->fileExists(string(this-> nombreArchivo))) {
-		string linea, csvItem;
-		int nroItem;
-		ifstream myfile(this->nombreArchivo);
-
-		if (myfile.is_open()) {
-			while (getline(myfile, linea)) {
-				Datos datosCapturados;
-				MensajesProcesados mensajesProcesados;
-				nroItem = 0;
-				istringstream lineaActual(linea);
-
+	string linea, csvItem;
+	int nroItem;
+	ifstream myfile(this->nombreArchivo);
+	if (myfile.is_open()) {
+		while (getline(myfile, linea)) {
+			Datos datosCapturados;
+			MensajesProcesados mensajesProcesados;
+			nroItem = 0;
+			istringstream lineaActual(linea);
 				while (getline(lineaActual, csvItem, ',')) {
-					if (nroItem == 0) {
-						datosCapturados.nombre = csvItem;
-						mensajesProcesados.destinatario = csvItem;
-					}
-					if (nroItem == 1) {
-						datosCapturados.contrasenia = csvItem;
-					}
-					nroItem++;
+				if (nroItem == 0) {
+					datosCapturados.nombre = csvItem;
+					mensajesProcesados.destinatario = csvItem;
 				}
-				queue<Mensaje>* colaMensajes = new queue<Mensaje>;
-				mensajesProcesados.mensajes = colaMensajes;
-				datosUsuarios->push_back(datosCapturados);
-				listaMensajesProcesados->push_back(mensajesProcesados);
+				if (nroItem == 1) {
+					datosCapturados.contrasenia = csvItem;
+				}
+				nroItem++;
 			}
+			queue<Mensaje>* colaMensajes = new queue<Mensaje>;
+			mensajesProcesados.mensajes = colaMensajes;
+			datosUsuarios->push_back(datosCapturados);
+			listaMensajesProcesados->push_back(mensajesProcesados);
 		}
-		myfile.close();
-		mensaje = "Se leyeron los datos de los usuarios desde el archivo usuarios.csv \n";
-		this->guardarLog(mensaje, DEBUG);
 	}
+	myfile.close();
+	mensaje = "Se leyeron los datos de los usuarios desde el archivo usuarios.csv \n";
+	this->guardarLog(mensaje, DEBUG);
 }
 
 void Servidor::autenticar(string nombre, string contrasenia,
