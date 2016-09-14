@@ -146,17 +146,24 @@ void Servidor::comenzarEscucha() {
 	cout << "Escuchando conexiones entrantes.." << endl;
 }
 
-int Servidor::aceptarConexion() {
+pair<int,string> Servidor::aceptarConexion() {
 //esta funcion acepta las conexiones para cada cliente que lo solicita si es autenticado y devuelve el socket de dicho cliente.
 	string nombre, pass;
 	char buffer[BUFFER_MAX_SIZE];
 	char datosRecibidos[BUFFER_MAX_SIZE];
+	pair<int,string> cli;
 
 	this->addr_size = sizeof serverStorage;
 	int socketCliente = accept(welcomeSocket,
 			(struct sockaddr *) &this->serverStorage, &this->addr_size);
-	recv(socketCliente, datosRecibidos, BUFFER_MAX_SIZE, 0);
-
+	int ok = recv(socketCliente, datosRecibidos, BUFFER_MAX_SIZE, 0);
+	if (ok < 0){
+		this->guardarLog("No se pudieron recibir los datos para la conexion.",INFO);
+		this->guardarLog("ERROR: Problema con el recv del socket.",DEBUG);
+		cli.first = ok;
+		cli.second = "";
+		return cli;
+	}
 	cout << "Datos recibidos: " << datosRecibidos << endl;
 	mensaje = "Datos recibidos: " + (string) datosRecibidos + "\n";
 	this->guardarLog(mensaje, DEBUG);
@@ -164,15 +171,15 @@ int Servidor::aceptarConexion() {
 	splitDatos(datosRecibidos, &nombre, &pass);
 	this->autenticar(nombre, pass, usuarios);
 	char* resultadoDeLaAutenticacion;
-	this->cantClientesConectados += 1;
 
 	if (usuarios.empty()) {
 		strcpy(buffer, "Desconectar");
 		mensaje = "Se desconecta al usuario " + nombre + " del servidor porque falló la autenticación... \n";
 		this->cantClientesConectados -= 1;
 		this->guardarLog(mensaje, INFO);
-		send(socketCliente, buffer, BUFFER_MAX_SIZE, 0);
-	} else {
+		ok = send(socketCliente, buffer, BUFFER_MAX_SIZE, 0);
+	}
+	else {
 		strcpy(buffer, this->serializarLista(usuarios).c_str());
 		string bufferS = buffer;
 		mensaje = "Enviándole al cliente " + nombre
@@ -186,9 +193,19 @@ int Servidor::aceptarConexion() {
 		}
 		mensaje += "\n";
 		this->guardarLog(mensaje, DEBUG);
-		send(socketCliente, buffer, BUFFER_MAX_SIZE, 0);
+		ok = send(socketCliente, buffer, BUFFER_MAX_SIZE, 0);
 	}
-	return socketCliente;
+	if (ok < 0){
+		this->guardarLog("No se pudieron enviar los datos de la lista a traves de la conexion del cliente " + nombre + ".",INFO);
+		this->guardarLog("ERROR: Problema con el send del socket.",DEBUG);
+		cli.first = ok;
+		cli.second = "";
+		return cli;
+	}
+	this->cantClientesConectados += 1;
+	cli.first = socketCliente;
+	cli.second = nombre;
+	return cli;
 }
 
 void Servidor::finalizarEscucha() {

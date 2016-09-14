@@ -75,7 +75,7 @@ public:
 	void splitDatos(char* datos, string* nombre, string* pass);
 	void recibirMensaje();
 	void setThreadProceso(pthread_t thrProceso);
-	int aceptarConexion();
+	pair<int,string> aceptarConexion();
 	int getCantConexiones();
 	string serializarLista(list<string> datos);
 	pthread_mutex_t mutexColaNoProcesados;
