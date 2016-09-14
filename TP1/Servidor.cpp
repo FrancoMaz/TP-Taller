@@ -168,8 +168,8 @@ int Servidor::aceptarConexion() {
 
 	if (usuarios.empty()) {
 		strcpy(buffer, "Desconectar");
-		mensaje = "Se desconecta al usuario " + nombre
-				+ " del servidor porque falló la autenticación... \n";
+		mensaje = "Se desconecta al usuario " + nombre + " del servidor porque falló la autenticación... \n";
+		this->cantClientesConectados -= 1;
 		this->guardarLog(mensaje, INFO);
 		send(socketCliente, buffer, BUFFER_MAX_SIZE, 0);
 	} else {
@@ -243,7 +243,7 @@ int Servidor::getCantConexiones() {
 string Servidor::serializarLista(list<string> datos) {
 	string buffer = "";
 	for (list<string>::iterator i = datos.begin(); i != datos.end(); i++) {
-		cout << (*i) << endl;
+		//cout << (*i) << endl;
 		buffer = buffer + *i + ",";
 	}
 	return buffer;
