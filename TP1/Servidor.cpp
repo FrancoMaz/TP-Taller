@@ -158,13 +158,13 @@ void Servidor::comenzarEscucha() {
 int Servidor::aceptarConexion() {
 	//esta funcion acepta las conexiones para cada cliente que lo solicita si es autenticado y devuelve el socket de dicho cliente.
 	string nombre, pass;
-	char buffer[1024];
-	char datosRecibidos[1024];
+	char buffer[BUFFER_MAX_SIZE];
+	char datosRecibidos[BUFFER_MAX_SIZE];
 
 	this->addr_size = sizeof serverStorage;
 	int socketCliente = accept(welcomeSocket,
 			(struct sockaddr *) &this->serverStorage, &this->addr_size);
-	recv(socketCliente, datosRecibidos, 1024, 0);
+	recv(socketCliente, datosRecibidos, BUFFER_MAX_SIZE, 0);
 
 	cout << "Datos recibidos: " << datosRecibidos << endl;
 	mensaje = "Datos recibidos: " + (string) datosRecibidos + "\n";
@@ -180,7 +180,7 @@ int Servidor::aceptarConexion() {
 		mensaje = "Se desconecta al usuario " + nombre
 				+ " del servidor porque falló la autenticación... \n";
 		this->guardarLog(mensaje, INFO);
-		send(socketCliente, buffer, 1024, 0);
+		send(socketCliente, buffer, BUFFER_MAX_SIZE, 0);
 	} else {
 		strcpy(buffer, this->serializarLista(usuarios).c_str());
 		string bufferS = buffer;
@@ -192,7 +192,7 @@ int Servidor::aceptarConexion() {
 			mensaje += " ";
 		}
 		this->guardarLog(mensaje, DEBUG);
-		send(socketCliente, buffer, 1024, 0);
+		send(socketCliente, buffer, BUFFER_MAX_SIZE, 0);
 	}
 	return socketCliente;
 }
