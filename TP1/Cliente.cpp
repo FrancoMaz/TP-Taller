@@ -9,7 +9,6 @@ Cliente::Cliente(string ip, int puerto) {
 //El cliente se crea con la direccion IP y el puerto en el cual se encuentra disponible el servidor
 	this->direccionIP = strdup(ip.c_str());
 	this->puertoServidor = puerto;
-	//this->inicializarSocket();
 	this->opcionMenu = 0;
 }
 
@@ -129,7 +128,7 @@ void Cliente::conectar(string nombre, string contrasenia) {
 	} else {
 		cout << "Error conectandose al puerto" << endl;
 	}
-	//Faltaria que el servidor devuelve la lista con los usuarios disponibles y que confirme la autenticacion del cliente
+	free(nombreYPass);
 }
 
 void Cliente::splitUsuarios(string datos) {

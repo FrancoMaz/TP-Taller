@@ -46,12 +46,9 @@ bool fileExists(string fileName) {
 }
 
 void* encolar(void* arg) {
-	parametrosThreadEncolarMensaje parametrosEncolarMensaje =
-			*(parametrosThreadEncolarMensaje*) arg;
+	parametrosThreadEncolarMensaje parametrosEncolarMensaje = *(parametrosThreadEncolarMensaje*) arg;
 	Servidor* servidor = parametrosEncolarMensaje.servidor;
 	Mensaje* mensaje = parametrosEncolarMensaje.mensajeNoProcesado;
-	servidor->mensaje = "Encolando mensaje: " + mensaje->getTexto() + ". De: " + mensaje->getRemitente() + ". Para: " + mensaje->getDestinatario() + ". \n";
-	servidor->guardarLog(servidor->mensaje, DEBUG);
 	cout << servidor->mensaje << endl;
 	if (mensaje->getDestinatario().compare("Todos") != 0) {
 		pthread_mutex_lock(&parametrosEncolarMensaje.servidor->mutexColaNoProcesados);
@@ -78,15 +75,12 @@ void* encolar(void* arg) {
 	return NULL;
 }
 
-void encolarMensaje(char* remitente, char* destinatario, char* mensaje,
-		Servidor* servidor) {
+void encolarMensaje(char* remitente, char* destinatario, char* mensaje, Servidor* servidor) {
 	pthread_t threadEncolarMensaje;
 	parametrosThreadEncolarMensaje parametrosEncolarMensaje;
-	parametrosEncolarMensaje.mensajeNoProcesado = new Mensaje(remitente,
-			destinatario, mensaje);
+	parametrosEncolarMensaje.mensajeNoProcesado = new Mensaje(remitente, destinatario, mensaje);
 	parametrosEncolarMensaje.servidor = servidor;
-	pthread_create(&threadEncolarMensaje, NULL, &encolar,
-			&parametrosEncolarMensaje);
+	pthread_create(&threadEncolarMensaje, NULL, &encolar, &parametrosEncolarMensaje);
 	pthread_detach(threadEncolarMensaje); //lo marco
 }
 
@@ -115,11 +109,9 @@ void* cicloEscuchaCliente(void* arg) {
 		if (largoRequest > 0) {
 			datosRecibidos.append(bufferRecibido, largoRequest);
 			cout << largoRequest << endl;
-			while (largoRequest >= BUFFER_MAX_SIZE
-					and !stringTerminaCon(datosRecibidos, "#")) {
+			while (largoRequest >= BUFFER_MAX_SIZE and !stringTerminaCon(datosRecibidos, "#")) {
 				//mientras haya cosas que leer, sigo recibiendo.
-				largoRequest = recv(socketCliente, bufferRecibido,
-						BUFFER_MAX_SIZE, 0);
+				largoRequest = recv(socketCliente, bufferRecibido, BUFFER_MAX_SIZE, 0);
 				cout << largoRequest << endl;
 				datosRecibidos.append(bufferRecibido, largoRequest);
 			}
@@ -141,7 +133,6 @@ void* cicloEscuchaCliente(void* arg) {
 				string mensajesProcesados = servidor->traerMensajesProcesados(usuarioQueSolicita);
 				char buffer[1024];
 				strcpy(buffer,mensajesProcesados.c_str());//aca muere, el problema es este strcpy y el string y char*
-
 				int largo = strlen(mensajesProcesados.c_str());
 				largo -= send(socketCliente, buffer, largo +1, 0);
 					while (largo > 0)
@@ -175,6 +166,45 @@ void* cicloEscuchaCliente(void* arg) {
 
 void* cicloEscucharConexionesNuevasThreadProceso(void* arg) {
 	Servidor* servidor = (Servidor*)arg;
+	int puerto;
+	string archivoUsers;
+	Servidor* servidor;
+	int modoLogger;
+	bool puertoValido = false;
+	bool modoLoggerValido = false;
+	do {
+		cout << "Ingrese el puerto de escucha de la conexion: " << endl;
+		cin >> puerto;
+		if (cin.good() && (puerto >= 1024 && puerto <= 49151)) {puertoValido = true;}
+			else {
+				cin.clear();
+				cin.ignore();
+				cout << "Error: el dato ingresado debe ser un numero entre 1024 y 49151" << endl;
+				}
+	} while (!puertoValido);
+	cout << "Ingrese el nombre del archivo de usuarios: " << endl;
+	cin >> archivoUsers;
+	do {
+		cout << "Elija el modo en el que quiere loggear los eventos: " << endl;
+		cout << "1) INFO" << endl;
+		cout << "2) DEBUG" << endl;
+		cin >> modoLogger;
+		if (cin.good() && (modoLogger == 1 || modoLogger == 2)) {modoLoggerValido = true;}
+			else {
+				cin.clear();
+				cin.ignore();
+				cout << "Error: la opcion ingresada no es valida" << endl;
+				}
+	} while (!modoLoggerValido);
+
+	char* archivo = strdup(archivoUsers.c_str());
+	do {
+		servidor = new Servidor(archivo, puerto, modoLogger);
+		//aca deberia verificar los datos del nombre de archivo usuarios y del puerto,
+		//para ver si mato al servidor o no.
+		servidor->comenzarEscucha();
+	} while (!servidor->escuchando);
+
 
 	pthread_t threadProceso;
 	pthread_create(&threadProceso,NULL,&cicloProcesarMensajes,(void*)servidor);
@@ -193,7 +223,6 @@ void* cicloEscucharConexionesNuevasThreadProceso(void* arg) {
 			parametrosThreadCliente parametrosCliente;
 			parametrosCliente.socketCli = socketCliente;
 			parametrosCliente.serv = servidor;
-
 			pthread_create(&thread_id[servidor->getCantConexiones()], NULL,
 					&cicloEscuchaCliente, &parametrosCliente); //optimizar ya que si un cliente se desconecta podria causar un problema
 			pthread_detach(thread_id[servidor->getCantConexiones()]); //lo marco como detach
