@@ -46,13 +46,13 @@ private:
 	pthread_t threadProcesador;
 	pthread_t threadChecker;
 	list<string> usuarios;
-	struct Datos{
-				string nombre;
-				string contrasenia;
-			};
+	struct Datos {
+		string nombre;
+		string contrasenia;
+	};
 	struct MensajesProcesados {
-			string destinatario;
-			queue<Mensaje>* mensajes;
+		string destinatario;
+		queue<Mensaje>* mensajes;
 	};
 	list<Datos>* datosUsuarios;
 	list<MensajesProcesados>* listaMensajesProcesados;
@@ -62,6 +62,7 @@ public:
 	Servidor(char* nombreArchivoDeUsuarios, int puerto, int modoLogger);
 	virtual ~Servidor();
 	void guardarDatosDeUsuarios();
+	bool fileExists(string fileName);
 	bool escuchando = false; //representa si el servidor esta disponible para escuchar pedidos
 	void autenticar(string nombre, string contrasenia, list<string>& usuarios);
 	list<Cliente> obtenerClientes();
@@ -71,7 +72,7 @@ public:
 	void comenzarEscucha();
 	void finalizarEscucha();
 	queue<Mensaje> getColaMensajesNoProcesados();
-	void splitDatos(char* datos,string* nombre,string* pass);
+	void splitDatos(char* datos, string* nombre, string* pass);
 	void recibirMensaje();
 	void setThreadProceso(pthread_t thrProceso);
 	int aceptarConexion();
