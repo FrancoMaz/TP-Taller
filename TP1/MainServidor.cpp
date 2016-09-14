@@ -166,69 +166,31 @@ void* cicloEscuchaCliente(void* arg) {
 
 void* cicloEscucharConexionesNuevasThreadProceso(void* arg) {
 	Servidor* servidor = (Servidor*)arg;
-	int puerto;
-	string archivoUsers;
-	Servidor* servidor;
-	int modoLogger;
-	bool puertoValido = false;
-	bool modoLoggerValido = false;
-	do {
-		cout << "Ingrese el puerto de escucha de la conexion: " << endl;
-		cin >> puerto;
-		if (cin.good() && (puerto >= 1024 && puerto <= 49151)) {puertoValido = true;}
-			else {
-				cin.clear();
-				cin.ignore();
-				cout << "Error: el dato ingresado debe ser un numero entre 1024 y 49151" << endl;
-				}
-	} while (!puertoValido);
-	cout << "Ingrese el nombre del archivo de usuarios: " << endl;
-	cin >> archivoUsers;
-	do {
-		cout << "Elija el modo en el que quiere loggear los eventos: " << endl;
-		cout << "1) INFO" << endl;
-		cout << "2) DEBUG" << endl;
-		cin >> modoLogger;
-		if (cin.good() && (modoLogger == 1 || modoLogger == 2)) {modoLoggerValido = true;}
-			else {
-				cin.clear();
-				cin.ignore();
-				cout << "Error: la opcion ingresada no es valida" << endl;
-				}
-	} while (!modoLoggerValido);
 
-	char* archivo = strdup(archivoUsers.c_str());
-	do {
-		servidor = new Servidor(archivo, puerto, modoLogger);
-		//aca deberia verificar los datos del nombre de archivo usuarios y del puerto,
-		//para ver si mato al servidor o no.
-		servidor->comenzarEscucha();
-	} while (!servidor->escuchando);
+		pthread_t threadProceso;
+		pthread_create(&threadProceso,NULL,&cicloProcesarMensajes,(void*)servidor);
+		servidor->setThreadProceso(threadProceso);
 
+		pthread_t thread_id[MAX_CANT_CLIENTES]; //la cantidad maxima de clientes es 6, voy a crear, como mucho 6 threads para manejar dichas conexiones.
+		for (int i = 0; i < MAX_CANT_CLIENTES; i++) {
+			thread_id[i] = NULL; //inicializo todos en null
+		}
+		while (servidor->escuchando) {
+			//se va a generar un thread para que cada cliente tenga su comunicacion con el servidor.
+			int socketCliente = servidor->aceptarConexion();
+			//genero un nuevo thread dinamicamente para este cliente
+			if (servidor->getCantConexiones() <= MAX_CANT_CLIENTES) {
+				//si todavia hay lugar en el servidor, creo el thread que va a escuchar los pedidos de este cliente
+				parametrosThreadCliente parametrosCliente;
+				parametrosCliente.socketCli = socketCliente;
+				parametrosCliente.serv = servidor;
 
-	pthread_t threadProceso;
-	pthread_create(&threadProceso,NULL,&cicloProcesarMensajes,(void*)servidor);
-	servidor->setThreadProceso(threadProceso);
-
-	pthread_t thread_id[MAX_CANT_CLIENTES]; //la cantidad maxima de clientes es 6, voy a crear, como mucho 6 threads para manejar dichas conexiones.
-	for (int i = 0; i < MAX_CANT_CLIENTES; i++) {
-		thread_id[i] = NULL; //inicializo todos en null
-	}
-	while (servidor->escuchando) {
-		//se va a generar un thread para que cada cliente tenga su comunicacion con el servidor.
-		int socketCliente = servidor->aceptarConexion();
-		//genero un nuevo thread dinamicamente para este cliente
-		if (servidor->getCantConexiones() <= MAX_CANT_CLIENTES) {
-			//si todavia hay lugar en el servidor, creo el thread que va a escuchar los pedidos de este cliente
-			parametrosThreadCliente parametrosCliente;
-			parametrosCliente.socketCli = socketCliente;
-			parametrosCliente.serv = servidor;
-			pthread_create(&thread_id[servidor->getCantConexiones()], NULL,
-					&cicloEscuchaCliente, &parametrosCliente); //optimizar ya que si un cliente se desconecta podria causar un problema
-			pthread_detach(thread_id[servidor->getCantConexiones()]); //lo marco como detach
+				pthread_create(&thread_id[servidor->getCantConexiones()], NULL,
+						&cicloEscuchaCliente, &parametrosCliente); //optimizar ya que si un cliente se desconecta podria causar un problema
+				pthread_detach(thread_id[servidor->getCantConexiones()]); //lo marco como detach
+			}
 		}
 	}
-}
 
 Servidor* inicializarServidor() {
 	pthread_t thrConexiones;
