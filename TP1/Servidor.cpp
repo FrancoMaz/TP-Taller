@@ -10,10 +10,10 @@
 #include <stdlib.h>
 using namespace std;
 
-Servidor::Servidor(char* nombreArchivoDeUsuarios, int puerto, int modoLogger) {
+Servidor::Servidor(char* nombreArchivoDeUsuarios, int puerto, Logger* logger) {
 	this->puerto = puerto;
 	this->nombreArchivo = nombreArchivoDeUsuarios;
-	this->logger = new Logger(modoLogger);
+	this->logger = logger;
 	this->welcomeSocket = socket(PF_INET, SOCK_STREAM, 0);
 	/*---- Configure settings of the server address struct ----*/
 	/* Address family = Internet */
@@ -26,35 +26,30 @@ Servidor::Servidor(char* nombreArchivoDeUsuarios, int puerto, int modoLogger) {
 	/* Set all bits of the padding field to 0 */
 	memset(serverAddr.sin_zero, '\0', sizeof serverAddr.sin_zero);
 	/*---- Bind the address struct to the socket ----*/
-	bind(this->welcomeSocket, (struct sockaddr *) &serverAddr,
-			sizeof(serverAddr));
+	bind(this->welcomeSocket, (struct sockaddr *) &serverAddr, sizeof(serverAddr));
 	this->datosUsuarios = new list<Datos>();
 	this->listaMensajesProcesados = new list<MensajesProcesados>();
-	this->guardarDatosDeUsuarios();
 	stringstream ss;
 	ss << puerto;
 	mensaje = "Se creó correctamente el servidor en el puerto: " + ss.str() + ", ip: 192.168.1.10" + "\n";
 	this->guardarLog(mensaje, DEBUG);
+	this->guardarDatosDeUsuarios();
 }
 
 Servidor::~Servidor() {
 }
 
 void Servidor::guardarDatosDeUsuarios() {
-
 	string linea, csvItem;
 	int nroItem;
-
 	ifstream myfile(this->nombreArchivo);
 	if (myfile.is_open()) {
-
 		while (getline(myfile, linea)) {
 			Datos datosCapturados;
 			MensajesProcesados mensajesProcesados;
 			nroItem = 0;
 			istringstream lineaActual(linea);
-
-			while (getline(lineaActual, csvItem, ',')) {
+				while (getline(lineaActual, csvItem, ',')) {
 				if (nroItem == 0) {
 					datosCapturados.nombre = csvItem;
 					mensajesProcesados.destinatario = csvItem;
@@ -69,11 +64,12 @@ void Servidor::guardarDatosDeUsuarios() {
 			datosUsuarios->push_back(datosCapturados);
 			listaMensajesProcesados->push_back(mensajesProcesados);
 		}
-	}
-	myfile.close();
 
-	mensaje = "Se leyeron los datos de los usuarios desde el archivo usuarios.csv \n";
-	this->guardarLog(mensaje, DEBUG);
+		myfile.close();
+		mensaje = "Se leyeron los datos de los usuarios desde el archivo " + string(this->nombreArchivo) + "\n";
+		this->guardarLog(mensaje, DEBUG);
+	}
+
 }
 
 void Servidor::autenticar(string nombre, string contrasenia,
@@ -94,34 +90,26 @@ void Servidor::autenticar(string nombre, string contrasenia,
 			usuarios.push_back(usuario.nombre);
 		}
 	}
-
 	if (autenticacionOK) {
-		cout << "Autenticación OK wachin" << endl;
+		cout << "Autenticación OK" << endl;
 		mensaje = "Autenticación OK \n";
 		this->guardarLog(mensaje, DEBUG);
 	} else {
 		usuarios.clear();
-		cout << "Error de autenticación, no nos hackees wachin" << endl;
+		cout << "Error de autenticación: usuario y/o clave incorrectos" << endl;
 		string msj = "Error de autenticación: usuario y/o clave incorrectos \n";
 		this->guardarLog(msj, INFO);
 	}
 }
 
-list<Cliente> Servidor::obtenerClientes() {
-
-}
 
 void Servidor::guardarLog(string mensaje, const int nivelDeLog) {
 	this->logger->escribir(mensaje, nivelDeLog);
 }
 
-list<Mensaje> Servidor::obtenerMensajes(Cliente cliente) {
-
-}
 
 void Servidor::crearMensaje(Mensaje mensaje) {
 	this->colaMensajesNoProcesados.push(mensaje);
-	//this->procesarMensaje(mensaje); //Por ahora invoco a este metodo aca pero deberia ir en un while(1) dentro del mainServidor, para que la cola se mensajes no procesados se procese infinitamente
 }
 
 void Servidor::procesarMensajes() {
@@ -130,16 +118,19 @@ void Servidor::procesarMensajes() {
 		Mensaje mensajeAProcesar = colaMensajesNoProcesados.front();
 		colaMensajesNoProcesados.pop();
 		pthread_mutex_unlock(&mutexColaNoProcesados);
-		for (list<MensajesProcesados>::iterator usuarioActual = listaMensajesProcesados->begin();
+		for (list<MensajesProcesados>::iterator usuarioActual =
+				listaMensajesProcesados->begin();
 				usuarioActual != listaMensajesProcesados->end();
 				usuarioActual++) {
 			MensajesProcesados listaMensajes;
 			listaMensajes = *usuarioActual;
-			if (listaMensajes.destinatario == mensajeAProcesar.getDestinatario()) {
+			if (listaMensajes.destinatario
+					== mensajeAProcesar.getDestinatario()) {
 				pthread_mutex_lock(&mutexListaProcesados);
 				listaMensajes.mensajes->push(mensajeAProcesar);
 				pthread_mutex_unlock(&mutexListaProcesados);
-				this->mensaje = "Procesando mensaje para " + listaMensajes.destinatario + "\n";
+				this->mensaje = "Procesando mensaje para "
+						+ listaMensajes.destinatario + "\n";
 				this->guardarLog(mensaje, DEBUG);
 				cout << mensaje << endl;
 			}
@@ -148,24 +139,31 @@ void Servidor::procesarMensajes() {
 }
 
 void Servidor::comenzarEscucha() {
-	//Metodo que pone al servidor a escuchar si alguien requiere algo.
+//Metodo que pone al servidor a escuchar si alguien requiere algo.
 	this->escuchando = (listen(this->welcomeSocket, MAX_CANT_CLIENTES) == 0);
 	mensaje = "El servidor está escuchando... \n";
 	this->guardarLog(mensaje, DEBUG);
 	cout << "Escuchando conexiones entrantes.." << endl;
 }
 
-int Servidor::aceptarConexion() {
-	//esta funcion acepta las conexiones para cada cliente que lo solicita si es autenticado y devuelve el socket de dicho cliente.
+pair<int,string> Servidor::aceptarConexion() {
+//esta funcion acepta las conexiones para cada cliente que lo solicita si es autenticado y devuelve el socket de dicho cliente.
 	string nombre, pass;
-	char buffer[1024];
-	char datosRecibidos[1024];
+	char buffer[BUFFER_MAX_SIZE];
+	char datosRecibidos[BUFFER_MAX_SIZE];
+	pair<int,string> cli;
 
 	this->addr_size = sizeof serverStorage;
 	int socketCliente = accept(welcomeSocket,
 			(struct sockaddr *) &this->serverStorage, &this->addr_size);
-	recv(socketCliente, datosRecibidos, 1024, 0);
-
+	int ok = recv(socketCliente, datosRecibidos, BUFFER_MAX_SIZE, 0);
+	if (ok < 0){
+		this->guardarLog("No se pudieron recibir los datos para la conexion.",INFO);
+		this->guardarLog("ERROR: Problema con el recv del socket.",DEBUG);
+		cli.first = ok;
+		cli.second = "";
+		return cli;
+	}
 	cout << "Datos recibidos: " << datosRecibidos << endl;
 	mensaje = "Datos recibidos: " + (string) datosRecibidos + "\n";
 	this->guardarLog(mensaje, DEBUG);
@@ -173,32 +171,46 @@ int Servidor::aceptarConexion() {
 	splitDatos(datosRecibidos, &nombre, &pass);
 	this->autenticar(nombre, pass, usuarios);
 	char* resultadoDeLaAutenticacion;
-	this->cantClientesConectados += 1;
 
 	if (usuarios.empty()) {
 		strcpy(buffer, "Desconectar");
-		mensaje = "Se desconecta al usuario " + nombre
-				+ " del servidor porque falló la autenticación... \n";
+		mensaje = "Se desconecta al usuario " + nombre + " del servidor porque falló la autenticación... \n";
+		this->cantClientesConectados -= 1;
 		this->guardarLog(mensaje, INFO);
-		send(socketCliente, buffer, 1024, 0);
-	} else {
+		ok = send(socketCliente, buffer, BUFFER_MAX_SIZE, 0);
+	}
+	else {
 		strcpy(buffer, this->serializarLista(usuarios).c_str());
 		string bufferS = buffer;
-		mensaje = "Enviándole al cliente " + nombre + " la lista de usuarios disponibles \n";
+		mensaje = "Enviándole al cliente " + nombre
+				+ " la lista de usuarios disponibles \n";
 		this->guardarLog(mensaje, DEBUG);
 		mensaje = "La lista de usuarios disponibles es: ";
-		for (list<string>::iterator i = usuarios.begin(); i != usuarios.end(); i++) {
+		for (list<string>::iterator i = usuarios.begin(); i != usuarios.end();
+				i++) {
 			mensaje += (*i);
 			mensaje += " ";
 		}
+		mensaje += "\n";
 		this->guardarLog(mensaje, DEBUG);
-		send(socketCliente, buffer, 1024, 0);
+		ok = send(socketCliente, buffer, BUFFER_MAX_SIZE, 0);
 	}
-	return socketCliente;
+	if (ok < 0){
+		this->guardarLog("No se pudieron enviar los datos de la lista a traves de la conexion del cliente " + nombre + ".",INFO);
+		this->guardarLog("ERROR: Problema con el send del socket.",DEBUG);
+		cli.first = ok;
+		cli.second = "";
+		return cli;
+	}
+	this->cantClientesConectados += 1;
+	cli.first = socketCliente;
+	cli.second = nombre;
+	return cli;
 }
 
 void Servidor::finalizarEscucha() {
-	//Metodo que finaliza la escucha del servidor.
+	escuchando = false;
+	close(welcomeSocket);
 }
 
 queue<Mensaje> Servidor::getColaMensajesNoProcesados() {
@@ -240,7 +252,7 @@ void Servidor::setThreadProceso(pthread_t thrProceso) {
 int Servidor::getCantConexiones() {
 	stringstream ss;
 	ss << this->cantClientesConectados;
-	mensaje = "Cantidad de clientes conectados: " + ss.str() + + "\n";
+	mensaje = "Cantidad de clientes conectados: " + ss.str() + "\n";
 	this->guardarLog(mensaje, DEBUG);
 	return this->cantClientesConectados;
 }
@@ -248,7 +260,7 @@ int Servidor::getCantConexiones() {
 string Servidor::serializarLista(list<string> datos) {
 	string buffer = "";
 	for (list<string>::iterator i = datos.begin(); i != datos.end(); i++) {
-		cout << (*i) << endl;
+		//cout << (*i) << endl;
 		buffer = buffer + *i + ",";
 	}
 	return buffer;
@@ -266,15 +278,19 @@ list<string> Servidor::agregarDestinatarios(string remitente) {
 	}
 	return destinatarios;
 }
-string Servidor:: traerMensajesProcesados(char* nombreCliente){
+string Servidor::traerMensajesProcesados(char* nombreCliente) {
 
 	queue<Mensaje>* colaDeMensajes;
 
-	for (list<Servidor::MensajesProcesados>::iterator datoActual = listaMensajesProcesados->begin(); datoActual != listaMensajesProcesados->end(); datoActual++) {
+	for (list<Servidor::MensajesProcesados>::iterator datoActual =
+			listaMensajesProcesados->begin();
+			datoActual != listaMensajesProcesados->end(); datoActual++) {
 
-			MensajesProcesados mensaje;
-			mensaje = *datoActual;
-			if(mensaje.destinatario == nombreCliente){colaDeMensajes = mensaje.mensajes;}
+		MensajesProcesados mensaje;
+		mensaje = *datoActual;
+		if (mensaje.destinatario == nombreCliente) {
+			colaDeMensajes = mensaje.mensajes;
+		}
 	}
 
 	string mensajesConcatenados = concatenarMensajes(colaDeMensajes);
@@ -282,15 +298,15 @@ string Servidor:: traerMensajesProcesados(char* nombreCliente){
 	return mensajesConcatenados;
 
 }
-string Servidor:: concatenarMensajes(queue<Mensaje>* colaDeMensajes){
+string Servidor::concatenarMensajes(queue<Mensaje>* colaDeMensajes) {
 
 	Mensaje mensaje;
 	string mensajesConcatenados = "";
-	if(colaDeMensajes->empty()){
+	if (colaDeMensajes->empty()) {
 		string noHayMensajes = "#noHayMensajes#";
 		mensajesConcatenados.append(noHayMensajes);
 	}
-    while(!colaDeMensajes->empty()){
+	while (!colaDeMensajes->empty()) {
 		mensaje = colaDeMensajes->front();
 		colaDeMensajes->pop();
 		mensajesConcatenados.append(mensaje.getRemitente());
@@ -300,4 +316,8 @@ string Servidor:: concatenarMensajes(queue<Mensaje>* colaDeMensajes){
 	}
 
 	return mensajesConcatenados;
+}
+
+void Servidor::restarCantidadClientesConectados(){
+	this->cantClientesConectados -= 1;
 }

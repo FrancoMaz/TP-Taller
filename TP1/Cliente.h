@@ -57,7 +57,7 @@ public:
 	string getNombre();
 	int getOpcionMenu();
 	list<string> getClientesDisponibles();
-	void setClientesDisponibles(string nombre, string contrasenia);
+	void vaciarClientesDisponibles();
 	pthread_t getThreadComunicacion();
 	void setThreadComunicacion(pthread_t thrComu);
 	void splitUsuarios(string datosRecibidos);
@@ -65,6 +65,7 @@ public:
 	void mostrarUltimosMensajes(string colaMensajes);
 	string devolverNombre(int numeroDestinatario);
 	void enviarMensajeATodos(string mensaje);
+	void inicializarSocket();
 };
 
 #endif /* TP1_CLIENTE_H_ */
