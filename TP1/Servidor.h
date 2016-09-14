@@ -79,6 +79,7 @@ public:
 	string serializarLista(list<string> datos);
 	pthread_mutex_t mutexColaNoProcesados;
 	pthread_mutex_t mutexListaProcesados;
+	pthread_mutex_t mutexColasProcesadas;
 	string mensaje;
 	list<string> agregarDestinatarios(string remitente);
 	void procesarMensaje(Mensaje mensaje);
