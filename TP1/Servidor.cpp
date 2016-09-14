@@ -191,7 +191,7 @@ int Servidor::aceptarConexion() {
 			mensaje += (*i);
 			mensaje += " ";
 		}
-		mensaje += "/n";
+		mensaje += "\n";
 		this->guardarLog(mensaje, DEBUG);
 		send(socketCliente, buffer, BUFFER_MAX_SIZE, 0);
 	}
