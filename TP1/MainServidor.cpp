@@ -46,12 +46,9 @@ bool fileExists(string fileName) {
 }
 
 void* encolar(void* arg) {
-	parametrosThreadEncolarMensaje parametrosEncolarMensaje =
-			*(parametrosThreadEncolarMensaje*) arg;
+	parametrosThreadEncolarMensaje parametrosEncolarMensaje = *(parametrosThreadEncolarMensaje*) arg;
 	Servidor* servidor = parametrosEncolarMensaje.servidor;
 	Mensaje* mensaje = parametrosEncolarMensaje.mensajeNoProcesado;
-	servidor->mensaje = "Encolando mensaje: " + mensaje->getTexto() + ". De: " + mensaje->getRemitente() + ". Para: " + mensaje->getDestinatario() + ". \n";
-	servidor->guardarLog(servidor->mensaje, DEBUG);
 	cout << servidor->mensaje << endl;
 	if (mensaje->getDestinatario().compare("Todos") != 0) {
 		pthread_mutex_lock(&parametrosEncolarMensaje.servidor->mutexColaNoProcesados);
@@ -78,15 +75,12 @@ void* encolar(void* arg) {
 	return NULL;
 }
 
-void encolarMensaje(char* remitente, char* destinatario, char* mensaje,
-		Servidor* servidor) {
+void encolarMensaje(char* remitente, char* destinatario, char* mensaje, Servidor* servidor) {
 	pthread_t threadEncolarMensaje;
 	parametrosThreadEncolarMensaje parametrosEncolarMensaje;
-	parametrosEncolarMensaje.mensajeNoProcesado = new Mensaje(remitente,
-			destinatario, mensaje);
+	parametrosEncolarMensaje.mensajeNoProcesado = new Mensaje(remitente, destinatario, mensaje);
 	parametrosEncolarMensaje.servidor = servidor;
-	pthread_create(&threadEncolarMensaje, NULL, &encolar,
-			&parametrosEncolarMensaje);
+	pthread_create(&threadEncolarMensaje, NULL, &encolar, &parametrosEncolarMensaje);
 	pthread_detach(threadEncolarMensaje); //lo marco
 }
 
@@ -115,11 +109,9 @@ void* cicloEscuchaCliente(void* arg) {
 		if (largoRequest > 0) {
 			datosRecibidos.append(bufferRecibido, largoRequest);
 			cout << largoRequest << endl;
-			while (largoRequest >= BUFFER_MAX_SIZE
-					and !stringTerminaCon(datosRecibidos, "#")) {
+			while (largoRequest >= BUFFER_MAX_SIZE and !stringTerminaCon(datosRecibidos, "#")) {
 				//mientras haya cosas que leer, sigo recibiendo.
-				largoRequest = recv(socketCliente, bufferRecibido,
-						BUFFER_MAX_SIZE, 0);
+				largoRequest = recv(socketCliente, bufferRecibido, BUFFER_MAX_SIZE, 0);
 				cout << largoRequest << endl;
 				datosRecibidos.append(bufferRecibido, largoRequest);
 			}
@@ -141,7 +133,6 @@ void* cicloEscuchaCliente(void* arg) {
 				string mensajesProcesados = servidor->traerMensajesProcesados(usuarioQueSolicita);
 				char buffer[1024];
 				strcpy(buffer,mensajesProcesados.c_str());//aca muere, el problema es este strcpy y el string y char*
-
 				int largo = strlen(mensajesProcesados.c_str());
 				largo -= send(socketCliente, buffer, largo +1, 0);
 					while (largo > 0)
@@ -176,30 +167,30 @@ void* cicloEscuchaCliente(void* arg) {
 void* cicloEscucharConexionesNuevasThreadProceso(void* arg) {
 	Servidor* servidor = (Servidor*)arg;
 
-	pthread_t threadProceso;
-	pthread_create(&threadProceso,NULL,&cicloProcesarMensajes,(void*)servidor);
-	servidor->setThreadProceso(threadProceso);
+		pthread_t threadProceso;
+		pthread_create(&threadProceso,NULL,&cicloProcesarMensajes,(void*)servidor);
+		servidor->setThreadProceso(threadProceso);
 
-	pthread_t thread_id[MAX_CANT_CLIENTES]; //la cantidad maxima de clientes es 6, voy a crear, como mucho 6 threads para manejar dichas conexiones.
-	for (int i = 0; i < MAX_CANT_CLIENTES; i++) {
-		thread_id[i] = NULL; //inicializo todos en null
-	}
-	while (servidor->escuchando) {
-		//se va a generar un thread para que cada cliente tenga su comunicacion con el servidor.
-		int socketCliente = servidor->aceptarConexion();
-		//genero un nuevo thread dinamicamente para este cliente
-		if (servidor->getCantConexiones() <= MAX_CANT_CLIENTES) {
-			//si todavia hay lugar en el servidor, creo el thread que va a escuchar los pedidos de este cliente
-			parametrosThreadCliente parametrosCliente;
-			parametrosCliente.socketCli = socketCliente;
-			parametrosCliente.serv = servidor;
+		pthread_t thread_id[MAX_CANT_CLIENTES]; //la cantidad maxima de clientes es 6, voy a crear, como mucho 6 threads para manejar dichas conexiones.
+		for (int i = 0; i < MAX_CANT_CLIENTES; i++) {
+			thread_id[i] = NULL; //inicializo todos en null
+		}
+		while (servidor->escuchando) {
+			//se va a generar un thread para que cada cliente tenga su comunicacion con el servidor.
+			int socketCliente = servidor->aceptarConexion();
+			//genero un nuevo thread dinamicamente para este cliente
+			if (servidor->getCantConexiones() <= MAX_CANT_CLIENTES) {
+				//si todavia hay lugar en el servidor, creo el thread que va a escuchar los pedidos de este cliente
+				parametrosThreadCliente parametrosCliente;
+				parametrosCliente.socketCli = socketCliente;
+				parametrosCliente.serv = servidor;
 
-			pthread_create(&thread_id[servidor->getCantConexiones()], NULL,
-					&cicloEscuchaCliente, &parametrosCliente); //optimizar ya que si un cliente se desconecta podria causar un problema
-			pthread_detach(thread_id[servidor->getCantConexiones()]); //lo marco como detach
+				pthread_create(&thread_id[servidor->getCantConexiones()], NULL,
+						&cicloEscuchaCliente, &parametrosCliente); //optimizar ya que si un cliente se desconecta podria causar un problema
+				pthread_detach(thread_id[servidor->getCantConexiones()]); //lo marco como detach
+			}
 		}
 	}
-}
 
 Servidor* inicializarServidor() {
 	pthread_t thrConexiones;
