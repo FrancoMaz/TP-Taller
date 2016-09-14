@@ -163,10 +163,11 @@ void Cliente::enviar(string mensaje, string destinatario) {
 	Mensaje *mensajeAEnviar = new Mensaje(this->nombre, destinatario, mensaje);
 	char* stringDatosMensaje = strdup(("1|" + mensajeAEnviar->getStringDatos()).c_str()); //1 significa enviar.
 	int largo = strlen(stringDatosMensaje);
-	largo -= send(this->socketCliente, stringDatosMensaje, largo + 1, 0);
+	int largoRequest;
 	while (largo > 0)
 	{
-		largo -= send(this->socketCliente, stringDatosMensaje, largo + 1, 0);
+		largoRequest = send(this->socketCliente, stringDatosMensaje, largo + 1, 0);
+		largo -= largoRequest;
 	}
 	free(mensajeCadena);
 	free(stringDatosMensaje);
