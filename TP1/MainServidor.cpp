@@ -68,6 +68,7 @@ void* encolar(void* arg) {
 
 	cout << servidor->mensaje << endl;
 	if (mensaje->getDestinatario().compare("Todos") != 0) {
+		cout<<"entra aca porque el mensaje no es para todos"<<endl;
 		pthread_mutex_lock(&parametrosEncolarMensaje.servidor->mutexColaNoProcesados);
 		servidor->crearMensaje(*mensaje);
 		servidor->mensaje = "Encolando mensaje: " + mensaje->getTexto()
@@ -76,22 +77,27 @@ void* encolar(void* arg) {
 		servidor->guardarLog(servidor->mensaje, DEBUG);
 		pthread_mutex_unlock(&parametrosEncolarMensaje.servidor->mutexColaNoProcesados);
 	} else {
-		list<string> destinatarios = servidor->agregarDestinatarios(
-				mensaje->getRemitente());
-		for (list<string>::iterator datoActual = destinatarios.begin();
-				datoActual != destinatarios.end(); datoActual++) {
-			string usuario;
-			usuario = *datoActual;
+		cout<<"como el mensaje es para todos entra aca"<<endl;
+		//genera la lista de destinatarios del remitente en cuestion
+		list<string> destinatarios = servidor->agregarDestinatarios(mensaje->getRemitente());
+		pthread_mutex_lock(&parametrosEncolarMensaje.servidor->mutexColaNoProcesados);
+		for (list<string>::iterator datoActual = destinatarios.begin();datoActual != destinatarios.end(); datoActual++) {
+			 string usuario;
+			 usuario = *datoActual;
+			 cout<<"procesa el remitente: "<<usuario<<endl;
 
-			if (usuario != mensaje->getRemitente()){
+			 if (usuario != mensaje->getRemitente()){
+
 				Mensaje* msj = new Mensaje(mensaje->getRemitente(),usuario,mensaje->getTexto());
 				servidor->mensaje = "Encolando mensaje: " + msj->getTexto() + ". De: " + msj->getRemitente() + ". Para: " + msj->getDestinatario() + ". \n";
-				pthread_mutex_lock(&parametrosEncolarMensaje.servidor->mutexColaNoProcesados);
 				parametrosEncolarMensaje.servidor->crearMensaje(*msj);
-				pthread_mutex_unlock(&parametrosEncolarMensaje.servidor->mutexColaNoProcesados);
 				servidor->guardarLog(servidor->mensaje, DEBUG);
+				msj->~Mensaje();
+
 			}
 		}
+		pthread_mutex_unlock(&parametrosEncolarMensaje.servidor->mutexColaNoProcesados);
+		mensaje->~Mensaje();
 	}
 	return NULL;
 }
@@ -119,10 +125,10 @@ void* procesar(void* arg) {
 	cout<<"hace bien todos los parametros"<<endl;
 	cout<<"socket Cliente: "<<parametros->socketCliente<<endl;
 
-	pthread_mutex_lock(&servidor->mutexColasProcesadas);
+	pthread_mutex_lock(&servidor->mutexListaProcesados);
 	cout << "le llega el mensaje de recibir al servidor, del cliente: " << usuario << endl;
 	string mensajesProcesados = servidor->traerMensajesProcesados(usuario);
-	pthread_mutex_unlock(&servidor->mutexColasProcesadas);
+	pthread_mutex_unlock(&servidor->mutexListaProcesados);
 
 	cout << "trae bien los mensajes procesados" << endl;
 	char buffer[1024];
@@ -151,7 +157,8 @@ void enviarMensajesProcesadosA(char* usuario, Servidor* servidor, int socket) {
 	cout<<"parametroMensajesProcesados: "<<parametrosMensajesProcesados.socketCliente<<endl;
 	pthread_create(&threadEnviarMensajesProcesados, NULL, &procesar,&parametrosMensajesProcesados);
 	cout<<"sale del hilo de mensajes procesados"<<endl;
-	pthread_detach(threadEnviarMensajesProcesados); //lo marco
+	pthread_join(threadEnviarMensajesProcesados,NULL);
+	//pthread_detach(threadEnviarMensajesProcesados); //lo marco
 }
 
 
@@ -188,7 +195,7 @@ void* cicloEscuchaCliente(void* arg) {
 				cout << largoRequest << endl;
 				datosRecibidos.append(bufferRecibido, largoRequest);
 			}
-			if (largoRequest < 0)
+			if (largoRequest <= 0)
 			{
 				string mensaje = "Ocurrió un problema en el socket para el cliente: " + nombre + string(".\n");
 				conectado = false;
@@ -258,8 +265,9 @@ void* cicloEscucharConexionesNuevasThreadProceso(void* arg) {
 				parametrosCliente.socketCli = socketCliente;
 				parametrosCliente.serv = servidor;
 				parametrosCliente.nombre = nombreCliente;
+				cout<<"llega casi al final de cicloEscucharConexionesNuevasThreadProceso"<<endl;
 				pthread_create(&thread_id[servidor->getCantConexiones()], NULL,&cicloEscuchaCliente, &parametrosCliente); //optimizar ya que si un cliente se desconecta podria causar un problema
-				pthread_detach(thread_id[servidor->getCantConexiones()]); //lo marco como detach
+				pthread_detach(thread_id[servidor->getCantConexiones()] ); //lo marco como detach
 			}
 		}
 	}

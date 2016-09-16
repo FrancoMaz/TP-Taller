@@ -127,7 +127,7 @@ void Cliente::conectar(string nombre, string contrasenia) {
 	} else {
 		cout << "Error conectandose al puerto" << endl;
 	}
-	free(nombreYPass);
+	//free(nombreYPass);
 }
 
 void Cliente::splitUsuarios(string datos) {
@@ -168,7 +168,7 @@ void Cliente::enviar(string mensaje, string destinatario) {
 		largo -= largoRequest;
 	}
 	free(mensajeCadena);
-	free(stringDatosMensaje);
+	//free(stringDatosMensaje);
 }
 
 void Cliente::enviarMensajeATodos(string mensaje) {
@@ -201,7 +201,7 @@ void Cliente::mostrarUltimosMensajes(string colaMensajes)
 {   string mensajeVacio = "#noHayMensajes#";
 	cout << "Ultimos mensajes recibidos: " << endl;
 	if(strcmp(colaMensajes.c_str(), mensajeVacio.c_str()) == 0){
-		cout<<"No hay mensajes nuevos"<<endl; cout<<"Nadie te juna wachin"<<endl;}
+		cout<<"No hay mensajes nuevos"<<endl;}
 	else{
 		char str[colaMensajes.length()];
 		strcpy(str, colaMensajes.c_str());
