@@ -19,13 +19,6 @@
 
 using namespace std;
 
-//Dimensiones de la pantalla
-const int ANCHO_VENTANA = 800;
-const int ALTO_VENTANA = 600;
-SDL_Window* ventana = NULL;
-SDL_Surface* capaPrincipal = NULL;
-SDL_Surface* imagen = NULL;
-
 struct parametrosThreadCliente {
 	//estructura que sirve para guardar los parametros que se le pasan a la funcion del thread.
 	Servidor* serv;
@@ -44,50 +37,6 @@ struct parametrosThreadEnviarMensajeProcesado {
 	char* usuario;
 	int socketCliente;
 };
-
-bool inicializarVentana(){
-	//Esta función crea la ventana principal del juego con sus resoluciones
-
-	//Condición de inicialización (si la función devuelve false, ocurrió un error)
-	bool finalizado = true;
-
-	if(SDL_Init(SDL_INIT_VIDEO) != 0){
-		cout << "SDL no pudo inicializarse. Error: " << SDL_GetError() << endl;
-		finalizado = false;
-	} else {
-		ventana = SDL_CreateWindow("Metal Slug (Alpha Version: 0.001)", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, ANCHO_VENTANA, ALTO_VENTANA, SDL_WINDOW_SHOWN);
-		if (ventana == NULL){
-			cout << "La ventana no pudo crearse. Error: " << SDL_GetError() << endl;
-			finalizado = false;
-		} else {
-			capaPrincipal = SDL_GetWindowSurface(ventana);
-		}
-	}
-	return finalizado;
-}
-
-bool cargarImagen(){
-	//Esta función carga una imagen externa (de una ruta de archivo) a la ventana
-
-	//Condición de inicialización (si la función devuelve false, ocurrió un error)
-	bool finalizado = true;
-	imagen = SDL_LoadBMP("Recursos/test.bmp");
-	if (imagen == NULL){
-		cout << "No se pudo cargar la imagen del directorio Recursos/test.jpg" << endl;
-		cout << "Error: " << SDL_GetError() << endl;
-		finalizado = false;
-	}
-
-	return finalizado;
-}
-
-void cerrarVentana(){
-	//Esta función cierra el SDL, liberando la memoria ocupada tanto por la ventana que por las surface/imágenes
-	SDL_DestroyWindow(ventana);
-	ventana = NULL;
-
-	SDL_Quit();
-}
 
 bool stringTerminaCon(std::string const &fullString,
 		std::string const &ending) {
@@ -400,20 +349,6 @@ Servidor* inicializarServidor() {
 }
 
 int main() {
-
-	//Parte gráfica
-	if (!inicializarVentana()){
-		cout << "Error al inicializar." << endl;
-	} else {
-		if (!cargarImagen()){
-			cout << "Error al cargar la imagen." << endl;
-		} else {
-			SDL_BlitSurface(imagen,NULL,capaPrincipal,NULL);
-			SDL_UpdateWindowSurface(ventana);
-			SDL_Delay(5000);
-		}
-	}
-
 	Servidor* servidor = inicializarServidor();
 	cout << "Escriba q y presione enter para salir.. \n";
 	string salir = "";
@@ -426,8 +361,5 @@ int main() {
 		}
 	}
 
-
-
-	cerrarVentana();
 	return 0;
 }
