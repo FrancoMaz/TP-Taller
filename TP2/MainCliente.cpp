@@ -15,60 +15,10 @@
 #include <unistd.h>
 #include <netdb.h>
 #include "Cliente.h"
+#include "VentanaSDL.h"
 #include <SDL2/SDL.h>
 
 using namespace std;
-
-//Dimensiones de la pantalla
-const int ANCHO_VENTANA = 800;
-const int ALTO_VENTANA = 600;
-SDL_Window* ventana = NULL;
-SDL_Surface* capaPrincipal = NULL;
-SDL_Surface* imagenDeEspera = NULL;
-
-bool inicializarVentana(){
-	//Esta función crea la ventana principal del juego con sus resoluciones
-
-	//Condición de inicialización (si la función devuelve false, ocurrió un error)
-	bool finalizado = true;
-
-	if(SDL_Init(SDL_INIT_VIDEO) != 0){
-		cout << "SDL no pudo inicializarse. Error: " << SDL_GetError() << endl;
-		finalizado = false;
-	} else {
-		ventana = SDL_CreateWindow("Metal Slug (Alpha Version: 0.001)", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, ANCHO_VENTANA, ALTO_VENTANA, SDL_WINDOW_SHOWN);
-		if (ventana == NULL){
-			cout << "La ventana no pudo crearse. Error: " << SDL_GetError() << endl;
-			finalizado = false;
-		} else {
-			capaPrincipal = SDL_GetWindowSurface(ventana);
-		}
-	}
-	return finalizado;
-}
-
-bool cargarImagen(){
-	//Esta función carga una imagen externa (de una ruta de archivo) a una variable de tipo surface
-
-	//Condición de inicialización (si la función devuelve false, ocurrió un error)
-	bool finalizado = true;
-	imagenDeEspera = SDL_LoadBMP("Recursos/loading.bmp");
-	if (imagenDeEspera == NULL){
-		cout << "No se pudo cargar la imagen del directorio Recursos/loading.jpg" << endl;
-		cout << "Error: " << SDL_GetError() << endl;
-		finalizado = false;
-	}
-
-	return finalizado;
-}
-
-void cerrarVentana(){
-	//Esta función cierra el SDL, liberando la memoria ocupada tanto por la ventana que por las surface/imágenes
-	SDL_DestroyWindow(ventana);
-	ventana = NULL;
-
-	SDL_Quit();
-}
 
 bool chequearSocket(string ip, int puerto) {
 	//string ipServer = "192.168.1.10";
@@ -106,15 +56,15 @@ int main() {
 	bool socketOk = false;
 	pthread_t thrComu;
 	string nombre, contrasenia;
+	VentanaSDL* ventana = new VentanaSDL();
 
-	if (!inicializarVentana()){
+	if (!ventana->inicializar()){
 		cout << "Error al inicializar." << endl;
 	} else {
-		if (!cargarImagen()){
+		if (!ventana->cargarImagen("Recursos/loading.bmp")){
 			cout << "Error al cargar la imagen." << endl;
 		} else {
-			SDL_BlitSurface(imagenDeEspera,NULL,capaPrincipal,NULL);
-			SDL_UpdateWindowSurface(ventana);
+			ventana->actualizar();
 
 			while (!socketOk) {
 				do {
@@ -182,6 +132,6 @@ int main() {
 		}
 	}
 
-	cerrarVentana();
+	ventana->~VentanaSDL();
 	return 0;
 }
