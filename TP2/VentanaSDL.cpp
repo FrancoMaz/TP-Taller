@@ -9,11 +9,12 @@
 #include <iostream>
 #include <string>
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
 
 VentanaSDL::VentanaSDL(){
 	this->ventana = NULL;
 	this->capaPrincipal = NULL;
-	this->imagenDeEspera = NULL;
+	this->imagen = NULL;
 }
 
 VentanaSDL::~VentanaSDL(){}
@@ -31,7 +32,14 @@ bool VentanaSDL::inicializar(){
 			cout << "La ventana no pudo crearse. Error: " << SDL_GetError() << endl;
 			finalizado = false;
 		} else {
-			this->capaPrincipal = SDL_GetWindowSurface(ventana);
+			//Inicializamos SDL_Image para poder cargar archivos PNG
+			int imgFlags = IMG_INIT_PNG;
+			if (!(IMG_Init(imgFlags) & imgFlags)){
+				cout << "SDL_Image no pudo ser inicializado. Error: " << IMG_GetError() << endl;
+				finalizado = false;
+			} else {
+				this->capaPrincipal = SDL_GetWindowSurface(ventana);
+			}
 		}
 	}
 	return finalizado;
@@ -41,19 +49,19 @@ bool VentanaSDL::inicializar(){
 bool VentanaSDL::cargarImagen(string rutaDeArchivo){
 	bool finalizado = true;
 
-	SDL_Surface* imagenCargada = SDL_LoadBMP(rutaDeArchivo.c_str());
+	SDL_Surface* imagenCargada = IMG_Load(rutaDeArchivo.c_str());
 
 	if (imagenCargada == NULL){
-		cout << "No se pudo cargar la imagen. Error: " << SDL_GetError() << endl;
+		cout << "No se pudo cargar la imagen. Error: " << IMG_GetError() << endl;
 		finalizado = false;
 	} else {
 		//Optimizamos el surface
-		this->imagenDeEspera = SDL_ConvertSurface(imagenCargada, capaPrincipal->format, 0);
-		if (this->imagenDeEspera == NULL){
+		this->imagen = SDL_ConvertSurface(imagenCargada, capaPrincipal->format, 0);
+		if (this->imagen == NULL){
 			cout << "No se pudo optimizar la imagen. Error: " << SDL_GetError() << endl;
 		} else {
 			SDL_FreeSurface(imagenCargada);
-			SDL_BlitSurface(this->imagenDeEspera,NULL,this->capaPrincipal,NULL);
+			SDL_BlitSurface(this->imagen,NULL,this->capaPrincipal,NULL);
 		}
 	}
 

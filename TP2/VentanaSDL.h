@@ -22,7 +22,7 @@ class VentanaSDL {
 private:
 	SDL_Window* ventana;
 	SDL_Surface* capaPrincipal;
-	SDL_Surface* imagenDeEspera;
+	SDL_Surface* imagen;
 
 public:
 	VentanaSDL();

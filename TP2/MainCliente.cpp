@@ -61,7 +61,7 @@ int main() {
 	if (!ventana->inicializar()){
 		cout << "Error al inicializar." << endl;
 	} else {
-		if (!ventana->cargarImagen("Recursos/loading.bmp")){
+		if (!ventana->cargarImagen("Recursos/test.png")){
 			cout << "Error al cargar la imagen." << endl;
 		} else {
 			ventana->actualizar();
