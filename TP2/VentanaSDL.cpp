@@ -41,12 +41,20 @@ bool VentanaSDL::inicializar(){
 bool VentanaSDL::cargarImagen(string rutaDeArchivo){
 	bool finalizado = true;
 
-	this->imagenDeEspera = SDL_LoadBMP(rutaDeArchivo.c_str());
-	if (this->imagenDeEspera == NULL){
+	SDL_Surface* imagenCargada = SDL_LoadBMP(rutaDeArchivo.c_str());
+
+	if (imagenCargada == NULL){
 		cout << "No se pudo cargar la imagen. Error: " << SDL_GetError() << endl;
 		finalizado = false;
 	} else {
-		SDL_BlitSurface(this->imagenDeEspera,NULL,this->capaPrincipal,NULL);
+		//Optimizamos el surface
+		this->imagenDeEspera = SDL_ConvertSurface(imagenCargada, capaPrincipal->format, 0);
+		if (this->imagenDeEspera == NULL){
+			cout << "No se pudo optimizar la imagen. Error: " << SDL_GetError() << endl;
+		} else {
+			SDL_FreeSurface(imagenCargada);
+			SDL_BlitSurface(this->imagenDeEspera,NULL,this->capaPrincipal,NULL);
+		}
 	}
 
 	return finalizado;
