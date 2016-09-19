@@ -7,6 +7,7 @@
 
 #include "VentanaSDL.h"
 #include <iostream>
+#include <string>
 #include <SDL2/SDL.h>
 
 VentanaSDL::VentanaSDL(){
@@ -15,12 +16,7 @@ VentanaSDL::VentanaSDL(){
 	this->imagenDeEspera = NULL;
 }
 
-VentanaSDL::~VentanaSDL(){
-	SDL_DestroyWindow(ventana);
-	ventana = NULL;
-
-	SDL_Quit();
-}
+VentanaSDL::~VentanaSDL(){}
 
 //Esta función crea la ventana principal del juego con sus resoluciones (si la función devuelve false, ocurrió un error)
 bool VentanaSDL::inicializar(){
@@ -42,10 +38,10 @@ bool VentanaSDL::inicializar(){
 }
 
 //Esta función carga una imagen externa (de una ruta de archivo) a una variable de tipo surface (si la función devuelve false, ocurrió un error)
-bool VentanaSDL::cargarImagen(const char* rutaDeArchivo){
+bool VentanaSDL::cargarImagen(string rutaDeArchivo){
 	bool finalizado = true;
 
-	this->imagenDeEspera = SDL_LoadBMP(rutaDeArchivo);
+	this->imagenDeEspera = SDL_LoadBMP(rutaDeArchivo.c_str());
 	if (this->imagenDeEspera == NULL){
 		cout << "No se pudo cargar la imagen. Error: " << SDL_GetError() << endl;
 		finalizado = false;
@@ -58,4 +54,11 @@ bool VentanaSDL::cargarImagen(const char* rutaDeArchivo){
 
 void VentanaSDL::actualizar(){
 	SDL_UpdateWindowSurface(this->ventana);
+}
+
+void VentanaSDL::cerrar(){
+	SDL_DestroyWindow(ventana);
+	ventana = NULL;
+
+	SDL_Quit();
 }

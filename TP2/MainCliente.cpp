@@ -132,6 +132,6 @@ int main() {
 		}
 	}
 
-	ventana->~VentanaSDL();
+	ventana->cerrar();
 	return 0;
 }

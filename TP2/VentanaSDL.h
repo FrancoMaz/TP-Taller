@@ -9,6 +9,7 @@
 #define TP2_VENTANASDL_H_
 
 #include <SDL2/SDL.h>
+#include <string>
 
 using namespace std;
 
@@ -27,8 +28,9 @@ public:
 	VentanaSDL();
 	~VentanaSDL();
 	bool inicializar();
-	bool cargarImagen(const char* rutaDeArchivo);
+	bool cargarImagen(string rutaDeArchivo);
 	void actualizar();
+	void cerrar();
 };
 
 #endif /* TP2_VENTANASDL_H_ */
