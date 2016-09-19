@@ -9,11 +9,6 @@ Cliente::Cliente(string ip, int puerto) {
 //El cliente se crea con la direccion IP y el puerto en el cual se encuentra disponible el servidor
 	this->direccionIP = strdup(ip.c_str());
 	this->puertoServidor = puerto;
-	this->socketCliente = socket(PF_INET, SOCK_STREAM, 0);
-	direccionServidor.sin_family = AF_INET;
-	direccionServidor.sin_port = htons(puerto);
-	direccionServidor.sin_addr.s_addr = inet_addr(this->direccionIP);
-	memset(direccionServidor.sin_zero, '\0', sizeof direccionServidor.sin_zero);
 	this->opcionMenu = 0;
 }
 
@@ -21,43 +16,61 @@ Cliente::~Cliente() {
 	// TODO Auto-generated destructor stub
 }
 
+void Cliente::inicializarSocket(){
+	this->socketCliente = socket(PF_INET, SOCK_STREAM, 0);
+	direccionServidor.sin_family = AF_INET;
+	direccionServidor.sin_port = htons(this->puertoServidor);
+	direccionServidor.sin_addr.s_addr = inet_addr(this->direccionIP);
+	memset(direccionServidor.sin_zero, '\0', sizeof direccionServidor.sin_zero);
+}
+
 void Cliente::mostrarMenuYProcesarOpcion() {
-	do {
+	bool esValido = false;
 		cout << "1) Enviar Mensaje" << endl;
 		cout << "2) Recibir Mensajes" << endl;
 		cout << "3) Lorem Ipsum" << endl;
 		cout << "4) Desconectar" << endl;
 		cout << "5) Salir" << endl;
+	do {
 		cout << "Elija la accion que desea realizar: " << endl;
 		cin >> opcionMenu;
-	} while (opcionMenu < 1 && opcionMenu > 5);
+		if (cin.good() && (opcionMenu >= 1 && opcionMenu <= 5)) {esValido = true;}
+			else {
+				cin.clear();
+				cin.ignore();
+				cout << "Error: la opcion ingresada no es valida" << endl;
+			}
+	} while (!esValido);
 	this->elegirOpcionDelMenu(opcionMenu);
 }
 
 void Cliente::elegirOpcionDelMenu(int opcion) {
 	switch (opcion) {
 	case 1: {
-		/*char* mensaje = "CLIENTE: Te pregunto";
-		char buffer[BUFFER_MAX_SIZE];
-		char datosRecibidos[BUFFER_MAX_SIZE];
-		strcpy(buffer, mensaje);
-		send(socketCliente, buffer, strlen(mensaje) + 1, 0);
-		recv(socketCliente, datosRecibidos, BUFFER_MAX_SIZE, 0);
-		cout << "Recibi: " << datosRecibidos << endl;
-		break;*/
-		string lectura;
-		string destinatario;
+		bool esValido = false;
+		int numeroDestinatario;
 		string mensajeAEnviar;
 		this -> mostrarClientesDisponibles();
-		cout << "Escriba el nombre del destinatario del mensaje " << endl;
-		cout <<	"(si quiere mandarle mensaje a todos los usuarios de la lista escriba Todos): " << endl;
-		cin >> destinatario;
+		int cantidadClientesDisponibles = this->clientesDisponibles.size();
+		do {
+		cout << "Escriba el numero asociado al nombre del destinatario del mensaje: ";
+		cin >> numeroDestinatario;
+		if (cin.good() && (numeroDestinatario >= 1 && numeroDestinatario <= (cantidadClientesDisponibles + 1)))
+		{esValido = true;}
+			else {
+				cin.clear();
+				cin.ignore();
+				cout << "Error: la opcion ingresada no es valida" << endl;
+			}
+		} while (!esValido);
 		cin.ignore();
 		cout << "Escriba su mensaje: " << endl;
 		getline(cin,mensajeAEnviar);
-		this->enviar(mensajeAEnviar, destinatario);
+		if (numeroDestinatario != (this->clientesDisponibles.size()) + 1){
+			string nombreDestinatario = this->devolverNombre(numeroDestinatario - 1);
+			this->enviar(mensajeAEnviar, nombreDestinatario);
+		} else {this -> enviar(mensajeAEnviar, "Todos");}
 		break;
-
 	}
 	case 2: {
 		this->recibir();
@@ -88,33 +101,33 @@ void Cliente::elegirOpcionDelMenu(int opcion) {
 
 void Cliente::conectar(string nombre, string contrasenia) {
 	//Se establece la conexion con el servidor mediante autenticacion. El servidor devuelve la lista con todos los usuarios disponibles
+	this->inicializarSocket();
 	char buffer[BUFFER_MAX_SIZE];
 	char datosRecibidos[BUFFER_MAX_SIZE];
 	this->addr_size = sizeof direccionServidor;
 	char* nombreYPass = strdup((nombre + ',' + contrasenia).c_str()); // convierte el string de const char* a char*
-	cout << nombreYPass << endl;
 	cout << "Intentando conectarse con el servidor. . ." << endl;
 	if (connect(socketCliente, (struct sockaddr *) &direccionServidor,addr_size) == 0) {
 
 		strcpy(buffer, nombreYPass);
 		send(socketCliente, buffer, strlen(nombreYPass) + 1, 0);
-
-		cout << "Conectandose al puerto: " << this->puertoServidor << endl;
 		this->nombre = nombre;
 		//this->clientesDisponibles.push_front("hola"); //pongo cualquier cosa para comprobar el ciclo ok.
 		recv(socketCliente, datosRecibidos, BUFFER_MAX_SIZE, 0);
 		string datos = datosRecibidos;
 		string desconectarse = "Desconectar";
 		if (strcmp(datos.c_str(), desconectarse.c_str()) == 0) {
+			cout << "Usuario/clave incorrectos, inténtelo de nuevo" << endl;
 			this->desconectar();
 		} else {
+			cout << "Conectandose al puerto: " << this->puertoServidor << endl;
 			cout << "Datos recibidos: " << datos << endl; //IMPRIMO LA RESPUESTA DEL SERVER, SI SE PUDO AUTENTICAR O NO. --> HAY QUE CAMBIAR ESTO PORQUE EN REALIDAD SE DEVUELVE LA LISTA DE USUARIOS.
 			splitUsuarios(datosRecibidos);
 		}
 	} else {
 		cout << "Error conectandose al puerto" << endl;
 	}
-	//Faltaria que el servidor devuelve la lista con los usuarios disponibles y que confirme la autenticacion del cliente
+	//free(nombreYPass);
 }
 
 void Cliente::splitUsuarios(string datos) {
@@ -143,42 +156,63 @@ void Cliente::salir() {
 
 void Cliente::enviar(string mensaje, string destinatario) {
 	//Se envia un mensaje a un usuario o a todos (este ultimo caso sucede cuando el destinatario es el string "Todos").
-	string metodo = "Enviar";
+
 	char* mensajeCadena = strdup(mensaje.c_str());
-	for (int i = 0; i < strlen(mensajeCadena); i += BUFFER_MAX_SIZE) {
-		Mensaje *mensajeAEnviar = new Mensaje(this->nombre, destinatario, mensaje);
-		char buffer[BUFFER_MAX_SIZE];
-		string largoMensaje;
-		stringstream conversion;
-		conversion << strlen(mensajeCadena);
-		largoMensaje = conversion.str();
-		char* stringDatosMensaje = strdup((largoMensaje + '|' + metodo + '|' + mensajeAEnviar->getStringDatos()).c_str());
-		cout << stringDatosMensaje << endl;
-		strcpy(buffer, stringDatosMensaje);
-		send(this->socketCliente, buffer, strlen(stringDatosMensaje) + 1, 0);
+	Mensaje *mensajeAEnviar = new Mensaje(this->nombre, destinatario, mensaje);
+	char* stringDatosMensaje = strdup(("1|" + mensajeAEnviar->getStringDatos()).c_str()); //1 significa enviar.
+	int largo = strlen(stringDatosMensaje);
+	int largoRequest;
+	while (largo > 0)
+	{
+		largoRequest = send(this->socketCliente, stringDatosMensaje, largo + 1, 0);
+		largo -= largoRequest;
+	}
+	free(mensajeCadena);
+	//free(stringDatosMensaje);
+}
+
+void Cliente::enviarMensajeATodos(string mensaje) {
+	for (list<string>::iterator i = this->clientesDisponibles.begin(); i != this->clientesDisponibles.end(); i++) {
+			this -> enviar(mensaje,*i);
 	}
 }
 
 void Cliente::recibir() {
 	//Se reciben todos los mensajes en la secuencia en la que fueron enviados
 	char colaMensajes[BUFFER_MAX_SIZE];
-	string metodo = "Recibir|";
-	char* metodoYNombre = strdup((metodo + this -> nombre).c_str());
-	send(this->socketCliente, metodoYNombre, strlen(metodoYNombre) + 1, 0);
-	recv(this->socketCliente, colaMensajes, strlen(colaMensajes), 0);
-	this -> mostrarUltimosMensajes(colaMensajes);
+	string metodo = "2|" + this->nombre + "#";
+	char* recibir = strdup(metodo.c_str()); //2 es recibir
+	send(this->socketCliente, recibir, strlen(recibir) + 1, 0);
+	string datosRecibidos;
+	int largoRequest = recv(this->socketCliente, colaMensajes, BUFFER_MAX_SIZE, 0);
+	cout<< "largo request: "<<largoRequest<<endl;
+	datosRecibidos.append(colaMensajes,largoRequest);
+	while (largoRequest >= BUFFER_MAX_SIZE) //mientras el largoRequest sea del tamaño del max size, sigo pidiendo
+	{
+		//mientras haya cosas que leer, sigo recibiendo.
+		largoRequest = recv(socketCliente, colaMensajes, BUFFER_MAX_SIZE, 0);
+		//cout << largoRequest << endl;
+		datosRecibidos.append(colaMensajes,largoRequest);
+	}
+	this -> mostrarUltimosMensajes(datosRecibidos);
 }
 
 void Cliente::mostrarUltimosMensajes(string colaMensajes)
-{
-	string mensajesASplitear = colaMensajes.substr(0, colaMensajes.length() - 1);
-	char str[BUFFER_MAX_SIZE];
-	strcpy(str, colaMensajes.c_str());
-	char* mensaje = strtok(str, "||");
+{   string mensajeVacio = "#noHayMensajes#";
 	cout << "Ultimos mensajes recibidos: " << endl;
-	while (mensaje != NULL) {
-		cout << mensaje << endl;
-		mensaje = strtok(NULL, "||");
+	if(strcmp(colaMensajes.c_str(), mensajeVacio.c_str()) == 0){
+		cout<<"No hay mensajes nuevos"<<endl;}
+	else{
+		char str[colaMensajes.length()];
+		strcpy(str, colaMensajes.c_str());
+		char* texto = strtok(str, "|");
+		while (texto != NULL) {
+			cout<<"Mensaje de "<<texto<<":"<<endl;
+			texto = strtok(NULL,"#");
+			cout << texto << endl;
+			cout<<endl;
+			texto = strtok(NULL, "|");
+		}
 	}
 }
 
@@ -191,19 +225,20 @@ void Cliente::loremIpsum(double frecuenciaDeEnvios, double cantidadMaximaDeEnvio
 	string clienteAleatorioAEnviar;
 	archivo = fopen("LoremIpsum.txt","r");
 	srand(time(NULL));
-	//Por ahora puse que el tamanio de los mensajes este entre 0 y 30, pero mas adelante eso se tiene que modificar
-	tamanioMensaje = (int) (rand() % 30);
+	//El tamanio de los mensajes este entre 0 y 200
+	tamanioMensaje = (int) (rand() % 200);
 	//Se elige aleatoriamente el destinatario de la secuencia de mensajes
 	numeroDeClienteAEnviar = (int) (rand()% this->clientesDisponibles.size());
 	list<string>::iterator iterador = this->clientesDisponibles.begin();
 	advance(iterador, numeroDeClienteAEnviar);
 	clienteAleatorioAEnviar = *iterador;
 	//tiempoPorMensaje indica cada cuanto tiempo se manda un mensaje (en segundos)
-	double tiempoPorMensaje = (frecuenciaDeEnvios/cantidadMaximaDeEnvios);
+	//Se mandan frecuenciaDeEnvios mensajes en 1 segundo, entonces un mensaje se manda en 1/frecuenciaDeEnvios segundos
+	double tiempoPorMensaje = (1/frecuenciaDeEnvios);
 	//Indico el tiempo de inicio
 	clock_t tiempoInicio = clock();
 	for (int i = 0; i < cantidadMaximaDeEnvios; i++) {
-		char cadena[tamanioMensaje];
+		string cadena;
 		//No tiene que ocurrir nada hasta que el tiempo transcurrido sea igual al tiempo estipulado de envio para cada mensaje
 		do {
 		} while (((double)(clock()-tiempoInicio)/CLOCKS_PER_SEC) < tiempoPorMensaje);
@@ -212,20 +247,18 @@ void Cliente::loremIpsum(double frecuenciaDeEnvios, double cantidadMaximaDeEnvio
 				char c = fgetc(archivo);
 				//Si no hay salto de linea o fin de archivo se guarda el caracter leido
 				if (c != '\n' && c != EOF) {
-					cadena[j] = c;}
+					cadena = cadena + c;}
 				//Si viene un salto de linea se guarda un espacio (si no hacia esto se imprimia un caracter random)
 				if (c == '\n') {
-					cadena[j] = ' ';
+					cadena = cadena + ' ';
 				}
 				//Si viene un fin de archivo se guarda un espacio y se vuelven a leer caracteres del archivo desde el comienzo
 				if (c == EOF) {
-					cadena[j] = ' ';
+					cadena = cadena + ' ';
 					fclose(archivo);
 					archivo = fopen("LoremIpsum.txt","r"); }
 				}
 			//Una vez que se tiene un mensaje completo se envia al cliente elegido aleatoriamente de la lista
-			//DESPUES HAY QUE DESCOMENTAR LA LINEA DE ABAJO. Falta terminar el metodo enviar, por lo que para probar la funcionalidad la deje comentada
-
 			this->enviar(cadena, clienteAleatorioAEnviar);
 			//Al enviar un mensaje el tiempo de referencia es el actual
 			tiempoInicio = clock();
@@ -254,13 +287,21 @@ void Cliente::setThreadComunicacion(pthread_t thrComu) {
 	this->threadComunicacion = thrComu;
 }
 
-void Cliente::setClientesDisponibles(string nombre, string contrasenia) {
-	//this->clientesDisponibles = this->conectar(nombre, contrasenia);
+void Cliente::vaciarClientesDisponibles() {
+	this->clientesDisponibles.clear();
 }
 
 void Cliente::mostrarClientesDisponibles(){
+	int numeroCliente = 1;
 	cout << "Los usuarios disponibles son: " << endl;
 	for (list<string>::iterator i = this->clientesDisponibles.begin(); i != this->clientesDisponibles.end(); i++) {
-		cout << (*i) << endl;
-	}
+		cout << numeroCliente << ") " << (*i) << endl;
+		numeroCliente ++; }
+	cout << numeroCliente << ") Enviar mensaje a todos los usuarios" << endl;
+}
+
+string Cliente::devolverNombre(int numeroDestinatario) {
+	list<string>::iterator iterador = this->clientesDisponibles.begin();
+	advance(iterador, numeroDestinatario);
+	return (*iterador);
 }

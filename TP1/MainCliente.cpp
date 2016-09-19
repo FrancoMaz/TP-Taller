@@ -30,18 +30,17 @@ void* cicloConexion(void* arg) {
 	//Funcion que cicla para las opciones del cliente dentro del thread de comunicacion. Devuelve 1 si la opcion es desconectar, 0 si es salir.
 	Cliente* cliente = (Cliente*) arg;
 	string user, pass;
-	while (cliente->getClientesDisponibles().empty())
-	{
-	cout << "Ingrese nombre de usuario: ";
-	cin >> user;
-	cout << "Ingrese password: ";
-	cin >> pass;
-	cliente->conectar(user, pass);
+	while (cliente->getClientesDisponibles().empty()) {
+		cout << "Ingrese nombre de usuario: ";
+		cin >> user;
+		cout << "Ingrese password: ";
+		cin >> pass;
+		cliente->conectar(user, pass);
 	}
-	while (cliente->getOpcionMenu() != 5 and cliente->getOpcionMenu() != 4) //mientras la opcion del menu no sea salir o desconectar..
+	do
 	{
 		cliente->mostrarMenuYProcesarOpcion();
-	}
+	} while (cliente->getOpcionMenu() != 5 and cliente->getOpcionMenu() != 4); //mientras la opcion del menu no sea salir o desconectar..
 	if (cliente->getOpcionMenu() == 4) {
 		return (void*) 1;
 	}
@@ -49,48 +48,65 @@ void* cicloConexion(void* arg) {
 }
 
 int main() {
+	bool esValido = false;
 	string ip;
 	int puerto, accion;
 	bool socketOk = false;
 	pthread_t thrComu;
 	string nombre, contrasenia;
 	while (!socketOk) {
-		cout << "Ingrese el puerto para la conexion: ";
-		cin >> puerto;
+		do {
+			cout << "Ingrese el puerto para la conexion: ";
+			cin >> puerto;
+			if (cin.good()) {esValido = true;}
+			else {
+				cin.clear();
+				cin.ignore();
+				cout << "Error: el dato ingresado debe ser un numero" << endl;
+				}
+			}
+		while (!esValido);
 		cout << "Ingrese la ip del servidor: ";
 		cin >> ip;
 		socketOk = chequearSocket(ip, puerto); //FALTA IMPLEMENTAR METODO DE CHEQUEAR IP/PUERTO. ESTA MAS ABAJO LA FUNCION.
 		if (!socketOk) {
 			//SI NO SE PUDO COMPROBAR LA CONEXION, DOY ERROR Y VUELVO A PEDIR IP Y CONEXION
-			cout
-					<< "Error: La direccion de ip o el puerto no permiten esta conexion."
-					<< endl;
+			cout << "Error: La direccion de ip o el puerto no permiten esta conexion." << endl;
 		}
 	}
-	cout << "SOCKET OK" << endl;
+	cout << "Socket OK" << endl;
 	Cliente* cliente = new Cliente(ip, puerto);
-	cout << "SISTEMA DE MENSAJERIA" << endl;
+	cout << "Bienvenido al sistema de mensajería" << endl;
 
 	do {
-		do {
+			bool accionValida = false;
 			cout << "1) Conectar" << endl;
 			cout << "2) Salir" << endl;
-			cout << "Que desea hacer? " << endl;
+		do {
+			cout << "¿Qué desea hacer? " << endl;
 			cin >> accion;
-		} while (accion < 1 or accion > 2);
+			if (cin.good() && (accion == 1 || accion == 2)) {accionValida = true;}
+				else {
+					cin.clear();
+					cin.ignore();
+					cout << "Error: la opcion ingresada no es valida" << endl;
+					}
+		} while (!accionValida);
 		if (accion != 2) {
 			//si no es salir, creo el thread de comunicacion que intenta conectar.
 			int threadOk = pthread_create(&thrComu, NULL, &cicloConexion,
 					cliente);
 			if (threadOk != 0) {
-				cout << "Error al inicializar la conexion." << endl;
+				cout << "Error al inicializar la conexión." << endl;
 			} else {
 				cliente->setThreadComunicacion(thrComu);
 				void** resultado;
-				pthread_join(cliente->getThreadComunicacion(), (void**) &resultado); //espero que termine el thread de comunicacion que fue invocado..
+				pthread_join(cliente->getThreadComunicacion(),
+						(void**) &resultado); //espero que termine el thread de comunicacion que fue invocado..
 				accion = *((int*) (&resultado));
 				if (accion == 1) { //si es 1, es desconectar y vuelve a ingresar al loop que ofrece conectar y desconectar
 					cout << "Desconectado del servidor.." << endl;
+					cliente->vaciarClientesDisponibles();
 				} //si es 0, va a salir automaticamente del loop y del programa.
 			}
 		} else {
@@ -98,6 +114,6 @@ int main() {
 		}
 	} while (accion != 0); //si la accion es 0, es salir.
 	cliente->salir(); //cierra el socket y realiza trabajos de limpieza de memoria
-	cout << "Saliendo del programa.. Gracias, vuelva prontoss!" << endl;
+	cout << "Saliendo del programa..." << endl;
 	return 0;
 }
