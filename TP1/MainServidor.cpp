@@ -23,6 +23,7 @@ struct parametrosThreadCliente {
 	Servidor* serv;
 	int socketCli;
 	string nombre;
+	int clienteID;
 };
 
 struct parametrosThreadEncolarMensaje {
@@ -188,7 +189,7 @@ void* cicloEscuchaCliente(void* arg) {
 		int largoRequest = recv(socketCliente, bufferRecibido, BUFFER_MAX_SIZE,0); //recibo por primera vez
 		if (largoRequest > 0) {
 			datosRecibidos.append(bufferRecibido, largoRequest);
-			cout << largoRequest << endl;
+			cout << "request del cicloEscuchaCliente: "<<largoRequest << endl;
 			while (largoRequest >= BUFFER_MAX_SIZE and !stringTerminaCon(datosRecibidos, "#")) {
 				//mientras haya cosas que leer, sigo recibiendo.
 				largoRequest = recv(socketCliente, bufferRecibido, BUFFER_MAX_SIZE, 0);
@@ -258,16 +259,18 @@ void* cicloEscucharConexionesNuevasThreadProceso(void* arg) {
 			servidor->guardarLog("ERROR: Problema con la conexion del socket.\n", DEBUG);
 		}
 		else{
+			cout<<"cantidad de clientes conectados: "<<servidor->getCantConexiones()<<endl;
 			//genero un nuevo thread dinamicamente para este cliente
-			if (servidor->getCantConexiones() <= MAX_CANT_CLIENTES) {
+			if (servidor->getCantConexiones() <= MAX_CANT_CLIENTES && servidor->getCantConexiones() > 0) {
 				//si todavia hay lugar en el servidor, creo el thread que va a escuchar los pedidos de este cliente
 				parametrosThreadCliente parametrosCliente;
 				parametrosCliente.socketCli = socketCliente;
 				parametrosCliente.serv = servidor;
 				parametrosCliente.nombre = nombreCliente;
+				parametrosCliente.clienteID = servidor->getCantConexiones() - 1;
 				cout<<"llega casi al final de cicloEscucharConexionesNuevasThreadProceso"<<endl;
-				pthread_create(&thread_id[servidor->getCantConexiones()], NULL,&cicloEscuchaCliente, &parametrosCliente); //optimizar ya que si un cliente se desconecta podria causar un problema
-				pthread_detach(thread_id[servidor->getCantConexiones()] ); //lo marco como detach
+				pthread_create(&thread_id[parametrosCliente.clienteID], NULL,&cicloEscuchaCliente, &parametrosCliente); //optimizar ya que si un cliente se desconecta podria causar un problema
+				pthread_detach(thread_id[parametrosCliente.clienteID]); //lo marco como detach
 			}
 		}
 	}
