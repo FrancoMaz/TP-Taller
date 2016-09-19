@@ -19,6 +19,9 @@
 
 using namespace std;
 
+//Imagen del escenario (debe ir a la pantalla del cliente que se conecta)
+SDL_Surface* escenario = NULL;
+
 struct parametrosThreadCliente {
 	//estructura que sirve para guardar los parametros que se le pasan a la funcion del thread.
 	Servidor* serv;
@@ -37,6 +40,21 @@ struct parametrosThreadEnviarMensajeProcesado {
 	char* usuario;
 	int socketCliente;
 };
+
+bool cargarEscenario(){
+	//Esta función carga una imagen externa (de una ruta de archivo) a una variable de tipo surface
+
+	//Condición de inicialización (si la función devuelve false, ocurrió un error)
+	bool finalizado = true;
+	escenario = SDL_LoadBMP("Recursos/test.bmp");
+	if (escenario == NULL){
+		cout << "No se pudo cargar la imagen del directorio Recursos/test.jpg" << endl;
+		cout << "Error: " << SDL_GetError() << endl;
+		finalizado = false;
+	}
+
+	return finalizado;
+}
 
 bool stringTerminaCon(std::string const &fullString,
 		std::string const &ending) {
@@ -349,6 +367,7 @@ Servidor* inicializarServidor() {
 }
 
 int main() {
+	cargarEscenario();
 	Servidor* servidor = inicializarServidor();
 	cout << "Escriba q y presione enter para salir.. \n";
 	string salir = "";
