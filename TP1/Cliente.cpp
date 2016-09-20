@@ -187,11 +187,11 @@ void Cliente::recibir() {
 	int largoRequest = recv(this->socketCliente, colaMensajes, BUFFER_MAX_SIZE, 0);
 	cout<< "largo request: "<<largoRequest<<endl;
 	datosRecibidos.append(colaMensajes,largoRequest);
-	while (largoRequest >= BUFFER_MAX_SIZE) //mientras el largoRequest sea del tamaño del max size, sigo pidiendo
+	while (largoRequest >= BUFFER_MAX_SIZE - 1) //mientras el largoRequest sea del tamaño del max size, sigo pidiendo
 	{
 		//mientras haya cosas que leer, sigo recibiendo.
 		largoRequest = recv(socketCliente, colaMensajes, BUFFER_MAX_SIZE, 0);
-		//cout << largoRequest << endl;
+		cout << largoRequest << endl;
 		datosRecibidos.append(colaMensajes,largoRequest);
 	}
 	this -> mostrarUltimosMensajes(datosRecibidos);
