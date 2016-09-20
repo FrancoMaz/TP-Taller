@@ -9,6 +9,7 @@
 #define TP2_VENTANASDL_H_
 
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
 #include <string>
 
 using namespace std;
@@ -21,8 +22,8 @@ class VentanaSDL {
 
 private:
 	SDL_Window* ventana;
-	SDL_Surface* capaPrincipal;
-	SDL_Surface* imagen;
+	SDL_Renderer* renderizacion;
+	SDL_Texture* textura;
 
 public:
 	VentanaSDL();
