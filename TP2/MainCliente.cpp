@@ -16,6 +16,7 @@
 #include <netdb.h>
 #include "Cliente.h"
 #include "VentanaSDL.h"
+#include "TexturaSDL.h"
 #include <SDL2/SDL.h>
 
 using namespace std;
@@ -59,12 +60,19 @@ int main() {
 	VentanaSDL* ventana = new VentanaSDL();
 
 	if (!ventana->inicializar()){
-		cout << "Error al inicializar." << endl;
+		cout << "El programa no pudo ejecutarse." << endl;
 	} else {
-		if (!ventana->cargarImagen("Recursos/test.png")){
-			cout << "Error al cargar la imagen." << endl;
+		TexturaSDL* textura = ventana->crearTextura("Recursos/test.png");
+		TexturaSDL* textura2 = ventana->crearTextura("Recursos/player.png");
+		if (!ventana->comprobarTexturasCargadas()){
+			cout << "El programa no pudo ejecutarse." << endl;
 		} else {
-			ventana->actualizar();
+			for (float x=0; x<400; x=x+0.1){
+				ventana->limpiar();
+				textura->aplicarPosicion(0,0);
+				textura2->aplicarPosicion(x,100);
+				ventana->actualizar();
+			}
 
 			while (!socketOk) {
 				do {

@@ -14,7 +14,7 @@
 VentanaSDL::VentanaSDL(){
 	this->ventana = NULL;
 	this->renderizacion = NULL;
-	this->textura = NULL;
+	this->texturasCargadas = true;
 }
 
 VentanaSDL::~VentanaSDL(){}
@@ -33,7 +33,7 @@ bool VentanaSDL::inicializar(){
 		}
 
 		//Creamos la ventana
-		this->ventana = SDL_CreateWindow("Metal Slug (Alpha Version: 0.03)", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, ANCHO_VENTANA, ALTO_VENTANA, SDL_WINDOW_SHOWN);
+		this->ventana = SDL_CreateWindow("Metal Slug (Alpha Version: 0.04)", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, ANCHO_VENTANA, ALTO_VENTANA, SDL_WINDOW_SHOWN);
 		if (this->ventana == NULL){
 			cout << "La ventana no pudo crearse. Error: " << SDL_GetError() << endl;
 			finalizado = false;
@@ -59,47 +59,35 @@ bool VentanaSDL::inicializar(){
 	return finalizado;
 }
 
-//Esta función carga una imagen externa (de una ruta de archivo) a una variable de tipo surface (si la función devuelve false, ocurrió un error)
-bool VentanaSDL::cargarImagen(string rutaDeArchivo){
-	bool finalizado = true;
-
-	//Cargo la imagen de una ruta especificada
-	SDL_Surface* imagenCargada = IMG_Load(rutaDeArchivo.c_str());
-
-	if (imagenCargada == NULL){
-		cout << "No se pudo cargar la imagen del archivo " << rutaDeArchivo.c_str() << endl;
-		cout << "Error: " << IMG_GetError() << endl;
-		finalizado = false;
-	} else {
-		//Creamos una textura a partir de los pixeles del surface/imagen cargada
-		this->textura = SDL_CreateTextureFromSurface(this->renderizacion, imagenCargada);
-		if (this->textura == NULL){
-			cout << "No se pudo crear la textura del archivo " << rutaDeArchivo.c_str() << endl;
-			cout << "Error: " << SDL_GetError() << endl;
-			finalizado = false;
-		}
-		SDL_FreeSurface(imagenCargada);
-	}
-
-	return finalizado;
+void VentanaSDL::limpiar(){
+	//Limpiar pantalla
+	SDL_SetRenderDrawColor(this->renderizacion, 0xFF, 0xFF, 0xFF, 0xFF);
+	SDL_RenderClear(this->renderizacion);
 }
 
 void VentanaSDL::actualizar(){
-	//Limpiar pantalla
-	SDL_RenderClear(this->renderizacion);
-
-	//Renderizar la textura en pantalla
-	SDL_RenderCopy(this->renderizacion, this->textura, NULL, NULL);
-
 	//Actualizar pantalla
 	SDL_RenderPresent(this->renderizacion);
 }
 
-void VentanaSDL::cerrar(){
-	//Libero la imagen cargada
-	SDL_DestroyTexture(this->textura);
-	this->textura = NULL;
+TexturaSDL* VentanaSDL::crearTextura(string ruta){
+	bool cargaExitosa;
 
+	TexturaSDL* textura = new TexturaSDL(this->renderizacion);
+	cargaExitosa = textura->cargarImagen(ruta);
+
+	if (this->texturasCargadas){
+		this->texturasCargadas = cargaExitosa;
+	}
+
+	return textura;
+}
+
+bool VentanaSDL::comprobarTexturasCargadas(){
+	return texturasCargadas;
+}
+
+void VentanaSDL::cerrar(){
 	//Destruyo la ventana y el renderizador
 	SDL_DestroyRenderer(this->renderizacion);
 	this->renderizacion = NULL;
