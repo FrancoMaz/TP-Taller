@@ -258,6 +258,10 @@ void* cicloEscuchaCliente(void* arg) {
 							socketCliente);
 					break;
 				}
+				case 3: {
+					char mensaje[BUFFER_MAX_SIZE] = "Escuchando";
+					send(socketCliente, mensaje, strlen(mensaje) + 1, 0);
+				}
 
 				}
 			}

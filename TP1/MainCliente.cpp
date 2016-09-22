@@ -40,6 +40,8 @@ void* cicloConexion(void* arg) {
 	do
 	{
 		cliente->mostrarMenuYProcesarOpcion();
+		//cliente->corroborarConexion();
+
 	} while (cliente->getOpcionMenu() != 5 and cliente->getOpcionMenu() != 4); //mientras la opcion del menu no sea salir o desconectar..
 	if (cliente->getOpcionMenu() == 4) {
 		return (void*) 1;

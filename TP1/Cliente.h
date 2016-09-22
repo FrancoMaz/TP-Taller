@@ -66,6 +66,7 @@ public:
 	string devolverNombre(int numeroDestinatario);
 	void enviarMensajeATodos(string mensaje);
 	void inicializarSocket();
+	void corroborarConexion();
 };
 
 #endif /* TP1_CLIENTE_H_ */

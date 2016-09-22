@@ -99,6 +99,16 @@ void Cliente::elegirOpcionDelMenu(int opcion) {
 	}
 }
 
+void Cliente::corroborarConexion() {
+	char buffer[BUFFER_MAX_SIZE];
+	char* escuchando = "3|";
+	send(this->socketCliente, escuchando, strlen(escuchando), 0);
+	clock_t tiempoInicio = clock();
+	do {
+	} while ((double)((clock()-tiempoInicio)/CLOCKS_PER_SEC) < 10);
+	recv(this->socketCliente, buffer, BUFFER_MAX_SIZE, 0);
+}
+
 void Cliente::conectar(string nombre, string contrasenia) {
 	//Se establece la conexion con el servidor mediante autenticacion. El servidor devuelve la lista con todos los usuarios disponibles
 	this->inicializarSocket();
