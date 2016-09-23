@@ -220,7 +220,6 @@ void* cicloEscuchaCliente(void* arg) {
 				0); //recibo por primera vez
 		if (largoRequest > 0) {
 			datosRecibidos.append(bufferRecibido, largoRequest);
-			cout << "request del cicloEscuchaCliente: " << largoRequest << endl;
 			while (largoRequest >= BUFFER_MAX_SIZE
 					and !stringTerminaCon(datosRecibidos, "#")) {
 				//mientras haya cosas que leer, sigo recibiendo.
@@ -258,7 +257,11 @@ void* cicloEscuchaCliente(void* arg) {
 							socketCliente);
 					break;
 				}
-
+				case 3:{//3 es verificar conexion
+					char buffer[BUFFER_MAX_SIZE] = "Escuchando";
+					send(socketCliente,buffer,BUFFER_MAX_SIZE,0);
+					break;
+				}
 				}
 			}
 		} else {

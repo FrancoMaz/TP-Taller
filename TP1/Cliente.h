@@ -46,8 +46,8 @@ public:
 	Cliente();
 	Cliente(string ip, int puerto);
 	virtual ~Cliente();
-	void mostrarMenuYProcesarOpcion();
-	void elegirOpcionDelMenu(int opcion);
+	void mostrarMenuYProcesarOpcion(bool* accion);
+	void elegirOpcionDelMenu(int opcion, bool* termino);
 	void conectar(string nombre, string contrasenia);
 	void desconectar();
 	void salir();
@@ -56,6 +56,7 @@ public:
 	void loremIpsum(double frecuenciaDeEnvios,double cantidadMaximaDeEnvios);
 	string getNombre();
 	int getOpcionMenu();
+	void setOpcionMenu(int opcion);
 	list<string> getClientesDisponibles();
 	void vaciarClientesDisponibles();
 	pthread_t getThreadComunicacion();
@@ -66,6 +67,7 @@ public:
 	string devolverNombre(int numeroDestinatario);
 	void enviarMensajeATodos(string mensaje);
 	void inicializarSocket();
+	bool corroborarConexion();
 };
 
 #endif /* TP1_CLIENTE_H_ */

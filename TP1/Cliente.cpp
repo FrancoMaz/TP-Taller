@@ -24,7 +24,7 @@ void Cliente::inicializarSocket(){
 	memset(direccionServidor.sin_zero, '\0', sizeof direccionServidor.sin_zero);
 }
 
-void Cliente::mostrarMenuYProcesarOpcion() {
+void Cliente::mostrarMenuYProcesarOpcion(bool* termino) {
 	bool esValido = false;
 		cout << "1) Enviar Mensaje" << endl;
 		cout << "2) Recibir Mensajes" << endl;
@@ -41,63 +41,85 @@ void Cliente::mostrarMenuYProcesarOpcion() {
 				cout << "Error: la opcion ingresada no es valida" << endl;
 			}
 	} while (!esValido);
-	this->elegirOpcionDelMenu(opcionMenu);
+	this->elegirOpcionDelMenu(opcionMenu, termino);
 }
 
-void Cliente::elegirOpcionDelMenu(int opcion) {
-	switch (opcion) {
-	case 1: {
-		bool esValido = false;
-		int numeroDestinatario;
-		string mensajeAEnviar;
-		this -> mostrarClientesDisponibles();
-		int cantidadClientesDisponibles = this->clientesDisponibles.size();
-		do {
-		cout << "Escriba el numero asociado al nombre del destinatario del mensaje: ";
-		cin >> numeroDestinatario;
-		if (cin.good() && (numeroDestinatario >= 1 && numeroDestinatario <= (cantidadClientesDisponibles + 1)))
-		{esValido = true;}
-			else {
-				cin.clear();
-				cin.ignore();
-				cout << "Error: la opcion ingresada no es valida" << endl;
-			}
-		} while (!esValido);
-		cin.ignore();
-		cout << "Escriba su mensaje: " << endl;
-		getline(cin,mensajeAEnviar);
-		if (numeroDestinatario != (this->clientesDisponibles.size()) + 1){
-			string nombreDestinatario = this->devolverNombre(numeroDestinatario - 1);
-			this->enviar(mensajeAEnviar, nombreDestinatario);
-		} else {this -> enviar(mensajeAEnviar, "Todos");}
-		break;
-	}
-	case 2: {
-		this->recibir();
-		break;
-	}
-	case 3: {
-		double frecuenciaDeEnvios;
-		double cantidadMaximaDeEnvios;
-		cout << "Escriba la frecuencia de envios: " << endl;
-		cin >> frecuenciaDeEnvios;
-		cout << "Escriba la cantidad maxima de envios: " << endl;
-		cin >> cantidadMaximaDeEnvios;
-		this->loremIpsum(frecuenciaDeEnvios, cantidadMaximaDeEnvios);
-		break;
-	}
-	case 4: {
-		this->desconectar();
-		break;
-	}
-	case 5: {
-		this->salir();
-		break;
-	}
-	default:
-		break;
-	}
+void Cliente::elegirOpcionDelMenu(int opcion, bool* termino) {
+
+		switch (opcion) {
+		case 1: {
+			bool esValido = false;
+			int numeroDestinatario;
+			string mensajeAEnviar;
+			this -> mostrarClientesDisponibles();
+			int cantidadClientesDisponibles = this->clientesDisponibles.size();
+			do {
+			cout << "Escriba el numero asociado al nombre del destinatario del mensaje: ";
+			cin >> numeroDestinatario;
+			if (cin.good() && (numeroDestinatario >= 1 && numeroDestinatario <= (cantidadClientesDisponibles + 1)))
+			{esValido = true;}
+				else {
+					cin.clear();
+					cin.ignore();
+					cout << "Error: la opcion ingresada no es valida" << endl;
+				}
+			} while (!esValido);
+			cin.ignore();
+			cout << "Escriba su mensaje: " << endl;
+			getline(cin,mensajeAEnviar);
+			if(!termino){//verifica si hay conexion a la hora de mandar un mensaje
+				if (numeroDestinatario != (this->clientesDisponibles.size()) + 1){
+					string nombreDestinatario = this->devolverNombre(numeroDestinatario - 1);
+					this->enviar(mensajeAEnviar, nombreDestinatario);
+				} else {this -> enviar(mensajeAEnviar, "Todos");}
+			}else{cout<<"No se puede mandar el mensaje, se perdio la conexion con el servidor. Se cierra la sesion de usuario"<<endl;}
+			break;
+		}
+		case 2: {
+			if(!termino){this->recibir();}//verifica si hay conexion a la hora de recibir mensajes
+			else{cout<<"No se pueden recibir mensajes, se perdio la conexion con el servidor. Se cierra la sesion de usuario"<<endl;}
+			break;
+		}
+		case 3: {
+			double frecuenciaDeEnvios;
+			double cantidadMaximaDeEnvios;
+			cout << "Escriba la frecuencia de envios: " << endl;
+			cin >> frecuenciaDeEnvios;
+			cout << "Escriba la cantidad maxima de envios: " << endl;
+			cin >> cantidadMaximaDeEnvios;
+			if(!termino){this->loremIpsum(frecuenciaDeEnvios, cantidadMaximaDeEnvios);}
+			else{cout<<"No se puede realizar loremIpsum, se perdio la conexion con el servidor. Se cierra la sesion de usuario"<<endl;}
+			break;
+		}
+		case 4: {
+			this->desconectar();
+			break;
+		}
+		case 5: {
+			this->salir();
+			break;
+		}
+		default:
+			break;
+		}
 }
+
+bool Cliente::corroborarConexion() {
+ 	int ok = 1;
+	while(ok>0){
+		//cout<<"el valor del ok: "<<ok<<endl;
+		char buffer[BUFFER_MAX_SIZE];
+		char* escuchando = "3|";
+		send(this->socketCliente, escuchando, strlen(escuchando), 0);
+		clock_t tiempoInicio = clock();
+		do {
+		} while ((double)((clock()-tiempoInicio)/CLOCKS_PER_SEC) < 2);
+		ok= recv(this->socketCliente, buffer, BUFFER_MAX_SIZE, 0);
+ 	}
+	return true;
+
+ }
+
 
 void Cliente::conectar(string nombre, string contrasenia) {
 	//Se establece la conexion con el servidor mediante autenticacion. El servidor devuelve la lista con todos los usuarios disponibles
@@ -150,6 +172,7 @@ void Cliente::desconectar() {
 
 void Cliente::salir() {
 	//Se termina la ejecucion del programa
+	this->opcionMenu = 5;
 	cout << "Desconectando al cliente" << endl;
 	close(socketCliente);
 }
@@ -194,6 +217,9 @@ void Cliente::recibir() {
 		cout << largoRequest << endl;
 		datosRecibidos.append(colaMensajes,largoRequest);
 	}
+	cout<<"largoRequest: "<<largoRequest<<endl;
+	cout<<"mensaje recibido: "<<datosRecibidos<<endl;
+	cout<<"largo mensaje: "<<strlen(datosRecibidos.c_str())<<endl;
 	this -> mostrarUltimosMensajes(datosRecibidos);
 }
 
@@ -304,4 +330,7 @@ string Cliente::devolverNombre(int numeroDestinatario) {
 	list<string>::iterator iterador = this->clientesDisponibles.begin();
 	advance(iterador, numeroDestinatario);
 	return (*iterador);
+}
+void Cliente::setOpcionMenu(int opcion){
+	this->opcionMenu = opcion;
 }
