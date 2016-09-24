@@ -72,8 +72,7 @@ void Servidor::guardarDatosDeUsuarios() {
 
 }
 
-void Servidor::autenticar(string nombre, string contrasenia,
-		list<string>& usuarios) {
+void Servidor::autenticar(string nombre, string contrasenia, list<string>& usuarios) {
 
 	bool autenticacionOK = false;
 	this->usuarios.clear();
@@ -113,19 +112,17 @@ void Servidor::crearMensaje(Mensaje mensaje) {
 }
 
 void Servidor::procesarMensajes() {
+
 	if (!colaMensajesNoProcesados.empty()) {
 		pthread_mutex_lock(&mutexColaNoProcesados);
 		Mensaje mensajeAProcesar = colaMensajesNoProcesados.front();
 		colaMensajesNoProcesados.pop();
 		pthread_mutex_unlock(&mutexColaNoProcesados);
-		for (list<MensajesProcesados>::iterator usuarioActual =
-				listaMensajesProcesados->begin();
-				usuarioActual != listaMensajesProcesados->end();
-				usuarioActual++) {
+		for (list<MensajesProcesados>::iterator usuarioActual = listaMensajesProcesados->begin();
+				usuarioActual != listaMensajesProcesados->end();usuarioActual++) {
 			MensajesProcesados listaMensajes;
 			listaMensajes = *usuarioActual;
-			if (listaMensajes.destinatario
-					== mensajeAProcesar.getDestinatario()) {
+			if (listaMensajes.destinatario == mensajeAProcesar.getDestinatario()) {
 				pthread_mutex_lock(&mutexListaProcesados);
 				listaMensajes.mensajes->push(mensajeAProcesar);
 				pthread_mutex_unlock(&mutexListaProcesados);
