@@ -10,6 +10,7 @@ Cliente::Cliente(string ip, int puerto) {
 	this->direccionIP = strdup(ip.c_str());
 	this->puertoServidor = puerto;
 	this->opcionMenu = 0;
+	this->terminoComunicacion = false;
 }
 
 Cliente::~Cliente() {
@@ -44,7 +45,8 @@ void Cliente::mostrarMenuYProcesarOpcion(bool* termino) {
 	this->elegirOpcionDelMenu(opcionMenu, termino);
 }
 
-void Cliente::elegirOpcionDelMenu(int opcion, bool* termino) {
+
+void Cliente::elegirOpcionDelMenu(int opcion) {
 
 		switch (opcion) {
 		case 1: {
@@ -53,21 +55,22 @@ void Cliente::elegirOpcionDelMenu(int opcion, bool* termino) {
 			string mensajeAEnviar;
 			this -> mostrarClientesDisponibles();
 			int cantidadClientesDisponibles = this->clientesDisponibles.size();
-			do {
-			cout << "Escriba el numero asociado al nombre del destinatario del mensaje: ";
-			cin >> numeroDestinatario;
-			if (cin.good() && (numeroDestinatario >= 1 && numeroDestinatario <= (cantidadClientesDisponibles + 1)))
-			{esValido = true;}
-				else {
-					cin.clear();
-					cin.ignore();
-					cout << "Error: la opcion ingresada no es valida" << endl;
-				}
-			} while (!esValido);
-			cin.ignore();
-			cout << "Escriba su mensaje: " << endl;
-			getline(cin,mensajeAEnviar);
-			if(!termino){//verifica si hay conexion a la hora de mandar un mensaje
+
+			if(!(this->terminoComunicacion)){//verifica si hay conexion a la hora de mandar un mensaje
+				do {
+					cout << "Escriba el numero asociado al nombre del destinatario del mensaje: ";
+					cin >> numeroDestinatario;
+					if (cin.good() && (numeroDestinatario >= 1 && numeroDestinatario <= (cantidadClientesDisponibles + 1)))
+					{esValido = true;}
+					else {
+						cin.clear();
+						cin.ignore();
+						cout << "Error: la opcion ingresada no es valida" << endl;
+					}
+				} while (!esValido);
+				cin.ignore();
+				cout << "Escriba su mensaje: " << endl;
+				getline(cin,mensajeAEnviar);
 				if (numeroDestinatario != (this->clientesDisponibles.size()) + 1){
 					string nombreDestinatario = this->devolverNombre(numeroDestinatario - 1);
 					this->enviar(mensajeAEnviar, nombreDestinatario);
@@ -76,18 +79,20 @@ void Cliente::elegirOpcionDelMenu(int opcion, bool* termino) {
 			break;
 		}
 		case 2: {
-			if(!termino){this->recibir();}//verifica si hay conexion a la hora de recibir mensajes
+			if(!(this->terminoComunicacion)){this->recibir();}//verifica si hay conexion a la hora de recibir mensajes
 			else{cout<<"No se pueden recibir mensajes, se perdio la conexion con el servidor. Se cierra la sesion de usuario"<<endl;}
 			break;
 		}
 		case 3: {
 			double frecuenciaDeEnvios;
 			double cantidadMaximaDeEnvios;
-			cout << "Escriba la frecuencia de envios: " << endl;
-			cin >> frecuenciaDeEnvios;
-			cout << "Escriba la cantidad maxima de envios: " << endl;
-			cin >> cantidadMaximaDeEnvios;
-			if(!termino){this->loremIpsum(frecuenciaDeEnvios, cantidadMaximaDeEnvios);}
+
+			if(!(this->terminoComunicacion)){//verifica si hay conexion a la hora de mandar un mensaje
+				cout << "Escriba la frecuencia de envios: " << endl;
+				cin >> frecuenciaDeEnvios;
+				cout << "Escriba la cantidad maxima de envios: " << endl;
+				cin >> cantidadMaximaDeEnvios;
+				this->loremIpsum(frecuenciaDeEnvios, cantidadMaximaDeEnvios);}
 			else{cout<<"No se puede realizar loremIpsum, se perdio la conexion con el servidor. Se cierra la sesion de usuario"<<endl;}
 			break;
 		}
@@ -104,22 +109,30 @@ void Cliente::elegirOpcionDelMenu(int opcion, bool* termino) {
 		}
 }
 
-bool Cliente::corroborarConexion() {
+
+void Cliente::corroborarConexion() {
  	int ok = 1;
-	while(ok>0){
+	while(ok>=0){
 		//cout<<"el valor del ok: "<<ok<<endl;
 		char buffer[BUFFER_MAX_SIZE];
 		char* escuchando = "3|";
-		send(this->socketCliente, escuchando, strlen(escuchando), 0);
 		clock_t tiempoInicio = clock();
 		do {
-		} while ((double)((clock()-tiempoInicio)/CLOCKS_PER_SEC) < 2);
-		ok= recv(this->socketCliente, buffer, BUFFER_MAX_SIZE, 0);
+			} while ((double)((clock()-tiempoInicio)/CLOCKS_PER_SEC) < 2);
+		int ok = send(this->socketCliente, escuchando, strlen(escuchando), 0);
+		/*
+		if (okSend > 0)
+		{
+			ok= recv(this->socketCliente, buffer, BUFFER_MAX_SIZE, 0);
+		}
+		*/
+		this->terminoComunicacion = false;
  	}
-	return true;
+	this->terminoComunicacion = true;
+	cout << "Se cerro la conexion con el servidor" << endl;
+	this->salir();
 
  }
-
 
 void Cliente::conectar(string nombre, string contrasenia) {
 	//Se establece la conexion con el servidor mediante autenticacion. El servidor devuelve la lista con todos los usuarios disponibles
@@ -180,17 +193,20 @@ void Cliente::salir() {
 void Cliente::enviar(string mensaje, string destinatario) {
 	//Se envia un mensaje a un usuario o a todos (este ultimo caso sucede cuando el destinatario es el string "Todos").
 
-	char* mensajeCadena = strdup(mensaje.c_str());
-	Mensaje *mensajeAEnviar = new Mensaje(this->nombre, destinatario, mensaje);
-	char* stringDatosMensaje = strdup(("1|" + mensajeAEnviar->getStringDatos()).c_str()); //1 significa enviar.
-	int largo = strlen(stringDatosMensaje);
-	int largoRequest;
-	while (largo > 0)
-	{
-		largoRequest = send(this->socketCliente, stringDatosMensaje, largo + 1, 0);
-		largo -= largoRequest;
-	}
-	free(mensajeCadena);
+
+	if(!(this->terminoComunicacion)){
+		char* mensajeCadena = strdup(mensaje.c_str());
+		Mensaje *mensajeAEnviar = new Mensaje(this->nombre, destinatario, mensaje);
+		char* stringDatosMensaje = strdup(("1|" + mensajeAEnviar->getStringDatos()).c_str()); //1 significa enviar.
+		int largo = strlen(stringDatosMensaje);
+		int largoRequest;
+		while (largo > 0)
+		{
+			largoRequest = send(this->socketCliente, stringDatosMensaje, largo + 1, 0);
+			largo -= largoRequest;
+		}
+		free(mensajeCadena); }
+	else {cout << "Se perdio la conexion con el servidor" << endl;}
 	//free(stringDatosMensaje);
 }
 
@@ -206,21 +222,34 @@ void Cliente::recibir() {
 	string metodo = "2|" + this->nombre + "#";
 	char* recibir = strdup(metodo.c_str()); //2 es recibir
 	send(this->socketCliente, recibir, strlen(recibir) + 1, 0);
-	string datosRecibidos;
+	string datosRecibidos = "";
 	int largoRequest = recv(this->socketCliente, colaMensajes, BUFFER_MAX_SIZE, 0);
-	cout<< "largo request: "<<largoRequest<<endl;
-	datosRecibidos.append(colaMensajes,largoRequest);
-	while (largoRequest >= BUFFER_MAX_SIZE - 1) //mientras el largoRequest sea del tamaño del max size, sigo pidiendo
+
+	datosRecibidos += string(colaMensajes);
+	while (largoRequest >= BUFFER_MAX_SIZE and !stringTerminaCon(datosRecibidos, "#")) //mientras el largoRequest sea del tamaño del max size, sigo pidiendo
 	{
 		//mientras haya cosas que leer, sigo recibiendo.
 		largoRequest = recv(socketCliente, colaMensajes, BUFFER_MAX_SIZE, 0);
 		cout << largoRequest << endl;
-		datosRecibidos.append(colaMensajes,largoRequest);
+		if (largoRequest > 0){
+			datosRecibidos += string(colaMensajes);
+		}
 	}
 	cout<<"largoRequest: "<<largoRequest<<endl;
 	cout<<"mensaje recibido: "<<datosRecibidos<<endl;
 	cout<<"largo mensaje: "<<strlen(datosRecibidos.c_str())<<endl;
 	this -> mostrarUltimosMensajes(datosRecibidos);
+}
+
+bool Cliente::stringTerminaCon(std::string const &fullString,
+		std::string const &ending) {
+	if (fullString.length() >= ending.length()) {
+		return (0
+				== fullString.compare(fullString.length() - ending.length(),
+						ending.length(), ending));
+	} else {
+		return false;
+	}
 }
 
 void Cliente::mostrarUltimosMensajes(string colaMensajes)
@@ -230,7 +259,7 @@ void Cliente::mostrarUltimosMensajes(string colaMensajes)
 		cout<<"No hay mensajes nuevos"<<endl;}
 	else{
 		char str[colaMensajes.length()];
-		strcpy(str, colaMensajes.c_str());
+		strncpy(str, colaMensajes.c_str(),colaMensajes.length());
 		char* texto = strtok(str, "|");
 		while (texto != NULL) {
 			cout<<"Mensaje de "<<texto<<":"<<endl;
@@ -333,4 +362,9 @@ string Cliente::devolverNombre(int numeroDestinatario) {
 }
 void Cliente::setOpcionMenu(int opcion){
 	this->opcionMenu = opcion;
+}
+
+bool Cliente::getTermino()
+{
+	return this->terminoComunicacion;
 }

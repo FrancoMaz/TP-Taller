@@ -33,6 +33,8 @@ bool chequearSocket(string ip, int puerto) {
 void* verificarConexion(void * arg){
 	ComunicacionCliente* comunicacion = (ComunicacionCliente*)arg;
 	Cliente* cliente = comunicacion->cliente;
+
+	cliente->corroborarConexion();
     //comunicacion->termino = cliente->corroborarConexion();
 }
 
@@ -54,22 +56,23 @@ void* cicloConexion(void* arg) {
 		cliente->conectar(user, pass);
 	}
 	//se crea esta hilo para poder verificar la conexion con el servidor
-	 int threadConexion = pthread_create(&threadVerificarConexion, NULL,&verificarConexion,&comunicacion);
-	 pthread_detach(threadVerificarConexion);
+
+	pthread_create(&threadVerificarConexion, NULL,&verificarConexion,&comunicacion);
+	pthread_detach(threadVerificarConexion);
 	 //void** escuchando;
 	 //pthread_join(threadVerificarConexion,(void**)&escuchando);
 	 //termino = *((bool*) (&escuchando));
 	do
 	{
-		cliente->mostrarMenuYProcesarOpcion(&comunicacion.termino);
+		cliente->mostrarMenuYProcesarOpcion();
 
 		//if(accion == 5){ cliente->setOpcionMenu(accion);}
 
-	} while (cliente->getOpcionMenu() != 5 and cliente->getOpcionMenu() != 4 and !comunicacion.termino); //mientras la opcion del menu no sea salir o desconectar..
+	} while (cliente->getOpcionMenu() != 5 and cliente->getOpcionMenu() != 4 and !cliente->getTermino()); //mientras la opcion del menu no sea salir o desconectar..
 	if (cliente->getOpcionMenu() == 4) {
 		return (void*) 1;
 	}
-
+	//pthread_detach(threadVerificarConexion);
 	return (void*) 0;
 }
 
@@ -134,6 +137,7 @@ int main() {
 					cliente->vaciarClientesDisponibles();
 				} //si es 0, va a salir automaticamente del loop y del programa.
 			}
+
 		} else {
 			accion = 0; //si la accion es 2, la pongo en 0 para que salga del while
 		}
