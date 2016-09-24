@@ -47,8 +47,8 @@ public:
 	Cliente();
 	Cliente(string ip, int puerto);
 	virtual ~Cliente();
-	void mostrarMenuYProcesarOpcion(bool* accion);
-	void elegirOpcionDelMenu(int opcion, bool* termino);
+	void mostrarMenuYProcesarOpcion();
+	void elegirOpcionDelMenu(int opcion);
 	void conectar(string nombre, string contrasenia);
 	void desconectar();
 	void salir();
@@ -74,3 +74,4 @@ public:
 };
 
 #endif /* TP1_CLIENTE_H_ */
+

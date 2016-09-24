@@ -57,9 +57,6 @@ void* encolar(void* arg) {
 	parametrosThreadEncolarMensaje parametrosEncolarMensaje =
 			*(parametrosThreadEncolarMensaje*) arg;
 	Servidor* servidor = parametrosEncolarMensaje.servidor;
-
-	cout << "servidor en encolar: " << parametrosEncolarMensaje.servidor
-			<< endl;
 	Mensaje* mensaje = parametrosEncolarMensaje.mensajeNoProcesado;
 
 	/*servidor->mensaje = "Encolando mensaje: " + mensaje->getTexto() + ". De: "
@@ -69,7 +66,6 @@ void* encolar(void* arg) {
 
 	cout << servidor->mensaje << endl;
 	if (mensaje->getDestinatario().compare("Todos") != 0) {
-		cout << "entra aca porque el mensaje no es para todos" << endl;
 		pthread_mutex_lock(
 				&parametrosEncolarMensaje.servidor->mutexColaNoProcesados);
 		servidor->crearMensaje(*mensaje);
@@ -80,7 +76,6 @@ void* encolar(void* arg) {
 		pthread_mutex_unlock(
 				&parametrosEncolarMensaje.servidor->mutexColaNoProcesados);
 	} else {
-		cout << "como el mensaje es para todos entra aca" << endl;
 		//genera la lista de destinatarios del remitente en cuestion
 		list<string> destinatarios = servidor->agregarDestinatarios(
 				mensaje->getRemitente());
@@ -119,7 +114,6 @@ void encolarMensaje(char* remitente, char* destinatario, char* mensaje,
 	parametrosEncolarMensaje.mensajeNoProcesado = new Mensaje(remitente,
 			destinatario, mensaje);
 	parametrosEncolarMensaje.servidor = servidor;
-	cout << "servidor en encolarMensaje: " << servidor << endl;
 	pthread_create(&threadEncolarMensaje, NULL, &encolar,
 			&parametrosEncolarMensaje);
 	pthread_detach(threadEncolarMensaje); //lo marco
@@ -175,7 +169,6 @@ void enviarMensajesProcesadosA(char* usuario, Servidor* servidor, int socket) {
 
 	pthread_t threadEnviarMensajesProcesados;
 	parametrosThreadEnviarMensajeProcesado parametrosMensajesProcesados;
-
 	parametrosMensajesProcesados.usuario = usuario;
 	parametrosMensajesProcesados.servidor = servidor;
 	parametrosMensajesProcesados.socketCliente = socket;

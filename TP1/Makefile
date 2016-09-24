@@ -12,7 +12,7 @@ LINKER_FLAGS = -lpthread
 OBJCLI_NAME = cliente
 OBJSERV_NAME = servidor
 
-client: $(OBJSCLI)
+cliente: $(OBJSCLI)
 	$(CC) $(OBJSCLI) $(COMPILER_FLAGS) $(LINKER_FLAGS) -o $(OBJCLI_NAME)
 
 servidor: $(OBJSERV)

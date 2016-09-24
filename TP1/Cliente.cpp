@@ -25,7 +25,7 @@ void Cliente::inicializarSocket(){
 	memset(direccionServidor.sin_zero, '\0', sizeof direccionServidor.sin_zero);
 }
 
-void Cliente::mostrarMenuYProcesarOpcion(bool* termino) {
+void Cliente::mostrarMenuYProcesarOpcion() {
 	bool esValido = false;
 		cout << "1) Enviar Mensaje" << endl;
 		cout << "2) Recibir Mensajes" << endl;
@@ -42,9 +42,8 @@ void Cliente::mostrarMenuYProcesarOpcion(bool* termino) {
 				cout << "Error: la opcion ingresada no es valida" << endl;
 			}
 	} while (!esValido);
-	this->elegirOpcionDelMenu(opcionMenu, termino);
+	this->elegirOpcionDelMenu(opcionMenu);
 }
-
 
 void Cliente::elegirOpcionDelMenu(int opcion) {
 
@@ -55,7 +54,6 @@ void Cliente::elegirOpcionDelMenu(int opcion) {
 			string mensajeAEnviar;
 			this -> mostrarClientesDisponibles();
 			int cantidadClientesDisponibles = this->clientesDisponibles.size();
-
 			if(!(this->terminoComunicacion)){//verifica si hay conexion a la hora de mandar un mensaje
 				do {
 					cout << "Escriba el numero asociado al nombre del destinatario del mensaje: ";
@@ -86,7 +84,6 @@ void Cliente::elegirOpcionDelMenu(int opcion) {
 		case 3: {
 			double frecuenciaDeEnvios;
 			double cantidadMaximaDeEnvios;
-
 			if(!(this->terminoComunicacion)){//verifica si hay conexion a la hora de mandar un mensaje
 				cout << "Escriba la frecuencia de envios: " << endl;
 				cin >> frecuenciaDeEnvios;
@@ -108,7 +105,6 @@ void Cliente::elegirOpcionDelMenu(int opcion) {
 			break;
 		}
 }
-
 
 void Cliente::corroborarConexion() {
  	int ok = 1;
@@ -193,7 +189,6 @@ void Cliente::salir() {
 void Cliente::enviar(string mensaje, string destinatario) {
 	//Se envia un mensaje a un usuario o a todos (este ultimo caso sucede cuando el destinatario es el string "Todos").
 
-
 	if(!(this->terminoComunicacion)){
 		char* mensajeCadena = strdup(mensaje.c_str());
 		Mensaje *mensajeAEnviar = new Mensaje(this->nombre, destinatario, mensaje);
@@ -224,7 +219,6 @@ void Cliente::recibir() {
 	send(this->socketCliente, recibir, strlen(recibir) + 1, 0);
 	string datosRecibidos = "";
 	int largoRequest = recv(this->socketCliente, colaMensajes, BUFFER_MAX_SIZE, 0);
-
 	datosRecibidos += string(colaMensajes);
 	while (largoRequest >= BUFFER_MAX_SIZE and !stringTerminaCon(datosRecibidos, "#")) //mientras el largoRequest sea del tamaño del max size, sigo pidiendo
 	{
@@ -235,9 +229,6 @@ void Cliente::recibir() {
 			datosRecibidos += string(colaMensajes);
 		}
 	}
-	cout<<"largoRequest: "<<largoRequest<<endl;
-	cout<<"mensaje recibido: "<<datosRecibidos<<endl;
-	cout<<"largo mensaje: "<<strlen(datosRecibidos.c_str())<<endl;
 	this -> mostrarUltimosMensajes(datosRecibidos);
 }
 
