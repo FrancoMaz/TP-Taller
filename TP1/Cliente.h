@@ -41,13 +41,14 @@ private:
 	pthread_t threadProcesador;
 	pthread_t threadChecker;
 	list<string> clientesDisponibles;
+	bool terminoComunicacion;
 
 public:
 	Cliente();
 	Cliente(string ip, int puerto);
 	virtual ~Cliente();
-	void mostrarMenuYProcesarOpcion(bool* accion);
-	void elegirOpcionDelMenu(int opcion, bool* termino);
+	void mostrarMenuYProcesarOpcion();
+	void elegirOpcionDelMenu(int opcion);
 	void conectar(string nombre, string contrasenia);
 	void desconectar();
 	void salir();
@@ -67,7 +68,9 @@ public:
 	string devolverNombre(int numeroDestinatario);
 	void enviarMensajeATodos(string mensaje);
 	void inicializarSocket();
-	bool corroborarConexion();
+	void corroborarConexion();
+	bool getTermino();
+	bool stringTerminaCon(std::string const &fullString, std::string const &ending);
 };
 
 #endif /* TP1_CLIENTE_H_ */
