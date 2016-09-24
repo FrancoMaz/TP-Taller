@@ -57,7 +57,6 @@ void* encolar(void* arg) {
 	parametrosThreadEncolarMensaje parametrosEncolarMensaje =
 			*(parametrosThreadEncolarMensaje*) arg;
 	Servidor* servidor = parametrosEncolarMensaje.servidor;
-
 	Mensaje* mensaje = parametrosEncolarMensaje.mensajeNoProcesado;
 
 	/*servidor->mensaje = "Encolando mensaje: " + mensaje->getTexto() + ". De: "
@@ -77,7 +76,6 @@ void* encolar(void* arg) {
 		pthread_mutex_unlock(
 				&parametrosEncolarMensaje.servidor->mutexColaNoProcesados);
 	} else {
-
 		//genera la lista de destinatarios del remitente en cuestion
 		list<string> destinatarios = servidor->agregarDestinatarios(
 				mensaje->getRemitente());
@@ -122,18 +120,18 @@ void encolarMensaje(char* remitente, char* destinatario, char* mensaje,
 }
 
 void* procesar(void* arg) {
-
-	parametrosThreadEnviarMensajeProcesado* parametros = (parametrosThreadEnviarMensajeProcesado*) arg;
+	parametrosThreadEnviarMensajeProcesado* parametros =
+			(parametrosThreadEnviarMensajeProcesado*) arg;
 	Servidor* servidor = parametros->servidor;
 	char* usuario = parametros->usuario;
 	int socket = parametros->socketCliente;
-
 
 	pthread_mutex_lock(&servidor->mutexListaProcesados);
 	cout << "le llega el mensaje de recibir al servidor, del cliente: "
 			<< usuario << endl;
 	string mensajesProcesados = servidor->traerMensajesProcesados(usuario);
 	pthread_mutex_unlock(&servidor->mutexListaProcesados);
+
 	int largo = strlen(mensajesProcesados.c_str());
 	char buffer[BUFFER_MAX_SIZE];
 	int inicio = 0;
@@ -151,7 +149,6 @@ void* procesar(void* arg) {
 		}
 		string mensajeSpliteado = mensajesProcesados.substr(inicio, largo);
 		strcpy(buffer, mensajeSpliteado.c_str());
-
 	} else {
 		strcpy(buffer, mensajesProcesados.c_str());
 	}
@@ -175,7 +172,8 @@ void enviarMensajesProcesadosA(char* usuario, Servidor* servidor, int socket) {
 	parametrosMensajesProcesados.usuario = usuario;
 	parametrosMensajesProcesados.servidor = servidor;
 	parametrosMensajesProcesados.socketCliente = socket;
-	pthread_create(&threadEnviarMensajesProcesados, NULL, &procesar,&parametrosMensajesProcesados);
+	pthread_create(&threadEnviarMensajesProcesados, NULL, &procesar,
+			&parametrosMensajesProcesados);
 	pthread_join(threadEnviarMensajesProcesados, NULL);
 	//pthread_detach(threadEnviarMensajesProcesados); //lo marco
 }

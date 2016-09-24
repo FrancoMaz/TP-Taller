@@ -55,7 +55,6 @@ void* cicloConexion(void* arg) {
 		cliente->conectar(user, pass);
 	}
 	//se crea esta hilo para poder verificar la conexion con el servidor
-
 	pthread_create(&threadVerificarConexion, NULL,&verificarConexion,&comunicacion);
 	pthread_detach(threadVerificarConexion);
 	 //void** escuchando;

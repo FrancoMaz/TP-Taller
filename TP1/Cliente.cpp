@@ -45,8 +45,8 @@ void Cliente::mostrarMenuYProcesarOpcion() {
 	this->elegirOpcionDelMenu(opcionMenu);
 }
 
-
 void Cliente::elegirOpcionDelMenu(int opcion) {
+
 		switch (opcion) {
 		case 1: {
 			bool esValido = false;
@@ -54,7 +54,6 @@ void Cliente::elegirOpcionDelMenu(int opcion) {
 			string mensajeAEnviar;
 			this -> mostrarClientesDisponibles();
 			int cantidadClientesDisponibles = this->clientesDisponibles.size();
-
 			if(!(this->terminoComunicacion)){//verifica si hay conexion a la hora de mandar un mensaje
 				do {
 					cout << "Escriba el numero asociado al nombre del destinatario del mensaje: ";
@@ -78,7 +77,6 @@ void Cliente::elegirOpcionDelMenu(int opcion) {
 			break;
 		}
 		case 2: {
-
 			if(!(this->terminoComunicacion)){this->recibir();}//verifica si hay conexion a la hora de recibir mensajes
 			else{cout<<"No se pueden recibir mensajes, se perdio la conexion con el servidor. Se cierra la sesion de usuario"<<endl;}
 			break;
@@ -221,7 +219,6 @@ void Cliente::recibir() {
 	send(this->socketCliente, recibir, strlen(recibir) + 1, 0);
 	string datosRecibidos = "";
 	int largoRequest = recv(this->socketCliente, colaMensajes, BUFFER_MAX_SIZE, 0);
-
 	datosRecibidos += string(colaMensajes);
 	while (largoRequest >= BUFFER_MAX_SIZE and !stringTerminaCon(datosRecibidos, "#")) //mientras el largoRequest sea del tamaño del max size, sigo pidiendo
 	{
@@ -232,9 +229,6 @@ void Cliente::recibir() {
 			datosRecibidos += string(colaMensajes);
 		}
 	}
-	cout<<"largoRequest: "<<largoRequest<<endl;
-	cout<<"mensaje recibido: "<<datosRecibidos<<endl;
-	cout<<"largo mensaje: "<<strlen(datosRecibidos.c_str())<<endl;
 	this -> mostrarUltimosMensajes(datosRecibidos);
 }
 
@@ -365,4 +359,3 @@ bool Cliente::getTermino()
 {
 	return this->terminoComunicacion;
 }
-
