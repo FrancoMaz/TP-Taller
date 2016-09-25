@@ -57,8 +57,6 @@ void* encolar(void* arg) {
 	parametrosThreadEncolarMensaje parametrosEncolarMensaje =
 			*(parametrosThreadEncolarMensaje*) arg;
 	Servidor* servidor = parametrosEncolarMensaje.servidor;
-	cout << "servidor en encolar: " << parametrosEncolarMensaje.servidor
-			<< endl;
 	Mensaje* mensaje = parametrosEncolarMensaje.mensajeNoProcesado;
 
 	/*servidor->mensaje = "Encolando mensaje: " + mensaje->getTexto() + ". De: "
@@ -68,7 +66,6 @@ void* encolar(void* arg) {
 
 	cout << servidor->mensaje << endl;
 	if (mensaje->getDestinatario().compare("Todos") != 0) {
-		cout << "entra aca porque el mensaje no es para todos" << endl;
 		pthread_mutex_lock(
 				&parametrosEncolarMensaje.servidor->mutexColaNoProcesados);
 		servidor->crearMensaje(*mensaje);
@@ -79,7 +76,6 @@ void* encolar(void* arg) {
 		pthread_mutex_unlock(
 				&parametrosEncolarMensaje.servidor->mutexColaNoProcesados);
 	} else {
-		cout << "como el mensaje es para todos entra aca" << endl;
 		//genera la lista de destinatarios del remitente en cuestion
 		list<string> destinatarios = servidor->agregarDestinatarios(
 				mensaje->getRemitente());
@@ -118,24 +114,17 @@ void encolarMensaje(char* remitente, char* destinatario, char* mensaje,
 	parametrosEncolarMensaje.mensajeNoProcesado = new Mensaje(remitente,
 			destinatario, mensaje);
 	parametrosEncolarMensaje.servidor = servidor;
-	cout << "servidor en encolarMensaje: " << servidor << endl;
 	pthread_create(&threadEncolarMensaje, NULL, &encolar,
 			&parametrosEncolarMensaje);
 	pthread_detach(threadEncolarMensaje); //lo marco
 }
 
 void* procesar(void* arg) {
-	cout << "llega al procesar" << endl;
 	parametrosThreadEnviarMensajeProcesado* parametros =
 			(parametrosThreadEnviarMensajeProcesado*) arg;
-	cout << "servidor :" << parametros->servidor << endl;
 	Servidor* servidor = parametros->servidor;
-	cout << "hace bien el servidor" << endl;
 	char* usuario = parametros->usuario;
-	cout << "hace bien el usuario" << endl;
 	int socket = parametros->socketCliente;
-	cout << "hace bien todos los parametros" << endl;
-	cout << "socket Cliente: " << parametros->socketCliente << endl;
 
 	pthread_mutex_lock(&servidor->mutexListaProcesados);
 	cout << "le llega el mensaje de recibir al servidor, del cliente: "
@@ -143,32 +132,34 @@ void* procesar(void* arg) {
 	string mensajesProcesados = servidor->traerMensajesProcesados(usuario);
 	pthread_mutex_unlock(&servidor->mutexListaProcesados);
 
-	cout << "trae bien los mensajes procesados" << endl;
 	int largo = strlen(mensajesProcesados.c_str());
 	char buffer[BUFFER_MAX_SIZE];
 	int inicio = 0;
+	int ok;
 	if (largo > BUFFER_MAX_SIZE) {
 		cout << "Largo: " << largo << endl;
 		while (BUFFER_MAX_SIZE <= (largo - inicio)) {
 			string mensajeSpliteado = mensajesProcesados.substr(inicio, BUFFER_MAX_SIZE - 1);
 			strcpy(buffer, mensajeSpliteado.c_str());
-			send(socket, buffer, BUFFER_MAX_SIZE + 1, 0);
+			do{
+				ok = send(socket, buffer, strlen(buffer) + 1, 0);
+			}while (ok == 0);
 			inicio += BUFFER_MAX_SIZE;
 			cout << "Inicio: " << inicio << endl;
 		}
 		string mensajeSpliteado = mensajesProcesados.substr(inicio, largo);
 		strcpy(buffer, mensajeSpliteado.c_str());
-		send(socket, buffer, BUFFER_MAX_SIZE + 1, 0);
 	} else {
 		strcpy(buffer, mensajesProcesados.c_str());
-		send(socket, buffer, BUFFER_MAX_SIZE + 1, 0);
 	}
+	do{
+		ok = send(socket, buffer, strlen(buffer) + 1, 0);
+	}while (ok == 0);
 	//strcpy(buffer, mensajesProcesados.c_str()); //aca muere, el problema es este strcpy y el string y char*
 
 	cout << "Cliente que solicita sus mensajes: " << usuario << "  "<< mensajesProcesados << endl;
 	//cout<<"socket Cliente: "<<socket<<endl;
 	//largo -= send(socket, buffer, BUFFER_MAX_SIZE + 1, 0);
-	cout << "largo del send: " << largo << endl;
 	/*while (largo > 0) {
 		largo -= send(socket, buffer, BUFFER_MAX_SIZE + 1, 0);
 	}*/
@@ -178,18 +169,11 @@ void enviarMensajesProcesadosA(char* usuario, Servidor* servidor, int socket) {
 
 	pthread_t threadEnviarMensajesProcesados;
 	parametrosThreadEnviarMensajeProcesado parametrosMensajesProcesados;
-	cout << "entra al enviarMensajesProcesados" << endl;
 	parametrosMensajesProcesados.usuario = usuario;
 	parametrosMensajesProcesados.servidor = servidor;
-	cout << "servidor en enviarMensajesProcesadosA: "
-			<< parametrosMensajesProcesados.servidor << endl;
 	parametrosMensajesProcesados.socketCliente = socket;
-	cout << "socket en enviarMensaje: " << socket << endl;
-	cout << "parametroMensajesProcesados: "
-			<< parametrosMensajesProcesados.socketCliente << endl;
 	pthread_create(&threadEnviarMensajesProcesados, NULL, &procesar,
 			&parametrosMensajesProcesados);
-	cout << "sale del hilo de mensajes procesados" << endl;
 	pthread_join(threadEnviarMensajesProcesados, NULL);
 	//pthread_detach(threadEnviarMensajesProcesados); //lo marco
 }
@@ -220,7 +204,6 @@ void* cicloEscuchaCliente(void* arg) {
 				0); //recibo por primera vez
 		if (largoRequest > 0) {
 			datosRecibidos.append(bufferRecibido, largoRequest);
-			cout << "request del cicloEscuchaCliente: " << largoRequest << endl;
 			while (largoRequest >= BUFFER_MAX_SIZE
 					and !stringTerminaCon(datosRecibidos, "#")) {
 				//mientras haya cosas que leer, sigo recibiendo.
@@ -258,7 +241,19 @@ void* cicloEscuchaCliente(void* arg) {
 							socketCliente);
 					break;
 				}
+				case 3:{//3 es verificar conexion
+					/*char buffer[BUFFER_MAX_SIZE] = "Escuchando";
+					int ok;
+					do{
+						ok = send(socketCliente,buffer,strlen(buffer),0);
+						if (ok < 0)
+						{
+							//desconecto al cliente bla bla
+						}
+					}while(ok == 0);*/
 
+					break;
+				}
 				}
 			}
 		} else {
@@ -305,9 +300,6 @@ void* cicloEscucharConexionesNuevasThreadProceso(void* arg) {
 				parametrosCliente.serv = servidor;
 				parametrosCliente.nombre = nombreCliente;
 				parametrosCliente.clienteID = servidor->getCantConexiones() - 1;
-				cout
-						<< "llega casi al final de cicloEscucharConexionesNuevasThreadProceso"
-						<< endl;
 				pthread_create(&thread_id[parametrosCliente.clienteID], NULL,
 						&cicloEscuchaCliente, &parametrosCliente); //optimizar ya que si un cliente se desconecta podria causar un problema
 				pthread_detach(thread_id[parametrosCliente.clienteID]); //lo marco como detach
