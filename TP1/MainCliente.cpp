@@ -18,6 +18,11 @@
 
 using namespace std;
 
+struct ComunicacionCliente{
+			Cliente* cliente;
+			bool termino;
+		};
+
 bool chequearSocket(string ip, int puerto) {
 	//string ipServer = "192.168.1.10";
 	string ipServer = "127.0.0.1";
@@ -25,11 +30,23 @@ bool chequearSocket(string ip, int puerto) {
 
 	return (ip == ipServer && puerto == puertoDeEscucha);
 }
+void* verificarConexion(void * arg){
+	ComunicacionCliente* comunicacion = (ComunicacionCliente*)arg;
+	Cliente* cliente = comunicacion->cliente;
+	cliente->corroborarConexion();
+    //comunicacion->termino = cliente->corroborarConexion();
+}
 
 void* cicloConexion(void* arg) {
 	//Funcion que cicla para las opciones del cliente dentro del thread de comunicacion. Devuelve 1 si la opcion es desconectar, 0 si es salir.
 	Cliente* cliente = (Cliente*) arg;
 	string user, pass;
+	pthread_t threadVerificarConexion;
+	ComunicacionCliente comunicacion;
+	comunicacion.cliente =cliente;
+	comunicacion.termino = false;
+
+	bool termino = false;
 	while (cliente->getClientesDisponibles().empty()) {
 		cout << "Ingrese nombre de usuario: ";
 		cin >> user;
@@ -37,13 +54,23 @@ void* cicloConexion(void* arg) {
 		cin >> pass;
 		cliente->conectar(user, pass);
 	}
+	//se crea esta hilo para poder verificar la conexion con el servidor
+	pthread_create(&threadVerificarConexion, NULL,&verificarConexion,&comunicacion);
+	pthread_detach(threadVerificarConexion);
+	 //void** escuchando;
+	 //pthread_join(threadVerificarConexion,(void**)&escuchando);
+	 //termino = *((bool*) (&escuchando));
 	do
 	{
 		cliente->mostrarMenuYProcesarOpcion();
-	} while (cliente->getOpcionMenu() != 5 and cliente->getOpcionMenu() != 4); //mientras la opcion del menu no sea salir o desconectar..
+
+		//if(accion == 5){ cliente->setOpcionMenu(accion);}
+
+	} while (cliente->getOpcionMenu() != 5 and cliente->getOpcionMenu() != 4 and !cliente->getTermino()); //mientras la opcion del menu no sea salir o desconectar..
 	if (cliente->getOpcionMenu() == 4) {
 		return (void*) 1;
 	}
+	//pthread_detach(threadVerificarConexion);
 	return (void*) 0;
 }
 
@@ -94,8 +121,7 @@ int main() {
 		} while (!accionValida);
 		if (accion != 2) {
 			//si no es salir, creo el thread de comunicacion que intenta conectar.
-			int threadOk = pthread_create(&thrComu, NULL, &cicloConexion,
-					cliente);
+			int threadOk = pthread_create(&thrComu, NULL, &cicloConexion,cliente);
 			if (threadOk != 0) {
 				cout << "Error al inicializar la conexión." << endl;
 			} else {
@@ -109,6 +135,7 @@ int main() {
 					cliente->vaciarClientesDisponibles();
 				} //si es 0, va a salir automaticamente del loop y del programa.
 			}
+
 		} else {
 			accion = 0; //si la accion es 2, la pongo en 0 para que salga del while
 		}
