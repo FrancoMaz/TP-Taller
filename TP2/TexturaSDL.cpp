@@ -74,9 +74,17 @@ void TexturaSDL::limpiar(){
 	}
 }
 
-void TexturaSDL::aplicarPosicion(float x, float y){
-	SDL_Rect rectangulo = {x,y,this->ancho,this->alto};
+void TexturaSDL::aplicarPosicionYTamanio(float x, float y, int ancho, int alto){
+	SDL_Rect rectangulo = {x,y,ancho,alto};
 	SDL_RenderCopy(this->render, this->textura, NULL, &rectangulo);
+}
+
+void TexturaSDL::aplicarPosicion(float x, float y){
+	this->aplicarPosicionYTamanio(x,y,this->ancho,this->alto);
+}
+
+void TexturaSDL::aplicarPosicionConTamanio(float x, float y, int ancho, int alto){
+	this->aplicarPosicionYTamanio(x,y,ancho,alto);
 }
 
 int TexturaSDL::getAncho(){

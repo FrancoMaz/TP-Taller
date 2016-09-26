@@ -62,20 +62,61 @@ int main() {
 	if (!ventana->inicializar()){
 		cout << "El programa no pudo ejecutarse." << endl;
 	} else {
-		TexturaSDL* textura = ventana->crearTextura("Recursos/test.png");
-		TexturaSDL* textura2 = ventana->crearTextura("Recursos/player.png");
-		TexturaSDL* textura3 = ventana->crearTextura("Recursos/player.png");
+		TexturaSDL* texturaMenuFondo = ventana->crearTextura("Recursos/Menu_fondo.png");
+		TexturaSDL* texturaMenuMetalSlug = ventana->crearTextura("Recursos/Menu_Metal_Slug.png");
+		TexturaSDL* texturaMenuPressEnter = ventana->crearTextura("Recursos/Menu_Presionar_Enter.png");
+		TexturaSDL* texturaEfectoLuz = ventana->crearTextura("Recursos/Efecto_luz.png");
+		TexturaSDL* texturaMenuTPTaller = ventana->crearTextura("Recursos/Menu_TP_Taller.png");
 		if (!ventana->comprobarTexturasCargadas()){
 			cout << "El programa no pudo ejecutarse." << endl;
 		} else {
-			textura3->setAlpha(127);
-			for (float x=0; x<400; x=x+0.1){
+			bool salir = false;
+			SDL_Event e;
+
+			for (float y=-290; y<50; y=y+2){
 				ventana->limpiar();
-				textura->aplicarPosicion(0,0);
-				textura2->aplicarPosicion(x,100);
-				textura3->aplicarPosicion(400,x);
+				texturaMenuFondo->aplicarPosicion(0,0);
+				texturaMenuMetalSlug->aplicarPosicion(180,y);
 				ventana->actualizar();
 			}
+
+			for (float a= 255; a>0; a=a-1){
+					ventana->limpiar();
+					texturaMenuFondo->aplicarPosicion(0,0);
+					texturaMenuMetalSlug->aplicarPosicion(180,50);
+					texturaMenuPressEnter->aplicarPosicion(200,440);
+					texturaMenuTPTaller->aplicarPosicion(277,560);
+					texturaEfectoLuz->aplicarPosicionConTamanio(0,0,800,600);
+					texturaEfectoLuz->setAlpha(a);
+					ventana->actualizar();
+			}
+
+			bool incrementa = true;
+			int a = 255;
+			while (!salir){
+					ventana->limpiar();
+					texturaMenuFondo->aplicarPosicion(0,0);
+					texturaMenuMetalSlug->aplicarPosicion(180,50);
+					texturaMenuPressEnter->aplicarPosicion(200,440);
+					if (a>=255)	incrementa = false;
+					if (a<=0) incrementa = true;
+					if (incrementa){
+						a=a+1;
+					} else {
+						a=a-1;
+					}
+					texturaMenuPressEnter->setAlpha(a);
+					texturaMenuTPTaller->aplicarPosicion(277,560);
+					ventana->actualizar();
+
+					while(SDL_PollEvent(&e) != 0){
+						if (e.type == SDL_QUIT){
+							salir = true;
+						}
+					}
+			}
+
+			ventana->cerrar();
 
 			while (!socketOk) {
 				do {
@@ -142,7 +183,5 @@ int main() {
 			cout << "Saliendo del programa..." << endl;
 		}
 	}
-
-	ventana->cerrar();
 	return 0;
 }

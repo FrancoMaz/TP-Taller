@@ -25,6 +25,8 @@ private:
 	float posX;
 	float posY;
 
+	void aplicarPosicionYTamanio(float x, float y, int ancho, int alto);
+
 public:
 	TexturaSDL(SDL_Renderer* renderer);
 	~TexturaSDL();
@@ -37,6 +39,9 @@ public:
 
 	//Coloca la textura en una posición de la pantalla
 	void aplicarPosicion(float x, float y);
+
+	//Idem, pero dicha textura se ajusta al tamaño del ancho/alto
+	void aplicarPosicionConTamanio(float x, float y, int ancho, int alto);
 
 	//Establecer transparencias (alpha = 0 transparente; alpha = 255 opaco)
 	void setAlpha(Uint8 alpha);
