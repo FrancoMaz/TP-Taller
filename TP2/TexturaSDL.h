@@ -38,6 +38,9 @@ public:
 	//Coloca la textura en una posición de la pantalla
 	void aplicarPosicion(float x, float y);
 
+	//Establecer transparencias (alpha = 0 transparente; alpha = 255 opaco)
+	void setAlpha(Uint8 alpha);
+
 	//Obtener las dimensiones
 	int getAncho();
 	int getAlto();

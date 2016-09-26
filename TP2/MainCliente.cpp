@@ -64,13 +64,16 @@ int main() {
 	} else {
 		TexturaSDL* textura = ventana->crearTextura("Recursos/test.png");
 		TexturaSDL* textura2 = ventana->crearTextura("Recursos/player.png");
+		TexturaSDL* textura3 = ventana->crearTextura("Recursos/player.png");
 		if (!ventana->comprobarTexturasCargadas()){
 			cout << "El programa no pudo ejecutarse." << endl;
 		} else {
+			textura3->setAlpha(127);
 			for (float x=0; x<400; x=x+0.1){
 				ventana->limpiar();
 				textura->aplicarPosicion(0,0);
 				textura2->aplicarPosicion(x,100);
+				textura3->aplicarPosicion(400,x);
 				ventana->actualizar();
 			}
 

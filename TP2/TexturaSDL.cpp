@@ -48,11 +48,18 @@ bool TexturaSDL::cargarImagen(string ruta){
 			//Almacenamos las dimensiones de la imagen
 			this->ancho = imagenCargada->w;
 			this->alto = imagenCargada->h;
+
+			//Inicializamos el blender (para transparencias)
+			SDL_SetTextureBlendMode(this->textura,SDL_BLENDMODE_BLEND);
 		}
 		SDL_FreeSurface(imagenCargada);
 	}
 
 	return finalizado;
+}
+
+void TexturaSDL::setAlpha(Uint8 alpha){
+	SDL_SetTextureAlphaMod(this->textura,alpha);
 }
 
 void TexturaSDL::limpiar(){
