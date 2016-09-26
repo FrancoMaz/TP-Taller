@@ -33,13 +33,13 @@ bool VentanaSDL::inicializar(){
 		}
 
 		//Creamos la ventana
-		this->ventana = SDL_CreateWindow("Metal Slug (Alpha Version: 0.06)", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, ANCHO_VENTANA, ALTO_VENTANA, SDL_WINDOW_SHOWN);
+		this->ventana = SDL_CreateWindow("Metal Slug (Alpha Version: 0.07)", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, ANCHO_VENTANA, ALTO_VENTANA, SDL_WINDOW_SHOWN);
 		if (this->ventana == NULL){
 			cout << "La ventana no pudo crearse. Error: " << SDL_GetError() << endl;
 			finalizado = false;
 		} else {
-			//Creamos la renderización para la ventana
-			this->renderizacion = SDL_CreateRenderer(ventana, -1, SDL_RENDERER_ACCELERATED);
+			//Creamos la renderización para la ventana y la sincronización vertical
+			this->renderizacion = SDL_CreateRenderer(ventana, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC );
 			if (this->renderizacion == NULL){
 				cout << "La renderización no pudo ser creada. Error: " << SDL_GetError() << endl;
 				finalizado = false;

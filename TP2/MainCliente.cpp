@@ -67,20 +67,24 @@ int main() {
 		TexturaSDL* texturaMenuPressEnter = ventana->crearTextura("Recursos/Menu_Presionar_Enter.png");
 		TexturaSDL* texturaEfectoLuz = ventana->crearTextura("Recursos/Efecto_luz.png");
 		TexturaSDL* texturaMenuTPTaller = ventana->crearTextura("Recursos/Menu_TP_Taller.png");
+		TexturaSDL* texturaPrueba = ventana->crearTextura("Recursos/foo.png");
 		if (!ventana->comprobarTexturasCargadas()){
 			cout << "El programa no pudo ejecutarse." << endl;
 		} else {
-			bool salir = false;
+			bool salir = false;			//Indica si se presiono el botón X de la venana
+			bool siguiente = false;		//Indica si se puede pasar a la siguiente pantalla
 			SDL_Event e;
 
-			for (float y=-290; y<50; y=y+2){
+			//Primera pantalla
+
+			for (float y=-290; y<50; y=y+5){
 				ventana->limpiar();
 				texturaMenuFondo->aplicarPosicion(0,0);
 				texturaMenuMetalSlug->aplicarPosicion(180,y);
 				ventana->actualizar();
 			}
 
-			for (float a= 255; a>0; a=a-1){
+			for (float a= 255; a>0; a=a-3){
 					ventana->limpiar();
 					texturaMenuFondo->aplicarPosicion(0,0);
 					texturaMenuMetalSlug->aplicarPosicion(180,50);
@@ -93,7 +97,8 @@ int main() {
 
 			bool incrementa = true;
 			int a = 255;
-			while (!salir){
+			//Mientras la ventana no se cierre pulsando X o no se presione el enter, hacer el loop
+			while ((!salir)&&(!siguiente)){
 					ventana->limpiar();
 					texturaMenuFondo->aplicarPosicion(0,0);
 					texturaMenuMetalSlug->aplicarPosicion(180,50);
@@ -101,9 +106,9 @@ int main() {
 					if (a>=255)	incrementa = false;
 					if (a<=0) incrementa = true;
 					if (incrementa){
-						a=a+1;
+						a=a+3;
 					} else {
-						a=a-1;
+						a=a-3;
 					}
 					texturaMenuPressEnter->setAlpha(a);
 					texturaMenuTPTaller->aplicarPosicion(277,560);
@@ -112,12 +117,17 @@ int main() {
 					while(SDL_PollEvent(&e) != 0){
 						if (e.type == SDL_QUIT){
 							salir = true;
+						} else {
+							if (e.type == SDL_KEYDOWN){
+								if (e.key.keysym.sym == SDLK_RETURN) siguiente = true;
+							}
 						}
 					}
 			}
 
 			ventana->cerrar();
 
+			/*
 			while (!socketOk) {
 				do {
 					cout << "Ingrese el puerto para la conexion: ";
@@ -180,7 +190,7 @@ int main() {
 				}
 			} while (accion != 0); //si la accion es 0, es salir.
 			cliente->salir(); //cierra el socket y realiza trabajos de limpieza de memoria
-			cout << "Saliendo del programa..." << endl;
+			cout << "Saliendo del programa..." << endl;*/
 		}
 	}
 	return 0;
