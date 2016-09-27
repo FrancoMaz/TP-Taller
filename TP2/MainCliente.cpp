@@ -67,6 +67,7 @@ int main() {
 		TexturaSDL* texturaMenuPressEnter = ventana->crearTextura("Recursos/Menu_Presionar_Enter.png");
 		TexturaSDL* texturaEfectoLuz = ventana->crearTextura("Recursos/Efecto_luz.png");
 		TexturaSDL* texturaMenuTPTaller = ventana->crearTextura("Recursos/Menu_TP_Taller.png");
+		TexturaSDL* texturaPrueba = ventana->crearTextura("Recursos/foo.png");
 		if (!ventana->comprobarTexturasCargadas()){
 			cout << "El programa no pudo ejecutarse." << endl;
 		} else {
@@ -94,6 +95,7 @@ int main() {
 					ventana->actualizar();
 			}
 
+			texturaPrueba->generarSprite(4);
 			bool incrementa = true;
 			int a = 255;
 			//Mientras la ventana no se cierre pulsando X o no se presione el enter, hacer el loop
@@ -111,6 +113,7 @@ int main() {
 					}
 					texturaMenuPressEnter->setAlpha(a);
 					texturaMenuTPTaller->aplicarPosicion(277,560);
+					texturaPrueba->aplicarPosicion(100,100);
 					ventana->actualizar();
 
 					while(SDL_PollEvent(&e) != 0){

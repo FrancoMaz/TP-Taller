@@ -12,6 +12,7 @@
 #include <SDL2/SDL_image.h>
 #include <stdio.h>
 #include <string>
+#include <vector>
 
 using namespace std;
 
@@ -20,6 +21,8 @@ class TexturaSDL {
 private:
 	SDL_Texture* textura;
 	SDL_Renderer* render;
+	vector<SDL_Rect> spriteClips;
+	int frameActual;
 	int ancho;
 	int alto;
 	float posX;
@@ -45,6 +48,12 @@ public:
 
 	//Establecer transparencias (alpha = 0 transparente; alpha = 255 opaco)
 	void setAlpha(Uint8 alpha);
+
+	//Genera un sprite con la cantidad de fotogramas (frames) que se le pasa por argumento
+	void generarSprite(int frames);
+
+	//Resetea el fotograma del sprite a cero
+	void frameReset();
 
 	//Obtener las dimensiones
 	int getAncho();

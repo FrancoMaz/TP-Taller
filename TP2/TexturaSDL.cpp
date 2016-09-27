@@ -10,10 +10,12 @@
 #include <string>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+#include <vector>
 
 TexturaSDL::TexturaSDL(SDL_Renderer* renderer){
 	this->textura = NULL;
 	this->render = renderer;
+	this->frameActual = 0;
 	this->ancho = 0;
 	this->alto = 0;
 	this->posX = 0;
@@ -76,7 +78,39 @@ void TexturaSDL::limpiar(){
 
 void TexturaSDL::aplicarPosicionYTamanio(float x, float y, int ancho, int alto){
 	SDL_Rect rectangulo = {x,y,ancho,alto};
-	SDL_RenderCopy(this->render, this->textura, NULL, &rectangulo);
+	SDL_Rect* clip = NULL;
+
+	if (this->spriteClips.size() != 0){
+		//El frameActual lo divido por 6 para reducir la velocidad de fotogramas
+		clip = &this->spriteClips[this->frameActual/6];
+		rectangulo.w = clip->w;
+		rectangulo.h = clip->h;
+		this->frameActual++;
+		if((this->frameActual/6) >= this->spriteClips.size()){
+			this->frameReset();
+		}
+	}
+
+
+	SDL_RenderCopy(this->render, this->textura, clip, &rectangulo);
+}
+
+void TexturaSDL::generarSprite(int frames){
+	SDL_Rect clips[frames];
+	int clipAncho = (this->ancho)/frames;
+
+	for (int i = 0, x = 0; i < frames; i++, x=x+clipAncho){
+		clips[i].x = x;
+		clips[i].y = 0;
+		clips[i].w = clipAncho;
+		clips[i].h = this->alto;
+
+		this->spriteClips.push_back(clips[i]);
+	}
+}
+
+void TexturaSDL::frameReset(){
+	this->frameActual = 0;
 }
 
 void TexturaSDL::aplicarPosicion(float x, float y){
