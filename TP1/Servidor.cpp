@@ -21,8 +21,8 @@ Servidor::Servidor(char* nombreArchivoDeUsuarios, int puerto, Logger* logger) {
 	/* Set port number, using htons function to use proper byte order */
 	this->serverAddr.sin_port = htons(puerto);
 	/* Set IP address to localhost */
-	//this->serverAddr.sin_addr.s_addr = inet_addr("192.168.1.10");
-	this->serverAddr.sin_addr.s_addr = inet_addr("127.0.0.1");
+	this->serverAddr.sin_addr.s_addr = inet_addr("192.168.1.11");
+	//this->serverAddr.sin_addr.s_addr = inet_addr("127.0.0.1");
 	/* Set all bits of the padding field to 0 */
 	memset(serverAddr.sin_zero, '\0', sizeof serverAddr.sin_zero);
 	/*---- Bind the address struct to the socket ----*/
@@ -306,13 +306,15 @@ string Servidor::concatenarMensajes(queue<Mensaje>* colaDeMensajes) {
 	while (!colaDeMensajes->empty()) {
 		mensaje = colaDeMensajes->front();
 		colaDeMensajes->pop();
-		mensajesConcatenados.append(mensaje.getRemitente());
-		mensajesConcatenados.append("|");
-		mensajesConcatenados.append(mensaje.getTexto());
-		mensajesConcatenados.append("#");
+		mensajesConcatenados += mensaje.getRemitente();
+		mensajesConcatenados += "|";
+		mensajesConcatenados += mensaje.getTexto();
+		mensajesConcatenados += "#";
 	}
+	string lala = mensajesConcatenados.substr(0, mensajesConcatenados.length() -1);
+	lala += "@";
 
-	return mensajesConcatenados;
+	return lala;
 }
 
 void Servidor::restarCantidadClientesConectados(){

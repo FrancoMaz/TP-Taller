@@ -138,12 +138,15 @@ void* procesar(void* arg) {
 	int ok;
 	if (largo > BUFFER_MAX_SIZE) {
 		cout << "Largo: " << largo << endl;
-		while (BUFFER_MAX_SIZE <= (largo - inicio)) {
-			string mensajeSpliteado = mensajesProcesados.substr(inicio, BUFFER_MAX_SIZE - 1);
+		while (BUFFER_MAX_SIZE < (largo - inicio)) {
+			string mensajeSpliteado = mensajesProcesados.substr(inicio, BUFFER_MAX_SIZE);
 			strcpy(buffer, mensajeSpliteado.c_str());
 			do{
-				ok = send(socket, buffer, strlen(buffer) + 1, 0);
-			}while (ok == 0);
+				ok = send(socket, buffer, strlen(buffer), 0);
+				cout<<"mensaje enviado: "<<buffer<<endl;
+				cout<<"largo mensaje enviado: "<<strlen(buffer)<<endl;
+				cout<<"valor del ok: "<<ok<<endl;
+			}while (ok == 0 );
 			inicio += BUFFER_MAX_SIZE;
 			cout << "Inicio: " << inicio << endl;
 		}
@@ -153,7 +156,9 @@ void* procesar(void* arg) {
 		strcpy(buffer, mensajesProcesados.c_str());
 	}
 	do{
-		ok = send(socket, buffer, strlen(buffer) + 1, 0);
+		ok = send(socket, buffer, strlen(buffer), 0);
+		cout<<"mensaje enviado: "<<buffer<<endl;
+		cout<<"largo mensaje enviado: "<<strlen(buffer)<<endl;
 	}while (ok == 0);
 	//strcpy(buffer, mensajesProcesados.c_str()); //aca muere, el problema es este strcpy y el string y char*
 
@@ -204,15 +209,13 @@ void* cicloEscuchaCliente(void* arg) {
 				0); //recibo por primera vez
 		if (largoRequest > 0) {
 			datosRecibidos.append(bufferRecibido, largoRequest);
-			while (largoRequest >= BUFFER_MAX_SIZE
-					and !stringTerminaCon(datosRecibidos, "#")) {
+			while (largoRequest >= BUFFER_MAX_SIZE and !stringTerminaCon(datosRecibidos, "@")) {
 				//mientras haya cosas que leer, sigo recibiendo.
-				largoRequest = recv(socketCliente, bufferRecibido,
-						BUFFER_MAX_SIZE, 0);
+				largoRequest = recv(socketCliente, bufferRecibido,BUFFER_MAX_SIZE, 0);
 				cout << largoRequest << endl;
 				datosRecibidos.append(bufferRecibido, largoRequest);
 			}
-			if (largoRequest <= 0) {
+			if (largoRequest < 0) {
 				string mensaje =
 						"Ocurrió un problema en el socket para el cliente: "
 								+ nombre + string(".\n");
