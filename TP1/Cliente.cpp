@@ -250,19 +250,16 @@ void Cliente::recibir() {
 	this -> mostrarUltimosMensajes(datosRecibidos);
 }
 
-bool Cliente::stringTerminaCon(std::string const &fullString,
-		std::string const &ending) {
+bool Cliente::stringTerminaCon(std::string const &fullString, std::string const &ending) {
 	if (fullString.length() >= ending.length()) {
-		return (0
-				== fullString.compare(fullString.length() - ending.length(),
-						ending.length(), ending));
+		return (0 == fullString.compare(fullString.length() - ending.length(), ending.length(), ending));
 	} else {
 		return false;
 	}
 }
 
 void Cliente::mostrarUltimosMensajes(string colaMensajes)
-{   string mensajeVacio = "#noHayMensajes#";
+{   string mensajeVacio = "#noHayMensajes@";
 	cout << "Ultimos mensajes recibidos: " << endl;
 	if(strcmp(colaMensajes.c_str(), mensajeVacio.c_str()) == 0){
 		cout<<"No hay mensajes nuevos"<<endl;}
