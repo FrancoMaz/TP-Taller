@@ -126,9 +126,11 @@ void Cliente::corroborarConexion() {
 	/*	}
 		*/
  	}
-	this->terminoComunicacion = true;
-	cout << "Se cerro la conexion con el servidor. Presione 5 para salir" << endl;
-	this->salir();
+	if (this->opcionMenu != 4) {
+		this->terminoComunicacion = true;
+		cout << "Se cerro la conexion con el servidor. Presione 5 para salir" << endl;
+		this->salir();
+	}
  }
 
 void Cliente::conectar(string nombre, string contrasenia) {
@@ -214,6 +216,7 @@ void Cliente::enviarMensajeATodos(string mensaje) {
 void Cliente::recibir() {
 	//Se reciben todos los mensajes en la secuencia en la que fueron enviados
 	char colaMensajes[BUFFER_MAX_SIZE];
+	memset(colaMensajes, '\0', BUFFER_MAX_SIZE);
 	string metodo = "2|" + this->nombre + "#";
 	char* recibir = strdup(metodo.c_str()); //2 es recibir
 	send(this->socketCliente, recibir, strlen(recibir), 0);
