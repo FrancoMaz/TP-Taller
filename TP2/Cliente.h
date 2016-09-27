@@ -25,7 +25,7 @@
 #include <iterator>
 #include "Mensaje.h"
 #include <queue>
-#define BUFFER_MAX_SIZE 200
+#define BUFFER_MAX_SIZE 1024
 using namespace std;
 
 class Cliente {
@@ -41,7 +41,6 @@ private:
 	pthread_t threadProcesador;
 	pthread_t threadChecker;
 	list<string> clientesDisponibles;
-	bool terminoComunicacion;
 
 public:
 	Cliente();
@@ -57,7 +56,6 @@ public:
 	void loremIpsum(double frecuenciaDeEnvios,double cantidadMaximaDeEnvios);
 	string getNombre();
 	int getOpcionMenu();
-	void setOpcionMenu(int opcion);
 	list<string> getClientesDisponibles();
 	void vaciarClientesDisponibles();
 	pthread_t getThreadComunicacion();
@@ -68,10 +66,6 @@ public:
 	string devolverNombre(int numeroDestinatario);
 	void enviarMensajeATodos(string mensaje);
 	void inicializarSocket();
-	void corroborarConexion();
-	bool getTermino();
-	bool stringTerminaCon(std::string const &fullString, std::string const &ending);
 };
 
 #endif /* TP1_CLIENTE_H_ */
-
