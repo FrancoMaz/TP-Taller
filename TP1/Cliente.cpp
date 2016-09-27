@@ -107,27 +107,30 @@ void Cliente::elegirOpcionDelMenu(int opcion) {
 }
 
 void Cliente::corroborarConexion() {
- 	int ok = 1;
-	while(ok>=0){
+ 	int datosRecibidos = 1, datosEnviados = 1;
+	while(datosRecibidos >= 0) {
 		//cout<<"el valor del ok: "<<ok<<endl;
 		char buffer[BUFFER_MAX_SIZE];
 		char* escuchando = "3|";
+		strcpy(buffer, escuchando);
 		clock_t tiempoInicio = clock();
+
 		do {
-			} while ((double)((clock()-tiempoInicio)/CLOCKS_PER_SEC) < 2);
-		int ok = send(this->socketCliente, escuchando, strlen(escuchando), 0);
-		/*
-		if (okSend > 0)
-		{
-			ok= recv(this->socketCliente, buffer, BUFFER_MAX_SIZE, 0);
 		}
-		*/
-		this->terminoComunicacion = false;
- 	}
+		while ((double)((clock()-tiempoInicio)/CLOCKS_PER_SEC) < 5);
+
+		cout << "Buffer: " << buffer << endl;
+
+		datosEnviados = send(this->socketCliente, escuchando, strlen(escuchando) + 1, 0);
+		cout << "Datos enviados: " << datosEnviados << endl;
+		if (datosEnviados > 0) {
+			datosRecibidos = recv(this->socketCliente, buffer, BUFFER_MAX_SIZE, 0);
+			cout << "Server escuchando: " << datosRecibidos << endl;
+		}
+	}
 	this->terminoComunicacion = true;
 	cout << "Se cerro la conexion con el servidor" << endl;
-	this->salir();
-
+	//this->salir();
  }
 
 void Cliente::conectar(string nombre, string contrasenia) {
@@ -216,19 +219,37 @@ void Cliente::recibir() {
 	char colaMensajes[BUFFER_MAX_SIZE];
 	string metodo = "2|" + this->nombre + "#";
 	char* recibir = strdup(metodo.c_str()); //2 es recibir
-	send(this->socketCliente, recibir, strlen(recibir) + 1, 0);
+	send(this->socketCliente, recibir, strlen(recibir), 0);
 	string datosRecibidos = "";
-	int largoRequest = recv(this->socketCliente, colaMensajes, BUFFER_MAX_SIZE, 0);
+	int largoRequest;
+	do {
+		largoRequest = recv(this->socketCliente, colaMensajes, BUFFER_MAX_SIZE, 0);
+	} while (largoRequest == 0);
+
+	cout << "Cola mensajes: " << colaMensajes << endl;
 	datosRecibidos += string(colaMensajes);
-	while (largoRequest >= BUFFER_MAX_SIZE and !stringTerminaCon(datosRecibidos, "#")) //mientras el largoRequest sea del tamaño del max size, sigo pidiendo
+	memset(colaMensajes, '\0', strlen(colaMensajes));
+	cout << "Largo request: " << largoRequest << endl;
+	while (largoRequest >= BUFFER_MAX_SIZE and !stringTerminaCon(datosRecibidos, "@")) //mientras el largoRequest sea del tamaño del max size, sigo pidiendo
 	{
+		int largo;
 		//mientras haya cosas que leer, sigo recibiendo.
-		largoRequest = recv(socketCliente, colaMensajes, BUFFER_MAX_SIZE, 0);
-		cout << largoRequest << endl;
+		do {
+			//sigue aca mientras no recibe nada, cuando recibe algo sale de este do while
+			largo = recv(socketCliente, colaMensajes, BUFFER_MAX_SIZE, 0);
+			cout << "Largo: " << largo << endl;
+			largoRequest += largo;
+		}
+		while (largoRequest < BUFFER_MAX_SIZE);
+		cout << "Cola mensajes: " << colaMensajes << endl;
+		cout << "Largo request: " << largoRequest << endl;
 		if (largoRequest > 0){
 			datosRecibidos += string(colaMensajes);
 		}
+		memset(colaMensajes, '\0', strlen(colaMensajes));
 	}
+	cout<<"mensaje recibido: "<<datosRecibidos<<endl;
+	cout<<"largo mensaje: "<<datosRecibidos.length()<<endl;
 	this -> mostrarUltimosMensajes(datosRecibidos);
 }
 
@@ -249,9 +270,11 @@ void Cliente::mostrarUltimosMensajes(string colaMensajes)
 	if(strcmp(colaMensajes.c_str(), mensajeVacio.c_str()) == 0){
 		cout<<"No hay mensajes nuevos"<<endl;}
 	else{
+		colaMensajes[colaMensajes.length() - 1] = '#';
 		char str[colaMensajes.length()];
-		strncpy(str, colaMensajes.c_str(),colaMensajes.length());
+		strcpy(str, colaMensajes.c_str());
 		char* texto = strtok(str, "|");
+		// hacer que no imprima arroba
 		while (texto != NULL) {
 			cout<<"Mensaje de "<<texto<<":"<<endl;
 			texto = strtok(NULL,"#");
