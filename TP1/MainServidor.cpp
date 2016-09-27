@@ -242,11 +242,11 @@ void* cicloEscuchaCliente(void* arg) {
 					break;
 				}
 				case 3:{//3 es verificar conexion
-					/*char buffer[BUFFER_MAX_SIZE] = "Escuchando";
-					int ok;
-					do{
-						ok = send(socketCliente,buffer,strlen(buffer),0);
-						if (ok < 0)
+					char buffer[BUFFER_MAX_SIZE] = "Escuchando";
+				/*	int ok;
+					do{*/
+						send(socketCliente,buffer,strlen(buffer),0);
+					/*	if (ok < 0)
 						{
 							//desconecto al cliente bla bla
 						}

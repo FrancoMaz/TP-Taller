@@ -40,9 +40,10 @@ void Cliente::mostrarMenuYProcesarOpcion() {
 				cin.clear();
 				cin.ignore();
 				cout << "Error: la opcion ingresada no es valida" << endl;
-			}
-	} while (!esValido);
-	this->elegirOpcionDelMenu(opcionMenu);
+				}
+		}
+		while (!esValido);
+		//this->elegirOpcionDelMenu(opcionMenu);
 }
 
 void Cliente::elegirOpcionDelMenu(int opcion) {
@@ -52,9 +53,9 @@ void Cliente::elegirOpcionDelMenu(int opcion) {
 			bool esValido = false;
 			int numeroDestinatario;
 			string mensajeAEnviar;
-			this -> mostrarClientesDisponibles();
-			int cantidadClientesDisponibles = this->clientesDisponibles.size();
 			if(!(this->terminoComunicacion)){//verifica si hay conexion a la hora de mandar un mensaje
+				this -> mostrarClientesDisponibles();
+				int cantidadClientesDisponibles = this->clientesDisponibles.size();
 				do {
 					cout << "Escriba el numero asociado al nombre del destinatario del mensaje: ";
 					cin >> numeroDestinatario;
@@ -73,12 +74,12 @@ void Cliente::elegirOpcionDelMenu(int opcion) {
 					string nombreDestinatario = this->devolverNombre(numeroDestinatario - 1);
 					this->enviar(mensajeAEnviar, nombreDestinatario);
 				} else {this -> enviar(mensajeAEnviar, "Todos");}
-			}else{cout<<"No se puede mandar el mensaje, se perdio la conexion con el servidor. Se cierra la sesion de usuario"<<endl;}
+			}else{cout<<"Se cerro la conexion con el servidor. Presione 5 para salir"<<endl;}
 			break;
 		}
 		case 2: {
 			if(!(this->terminoComunicacion)){this->recibir();}//verifica si hay conexion a la hora de recibir mensajes
-			else{cout<<"No se pueden recibir mensajes, se perdio la conexion con el servidor. Se cierra la sesion de usuario"<<endl;}
+			else{cout<<"Se cerro la conexion con el servidor. Presione 5 para salir"<<endl;}
 			break;
 		}
 		case 3: {
@@ -90,7 +91,7 @@ void Cliente::elegirOpcionDelMenu(int opcion) {
 				cout << "Escriba la cantidad maxima de envios: " << endl;
 				cin >> cantidadMaximaDeEnvios;
 				this->loremIpsum(frecuenciaDeEnvios, cantidadMaximaDeEnvios);}
-			else{cout<<"No se puede realizar loremIpsum, se perdio la conexion con el servidor. Se cierra la sesion de usuario"<<endl;}
+			else{cout << "Se cerro la conexion con el servidor. Presione 5 para salir" << endl;}
 			break;
 		}
 		case 4: {
@@ -107,8 +108,8 @@ void Cliente::elegirOpcionDelMenu(int opcion) {
 }
 
 void Cliente::corroborarConexion() {
- 	int datosRecibidos = 1, datosEnviados = 1;
-	while(datosRecibidos >= 0) {
+ 	int ok = 1;
+	while(ok>0){
 		//cout<<"el valor del ok: "<<ok<<endl;
 		char buffer[BUFFER_MAX_SIZE];
 		char* escuchando = "3|";
@@ -116,21 +117,18 @@ void Cliente::corroborarConexion() {
 		clock_t tiempoInicio = clock();
 
 		do {
-		}
-		while ((double)((clock()-tiempoInicio)/CLOCKS_PER_SEC) < 5);
+			} while ((double)((clock()-tiempoInicio)/CLOCKS_PER_SEC) < 2);
+		send(this->socketCliente, escuchando, strlen(escuchando), 0);
 
-		cout << "Buffer: " << buffer << endl;
-
-		datosEnviados = send(this->socketCliente, escuchando, strlen(escuchando) + 1, 0);
-		cout << "Datos enviados: " << datosEnviados << endl;
-		if (datosEnviados > 0) {
-			datosRecibidos = recv(this->socketCliente, buffer, BUFFER_MAX_SIZE, 0);
-			cout << "Server escuchando: " << datosRecibidos << endl;
-		}
-	}
+		/*if (okSend > 0)
+		{*/
+			ok = recv(this->socketCliente, buffer, BUFFER_MAX_SIZE, 0);
+	/*	}
+		*/
+ 	}
 	this->terminoComunicacion = true;
-	cout << "Se cerro la conexion con el servidor" << endl;
-	//this->salir();
+	cout << "Se cerro la conexion con el servidor. Presione 5 para salir" << endl;
+	this->salir();
  }
 
 void Cliente::conectar(string nombre, string contrasenia) {
@@ -185,7 +183,7 @@ void Cliente::desconectar() {
 void Cliente::salir() {
 	//Se termina la ejecucion del programa
 	this->opcionMenu = 5;
-	cout << "Desconectando al cliente" << endl;
+	//cout << "Desconectando al cliente" << endl;
 	close(socketCliente);
 }
 
@@ -204,7 +202,6 @@ void Cliente::enviar(string mensaje, string destinatario) {
 			largo -= largoRequest;
 		}
 		free(mensajeCadena); }
-	else {cout << "Se perdio la conexion con el servidor" << endl;}
 	//free(stringDatosMensaje);
 }
 
@@ -307,30 +304,33 @@ void Cliente::loremIpsum(double frecuenciaDeEnvios, double cantidadMaximaDeEnvio
 	//Indico el tiempo de inicio
 	clock_t tiempoInicio = clock();
 	for (int i = 0; i < cantidadMaximaDeEnvios; i++) {
-		string cadena;
-		//No tiene que ocurrir nada hasta que el tiempo transcurrido sea igual al tiempo estipulado de envio para cada mensaje
-		do {
-		} while (((double)(clock()-tiempoInicio)/CLOCKS_PER_SEC) < tiempoPorMensaje);
-		//Una vez que se transcurren tiempoPorMensaje segundos se empieza a leer caracteres del archivo
-			for (int j=0; j < tamanioMensaje; j++) {
-				char c = fgetc(archivo);
-				//Si no hay salto de linea o fin de archivo se guarda el caracter leido
-				if (c != '\n' && c != EOF) {
-					cadena = cadena + c;}
-				//Si viene un salto de linea se guarda un espacio (si no hacia esto se imprimia un caracter random)
-				if (c == '\n') {
-					cadena = cadena + ' ';
-				}
-				//Si viene un fin de archivo se guarda un espacio y se vuelven a leer caracteres del archivo desde el comienzo
-				if (c == EOF) {
-					cadena = cadena + ' ';
-					fclose(archivo);
-					archivo = fopen("LoremIpsum.txt","r"); }
-				}
-			//Una vez que se tiene un mensaje completo se envia al cliente elegido aleatoriamente de la lista
-			this->enviar(cadena, clienteAleatorioAEnviar);
-			//Al enviar un mensaje el tiempo de referencia es el actual
-			tiempoInicio = clock();
+		if (!this->terminoComunicacion) {
+			string cadena;
+			//No tiene que ocurrir nada hasta que el tiempo transcurrido sea igual al tiempo estipulado de envio para cada mensaje
+			do {
+			} while (((double)(clock()-tiempoInicio)/CLOCKS_PER_SEC) < tiempoPorMensaje);
+			//Una vez que se transcurren tiempoPorMensaje segundos se empieza a leer caracteres del archivo
+				for (int j=0; j < tamanioMensaje; j++) {
+					char c = fgetc(archivo);
+					//Si no hay salto de linea o fin de archivo se guarda el caracter leido
+					if (c != '\n' && c != EOF) {
+						cadena = cadena + c;}
+					//Si viene un salto de linea se guarda un espacio (si no hacia esto se imprimia un caracter random)
+					if (c == '\n') {
+						cadena = cadena + ' ';
+					}
+					//Si viene un fin de archivo se guarda un espacio y se vuelven a leer caracteres del archivo desde el comienzo
+					if (c == EOF) {
+						cadena = cadena + ' ';
+						fclose(archivo);
+						archivo = fopen("LoremIpsum.txt","r"); }
+					}
+				//Una vez que se tiene un mensaje completo se envia al cliente elegido aleatoriamente de la lista
+				this->enviar(cadena, clienteAleatorioAEnviar);
+				//Al enviar un mensaje el tiempo de referencia es el actual
+				tiempoInicio = clock();
+		}
+		else {cout << "Se cerro la conexion con el servidor" << endl;}
 	}
 	fclose(archivo);
 }
