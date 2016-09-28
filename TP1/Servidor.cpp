@@ -21,7 +21,7 @@ Servidor::Servidor(char* nombreArchivoDeUsuarios, int puerto, Logger* logger) {
 	/* Set port number, using htons function to use proper byte order */
 	this->serverAddr.sin_port = htons(puerto);
 	/* Set IP address to localhost */
-	this->serverAddr.sin_addr.s_addr = inet_addr("192.168.1.11");
+	this->serverAddr.sin_addr.s_addr = inet_addr("127.0.0.1");
 	//this->serverAddr.sin_addr.s_addr = inet_addr("127.0.0.1");
 	/* Set all bits of the padding field to 0 */
 	memset(serverAddr.sin_zero, '\0', sizeof serverAddr.sin_zero);
@@ -129,7 +129,6 @@ void Servidor::procesarMensajes() {
 				this->mensaje = "Procesando mensaje para "
 						+ listaMensajes.destinatario + "\n";
 				this->guardarLog(mensaje, DEBUG);
-				cout << mensaje << endl;
 			}
 		}
 	}
@@ -162,7 +161,7 @@ pair<int,string> Servidor::aceptarConexion() {
 		return cli;
 	}
 	cout << "Datos recibidos: " << datosRecibidos << endl;
-	mensaje = "Datos recibidos: " + (string) datosRecibidos + "\n";
+	mensaje = "Datos recibidos: " + (string) datosRecibidos + string("\n");
 	this->guardarLog(mensaje, DEBUG);
 
 	splitDatos(datosRecibidos, &nombre, &pass);
@@ -247,10 +246,6 @@ void Servidor::setThreadProceso(pthread_t thrProceso) {
 }
 
 int Servidor::getCantConexiones() {
-	stringstream ss;
-	ss << this->cantClientesConectados;
-	mensaje = "Cantidad de clientes conectados: " + ss.str() + "\n";
-	this->guardarLog(mensaje, DEBUG);
 	return this->cantClientesConectados;
 }
 

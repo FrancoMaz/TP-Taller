@@ -117,14 +117,12 @@ void Cliente::corroborarConexion() {
 		clock_t tiempoInicio = clock();
 
 		do {
-			} while ((double)((clock()-tiempoInicio)/CLOCKS_PER_SEC) < 2);
-		send(this->socketCliente, escuchando, strlen(escuchando), 0);
-
-		/*if (okSend > 0)
-		{*/
+			} while ((double)((clock()-tiempoInicio)/CLOCKS_PER_SEC) < 5);
+		ok = send(this->socketCliente, escuchando, strlen(escuchando), 0);
+		if (ok > 0)
+		{
 			ok = recv(this->socketCliente, buffer, BUFFER_MAX_SIZE, 0);
-	/*	}
-		*/
+		}
  	}
 	if (this->opcionMenu != 4) {
 		this->terminoComunicacion = true;
@@ -155,7 +153,6 @@ void Cliente::conectar(string nombre, string contrasenia) {
 			this->desconectar();
 		} else {
 			cout << "Conectandose al puerto: " << this->puertoServidor << endl;
-			cout << "Datos recibidos: " << datos << endl; //IMPRIMO LA RESPUESTA DEL SERVER, SI SE PUDO AUTENTICAR O NO. --> HAY QUE CAMBIAR ESTO PORQUE EN REALIDAD SE DEVUELVE LA LISTA DE USUARIOS.
 			splitUsuarios(datosRecibidos);
 		}
 	} else {

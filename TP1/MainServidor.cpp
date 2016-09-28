@@ -64,7 +64,6 @@ void* encolar(void* arg) {
 	 + ". \n";
 	 servidor->guardarLog(servidor->mensaje, DEBUG);*/
 
-	cout << servidor->mensaje << endl;
 	if (mensaje->getDestinatario().compare("Todos") != 0) {
 		pthread_mutex_lock(
 				&parametrosEncolarMensaje.servidor->mutexColaNoProcesados);
@@ -85,7 +84,6 @@ void* encolar(void* arg) {
 				datoActual != destinatarios.end(); datoActual++) {
 			string usuario;
 			usuario = *datoActual;
-			cout << "procesa el remitente: " << usuario << endl;
 
 			if (usuario != mensaje->getRemitente()) {
 
@@ -114,8 +112,15 @@ void encolarMensaje(char* remitente, char* destinatario, char* mensaje,
 	parametrosEncolarMensaje.mensajeNoProcesado = new Mensaje(remitente,
 			destinatario, mensaje);
 	parametrosEncolarMensaje.servidor = servidor;
-	pthread_create(&threadEncolarMensaje, NULL, &encolar,
+	int ok = pthread_create(&threadEncolarMensaje, NULL, &encolar,
 			&parametrosEncolarMensaje);
+	if (ok != 0)
+	{
+		servidor->guardarLog("ERROR: No se pudo crear el thread de encolar mensaje.\n", DEBUG);
+	}
+	else{
+		servidor->guardarLog("Thread de encolar mensaje creado correctamente.\n",DEBUG);
+	}
 	pthread_detach(threadEncolarMensaje); //lo marco
 }
 
@@ -127,42 +132,53 @@ void* procesar(void* arg) {
 	int socket = parametros->socketCliente;
 
 	pthread_mutex_lock(&servidor->mutexListaProcesados);
-	cout << "le llega el mensaje de recibir al servidor, del cliente: "
-			<< usuario << endl;
 	string mensajesProcesados = servidor->traerMensajesProcesados(usuario);
 	pthread_mutex_unlock(&servidor->mutexListaProcesados);
 
 	int largo = strlen(mensajesProcesados.c_str());
+	std::ostringstream oss;
+	oss << largo;
+	string largoString = oss.str();
+	servidor->guardarLog("Tamaño del response: " + largoString + string(".\n"),DEBUG);
 	char buffer[BUFFER_MAX_SIZE];
 	int inicio = 0;
 	int ok;
 	if (largo > BUFFER_MAX_SIZE) {
-		cout << "Largo: " << largo << endl;
 		while (BUFFER_MAX_SIZE < (largo - inicio)) {
 			string mensajeSpliteado = mensajesProcesados.substr(inicio, BUFFER_MAX_SIZE);
 			strcpy(buffer, mensajeSpliteado.c_str());
-			do{
+			/*do{
 				ok = send(socket, buffer, strlen(buffer), 0);
-				cout<<"mensaje enviado: "<<buffer<<endl;
-				cout<<"largo mensaje enviado: "<<strlen(buffer)<<endl;
-				cout<<"valor del ok: "<<ok<<endl;
 			}while (ok == 0 );
+			*/
+			ok = send(socket, buffer, strlen(buffer), 0);
+			if (ok == 0){
+				servidor->guardarLog("Se cerró la conexión con el cliente " + string(usuario) + string(".\n"),DEBUG);
+			}
+			else if (ok < 0){
+				servidor->guardarLog("ERROR: Ocurrió un problema con el socket del cliente: " + string(usuario)+ string(".\n"),DEBUG);
+			}
 			inicio += BUFFER_MAX_SIZE;
-			cout << "Inicio: " << inicio << endl;
 		}
 		string mensajeSpliteado = mensajesProcesados.substr(inicio, largo);
 		strcpy(buffer, mensajeSpliteado.c_str());
 	} else {
 		strcpy(buffer, mensajesProcesados.c_str());
 	}
-	do{
+	/*do{
 		ok = send(socket, buffer, strlen(buffer), 0);
-		cout<<"mensaje enviado: "<<buffer<<endl;
-		cout<<"largo mensaje enviado: "<<strlen(buffer)<<endl;
 	}while (ok == 0);
+	*/
+	ok = send(socket,buffer,strlen(buffer),0);
+	if (ok == 0){
+		servidor->guardarLog("Se cerró la conexión con el cliente " + string(usuario) + string(".\n"),DEBUG);
+	}
+	else if (ok < 0){
+		servidor->guardarLog("ERROR: Ocurrió un problema con el socket del cliente: " + string(usuario)+ string(".\n"),DEBUG);
+	}
 	//strcpy(buffer, mensajesProcesados.c_str()); //aca muere, el problema es este strcpy y el string y char*
+	servidor->guardarLog("Mensajes para el cliente:" + string(usuario) + ", Mensajes: " + mensajesProcesados + string(".\n"),INFO);
 
-	cout << "Cliente que solicita sus mensajes: " << usuario << "  "<< mensajesProcesados << endl;
 	//cout<<"socket Cliente: "<<socket<<endl;
 	//largo -= send(socket, buffer, BUFFER_MAX_SIZE + 1, 0);
 	/*while (largo > 0) {
@@ -177,9 +193,17 @@ void enviarMensajesProcesadosA(char* usuario, Servidor* servidor, int socket) {
 	parametrosMensajesProcesados.usuario = usuario;
 	parametrosMensajesProcesados.servidor = servidor;
 	parametrosMensajesProcesados.socketCliente = socket;
-	pthread_create(&threadEnviarMensajesProcesados, NULL, &procesar,
+	int ok = pthread_create(&threadEnviarMensajesProcesados, NULL, &procesar,
 			&parametrosMensajesProcesados);
+	if (ok != 0)
+	{
+		servidor->guardarLog("ERROR: No se pudo crear el thread de recibir mensajes.\n", DEBUG);
+	}
+	else{
+		servidor->guardarLog("Thread de recibir mensajes creado correctamente.\n",DEBUG);
+	}
 	pthread_join(threadEnviarMensajesProcesados, NULL);
+	servidor->guardarLog("Fin envio de mensajes a: " + string(usuario) + string(".\n"),INFO);
 	//pthread_detach(threadEnviarMensajesProcesados); //lo marco
 }
 
@@ -217,55 +241,70 @@ void* cicloEscuchaCliente(void* arg) {
 			}
 			if (largoRequest < 0) {
 				string mensaje =
-						"Ocurrió un problema en el socket para el cliente: "
+						"ERROR: Ocurrió un problema con el socket del cliente: "
 								+ nombre + string(".\n");
 				conectado = false;
 				servidor->guardarLog(mensaje, DEBUG);
 				servidor->restarCantidadClientesConectados();
-			} else {
+			}
+			else if (largoRequest == 0){
+				conectado = false;
+				servidor->guardarLog("Se cerró la conexión con el cliente: " + nombre + string(".\n"),DEBUG);
+			}
+			else {
 				//en el formato siempre recibimos primero el metodo que es un entero.
-				//1 representa enviar un mensaje, 2 representa recibir mis mensajes, 3 desconectar.
+				//1 representa enviar un mensaje, 2 representa recibir mis mensajes, 3 verificar la conexion.
 				char* datos = strdup(datosRecibidos.c_str());
 				char* metodo = strtok(datos, "|");
 				int accion = atoi(metodo); //convierto a entero el metodo recibido por string
 				switch (accion) {
-				case 1: { //1 es enviar
-					char* remitente = strtok(NULL, "|");
-					char* destinatario = strtok(NULL, "|");
-					char* mensaje = strtok(NULL, "#");
-					encolarMensaje(remitente, destinatario, mensaje, servidor);
-					break;
-				}
-				case 2: { //2 es recibir
-					char* usuarioQueSolicita = strtok(NULL, "#");
-					cout << "socket Cliente antes de enviar mensaje:"
-							<< socketCliente << endl;
-					enviarMensajesProcesadosA(usuarioQueSolicita, servidor,
-							socketCliente);
-					break;
-				}
-				case 3:{//3 es verificar conexion
-					char buffer[BUFFER_MAX_SIZE] = "Escuchando";
-				/*	int ok;
-					do{*/
-						send(socketCliente,buffer,strlen(buffer),0);
-					/*	if (ok < 0)
-						{
-							//desconecto al cliente bla bla
+					case 1: { //1 es enviar
+						char* remitente = strtok(NULL, "|");
+						char* destinatario = strtok(NULL, "|");
+						char* mensaje = strtok(NULL, "#");
+						servidor->guardarLog("Request: Enviar Mensaje, Remitente: " + string(remitente)
+								 	 	 	 	 + ", Destinatario: " + string(destinatario)
+												 	 + ", Mensaje: " + string(mensaje) + string(".\n"),INFO);
+						encolarMensaje(remitente, destinatario, mensaje, servidor);
+						break;
+					}
+					case 2: { //2 es recibir
+						servidor->guardarLog("Request: Recibir Mensajes. " + nombre + string(".\n"),INFO);
+						char* usuarioQueSolicita = strtok(NULL, "#");
+						enviarMensajesProcesadosA(usuarioQueSolicita, servidor,
+								socketCliente);
+						break;
+					}
+					case 3:{//3 es verificar conexion
+						char buffer[BUFFER_MAX_SIZE] = "Escuchando";
+						int ok = send(socketCliente,buffer,strlen(buffer),0);
+						if (ok > 0){
+							servidor->guardarLog("El cliente " + nombre + " sigue conectado.\n", DEBUG);
 						}
-					}while(ok == 0);*/
-
-					break;
-				}
+						else if (ok == 0){
+							servidor->guardarLog("Se cerró la conexión con el cliente " + nombre + string(".\n"),DEBUG);
+						}
+						else{
+							servidor->guardarLog("ERROR: Ocurrió un problema con el socket del cliente: " + nombre + string(".\n"),DEBUG);
+						}
+						break;
+					}
 				}
 			}
 		} else {
-			string mensaje =
-					"Ocurrió un problema en el socket para el cliente: "
-							+ nombre + string(".\n");
-			conectado = false;
+			string mensaje ="";
+			if (largoRequest == 0){
+				mensaje = "Se cerró la conexión con el cliente: " + nombre + string(".\n");
+			}
+			else{
+				mensaje = "ERROR: Ocurrió un problema con el socket del cliente: " + nombre + string(".\n");
+			}conectado = false;
 			servidor->guardarLog(mensaje, DEBUG);
 			servidor->restarCantidadClientesConectados();
+			std::ostringstream oss;
+			oss << servidor->getCantConexiones();
+			string conectados = oss.str();
+			servidor->guardarLog("Cantidad de clientes conectados: " + conectados + string("\n"),INFO);
 		}
 	}
 }
@@ -273,8 +312,15 @@ void* cicloEscuchaCliente(void* arg) {
 void* cicloEscucharConexionesNuevasThreadProceso(void* arg) {
 	Servidor* servidor = (Servidor*) arg;
 	pthread_t threadProceso;
-	pthread_create(&threadProceso, NULL, &cicloProcesarMensajes,
+	int ok = pthread_create(&threadProceso, NULL, &cicloProcesarMensajes,
 			(void*) servidor);
+	if (ok != 0)
+	{
+		servidor->guardarLog("ERROR: Problema al crear el thread de escucha de conexiones \n",DEBUG);
+	}
+	else{
+		servidor->guardarLog("Thread de escucha de conexiones creado correctamente.",DEBUG);
+	}
 	servidor->setThreadProceso(threadProceso);
 
 	pthread_t thread_id[MAX_CANT_CLIENTES]; //la cantidad maxima de clientes es 6, voy a crear, como mucho 6 threads para manejar dichas conexiones.
@@ -292,8 +338,11 @@ void* cicloEscucharConexionesNuevasThreadProceso(void* arg) {
 			servidor->guardarLog(
 					"ERROR: Problema con la conexion del socket.\n", DEBUG);
 		} else {
-			cout << "cantidad de clientes conectados: "
-					<< servidor->getCantConexiones() << endl;
+			servidor->guardarLog("Cliente conectado: " + nombreCliente + string("\n"), INFO);
+			std::ostringstream oss;
+			oss << servidor->getCantConexiones();
+			string conectados = oss.str();
+			servidor->guardarLog("Cantidad de clientes conectados: " + conectados + string("\n"),INFO);
 			//genero un nuevo thread dinamicamente para este cliente
 			if (servidor->getCantConexiones() <= MAX_CANT_CLIENTES
 					&& servidor->getCantConexiones() > 0) {
@@ -303,8 +352,15 @@ void* cicloEscucharConexionesNuevasThreadProceso(void* arg) {
 				parametrosCliente.serv = servidor;
 				parametrosCliente.nombre = nombreCliente;
 				parametrosCliente.clienteID = servidor->getCantConexiones() - 1;
-				pthread_create(&thread_id[parametrosCliente.clienteID], NULL,
+				int ok = pthread_create(&thread_id[parametrosCliente.clienteID], NULL,
 						&cicloEscuchaCliente, &parametrosCliente); //optimizar ya que si un cliente se desconecta podria causar un problema
+				if (ok != 0)
+				{
+					servidor->guardarLog("ERROR: No se pudo crear el thread de comunicación con el cliente.\n",DEBUG);
+				}
+				else{
+					servidor->guardarLog("Thread de comunicación con el cliente creado correctamente.\n",DEBUG);
+				}
 				pthread_detach(thread_id[parametrosCliente.clienteID]); //lo marco como detach
 			}
 		}
