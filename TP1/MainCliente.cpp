@@ -60,6 +60,7 @@ void* cicloConexion(void* arg) {
 	 //void** escuchando;
 	 //pthread_join(threadVerificarConexion,(void**)&escuchando);
 	 //termino = *((bool*) (&escuchando));
+	cliente->setOpcionMenu(0);
 	while (cliente->getOpcionMenu() != 5 and cliente->getOpcionMenu() != 4 and !cliente->getTermino()) {
 		cliente->mostrarMenuYProcesarOpcion();
 		if (!cliente->getTermino()) {
