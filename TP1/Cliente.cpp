@@ -176,6 +176,10 @@ void Cliente::splitUsuarios(string datos) {
 
 void Cliente::desconectar() {
 	//Se cierra la conexion con el servidor
+	char buffer[BUFFER_MAX_SIZE];
+	char* desconectar = "4|";
+	strcpy(buffer, desconectar);
+	send(socketCliente,buffer,strlen(desconectar),0);
 	close(socketCliente);
 }
 
@@ -183,7 +187,7 @@ void Cliente::salir() {
 	//Se termina la ejecucion del programa
 	this->opcionMenu = 5;
 	//cout << "Desconectando al cliente" << endl;
-	close(socketCliente);
+	this->desconectar();
 }
 
 void Cliente::enviar(string mensaje, string destinatario) {
