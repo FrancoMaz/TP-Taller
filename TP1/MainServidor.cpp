@@ -236,7 +236,6 @@ void* cicloEscuchaCliente(void* arg) {
 			while (largoRequest >= BUFFER_MAX_SIZE and !stringTerminaCon(datosRecibidos, "@")) {
 				//mientras haya cosas que leer, sigo recibiendo.
 				largoRequest = recv(socketCliente, bufferRecibido,BUFFER_MAX_SIZE, 0);
-				cout << largoRequest << endl;
 				datosRecibidos.append(bufferRecibido, largoRequest);
 			}
 			if (largoRequest < 0) {
