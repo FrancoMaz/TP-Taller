@@ -62,12 +62,12 @@ int main() {
 	if (!ventana->inicializar()){
 		cout << "El programa no pudo ejecutarse." << endl;
 	} else {
-		TexturaSDL* texturaMenuFondo = ventana->crearTextura("Recursos/Menu_fondo.png");
-		TexturaSDL* texturaMenuMetalSlug = ventana->crearTextura("Recursos/Menu_Metal_Slug.png");
-		TexturaSDL* texturaMenuPressEnter = ventana->crearTextura("Recursos/Menu_Presionar_Enter.png");
-		TexturaSDL* texturaEfectoLuz = ventana->crearTextura("Recursos/Efecto_luz.png");
-		TexturaSDL* texturaMenuTPTaller = ventana->crearTextura("Recursos/Menu_TP_Taller.png");
-		TexturaSDL* texturaPrueba = ventana->crearTextura("Recursos/foo.png");
+		TexturaSDL* texturaMenuFondo = ventana->crearTextura("Recursos/Menu_fondo.png",0);
+		TexturaSDL* texturaMenuMetalSlug = ventana->crearTextura("Recursos/Menu_Metal_Slug.png",0);
+		TexturaSDL* texturaMenuPressEnter = ventana->crearTextura("Recursos/Menu_Presionar_Enter.png",0);
+		TexturaSDL* texturaEfectoLuz = ventana->crearTextura("Recursos/Efecto_luz.png",0);
+		TexturaSDL* texturaMenuTPTaller = ventana->crearTextura("Recursos/Menu_TP_Taller.png",0);
+		TexturaSDL* texturaPrueba = ventana->crearTextura("Recursos/foo.png",4);
 		if (!ventana->comprobarTexturasCargadas()){
 			cout << "El programa no pudo ejecutarse." << endl;
 		} else {
@@ -95,7 +95,6 @@ int main() {
 					ventana->actualizar();
 			}
 
-			texturaPrueba->generarSprite(4);
 			bool incrementa = true;
 			int a = 255;
 			//Mientras la ventana no se cierre pulsando X o no se presione el enter, hacer el loop

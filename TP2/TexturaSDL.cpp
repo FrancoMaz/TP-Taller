@@ -96,16 +96,18 @@ void TexturaSDL::aplicarPosicionYTamanio(float x, float y, int ancho, int alto){
 }
 
 void TexturaSDL::generarSprite(int frames){
-	SDL_Rect clips[frames];
-	int clipAncho = (this->ancho)/frames;
+	if (frames >= 2){
+		SDL_Rect clips[frames];
+		int clipAncho = (this->ancho)/frames;
 
-	for (int i = 0, x = 0; i < frames; i++, x=x+clipAncho){
-		clips[i].x = x;
-		clips[i].y = 0;
-		clips[i].w = clipAncho;
-		clips[i].h = this->alto;
+		for (int i = 0, x = 0; i < frames; i++, x=x+clipAncho){
+			clips[i].x = x;
+			clips[i].y = 0;
+			clips[i].w = clipAncho;
+			clips[i].h = this->alto;
 
 		this->spriteClips.push_back(clips[i]);
+		}
 	}
 }
 

@@ -70,11 +70,12 @@ void VentanaSDL::actualizar(){
 	SDL_RenderPresent(this->renderizacion);
 }
 
-TexturaSDL* VentanaSDL::crearTextura(string ruta){
+TexturaSDL* VentanaSDL::crearTextura(string ruta, int frames){
 	bool cargaExitosa;
 
 	TexturaSDL* textura = new TexturaSDL(this->renderizacion);
 	cargaExitosa = textura->cargarImagen(ruta);
+	textura->generarSprite(frames);
 
 	if (this->texturasCargadas){
 		this->texturasCargadas = cargaExitosa;

@@ -30,7 +30,7 @@ public:
 	VentanaSDL();
 	~VentanaSDL();
 	bool inicializar();
-	TexturaSDL* crearTextura(string ruta);
+	TexturaSDL* crearTextura(string ruta, int frames);
 	void limpiar();
 	bool comprobarTexturasCargadas();
 	void actualizar();
