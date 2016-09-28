@@ -118,15 +118,15 @@ void Cliente::corroborarConexion() {
 
 		do {
 			} while ((double)((clock()-tiempoInicio)/CLOCKS_PER_SEC) < 5);
-		ok = send(this->socketCliente, escuchando, strlen(escuchando), 0);
-		if (ok > 0)
-		{
+		send(this->socketCliente, escuchando, strlen(escuchando), 0);
+	//	if (ok > 0)
+	//	{
 			ok = recv(this->socketCliente, buffer, BUFFER_MAX_SIZE, 0);
-		}
+	//	}
  	}
 	if (this->opcionMenu != 4) {
 		this->terminoComunicacion = true;
-		cout << "Se cerro la conexion con el servidor. Presione 5 para salir" << endl;
+		cout << "Se cerro la conexion con el servidor" << endl;
 		this->salir();
 	}
  }

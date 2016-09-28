@@ -289,6 +289,7 @@ void* cicloEscuchaCliente(void* arg) {
 						break;
 					}
 					case 4:{//4 es se desconecto el cliente, es un mensaje de log diferente al si se corta la conexion
+						servidor->restarCantidadClientesConectados();
 						servidor->guardarLog("El cliente " + nombre + " cerró la conexión.\n", INFO);
 						std::ostringstream oss;
 						oss << servidor->getCantConexiones();
