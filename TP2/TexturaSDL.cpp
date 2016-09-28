@@ -118,11 +118,3 @@ void TexturaSDL::aplicarPosicion(float x, float y, double rotacion, SDL_Renderer
 void TexturaSDL::aplicarPosicionConTamanio(float x, float y, int ancho, int alto){
 	this->aplicarPosicionYTamanio(x,y,ancho,alto,0,SDL_FLIP_NONE);
 }
-
-int TexturaSDL::getAncho(){
-	return this->ancho;
-}
-
-int TexturaSDL::getAlto(){
-	return this->alto;
-}
