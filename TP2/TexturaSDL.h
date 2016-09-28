@@ -38,7 +38,7 @@ public:
 	//Carga una imagen de una ruta específica
 	bool cargarImagen(string ruta);
 
-	//Coloca la textura en una posición de la pantalla
+	//Coloca la textura en una posición de la pantalla con su respectiva rotación y reflejo (flip)
 	void aplicarPosicion(float x, float y, double rotacion, SDL_RendererFlip flip);
 
 	//Idem, pero dicha textura se ajusta al tamaño del ancho/alto
