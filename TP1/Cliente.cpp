@@ -161,7 +161,7 @@ void Cliente::conectar(string nombre, string contrasenia) {
 		string desconectarse = "Desconectar";
 		if (strcmp(datos.c_str(), desconectarse.c_str()) == 0) {
 			cout << "Usuario/clave incorrectos, inténtelo de nuevo" << endl;
-			this->desconectar();
+			close(socketCliente);
 		} else {
 			cout << "Conectandose al puerto: " << this->puertoServidor << endl;
 			splitUsuarios(datosRecibidos);

@@ -229,8 +229,7 @@ void* cicloEscuchaCliente(void* arg) {
 		//en este loop se van a gestionar los send y receive del cliente. aca se va a distinguir que es lo que quiere hacer y actuar segun lo que quiera el cliente.
 		string datosRecibidos;
 
-		int largoRequest = recv(socketCliente, bufferRecibido, BUFFER_MAX_SIZE,
-				0); //recibo por primera vez
+		int largoRequest = recv(socketCliente, bufferRecibido, BUFFER_MAX_SIZE,0); //recibo por primera vez
 		if (largoRequest > 0) {
 			datosRecibidos.append(bufferRecibido, largoRequest);
 			while (largoRequest >= BUFFER_MAX_SIZE and !stringTerminaCon(datosRecibidos, "@")) {
@@ -278,7 +277,7 @@ void* cicloEscuchaCliente(void* arg) {
 						char buffer[BUFFER_MAX_SIZE] = "Escuchando";
 						int ok = send(socketCliente,buffer,strlen(buffer),0);
 						if (ok > 0){
-							servidor->guardarLog("El cliente " + nombre + " sigue conectado.\n", DEBUG);
+							//servidor->guardarLog("El cliente " + nombre + " sigue conectado.\n", DEBUG);
 						}
 						else if (ok == 0){
 							servidor->guardarLog("Se cerró la conexión con el cliente " + nombre + string(".\n"),DEBUG);
@@ -341,7 +340,7 @@ void* cicloEscucharConexionesNuevasThreadProceso(void* arg) {
 		pair<int, string> cliente = servidor->aceptarConexion();
 		int socketCliente = cliente.first;
 		string nombreCliente = cliente.second;
-		if (socketCliente < 0) {
+		if (socketCliente <= 0) {
 			cout << "Error al conectar al cliente" << endl;
 			servidor->guardarLog("No se pudo conectar al cliente.\n", INFO);
 			servidor->guardarLog(
