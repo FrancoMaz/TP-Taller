@@ -60,21 +60,22 @@ void* cicloConexion(void* arg) {
 	 //void** escuchando;
 	 //pthread_join(threadVerificarConexion,(void**)&escuchando);
 	 //termino = *((bool*) (&escuchando));
-	do {
+	while (cliente->getOpcionMenu() != 5 and cliente->getOpcionMenu() != 4 and !cliente->getTermino()) {
 		cliente->mostrarMenuYProcesarOpcion();
 		if (!cliente->getTermino()) {
 			cliente->elegirOpcionDelMenu(cliente->getOpcionMenu());
 		}
-		else
-			{
-			int opcion;
-			do {
-				cout << "Se cerro la conexion con el servidor. Presione 5 para salir" << endl;
-				cin >> opcion;
-				} while (opcion != 5);
-				cliente->setOpcionMenu(5);
+	}
+	if (cliente->getTermino() and cliente->getOpcionMenu() != 5)
+	{
+		int opcion;
+		while (opcion != 5) {
+			cout << endl;
+			cout << "Se cerro la conexion con el servidor. Presione 5 para salir" << endl;
+			cin >> opcion;
 			}
-	} while (cliente->getOpcionMenu() != 5 and cliente->getOpcionMenu() != 4);
+			cliente->setOpcionMenu(5);
+		}
 
 		//if(accion == 5){ cliente->setOpcionMenu(accion);}
 

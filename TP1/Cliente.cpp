@@ -68,18 +68,19 @@ void Cliente::elegirOpcionDelMenu(int opcion) {
 					}
 				} while (!esValido);
 				cin.ignore();
-				cout << "Escriba su mensaje: " << endl;
-				getline(cin,mensajeAEnviar);
-				if (numeroDestinatario != (this->clientesDisponibles.size()) + 1){
-					string nombreDestinatario = this->devolverNombre(numeroDestinatario - 1);
-					this->enviar(mensajeAEnviar, nombreDestinatario);
-				} else {this -> enviar(mensajeAEnviar, "Todos");}
-			}else{cout<<"Se cerro la conexion con el servidor. Presione 5 para salir"<<endl;}
+				if (!(this->terminoComunicacion)) {
+					cout << "Escriba su mensaje: " << endl;
+					getline(cin,mensajeAEnviar);
+					if (numeroDestinatario != (this->clientesDisponibles.size()) + 1){
+						string nombreDestinatario = this->devolverNombre(numeroDestinatario - 1);
+						this->enviar(mensajeAEnviar, nombreDestinatario);
+					} else {this -> enviar(mensajeAEnviar, "Todos");}
+				}
+			}
 			break;
 		}
 		case 2: {
 			if(!(this->terminoComunicacion)){this->recibir();}//verifica si hay conexion a la hora de recibir mensajes
-			else{cout<<"Se cerro la conexion con el servidor. Presione 5 para salir"<<endl;}
 			break;
 		}
 		case 3: {
@@ -88,10 +89,14 @@ void Cliente::elegirOpcionDelMenu(int opcion) {
 			if(!(this->terminoComunicacion)){//verifica si hay conexion a la hora de mandar un mensaje
 				cout << "Escriba la frecuencia de envios: " << endl;
 				cin >> frecuenciaDeEnvios;
-				cout << "Escriba la cantidad maxima de envios: " << endl;
-				cin >> cantidadMaximaDeEnvios;
-				this->loremIpsum(frecuenciaDeEnvios, cantidadMaximaDeEnvios);}
-			else{cout << "Se cerro la conexion con el servidor. Presione 5 para salir" << endl;}
+				if (!(this->terminoComunicacion)) {
+					cout << "Escriba la cantidad maxima de envios: " << endl;
+					cin >> cantidadMaximaDeEnvios;
+					if (!this->terminoComunicacion) {
+						this->loremIpsum(frecuenciaDeEnvios, cantidadMaximaDeEnvios);
+						}
+					}
+				}
 			break;
 		}
 		case 4: {
@@ -118,16 +123,22 @@ void Cliente::corroborarConexion() {
 
 		do {
 			} while ((double)((clock()-tiempoInicio)/CLOCKS_PER_SEC) < 5);
-		send(this->socketCliente, escuchando, strlen(escuchando), 0);
-	//	if (ok > 0)
-	//	{
+		ok = send(this->socketCliente, escuchando, strlen(escuchando), 0);
+		if (ok > 0)
+		{
 			ok = recv(this->socketCliente, buffer, BUFFER_MAX_SIZE, 0);
-	//	}
+		}
  	}
 	if (this->opcionMenu != 4) {
 		this->terminoComunicacion = true;
-		cout << "Se cerro la conexion con el servidor" << endl;
-		this->salir();
+		int opcion = 1;
+		while (opcion != 5) {
+			cout << endl;
+			cout << "Se cerro la conexion con el servidor. Presione 5 para salir" << endl;
+			cin >> opcion; }
+		if (opcion == 5) {
+			this->salir();
+		}
 	}
  }
 
@@ -227,10 +238,8 @@ void Cliente::recibir() {
 		largoRequest = recv(this->socketCliente, colaMensajes, BUFFER_MAX_SIZE, 0);
 	} while (largoRequest == 0);
 
-	cout << "Cola mensajes: " << colaMensajes << endl;
 	datosRecibidos += string(colaMensajes);
 	memset(colaMensajes, '\0', strlen(colaMensajes));
-	cout << "Largo request: " << largoRequest << endl;
 	while (largoRequest >= BUFFER_MAX_SIZE and !stringTerminaCon(datosRecibidos, "@")) //mientras el largoRequest sea del tamaño del max size, sigo pidiendo
 	{
 		int largo;
@@ -238,19 +247,14 @@ void Cliente::recibir() {
 		do {
 			//sigue aca mientras no recibe nada, cuando recibe algo sale de este do while
 			largo = recv(socketCliente, colaMensajes, BUFFER_MAX_SIZE, 0);
-			cout << "Largo: " << largo << endl;
 			largoRequest += largo;
 		}
 		while (largoRequest < BUFFER_MAX_SIZE);
-		cout << "Cola mensajes: " << colaMensajes << endl;
-		cout << "Largo request: " << largoRequest << endl;
 		if (largoRequest > 0){
 			datosRecibidos += string(colaMensajes);
 		}
 		memset(colaMensajes, '\0', strlen(colaMensajes));
 	}
-	cout<<"mensaje recibido: "<<datosRecibidos<<endl;
-	cout<<"largo mensaje: "<<datosRecibidos.length()<<endl;
 	this -> mostrarUltimosMensajes(datosRecibidos);
 }
 
