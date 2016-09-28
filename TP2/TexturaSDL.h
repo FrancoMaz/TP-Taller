@@ -25,10 +25,8 @@ private:
 	int frameActual;
 	int ancho;
 	int alto;
-	float posX;
-	float posY;
 
-	void aplicarPosicionYTamanio(float x, float y, int ancho, int alto);
+	void aplicarPosicionYTamanio(float x, float y, int ancho, int alto, double rotacion, SDL_RendererFlip flip);
 
 public:
 	TexturaSDL(SDL_Renderer* renderer);
@@ -41,7 +39,7 @@ public:
 	bool cargarImagen(string ruta);
 
 	//Coloca la textura en una posición de la pantalla
-	void aplicarPosicion(float x, float y);
+	void aplicarPosicion(float x, float y, double rotacion, SDL_RendererFlip flip);
 
 	//Idem, pero dicha textura se ajusta al tamaño del ancho/alto
 	void aplicarPosicionConTamanio(float x, float y, int ancho, int alto);
@@ -58,10 +56,6 @@ public:
 	//Obtener las dimensiones
 	int getAncho();
 	int getAlto();
-
-	//Obtener las posiciones
-	float getPosX();
-	float getPosY();
 };
 
 #endif /* TP2_TEXTURASDL_H_ */

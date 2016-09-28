@@ -75,21 +75,23 @@ int main() {
 			bool siguiente = false;		//Indica si se puede pasar a la siguiente pantalla
 			SDL_Event e;
 
+			double rot = 0;
 			//Primera pantalla
 
 			for (float y=-290; y<50; y=y+5){
 				ventana->limpiar();
-				texturaMenuFondo->aplicarPosicion(0,0);
-				texturaMenuMetalSlug->aplicarPosicion(180,y);
+				texturaMenuFondo->aplicarPosicion(0,0,0,SDL_FLIP_NONE);
+				texturaMenuMetalSlug->aplicarPosicion(180,y,rot,SDL_FLIP_NONE);
+				rot=rot-0.08;
 				ventana->actualizar();
 			}
 
 			for (float a= 255; a>0; a=a-3){
 					ventana->limpiar();
-					texturaMenuFondo->aplicarPosicion(0,0);
-					texturaMenuMetalSlug->aplicarPosicion(180,50);
-					texturaMenuPressEnter->aplicarPosicion(200,440);
-					texturaMenuTPTaller->aplicarPosicion(277,560);
+					texturaMenuFondo->aplicarPosicion(0,0,0,SDL_FLIP_NONE);
+					texturaMenuMetalSlug->aplicarPosicion(180,50,rot,SDL_FLIP_NONE);
+					texturaMenuPressEnter->aplicarPosicion(200,440,0,SDL_FLIP_NONE);
+					texturaMenuTPTaller->aplicarPosicion(277,560,0,SDL_FLIP_NONE);
 					texturaEfectoLuz->aplicarPosicionConTamanio(0,0,800,600);
 					texturaEfectoLuz->setAlpha(a);
 					ventana->actualizar();
@@ -100,9 +102,9 @@ int main() {
 			//Mientras la ventana no se cierre pulsando X o no se presione el enter, hacer el loop
 			while ((!salir)&&(!siguiente)){
 					ventana->limpiar();
-					texturaMenuFondo->aplicarPosicion(0,0);
-					texturaMenuMetalSlug->aplicarPosicion(180,50);
-					texturaMenuPressEnter->aplicarPosicion(200,440);
+					texturaMenuFondo->aplicarPosicion(0,0,0,SDL_FLIP_NONE);
+					texturaMenuMetalSlug->aplicarPosicion(180,50,rot,SDL_FLIP_NONE);
+					texturaMenuPressEnter->aplicarPosicion(200,440,0,SDL_FLIP_NONE);
 					if (a>=255)	incrementa = false;
 					if (a<=0) incrementa = true;
 					if (incrementa){
@@ -111,8 +113,8 @@ int main() {
 						a=a-3;
 					}
 					texturaMenuPressEnter->setAlpha(a);
-					texturaMenuTPTaller->aplicarPosicion(277,560);
-					texturaPrueba->aplicarPosicion(100,100);
+					texturaMenuTPTaller->aplicarPosicion(277,560,0,SDL_FLIP_NONE);
+					texturaPrueba->aplicarPosicion(100,100,0,SDL_FLIP_NONE);
 					ventana->actualizar();
 
 					while(SDL_PollEvent(&e) != 0){

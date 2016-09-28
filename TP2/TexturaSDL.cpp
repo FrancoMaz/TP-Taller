@@ -18,8 +18,6 @@ TexturaSDL::TexturaSDL(SDL_Renderer* renderer){
 	this->frameActual = 0;
 	this->ancho = 0;
 	this->alto = 0;
-	this->posX = 0;
-	this->posY = 0;
 }
 
 TexturaSDL::~TexturaSDL(){
@@ -71,12 +69,10 @@ void TexturaSDL::limpiar(){
 		this->textura = NULL;
 		this->alto = 0;
 		this->ancho = 0;
-		this->posX = 0;
-		this->posY = 0;
 	}
 }
 
-void TexturaSDL::aplicarPosicionYTamanio(float x, float y, int ancho, int alto){
+void TexturaSDL::aplicarPosicionYTamanio(float x, float y, int ancho, int alto, double rotacion, SDL_RendererFlip flip){
 	SDL_Rect rectangulo = {x,y,ancho,alto};
 	SDL_Rect* clip = NULL;
 
@@ -92,7 +88,7 @@ void TexturaSDL::aplicarPosicionYTamanio(float x, float y, int ancho, int alto){
 	}
 
 
-	SDL_RenderCopy(this->render, this->textura, clip, &rectangulo);
+	SDL_RenderCopyEx(this->render, this->textura, clip, &rectangulo,rotacion,NULL,flip);
 }
 
 void TexturaSDL::generarSprite(int frames){
@@ -115,12 +111,12 @@ void TexturaSDL::frameReset(){
 	this->frameActual = 0;
 }
 
-void TexturaSDL::aplicarPosicion(float x, float y){
-	this->aplicarPosicionYTamanio(x,y,this->ancho,this->alto);
+void TexturaSDL::aplicarPosicion(float x, float y, double rotacion, SDL_RendererFlip flip){
+	this->aplicarPosicionYTamanio(x,y,this->ancho,this->alto, rotacion, flip);
 }
 
 void TexturaSDL::aplicarPosicionConTamanio(float x, float y, int ancho, int alto){
-	this->aplicarPosicionYTamanio(x,y,ancho,alto);
+	this->aplicarPosicionYTamanio(x,y,ancho,alto,0,SDL_FLIP_NONE);
 }
 
 int TexturaSDL::getAncho(){
@@ -129,12 +125,4 @@ int TexturaSDL::getAncho(){
 
 int TexturaSDL::getAlto(){
 	return this->alto;
-}
-
-float TexturaSDL::getPosX(){
-	return this->posX;
-}
-
-float TexturaSDL::getPosY(){
-	return this->posY;
 }
