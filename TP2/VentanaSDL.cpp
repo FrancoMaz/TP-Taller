@@ -10,6 +10,7 @@
 #include <string>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+#include <SDL2/SDL_ttf.h>
 
 VentanaSDL::VentanaSDL(){
 	this->ventana = NULL;
@@ -33,7 +34,7 @@ bool VentanaSDL::inicializar(){
 		}
 
 		//Creamos la ventana
-		this->ventana = SDL_CreateWindow("Metal Slug (Alpha Version: 0.09)", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, ANCHO_VENTANA, ALTO_VENTANA, SDL_WINDOW_SHOWN);
+		this->ventana = SDL_CreateWindow("Metal Slug (Alpha Version: 0.10)", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, ANCHO_VENTANA, ALTO_VENTANA, SDL_WINDOW_SHOWN);
 		if (this->ventana == NULL){
 			cout << "La ventana no pudo crearse. Error: " << SDL_GetError() << endl;
 			finalizado = false;
@@ -53,6 +54,12 @@ bool VentanaSDL::inicializar(){
 					cout << "SDL_Image no pudo ser inicializado. Error: " << IMG_GetError() << endl;
 					finalizado = false;
 				}
+
+				//Inicializamos SDL_TTF
+				if (TTF_Init() == -1){
+					cout << "SDL_TFF no pudo ser inicializado. Error: " << TTF_GetError() << endl;
+					finalizado = false;
+				}
 			}
 		}
 	}
@@ -70,18 +77,34 @@ void VentanaSDL::actualizar(){
 	SDL_RenderPresent(this->renderizacion);
 }
 
-TexturaSDL* VentanaSDL::crearTextura(string ruta, int frames){
+TexturaSDL* VentanaSDL::crearModelo(string ruta, int valor, int opcion){
 	bool cargaExitosa;
 
 	TexturaSDL* textura = new TexturaSDL(this->renderizacion);
-	cargaExitosa = textura->cargarImagen(ruta);
-	textura->generarSprite(frames);
+
+	switch (opcion){
+	case 0:
+		cargaExitosa = textura->cargarImagen(ruta);
+		textura->generarSprite(valor);
+		break;
+	case 1:
+		cargaExitosa = textura->cargarTexto(ruta, valor);
+		break;
+	}
 
 	if (this->texturasCargadas){
 		this->texturasCargadas = cargaExitosa;
 	}
 
 	return textura;
+}
+
+TexturaSDL* VentanaSDL::crearTextura(string ruta, int frames){
+	return (this->crearModelo(ruta,frames,0));
+}
+
+TexturaSDL* VentanaSDL::crearTexto(string ruta, int tamanio){
+	return (this->crearModelo(ruta,tamanio,1));
 }
 
 bool VentanaSDL::comprobarTexturasCargadas(){
@@ -96,6 +119,7 @@ void VentanaSDL::cerrar(){
 	this->ventana = NULL;
 
 	//Salimos del SDL
+	TTF_Quit();
 	IMG_Quit();
 	SDL_Quit();
 }

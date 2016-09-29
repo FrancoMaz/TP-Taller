@@ -10,6 +10,7 @@
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+#include <SDL2/SDL_ttf.h>
 #include <stdio.h>
 #include <string>
 #include <vector>
@@ -21,6 +22,7 @@ class TexturaSDL {
 private:
 	SDL_Texture* textura;
 	SDL_Renderer* render;
+	TTF_Font* fuente;
 	vector<SDL_Rect> spriteClips;
 	int frameActual;
 	int ancho;
@@ -37,6 +39,12 @@ public:
 
 	//Carga una imagen de una ruta específica
 	bool cargarImagen(string ruta);
+
+	//Carga una fuente de texto desde un archivo de fuente .ttf y su tamaño
+	bool cargarTexto(string ruta, int tamanio);
+
+	//Setea el texto que se va a mostrar con su color
+	bool actualizarTexto(string texto, SDL_Color color);
 
 	//Coloca la textura en una posición de la pantalla con su respectiva rotación y reflejo (flip)
 	void aplicarPosicion(float x, float y, double rotacion, SDL_RendererFlip flip);

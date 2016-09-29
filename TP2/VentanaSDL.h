@@ -10,6 +10,7 @@
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+#include <SDL2/SDL_ttf.h>
 #include <string>
 #include "TexturaSDL.h"
 
@@ -26,11 +27,14 @@ private:
 	SDL_Renderer* renderizacion;
 	bool texturasCargadas;
 
+	TexturaSDL* crearModelo(string ruta, int valor, int opcion);
+
 public:
 	VentanaSDL();
 	~VentanaSDL();
 	bool inicializar();
 	TexturaSDL* crearTextura(string ruta, int frames);
+	TexturaSDL* crearTexto(string ruta, int tamanio);
 	void limpiar();
 	bool comprobarTexturasCargadas();
 	void actualizar();

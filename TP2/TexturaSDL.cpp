@@ -15,6 +15,7 @@
 TexturaSDL::TexturaSDL(SDL_Renderer* renderer){
 	this->textura = NULL;
 	this->render = renderer;
+	this->fuente = NULL;
 	this->frameActual = 0;
 	this->ancho = 0;
 	this->alto = 0;
@@ -58,6 +59,51 @@ bool TexturaSDL::cargarImagen(string ruta){
 	return finalizado;
 }
 
+bool TexturaSDL::cargarTexto(string ruta, int tamanio){
+	this->limpiar();
+	bool finalizado = true;
+
+	//Abrimos la fuente
+	this->fuente = TTF_OpenFont(ruta.c_str(),tamanio);
+	if (this->fuente == NULL){
+		cout << "No se pudo cargar la fuente de texto del archivo " << ruta.c_str() << endl;
+		cout << "Error: " << TTF_GetError() << endl;
+		finalizado = false;
+	} else {
+		//Renderizo el texto
+		SDL_Color colorTexto = {255,255,255};		//RGB (Rojo=0,Verde=0,Azul=0)
+		if(!this->actualizarTexto(" ",colorTexto)){
+			cout << "Error al renderizar la textura del texto" << endl;
+			finalizado = false;
+		}
+	}
+
+	return finalizado;
+}
+
+bool TexturaSDL::actualizarTexto(string texto, SDL_Color color){
+	//Renderizamos el texto pasado por argumento
+	SDL_Surface* textoCargado = TTF_RenderUTF8_Solid(this->fuente,texto.c_str(),color);
+	if (textoCargado == NULL){
+		cout << "No se pudo renderizar el texto" << endl;
+		cout << "Error: " << IMG_GetError() << endl;
+	} else {
+		//Creo la textura desde el surface creado arriba
+		this->textura = SDL_CreateTextureFromSurface(render,textoCargado);
+		if (this->textura == NULL){
+			cout << "No se pudo crear la textura del texto renderizado" << endl;
+			cout << "Error: " << SDL_GetError() << endl;
+		} else {
+			//Obtengo las dimensiones
+			this->ancho = textoCargado->w;
+			this->alto = textoCargado->h;
+		}
+		SDL_FreeSurface(textoCargado);
+	}
+
+	return (this->textura != NULL);
+}
+
 void TexturaSDL::setAlpha(Uint8 alpha){
 	SDL_SetTextureAlphaMod(this->textura,alpha);
 }
@@ -69,6 +115,12 @@ void TexturaSDL::limpiar(){
 		this->textura = NULL;
 		this->alto = 0;
 		this->ancho = 0;
+	}
+
+	//Libero la fuente
+	if (this->fuente != NULL){
+		TTF_CloseFont(this->fuente);
+		this->fuente = NULL;
 	}
 }
 

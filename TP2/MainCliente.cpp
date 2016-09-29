@@ -66,8 +66,7 @@ int main() {
 		TexturaSDL* texturaMenuMetalSlug = ventana->crearTextura("Recursos/Menu_Metal_Slug.png",0);
 		TexturaSDL* texturaMenuPressEnter = ventana->crearTextura("Recursos/Menu_Presionar_Enter.png",0);
 		TexturaSDL* texturaEfectoLuz = ventana->crearTextura("Recursos/Efecto_luz.png",0);
-		TexturaSDL* texturaMenuTPTaller = ventana->crearTextura("Recursos/Menu_TP_Taller.png",0);
-		TexturaSDL* texturaPrueba = ventana->crearTextura("Recursos/foo.png",4);
+		TexturaSDL* texturaTexto = ventana->crearTexto("Recursos/arial.ttf",13);
 		if (!ventana->comprobarTexturasCargadas()){
 			cout << "El programa no pudo ejecutarse." << endl;
 		} else {
@@ -82,6 +81,7 @@ int main() {
 				ventana->limpiar();
 				texturaMenuFondo->aplicarPosicion(0,0,0,SDL_FLIP_NONE);
 				texturaMenuMetalSlug->aplicarPosicion(180,y,rot,SDL_FLIP_NONE);
+				texturaTexto->aplicarPosicion(100,400,0,SDL_FLIP_NONE);
 				rot=rot-0.08;
 				ventana->actualizar();
 			}
@@ -91,11 +91,13 @@ int main() {
 					texturaMenuFondo->aplicarPosicion(0,0,0,SDL_FLIP_NONE);
 					texturaMenuMetalSlug->aplicarPosicion(180,50,rot,SDL_FLIP_NONE);
 					texturaMenuPressEnter->aplicarPosicion(200,440,0,SDL_FLIP_NONE);
-					texturaMenuTPTaller->aplicarPosicion(277,560,0,SDL_FLIP_NONE);
 					texturaEfectoLuz->aplicarPosicionConTamanio(0,0,800,600);
 					texturaEfectoLuz->setAlpha(a);
 					ventana->actualizar();
 			}
+
+			SDL_Color colorTexto = {255,255,255};
+			texturaTexto->actualizarTexto("Trabajo Práctico - Taller de Programación", colorTexto);
 
 			bool incrementa = true;
 			int a = 255;
@@ -113,8 +115,8 @@ int main() {
 						a=a-3;
 					}
 					texturaMenuPressEnter->setAlpha(a);
-					texturaMenuTPTaller->aplicarPosicion(277,560,0,SDL_FLIP_NONE);
-					texturaPrueba->aplicarPosicion(100,100,0,SDL_FLIP_NONE);
+					texturaTexto->aplicarPosicion(282,560,0,SDL_FLIP_NONE);
+					texturaTexto->setAlpha(200);
 					ventana->actualizar();
 
 					while(SDL_PollEvent(&e) != 0){
