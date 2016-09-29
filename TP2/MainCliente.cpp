@@ -66,7 +66,18 @@ int main() {
 		TexturaSDL* texturaMenuMetalSlug = ventana->crearTextura("Recursos/Menu_Metal_Slug.png",0);
 		TexturaSDL* texturaMenuPressEnter = ventana->crearTextura("Recursos/Menu_Presionar_Enter.png",0);
 		TexturaSDL* texturaEfectoLuz = ventana->crearTextura("Recursos/Efecto_luz.png",0);
-		TexturaSDL* texturaTexto = ventana->crearTexto("Recursos/arial.ttf",13);
+
+		TexturaSDL* texturaBotonSalir = ventana->crearTextura("Recursos/Boton_Salir.png",0);
+		TexturaSDL* texturaBotonCreditos = ventana->crearTextura("Recursos/Boton_Creditos.png",0);
+		TexturaSDL* texturaBotonIngresar = ventana->crearTextura("Recursos/Boton_Ingresar.png",0);
+
+		TexturaSDL* texturaCampoUno = ventana->crearTextura("Recursos/Efecto_luz.png",0);
+		TexturaSDL* texturaCampoDos = ventana->crearTextura("Recursos/Efecto_luz.png",0);
+
+		TexturaSDL* textoPuerto = ventana->crearTexto("Recursos/arial.ttf",14);
+		TexturaSDL* textoIP = ventana->crearTexto("Recursos/arial.ttf",14);
+
+		TexturaSDL* textoTPTaller = ventana->crearTexto("Recursos/arial.ttf",13);
 		if (!ventana->comprobarTexturasCargadas()){
 			cout << "El programa no pudo ejecutarse." << endl;
 		} else {
@@ -74,30 +85,29 @@ int main() {
 			bool siguiente = false;		//Indica si se puede pasar a la siguiente pantalla
 			SDL_Event e;
 
-			double rot = 0;
-			//Primera pantalla
+			//Primera pantalla (Presionar Enter)
 
-			for (float y=-290; y<50; y=y+5){
+			for (float y=-290; y<40; y=y+5){
 				ventana->limpiar();
 				texturaMenuFondo->aplicarPosicion(0,0,0,SDL_FLIP_NONE);
-				texturaMenuMetalSlug->aplicarPosicion(180,y,rot,SDL_FLIP_NONE);
-				texturaTexto->aplicarPosicion(100,400,0,SDL_FLIP_NONE);
-				rot=rot-0.08;
+				texturaMenuMetalSlug->aplicarPosicion(180,y,0,SDL_FLIP_NONE);
 				ventana->actualizar();
 			}
+
+			SDL_Color colorTexto = {255,255,255};
+			textoTPTaller->actualizarTexto("Trabajo Práctico - Taller de Programación", colorTexto);
 
 			for (float a= 255; a>0; a=a-3){
 					ventana->limpiar();
 					texturaMenuFondo->aplicarPosicion(0,0,0,SDL_FLIP_NONE);
-					texturaMenuMetalSlug->aplicarPosicion(180,50,rot,SDL_FLIP_NONE);
-					texturaMenuPressEnter->aplicarPosicion(200,440,0,SDL_FLIP_NONE);
+					texturaMenuMetalSlug->aplicarPosicion(180,40,0,SDL_FLIP_NONE);
+					texturaMenuPressEnter->aplicarPosicion(200,430,0,SDL_FLIP_NONE);
+					textoTPTaller->aplicarPosicion(284,560,0,SDL_FLIP_NONE);
+					textoTPTaller->setAlpha(200);
 					texturaEfectoLuz->aplicarPosicionConTamanio(0,0,800,600);
 					texturaEfectoLuz->setAlpha(a);
 					ventana->actualizar();
 			}
-
-			SDL_Color colorTexto = {255,255,255};
-			texturaTexto->actualizarTexto("Trabajo Práctico - Taller de Programación", colorTexto);
 
 			bool incrementa = true;
 			int a = 255;
@@ -105,8 +115,8 @@ int main() {
 			while ((!salir)&&(!siguiente)){
 					ventana->limpiar();
 					texturaMenuFondo->aplicarPosicion(0,0,0,SDL_FLIP_NONE);
-					texturaMenuMetalSlug->aplicarPosicion(180,50,rot,SDL_FLIP_NONE);
-					texturaMenuPressEnter->aplicarPosicion(200,440,0,SDL_FLIP_NONE);
+					texturaMenuMetalSlug->aplicarPosicion(180,40,0,SDL_FLIP_NONE);
+					texturaMenuPressEnter->aplicarPosicion(200,430,0,SDL_FLIP_NONE);
 					if (a>=255)	incrementa = false;
 					if (a<=0) incrementa = true;
 					if (incrementa){
@@ -115,8 +125,8 @@ int main() {
 						a=a-3;
 					}
 					texturaMenuPressEnter->setAlpha(a);
-					texturaTexto->aplicarPosicion(282,560,0,SDL_FLIP_NONE);
-					texturaTexto->setAlpha(200);
+					textoTPTaller->aplicarPosicion(284,560,0,SDL_FLIP_NONE);
+					textoTPTaller->setAlpha(200);
 					ventana->actualizar();
 
 					while(SDL_PollEvent(&e) != 0){
@@ -129,6 +139,45 @@ int main() {
 						}
 					}
 			}
+
+
+			//Segunda Pantalla (ingresar puerto y dirección IP)
+
+			textoPuerto->actualizarTexto("Ingrese el puerto:",colorTexto);
+			textoIP->actualizarTexto("Ingrese la IP del servidor:",colorTexto);
+			a = 230;
+			siguiente = false;
+			while ((!salir)&&(!siguiente)){
+				ventana->limpiar();
+				texturaMenuFondo->aplicarPosicion(0,0,0,SDL_FLIP_NONE);
+				texturaMenuMetalSlug->aplicarPosicion(180,40,0,SDL_FLIP_NONE);
+
+				textoPuerto->aplicarPosicion(310,337,0,SDL_FLIP_NONE);
+				texturaCampoUno->aplicarPosicionConTamanio(310,360,185,28);
+
+				textoIP->aplicarPosicion(310,402,0,SDL_FLIP_NONE);
+				texturaCampoDos->aplicarPosicionConTamanio(310,425,185,28);
+
+				texturaBotonSalir->aplicarPosicion(656,550,0,SDL_FLIP_NONE);
+				texturaBotonCreditos->aplicarPosicion(30,550,0,SDL_FLIP_NONE);
+				texturaBotonIngresar->aplicarPosicion(338,480,0,SDL_FLIP_NONE);
+
+				textoTPTaller->aplicarPosicion(284,560,0,SDL_FLIP_NONE);
+				textoTPTaller->setAlpha(200);
+				texturaEfectoLuz->aplicarPosicionConTamanio(0,0,800,600);
+				texturaEfectoLuz->setAlpha(a);
+				ventana->actualizar();
+
+				while(SDL_PollEvent(&e) != 0){
+					if (e.type == SDL_QUIT){
+						salir = true;
+					}
+				}
+
+				a = a-5;
+				if (a <= 0) a = 0;
+			}
+
 
 			ventana->cerrar();
 
