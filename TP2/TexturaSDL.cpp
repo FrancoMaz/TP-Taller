@@ -183,7 +183,7 @@ bool TexturaSDL::aplicarPosicionDeBoton(float x, float y, SDL_Event* e){
 			estaDentro = false;
 		} else {
 			//Si la posición del mouse está a la derecha del boton...
-			if (mouse_x > x + this->ancho){
+			if (mouse_x > x + this->ancho/3){
 				estaDentro = false;
 			} else {
 				//Si la posición del mouse está arriba del boton...
