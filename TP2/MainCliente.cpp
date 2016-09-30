@@ -83,6 +83,7 @@ int main() {
 		} else {
 			bool salir = false;			//Indica si se presiono el botón X de la venana
 			bool siguiente = false;		//Indica si se puede pasar a la siguiente pantalla
+			const Uint8* teclaActual = SDL_GetKeyboardState( NULL );	//Esta variable captura la tecla que se está presionando
 			SDL_Event e;
 
 			//Primera pantalla (Presionar Enter)
@@ -147,12 +148,22 @@ int main() {
 			textoIP->actualizarTexto("Ingrese la IP del servidor:",colorTexto);
 			a = 230;
 			siguiente = false;
+
 			while ((!salir)&&(!siguiente)){
 				ventana->limpiar();
 				texturaMenuFondo->aplicarPosicion(0,0,0,SDL_FLIP_NONE);
 				texturaMenuMetalSlug->aplicarPosicion(180,40,0,SDL_FLIP_NONE);
 
 				textoPuerto->aplicarPosicion(310,337,0,SDL_FLIP_NONE);
+/*
+				if( teclaActual[ SDL_SCANCODE_RIGHT ] )	{
+					texturaCampoUno->cargarImagen("Recursos/Boton_Creditos.png");
+					texturaCampoUno->generarSprite(3);
+				} else {
+					texturaCampoUno->cargarImagen("Recursos/Efecto_luz.png");
+					texturaCampoUno->generarSprite(0);
+				}
+*/
 				texturaCampoUno->aplicarPosicionConTamanio(310,360,185,28);
 
 				textoIP->aplicarPosicion(310,402,0,SDL_FLIP_NONE);

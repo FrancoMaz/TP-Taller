@@ -156,6 +156,8 @@ void TexturaSDL::generarSprite(int frames){
 
 		this->spriteClips.push_back(clips[i]);
 		}
+	} else {
+		this->spriteClips.clear();
 	}
 }
 
