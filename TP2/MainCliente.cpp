@@ -67,9 +67,9 @@ int main() {
 		TexturaSDL* texturaMenuPressEnter = ventana->crearTextura("Recursos/Menu_Presionar_Enter.png",0);
 		TexturaSDL* texturaEfectoLuz = ventana->crearTextura("Recursos/Efecto_luz.png",0);
 
-		TexturaSDL* texturaBotonSalir = ventana->crearTextura("Recursos/Boton_Salir.png",0);
-		TexturaSDL* texturaBotonCreditos = ventana->crearTextura("Recursos/Boton_Creditos.png",0);
-		TexturaSDL* texturaBotonIngresar = ventana->crearTextura("Recursos/Boton_Ingresar.png",0);
+		TexturaSDL* texturaBotonSalir = ventana->crearBoton("Recursos/Boton_Salir.png");
+		TexturaSDL* texturaBotonCreditos = ventana->crearBoton("Recursos/Boton_Creditos.png");
+		TexturaSDL* texturaBotonIngresar = ventana->crearBoton("Recursos/Boton_Ingresar.png");
 
 		TexturaSDL* texturaCampoUno = ventana->crearTextura("Recursos/Efecto_luz.png",0);
 		TexturaSDL* texturaCampoDos = ventana->crearTextura("Recursos/Efecto_luz.png",0);
@@ -158,9 +158,12 @@ int main() {
 				textoIP->aplicarPosicion(310,402,0,SDL_FLIP_NONE);
 				texturaCampoDos->aplicarPosicionConTamanio(310,425,185,28);
 
-				texturaBotonSalir->aplicarPosicion(656,550,0,SDL_FLIP_NONE);
-				texturaBotonCreditos->aplicarPosicion(30,550,0,SDL_FLIP_NONE);
-				texturaBotonIngresar->aplicarPosicion(338,480,0,SDL_FLIP_NONE);
+				if (texturaBotonSalir->aplicarPosicionDeBoton(656,550,&e)){
+					salir = true;
+				}
+
+				texturaBotonCreditos->aplicarPosicionDeBoton(30,550,&e);
+				texturaBotonIngresar->aplicarPosicionDeBoton(338,480,&e);
 
 				textoTPTaller->aplicarPosicion(284,560,0,SDL_FLIP_NONE);
 				textoTPTaller->setAlpha(200);

@@ -34,7 +34,7 @@ bool VentanaSDL::inicializar(){
 		}
 
 		//Creamos la ventana
-		this->ventana = SDL_CreateWindow("Metal Slug (Alpha Version: 0.11)", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, ANCHO_VENTANA, ALTO_VENTANA, SDL_WINDOW_SHOWN);
+		this->ventana = SDL_CreateWindow("Metal Slug (Alpha Version: 0.12)", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, ANCHO_VENTANA, ALTO_VENTANA, SDL_WINDOW_SHOWN);
 		if (this->ventana == NULL){
 			cout << "La ventana no pudo crearse. Error: " << SDL_GetError() << endl;
 			finalizado = false;
@@ -101,6 +101,10 @@ TexturaSDL* VentanaSDL::crearModelo(string ruta, int valor, int opcion){
 
 TexturaSDL* VentanaSDL::crearTextura(string ruta, int frames){
 	return (this->crearModelo(ruta,frames,0));
+}
+
+TexturaSDL* VentanaSDL::crearBoton(string ruta){
+	return (this->crearModelo(ruta,3,0));
 }
 
 TexturaSDL* VentanaSDL::crearTexto(string ruta, int tamanio){

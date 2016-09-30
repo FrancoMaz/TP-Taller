@@ -34,6 +34,7 @@ public:
 	~VentanaSDL();
 	bool inicializar();
 	TexturaSDL* crearTextura(string ruta, int frames);
+	TexturaSDL* crearBoton(string ruta);
 	TexturaSDL* crearTexto(string ruta, int tamanio);
 	void limpiar();
 	bool comprobarTexturasCargadas();

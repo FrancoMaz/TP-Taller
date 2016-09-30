@@ -38,7 +38,7 @@ bool TexturaSDL::cargarImagen(string ruta){
 		finalizado = false;
 	} else {
 		//Colocamos el color al que vamos a tomarlo como transparente (tomo el color blanco)
-		SDL_SetColorKey(imagenCargada,SDL_TRUE,SDL_MapRGB(imagenCargada->format,255,255,254));
+		SDL_SetColorKey(imagenCargada,SDL_TRUE,SDL_MapRGB(imagenCargada->format,254,254,0));
 		//Creamos una textura a partir de los pixeles del surface/imagen cargada
 		this->textura = SDL_CreateTextureFromSurface(this->render, imagenCargada);
 		if (this->textura == NULL){
@@ -167,6 +167,70 @@ void TexturaSDL::aplicarPosicion(float x, float y, double rotacion, SDL_Renderer
 	this->aplicarPosicionYTamanio(x,y,this->ancho,this->alto, rotacion, flip);
 }
 
+bool TexturaSDL::aplicarPosicionDeBoton(float x, float y, SDL_Event* e){
+	bool botonClickeado = false;
+	//Si ocurre algún evento del mouse
+	if (e->type == SDL_MOUSEMOTION || e->type == SDL_MOUSEBUTTONDOWN || e->type == SDL_MOUSEBUTTONUP){
+		//Obtengo la posición del mouse
+		int mouse_x,mouse_y;
+		SDL_GetMouseState(&mouse_x,&mouse_y);
+
+		//Luego compruebo si la flecha del mouse está en el botón
+		bool estaDentro = true;
+
+		//Si la posición del mouse está a la izquierda del boton...
+		if (mouse_x < x){
+			estaDentro = false;
+		} else {
+			//Si la posición del mouse está a la derecha del boton...
+			if (mouse_x > x + this->ancho){
+				estaDentro = false;
+			} else {
+				//Si la posición del mouse está arriba del boton...
+				if (mouse_y < y){
+					estaDentro = false;
+				} else {
+					//Si la posición del mouse está debajo del boton...
+					if (mouse_y > y + this->alto){
+						estaDentro = false;
+					}
+				}
+			}
+		}
+
+		//Si el mouse está fuera del botón...
+		if (!estaDentro){
+			this->aplicarPosicionDeFrame(x,y,0,0,SDL_FLIP_NONE);
+		} else {
+			//Si el mouse está dentro del boton, colocamos las texturas correspondientes
+			switch(e->type){
+				case SDL_MOUSEMOTION:
+				this->aplicarPosicionDeFrame(x,y,1,0,SDL_FLIP_NONE);
+				break;
+
+				case SDL_MOUSEBUTTONDOWN:
+				this->aplicarPosicionDeFrame(x,y,2,0,SDL_FLIP_NONE);
+				break;
+
+				case SDL_MOUSEBUTTONUP:
+				this->aplicarPosicionDeFrame(x,y,1,0,SDL_FLIP_NONE);
+				botonClickeado = true;
+				break;
+			}
+		}
+	} else {
+		this->aplicarPosicionDeFrame(x,y,0,0,SDL_FLIP_NONE);
+	}
+	return botonClickeado;
+}
+
 void TexturaSDL::aplicarPosicionConTamanio(float x, float y, int ancho, int alto){
 	this->aplicarPosicionYTamanio(x,y,ancho,alto,0,SDL_FLIP_NONE);
+}
+
+void TexturaSDL::aplicarPosicionDeFrame(float x, float y, int frame, double rotacion, SDL_RendererFlip flip){
+	if(frame < this->spriteClips.size()){
+		this->frameActual = frame*6;
+		this->aplicarPosicionYTamanio(x,y,this->ancho,this->alto, rotacion, flip);
+	}
 }

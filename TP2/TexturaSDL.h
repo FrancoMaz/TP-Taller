@@ -52,6 +52,13 @@ public:
 	//Idem, pero dicha textura se ajusta al tamaño del ancho/alto
 	void aplicarPosicionConTamanio(float x, float y, int ancho, int alto);
 
+	//Idem aplicarPosicion pero colocando la textura de un fotograma específico para un sprite
+	void aplicarPosicionDeFrame(float x, float y, int frame,double rotacion, SDL_RendererFlip flip);
+
+	//Idem aplicarPosicion pero coloca la textura del botón según el evento del mouse
+	//(por ejemplo, si pasa la fecha del mouse sobre el boton, debería cambiar su textura, o al hacer clic)
+	bool aplicarPosicionDeBoton(float x, float y, SDL_Event* e);
+
 	//Establecer transparencias (alpha = 0 transparente; alpha = 255 opaco)
 	void setAlpha(Uint8 alpha);
 
