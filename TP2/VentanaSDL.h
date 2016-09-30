@@ -10,7 +10,9 @@
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+#include <SDL2/SDL_ttf.h>
 #include <string>
+#include "TexturaSDL.h"
 
 using namespace std;
 
@@ -23,13 +25,19 @@ class VentanaSDL {
 private:
 	SDL_Window* ventana;
 	SDL_Renderer* renderizacion;
-	SDL_Texture* textura;
+	bool texturasCargadas;
+
+	TexturaSDL* crearModelo(string ruta, int valor, int opcion);
 
 public:
 	VentanaSDL();
 	~VentanaSDL();
 	bool inicializar();
-	bool cargarImagen(string rutaDeArchivo);
+	TexturaSDL* crearTextura(string ruta, int frames);
+	TexturaSDL* crearBoton(string ruta);
+	TexturaSDL* crearTexto(string ruta, int tamanio);
+	void limpiar();
+	bool comprobarTexturasCargadas();
 	void actualizar();
 	void cerrar();
 };

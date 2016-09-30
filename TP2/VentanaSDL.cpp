@@ -10,11 +10,12 @@
 #include <string>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+#include <SDL2/SDL_ttf.h>
 
 VentanaSDL::VentanaSDL(){
 	this->ventana = NULL;
 	this->renderizacion = NULL;
-	this->textura = NULL;
+	this->texturasCargadas = true;
 }
 
 VentanaSDL::~VentanaSDL(){}
@@ -33,13 +34,13 @@ bool VentanaSDL::inicializar(){
 		}
 
 		//Creamos la ventana
-		this->ventana = SDL_CreateWindow("Metal Slug (Alpha Version: 0.03)", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, ANCHO_VENTANA, ALTO_VENTANA, SDL_WINDOW_SHOWN);
+		this->ventana = SDL_CreateWindow("Metal Slug (Alpha Version: 0.12)", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, ANCHO_VENTANA, ALTO_VENTANA, SDL_WINDOW_SHOWN);
 		if (this->ventana == NULL){
 			cout << "La ventana no pudo crearse. Error: " << SDL_GetError() << endl;
 			finalizado = false;
 		} else {
-			//Creamos la renderización para la ventana
-			this->renderizacion = SDL_CreateRenderer(ventana, -1, SDL_RENDERER_ACCELERATED);
+			//Creamos la renderización para la ventana y la sincronización vertical
+			this->renderizacion = SDL_CreateRenderer(ventana, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC );
 			if (this->renderizacion == NULL){
 				cout << "La renderización no pudo ser creada. Error: " << SDL_GetError() << endl;
 				finalizado = false;
@@ -53,53 +54,68 @@ bool VentanaSDL::inicializar(){
 					cout << "SDL_Image no pudo ser inicializado. Error: " << IMG_GetError() << endl;
 					finalizado = false;
 				}
+
+				//Inicializamos SDL_TTF
+				if (TTF_Init() == -1){
+					cout << "SDL_TFF no pudo ser inicializado. Error: " << TTF_GetError() << endl;
+					finalizado = false;
+				}
 			}
 		}
 	}
 	return finalizado;
 }
 
-//Esta función carga una imagen externa (de una ruta de archivo) a una variable de tipo surface (si la función devuelve false, ocurrió un error)
-bool VentanaSDL::cargarImagen(string rutaDeArchivo){
-	bool finalizado = true;
-
-	//Cargo la imagen de una ruta especificada
-	SDL_Surface* imagenCargada = IMG_Load(rutaDeArchivo.c_str());
-
-	if (imagenCargada == NULL){
-		cout << "No se pudo cargar la imagen del archivo " << rutaDeArchivo.c_str() << endl;
-		cout << "Error: " << IMG_GetError() << endl;
-		finalizado = false;
-	} else {
-		//Creamos una textura a partir de los pixeles del surface/imagen cargada
-		this->textura = SDL_CreateTextureFromSurface(this->renderizacion, imagenCargada);
-		if (this->textura == NULL){
-			cout << "No se pudo crear la textura del archivo " << rutaDeArchivo.c_str() << endl;
-			cout << "Error: " << SDL_GetError() << endl;
-			finalizado = false;
-		}
-		SDL_FreeSurface(imagenCargada);
-	}
-
-	return finalizado;
+void VentanaSDL::limpiar(){
+	//Limpiar pantalla
+	SDL_SetRenderDrawColor(this->renderizacion, 0xFF, 0xFF, 0xFF, 0xFF);
+	SDL_RenderClear(this->renderizacion);
 }
 
 void VentanaSDL::actualizar(){
-	//Limpiar pantalla
-	SDL_RenderClear(this->renderizacion);
-
-	//Renderizar la textura en pantalla
-	SDL_RenderCopy(this->renderizacion, this->textura, NULL, NULL);
-
 	//Actualizar pantalla
 	SDL_RenderPresent(this->renderizacion);
 }
 
-void VentanaSDL::cerrar(){
-	//Libero la imagen cargada
-	SDL_DestroyTexture(this->textura);
-	this->textura = NULL;
+TexturaSDL* VentanaSDL::crearModelo(string ruta, int valor, int opcion){
+	bool cargaExitosa;
 
+	TexturaSDL* textura = new TexturaSDL(this->renderizacion);
+
+	switch (opcion){
+	case 0:
+		cargaExitosa = textura->cargarImagen(ruta);
+		textura->generarSprite(valor);
+		break;
+	case 1:
+		cargaExitosa = textura->cargarTexto(ruta, valor);
+		break;
+	}
+
+	if (this->texturasCargadas){
+		this->texturasCargadas = cargaExitosa;
+	}
+
+	return textura;
+}
+
+TexturaSDL* VentanaSDL::crearTextura(string ruta, int frames){
+	return (this->crearModelo(ruta,frames,0));
+}
+
+TexturaSDL* VentanaSDL::crearBoton(string ruta){
+	return (this->crearModelo(ruta,3,0));
+}
+
+TexturaSDL* VentanaSDL::crearTexto(string ruta, int tamanio){
+	return (this->crearModelo(ruta,tamanio,1));
+}
+
+bool VentanaSDL::comprobarTexturasCargadas(){
+	return texturasCargadas;
+}
+
+void VentanaSDL::cerrar(){
 	//Destruyo la ventana y el renderizador
 	SDL_DestroyRenderer(this->renderizacion);
 	this->renderizacion = NULL;
@@ -107,6 +123,7 @@ void VentanaSDL::cerrar(){
 	this->ventana = NULL;
 
 	//Salimos del SDL
+	TTF_Quit();
 	IMG_Quit();
 	SDL_Quit();
 }
