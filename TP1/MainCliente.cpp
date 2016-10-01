@@ -24,7 +24,7 @@ struct ComunicacionCliente{
 		};
 
 bool chequearSocket(string ip, int puerto) {
-	//string ipServer = "192.168.1.10";
+	//string ipServer = "192.168.1.11";
 	string ipServer = "127.0.0.1";
 	int puertoDeEscucha = 7891;
 
@@ -60,13 +60,26 @@ void* cicloConexion(void* arg) {
 	 //void** escuchando;
 	 //pthread_join(threadVerificarConexion,(void**)&escuchando);
 	 //termino = *((bool*) (&escuchando));
-	do
-	{
+	cliente->setOpcionMenu(0);
+	while (cliente->getOpcionMenu() != 5 and cliente->getOpcionMenu() != 4 and !cliente->getTermino()) {
 		cliente->mostrarMenuYProcesarOpcion();
+		if (!cliente->getTermino()) {
+			cliente->elegirOpcionDelMenu(cliente->getOpcionMenu());
+		}
+	}
+	if (cliente->getTermino() and cliente->getOpcionMenu() != 5)
+	{
+		int opcion;
+		while (opcion != 5) {
+			cout << endl;
+			cout << "Se cerro la conexion con el servidor. Presione 5 para salir" << endl;
+			cin >> opcion;
+			}
+			cliente->setOpcionMenu(5);
+		}
 
 		//if(accion == 5){ cliente->setOpcionMenu(accion);}
 
-	} while (cliente->getOpcionMenu() != 5 and cliente->getOpcionMenu() != 4 and !cliente->getTermino()); //mientras la opcion del menu no sea salir o desconectar..
 	if (cliente->getOpcionMenu() == 4) {
 		return (void*) 1;
 	}

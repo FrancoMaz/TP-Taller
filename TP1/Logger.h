@@ -24,7 +24,7 @@ public:
 	void escribir(string mensaje, int nivelDeLog);
 	time_t timer;
 	struct tm* timeinfo;
-
+	pthread_mutex_t mutexLog;
 private:
 	int modo;
 	FILE* archivoLog;

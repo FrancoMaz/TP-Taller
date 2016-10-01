@@ -25,7 +25,7 @@
 #include <iterator>
 #include "Mensaje.h"
 #include <queue>
-#define BUFFER_MAX_SIZE 1024
+#define BUFFER_MAX_SIZE 200
 using namespace std;
 
 class Cliente {

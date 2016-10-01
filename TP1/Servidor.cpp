@@ -21,7 +21,7 @@ Servidor::Servidor(char* nombreArchivoDeUsuarios, int puerto, Logger* logger) {
 	/* Set port number, using htons function to use proper byte order */
 	this->serverAddr.sin_port = htons(puerto);
 	/* Set IP address to localhost */
-	//this->serverAddr.sin_addr.s_addr = inet_addr("192.168.1.10");
+	//this->serverAddr.sin_addr.s_addr = inet_addr("192.168.1.11");
 	this->serverAddr.sin_addr.s_addr = inet_addr("127.0.0.1");
 	/* Set all bits of the padding field to 0 */
 	memset(serverAddr.sin_zero, '\0', sizeof serverAddr.sin_zero);
@@ -129,7 +129,6 @@ void Servidor::procesarMensajes() {
 				this->mensaje = "Procesando mensaje para "
 						+ listaMensajes.destinatario + "\n";
 				this->guardarLog(mensaje, DEBUG);
-				cout << mensaje << endl;
 			}
 		}
 	}
@@ -151,8 +150,7 @@ pair<int,string> Servidor::aceptarConexion() {
 	pair<int,string> cli;
 
 	this->addr_size = sizeof serverStorage;
-	int socketCliente = accept(welcomeSocket,
-			(struct sockaddr *) &this->serverStorage, &this->addr_size);
+	int socketCliente = accept(welcomeSocket,(struct sockaddr *) &this->serverStorage, &this->addr_size);
 	int ok = recv(socketCliente, datosRecibidos, BUFFER_MAX_SIZE, 0);
 	if (ok < 0){
 		this->guardarLog("No se pudieron recibir los datos para la conexion.",INFO);
@@ -162,21 +160,26 @@ pair<int,string> Servidor::aceptarConexion() {
 		return cli;
 	}
 	cout << "Datos recibidos: " << datosRecibidos << endl;
-	mensaje = "Datos recibidos: " + (string) datosRecibidos + "\n";
+	mensaje = "Datos recibidos: " + (string) datosRecibidos + string("\n");
 	this->guardarLog(mensaje, DEBUG);
 
 	splitDatos(datosRecibidos, &nombre, &pass);
 	this->autenticar(nombre, pass, usuarios);
 	char* resultadoDeLaAutenticacion;
-
+    int okAutenticar = 1;
 	if (usuarios.empty()) {
+		okAutenticar = -1;
 		strcpy(buffer, "Desconectar");
 		mensaje = "Se desconecta al usuario " + nombre + " del servidor porque falló la autenticación... \n";
-		this->cantClientesConectados -= 1;
+		//this->cantClientesConectados -= 1;
 		this->guardarLog(mensaje, INFO);
 		ok = send(socketCliente, buffer, BUFFER_MAX_SIZE, 0);
+		cli.first = -1;
+		cli.second = "";
+		return cli;
 	}
 	else {
+		this->cantClientesConectados += 1;
 		strcpy(buffer, this->serializarLista(usuarios).c_str());
 		string bufferS = buffer;
 		mensaje = "Enviándole al cliente " + nombre
@@ -195,11 +198,11 @@ pair<int,string> Servidor::aceptarConexion() {
 	if (ok < 0){
 		this->guardarLog("No se pudieron enviar los datos de la lista a traves de la conexion del cliente " + nombre + ".",INFO);
 		this->guardarLog("ERROR: Problema con el send del socket.",DEBUG);
-		cli.first = ok;
+		cli.first = -1;
 		cli.second = "";
 		return cli;
 	}
-	this->cantClientesConectados += 1;
+	//this->cantClientesConectados += 1;
 	cli.first = socketCliente;
 	cli.second = nombre;
 	return cli;
@@ -247,10 +250,6 @@ void Servidor::setThreadProceso(pthread_t thrProceso) {
 }
 
 int Servidor::getCantConexiones() {
-	stringstream ss;
-	ss << this->cantClientesConectados;
-	mensaje = "Cantidad de clientes conectados: " + ss.str() + "\n";
-	this->guardarLog(mensaje, DEBUG);
 	return this->cantClientesConectados;
 }
 
@@ -306,13 +305,15 @@ string Servidor::concatenarMensajes(queue<Mensaje>* colaDeMensajes) {
 	while (!colaDeMensajes->empty()) {
 		mensaje = colaDeMensajes->front();
 		colaDeMensajes->pop();
-		mensajesConcatenados.append(mensaje.getRemitente());
-		mensajesConcatenados.append("|");
-		mensajesConcatenados.append(mensaje.getTexto());
-		mensajesConcatenados.append("#");
+		mensajesConcatenados += mensaje.getRemitente();
+		mensajesConcatenados += "|";
+		mensajesConcatenados += mensaje.getTexto();
+		mensajesConcatenados += "#";
 	}
+	string lala = mensajesConcatenados.substr(0, mensajesConcatenados.length() -1);
+	lala += "@";
 
-	return mensajesConcatenados;
+	return lala;
 }
 
 void Servidor::restarCantidadClientesConectados(){
