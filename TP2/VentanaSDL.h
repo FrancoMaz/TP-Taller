@@ -25,7 +25,6 @@ class VentanaSDL {
 private:
 	SDL_Window* ventana;
 	SDL_Renderer* renderizacion;
-	bool texturasCargadas;
 
 	TexturaSDL* crearModelo(string ruta, int valor, int opcion);
 
@@ -37,7 +36,6 @@ public:
 	TexturaSDL* crearBoton(string ruta);
 	TexturaSDL* crearTexto(string ruta, int tamanio);
 	void limpiar();
-	bool comprobarTexturasCargadas();
 	void actualizar();
 	void cerrar();
 };

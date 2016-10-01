@@ -10,6 +10,7 @@
 
 #include "VentanaSDL.h"
 #include "TexturaSDL.h"
+#include "Controlador.h"
 #include <SDL2/SDL.h>
 #include <vector>
 
@@ -18,12 +19,17 @@ using namespace std;
 class Vista {
 private:
 	VentanaSDL* ventana;
+	Controlador* controlador;
 	vector<TexturaSDL*> textura;
 
 public:
 	Vista();
 	~Vista();
 	void cargarPrimeraPantalla();
+	void cargarSegundaPantalla();
+	bool inicializar();
+	void cargarArchivos();
+	void cerrar();
 };
 
 #endif /* TP2_VISTA_H_ */

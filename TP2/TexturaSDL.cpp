@@ -25,7 +25,7 @@ TexturaSDL::~TexturaSDL(){
 	this->limpiar();
 }
 
-bool TexturaSDL::cargarImagen(string ruta){
+void TexturaSDL::cargarImagen(string ruta){
 	bool finalizado = true;
 
 	this->limpiar();
@@ -56,10 +56,13 @@ bool TexturaSDL::cargarImagen(string ruta){
 		SDL_FreeSurface(imagenCargada);
 	}
 
-	return finalizado;
+	//Si no se encuentra la ruta de imagen, cargamos una por defecto
+	if (!finalizado){
+		this->cargarImagenNoEncontrada();
+	}
 }
 
-bool TexturaSDL::cargarTexto(string ruta, int tamanio){
+void TexturaSDL::cargarTexto(string ruta, int tamanio){
 	this->limpiar();
 	bool finalizado = true;
 
@@ -78,7 +81,11 @@ bool TexturaSDL::cargarTexto(string ruta, int tamanio){
 		}
 	}
 
-	return finalizado;
+	//Si no se encuentra la ruta de imagen, cargamos una por defecto
+	if (!finalizado){
+		cout << "Se cargará una fuente por defecto: Arial" << endl;
+		this->cargarTextoPorDefecto(tamanio);
+	}
 }
 
 bool TexturaSDL::actualizarTexto(string texto, SDL_Color color){
@@ -163,6 +170,14 @@ void TexturaSDL::generarSprite(int frames){
 
 void TexturaSDL::frameReset(){
 	this->frameActual = 0;
+}
+
+void TexturaSDL::cargarImagenNoEncontrada(){
+	this->cargarImagen("Recursos/ImagenNoEncontrada.png");
+}
+
+void TexturaSDL::cargarTextoPorDefecto(int tamanio){
+	this->cargarTexto("Recursos/arial.ttf",tamanio);
 }
 
 void TexturaSDL::aplicarPosicion(float x, float y, double rotacion, SDL_RendererFlip flip){

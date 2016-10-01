@@ -15,7 +15,6 @@
 VentanaSDL::VentanaSDL(){
 	this->ventana = NULL;
 	this->renderizacion = NULL;
-	this->texturasCargadas = true;
 }
 
 VentanaSDL::~VentanaSDL(){}
@@ -34,7 +33,7 @@ bool VentanaSDL::inicializar(){
 		}
 
 		//Creamos la ventana
-		this->ventana = SDL_CreateWindow("Metal Slug (Alpha Version: 0.12)", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, ANCHO_VENTANA, ALTO_VENTANA, SDL_WINDOW_SHOWN);
+		this->ventana = SDL_CreateWindow("Metal Slug (Beta Version)", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, ANCHO_VENTANA, ALTO_VENTANA, SDL_WINDOW_SHOWN);
 		if (this->ventana == NULL){
 			cout << "La ventana no pudo crearse. Error: " << SDL_GetError() << endl;
 			finalizado = false;
@@ -84,16 +83,12 @@ TexturaSDL* VentanaSDL::crearModelo(string ruta, int valor, int opcion){
 
 	switch (opcion){
 	case 0:
-		cargaExitosa = textura->cargarImagen(ruta);
+		textura->cargarImagen(ruta);
 		textura->generarSprite(valor);
 		break;
 	case 1:
-		cargaExitosa = textura->cargarTexto(ruta, valor);
+		textura->cargarTexto(ruta, valor);
 		break;
-	}
-
-	if (this->texturasCargadas){
-		this->texturasCargadas = cargaExitosa;
 	}
 
 	return textura;
@@ -109,10 +104,6 @@ TexturaSDL* VentanaSDL::crearBoton(string ruta){
 
 TexturaSDL* VentanaSDL::crearTexto(string ruta, int tamanio){
 	return (this->crearModelo(ruta,tamanio,1));
-}
-
-bool VentanaSDL::comprobarTexturasCargadas(){
-	return texturasCargadas;
 }
 
 void VentanaSDL::cerrar(){
