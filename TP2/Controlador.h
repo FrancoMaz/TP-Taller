@@ -9,6 +9,7 @@
 #define TP2_CONTROLADOR_H_
 
 #include <SDL2/SDL.h>
+#include <string>
 
 using namespace std;
 
@@ -43,6 +44,9 @@ public:
 	no se ejecutaran, yendo directo al return del main.
 	*/
 	bool comprobarCierreVentana();
+
+	//A partir del texto pasado por argumento, lo va actualizando agregando caracteres que se ingresan por teclado
+	bool ingresarCaracteresATexto(string* textoParaActualizar);
 
 	SDL_Event obtenerEvento();
 };

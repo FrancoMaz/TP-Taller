@@ -25,12 +25,17 @@ Logger::~Logger() {
 void Logger::escribir(string mensaje, int nivelDeLog) {
 	if (this->modo == 1) {
 		if (nivelDeLog == 1) {
+			pthread_mutex_lock(&mutexLog);
 			this->archivoLog = fopen("Log.txt", "a");
 			fputs(mensaje.c_str(), this->archivoLog);
 			fclose(this->archivoLog);
+
+			pthread_mutex_unlock(&mutexLog);
 		}
 	} else {
 		// si el modo del logger es DEBUG se debe loggear todoo
+
+		pthread_mutex_lock(&mutexLog);
 		this->archivoLog = fopen("Log.txt", "a");
 		stringstream ss;
 		time(&timer);
@@ -40,5 +45,7 @@ void Logger::escribir(string mensaje, int nivelDeLog) {
 		ss << buffer;
 		fputs((("[" + ss.str() + "] ") + mensaje).c_str(), this->archivoLog);
 		fclose(this->archivoLog);
+
+		pthread_mutex_unlock(&mutexLog);
 	}
 }

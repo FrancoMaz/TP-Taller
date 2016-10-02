@@ -132,7 +132,7 @@ void TexturaSDL::limpiar(){
 }
 
 void TexturaSDL::aplicarPosicionYTamanio(float x, float y, int ancho, int alto, double rotacion, SDL_RendererFlip flip){
-	SDL_Rect rectangulo = {x,y,ancho,alto};
+	SDL_Rect rectangulo = {(int)x,(int)y,ancho,alto};
 	SDL_Rect* clip = NULL;
 
 	if (this->spriteClips.size() != 0){

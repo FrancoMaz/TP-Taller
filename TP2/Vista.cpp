@@ -40,6 +40,7 @@ void Vista::cargarArchivos(){
 	textura.push_back(ventana->crearTexto("Recursos/arial.ttf",14));					//9: textoPuerto
 	textura.push_back(ventana->crearTexto("Recursos/arial.ttf",14));					//10: textoIP
 	textura.push_back(ventana->crearTexto("Recursos/arial.ttf",13));					//11: textoTPTaller
+	textura.push_back(ventana->crearTexto("Recursos/arial.ttf",19));					//12: entradaTextoIP
 }
 
 void Vista::cargarPrimeraPantalla(){
@@ -89,9 +90,14 @@ void Vista::cargarPrimeraPantalla(){
 
 void Vista::cargarSegundaPantalla(){
 	SDL_Color colorTexto = {255,255,255};
+	SDL_Color colorTextoEntrada = {0,0,0};
 	SDL_Event e;
+	string numeroIP = "78";
 	int a = 230;
 	bool salir = false;
+
+	//Inicializamos la entrada para textos
+	SDL_StartTextInput();
 
 	textura[9]->actualizarTexto("Ingrese el puerto:",colorTexto);
 	textura[10]->actualizarTexto("Ingrese la IP del servidor:",colorTexto);
@@ -104,15 +110,17 @@ void Vista::cargarSegundaPantalla(){
 
 		textura[9]->aplicarPosicion(310,337,0,SDL_FLIP_NONE);
 
-		if(this->controlador->escanearBoton(SDL_SCANCODE_RIGHT)){
-			textura[7]->cargarImagen("Recursos/Boton_Creditos.png");
-			textura[7]->generarSprite(3);
-		} else {
-			textura[7]->cargarImagen("Recursos/Efecto_luz.png");
-			textura[7]->generarSprite(0);
-		}
-
+		textura[7]->cargarImagen("Recursos/Efecto_luz.png");
 		textura[7]->aplicarPosicionConTamanio(310,360,185,28);
+
+		textura[12]->actualizarTexto(numeroIP,colorTextoEntrada);
+		textura[12]->aplicarPosicion(316,363,0,SDL_FLIP_NONE);
+		this->controlador->ingresarCaracteresATexto(&numeroIP);
+		//Ingreso de texto
+		//if(this->controlador->ingresarCaracteresATexto(&numeroIP)){
+			textura[12]->actualizarTexto(numeroIP,colorTextoEntrada);
+			textura[12]->aplicarPosicion(316,363,0,SDL_FLIP_NONE);
+		//}
 
 		textura[10]->aplicarPosicion(310,402,0,SDL_FLIP_NONE);
 		textura[8]->aplicarPosicionConTamanio(310,425,185,28);
@@ -130,7 +138,7 @@ void Vista::cargarSegundaPantalla(){
 		textura[3]->setAlpha(a);
 		ventana->actualizar();
 
-		this->controlador->botonCerrarVentanaSeleccionado();
+		//this->controlador->botonCerrarVentanaSeleccionado();
 
 		a = a-5;
 		if (a <= 0) a = 0;

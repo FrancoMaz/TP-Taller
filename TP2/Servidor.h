@@ -24,7 +24,7 @@
 #include "Logger.h"
 #include "Mensaje.h"
 #define MAX_CANT_CLIENTES 6
-#define BUFFER_MAX_SIZE 1024
+#define BUFFER_MAX_SIZE 200
 const int INFO = 1;
 const int DEBUG = 2;
 

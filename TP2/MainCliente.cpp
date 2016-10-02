@@ -15,25 +15,39 @@
 #include <unistd.h>
 #include <netdb.h>
 #include "Cliente.h"
-#include "VentanaSDL.h"
-#include "TexturaSDL.h"
 #include "Vista.h"
-#include <SDL2/SDL.h>
 
 using namespace std;
 
+struct ComunicacionCliente{
+			Cliente* cliente;
+			bool termino;
+		};
+
 bool chequearSocket(string ip, int puerto) {
-	//string ipServer = "192.168.1.10";
+	//string ipServer = "192.168.1.11";
 	string ipServer = "127.0.0.1";
 	int puertoDeEscucha = 7891;
 
 	return (ip == ipServer && puerto == puertoDeEscucha);
+}
+void* verificarConexion(void * arg){
+	ComunicacionCliente* comunicacion = (ComunicacionCliente*)arg;
+	Cliente* cliente = comunicacion->cliente;
+	cliente->corroborarConexion();
+    //comunicacion->termino = cliente->corroborarConexion();
 }
 
 void* cicloConexion(void* arg) {
 	//Funcion que cicla para las opciones del cliente dentro del thread de comunicacion. Devuelve 1 si la opcion es desconectar, 0 si es salir.
 	Cliente* cliente = (Cliente*) arg;
 	string user, pass;
+	pthread_t threadVerificarConexion;
+	ComunicacionCliente comunicacion;
+	comunicacion.cliente =cliente;
+	comunicacion.termino = false;
+
+	bool termino = false;
 	while (cliente->getClientesDisponibles().empty()) {
 		cout << "Ingrese nombre de usuario: ";
 		cin >> user;
@@ -41,13 +55,36 @@ void* cicloConexion(void* arg) {
 		cin >> pass;
 		cliente->conectar(user, pass);
 	}
-	do
-	{
+	//se crea esta hilo para poder verificar la conexion con el servidor
+	pthread_create(&threadVerificarConexion, NULL,&verificarConexion,&comunicacion);
+	pthread_detach(threadVerificarConexion);
+	 //void** escuchando;
+	 //pthread_join(threadVerificarConexion,(void**)&escuchando);
+	 //termino = *((bool*) (&escuchando));
+	cliente->setOpcionMenu(0);
+	while (cliente->getOpcionMenu() != 5 and cliente->getOpcionMenu() != 4 and !cliente->getTermino()) {
 		cliente->mostrarMenuYProcesarOpcion();
-	} while (cliente->getOpcionMenu() != 5 and cliente->getOpcionMenu() != 4); //mientras la opcion del menu no sea salir o desconectar..
+		if (!cliente->getTermino()) {
+			cliente->elegirOpcionDelMenu(cliente->getOpcionMenu());
+		}
+	}
+	if (cliente->getTermino() and cliente->getOpcionMenu() != 5)
+	{
+		int opcion;
+		while (opcion != 5) {
+			cout << endl;
+			cout << "Se cerro la conexion con el servidor. Presione 5 para salir" << endl;
+			cin >> opcion;
+			}
+			cliente->setOpcionMenu(5);
+		}
+
+		//if(accion == 5){ cliente->setOpcionMenu(accion);}
+
 	if (cliente->getOpcionMenu() == 4) {
 		return (void*) 1;
 	}
+	//pthread_detach(threadVerificarConexion);
 	return (void*) 0;
 }
 
@@ -68,7 +105,6 @@ int main() {
 		vista->cargarSegundaPantalla();
 
 		vista->cerrar();
-
 		/*
 		while (!socketOk) {
 			do {
@@ -82,7 +118,6 @@ int main() {
 					cout << "Error: el dato ingresado debe ser un numero" << endl;
 				}
 			} while (!esValido);
-
 			cout << "Ingrese la ip del servidor: ";
 			cin >> ip;
 			socketOk = chequearSocket(ip, puerto); //FALTA IMPLEMENTAR METODO DE CHEQUEAR IP/PUERTO. ESTA MAS ABAJO LA FUNCION.
@@ -91,7 +126,6 @@ int main() {
 				cout << "Error: La direccion de ip o el puerto no permiten esta conexion." << endl;
 			}
 		}
-
 		cout << "Socket OK" << endl;
 		Cliente* cliente = new Cliente(ip, puerto);
 		cout << "Bienvenido al sistema de mensajería" << endl;
@@ -111,7 +145,6 @@ int main() {
 					cout << "Error: la opcion ingresada no es valida" << endl;
 				}
 			} while (!accionValida);
-
 			if (accion != 2) {
 				//si no es salir, creo el thread de comunicacion que intenta conectar.
 				int threadOk = pthread_create(&thrComu, NULL, &cicloConexion,cliente);
@@ -127,6 +160,7 @@ int main() {
 						cliente->vaciarClientesDisponibles();
 					} //si es 0, va a salir automaticamente del loop y del programa.
 				}
+
 			} else {
 				accion = 0; //si la accion es 2, la pongo en 0 para que salga del while
 			}
