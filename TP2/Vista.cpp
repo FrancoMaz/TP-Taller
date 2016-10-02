@@ -92,7 +92,7 @@ void Vista::cargarSegundaPantalla(){
 	SDL_Color colorTexto = {255,255,255};
 	SDL_Color colorTextoEntrada = {0,0,0};
 	SDL_Event e;
-	string numeroIP = "78";
+	string numeroIP = "hola a todos";
 	int a = 230;
 	bool salir = false;
 
@@ -117,9 +117,10 @@ void Vista::cargarSegundaPantalla(){
 		textura[12]->aplicarPosicion(316,363,0,SDL_FLIP_NONE);
 		this->controlador->ingresarCaracteresATexto(&numeroIP);
 		//Ingreso de texto
-		//if(this->controlador->ingresarCaracteresATexto(&numeroIP)){
+		//if(this->controlador->ingresarCaracteresATexto(&numeroIP)){{
 			textura[12]->actualizarTexto(numeroIP,colorTextoEntrada);
 			textura[12]->aplicarPosicion(316,363,0,SDL_FLIP_NONE);
+
 		//}
 
 		textura[10]->aplicarPosicion(310,402,0,SDL_FLIP_NONE);

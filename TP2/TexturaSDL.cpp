@@ -22,13 +22,14 @@ TexturaSDL::TexturaSDL(SDL_Renderer* renderer){
 }
 
 TexturaSDL::~TexturaSDL(){
-	this->limpiar();
+	this->limpiarTextura();
+	this->limpiarFuente();
 }
 
 void TexturaSDL::cargarImagen(string ruta){
 	bool finalizado = true;
 
-	this->limpiar();
+	this->limpiarTextura();
 
 	//Cargo la imagen de una ruta especificada
 	SDL_Surface* imagenCargada = IMG_Load(ruta.c_str());
@@ -63,7 +64,8 @@ void TexturaSDL::cargarImagen(string ruta){
 }
 
 void TexturaSDL::cargarTexto(string ruta, int tamanio){
-	this->limpiar();
+	this->limpiarTextura();
+	this->limpiarFuente();
 	bool finalizado = true;
 
 	//Abrimos la fuente
@@ -89,6 +91,7 @@ void TexturaSDL::cargarTexto(string ruta, int tamanio){
 }
 
 bool TexturaSDL::actualizarTexto(string texto, SDL_Color color){
+	this->limpiarTextura();
 	//Renderizamos el texto pasado por argumento
 	SDL_Surface* textoCargado = TTF_RenderUTF8_Solid(this->fuente,texto.c_str(),color);
 	if (textoCargado == NULL){
@@ -115,7 +118,7 @@ void TexturaSDL::setAlpha(Uint8 alpha){
 	SDL_SetTextureAlphaMod(this->textura,alpha);
 }
 
-void TexturaSDL::limpiar(){
+void TexturaSDL::limpiarTextura(){
 	//Libero las texturas si estas existen
 	if (this->textura != NULL) {
 		SDL_DestroyTexture(this->textura);
@@ -123,7 +126,9 @@ void TexturaSDL::limpiar(){
 		this->alto = 0;
 		this->ancho = 0;
 	}
+}
 
+void TexturaSDL::limpiarFuente(){
 	//Libero la fuente
 	if (this->fuente != NULL){
 		TTF_CloseFont(this->fuente);

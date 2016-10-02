@@ -57,8 +57,6 @@ bool Controlador::ingresarCaracteresATexto(string* textoParaActualizar){
 	//Indicador para poder renderizar el texto que querramos actualizar
 	bool renderizarTexto = false;
 
-	SDL_StartTextInput();
-
 	while(SDL_PollEvent(&evento) != 0){
 		//Si presionamos el boton X de cerrar ventana...
 		if(evento.type == SDL_QUIT){
@@ -70,29 +68,23 @@ bool Controlador::ingresarCaracteresATexto(string* textoParaActualizar){
 				if(this->evento.key.keysym.sym == SDLK_BACKSPACE && textoParaActualizar->length() > 0){
 					//Borramos un caracter del texto
 					textoParaActualizar->pop_back();
-					renderizarTexto = true;
-				} else {
-					//Si presionamos Ctrl+C copiamos el contenido del texto en el portapapeles
-					if(this->evento.key.keysym.sym == SDLK_c && (SDL_GetModState() & KMOD_CTRL)){
-						//El (SDL_GetModState() & KMOD_CTRL) lo que hace es asegurarnos que mantengamos el Ctrl
-						SDL_SetClipboardText(textoParaActualizar->c_str());
-					} else {
-						//Si presionamos Ctrl+V pegamos el contenido del portapapeles en el texto
-						if(this->evento.key.keysym.sym == SDLK_v &&(SDL_GetModState() & KMOD_CTRL)){
-							SDL_GetClipboardText();
-							renderizarTexto = true;
-						}
+					if (textoParaActualizar->length() == 0){
+						*textoParaActualizar = " ";
 					}
+					renderizarTexto = true;
 				}
 			} else {
 				//Trabajamos con los eventos de entrada para el texto
 				if(this->evento.type == SDL_TEXTINPUT){
-					//Si no copiamos (presionamos Ctrl+c) o pegamos (presionamos Ctrl+v)
-					if(!((this->evento.text.text[0] == 'c' || this->evento.text.text[0] == 'C')&&(this->evento.text.text[0] == 'v' || this->evento.text.text[0] == 'V'))&&(SDL_GetModState() & KMOD_CTRL)){
-						//Asignamos el caracter al texto
-						*textoParaActualizar += this->evento.text.text;
-						renderizarTexto = true;
+					//Asignamos el caracter al texto
+					if (*textoParaActualizar == " "){
+						*textoParaActualizar = this->evento.text.text;
+					} else {
+						if (textoParaActualizar->length() < 13){
+							*textoParaActualizar += this->evento.text.text;
+						}
 					}
+					renderizarTexto = true;
 				}
 			}
 		}

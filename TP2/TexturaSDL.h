@@ -37,7 +37,10 @@ public:
 	~TexturaSDL();
 
 	//Elimina las referencias de la textura, liberando memoria
-	void limpiar();
+	void limpiarTextura();
+
+	//Elimina las referencias de la fuente de texto, liberando memoria
+	void limpiarFuente();
 
 	//Carga una imagen de una ruta específica
 	void cargarImagen(string ruta);
