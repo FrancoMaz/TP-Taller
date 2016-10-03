@@ -232,7 +232,7 @@ void Vista::cargarTerceraPantalla(string* nombre, string* contrasenia){
 
 	textura[9]->actualizarTexto("Ingrese el nombre:",colorTexto);
 	textura[10]->actualizarTexto("Ingrese la contraseña:",colorTexto);
-	textura[14]->actualizarTexto("Usuario/contraseñaa incorrectos, inténtelo de nuevo",colorTextoAmarillo);
+	textura[14]->actualizarTexto("Usuario/contraseña incorrectos, inténtelo de nuevo",colorTextoAmarillo);
 
 	textura[12]->actualizarTexto(*nombre,colorTextoEntrada);
 	textura[13]->actualizarTexto(*contrasenia,colorTextoEntrada);
@@ -291,7 +291,7 @@ void Vista::cargarTerceraPantalla(string* nombre, string* contrasenia){
 		}
 
 		if((datosIncorrectos)&&((*nombre != " ")||(*contrasenia != " "))){
-			textura[14]->aplicarPosicion(213,530,0,SDL_FLIP_NONE);
+			textura[14]->aplicarPosicion(215,530,0,SDL_FLIP_NONE);
 		}
 
 		textura[11]->aplicarPosicion(254,560,0,SDL_FLIP_NONE);
