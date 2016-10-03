@@ -102,34 +102,11 @@ int main() {
 	} else {
 		vista->cargarArchivos();
 		vista->cargarPrimeraPantalla();
-		vista->cargarSegundaPantalla();
-
-		vista->cerrar();
-		/*
-		while (!socketOk) {
-			do {
-				cout << "Ingrese el puerto para la conexion: ";
-				cin >> puerto;
-				if (cin.good()) {
-					esValido = true;
-				} else {
-					cin.clear();
-					cin.ignore();
-					cout << "Error: el dato ingresado debe ser un numero" << endl;
-				}
-			} while (!esValido);
-			cout << "Ingrese la ip del servidor: ";
-			cin >> ip;
-			socketOk = chequearSocket(ip, puerto); //FALTA IMPLEMENTAR METODO DE CHEQUEAR IP/PUERTO. ESTA MAS ABAJO LA FUNCION.
-			if (!socketOk) {
-				//SI NO SE PUDO COMPROBAR LA CONEXION, DOY ERROR Y VUELVO A PEDIR IP Y CONEXION
-				cout << "Error: La direccion de ip o el puerto no permiten esta conexion." << endl;
-			}
-		}
-		cout << "Socket OK" << endl;
+		vista->cargarSegundaPantalla(&puerto,&ip);
 		Cliente* cliente = new Cliente(ip, puerto);
-		cout << "Bienvenido al sistema de mensajería" << endl;
+		vista->cargarTerceraPantalla(&nombre,&contrasenia);
 
+/*
 		do {
 			bool accionValida = false;
 			cout << "1) Conectar" << endl;
@@ -164,9 +141,10 @@ int main() {
 			} else {
 				accion = 0; //si la accion es 2, la pongo en 0 para que salga del while
 			}
-		} while (accion != 0); //si la accion es 0, es salir.
+		} while (accion != 0); //si la accion es 0, es salir.*/
 		cliente->salir(); //cierra el socket y realiza trabajos de limpieza de memoria
-		cout << "Saliendo del programa..." << endl;*/
+		cout << "Saliendo del programa..." << endl;
+		vista->cerrar();
 	}
 	return 0;
 }

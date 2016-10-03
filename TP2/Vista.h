@@ -26,7 +26,8 @@ public:
 	Vista();
 	~Vista();
 	void cargarPrimeraPantalla();
-	void cargarSegundaPantalla();
+	void cargarSegundaPantalla(int* puerto, string* ip);
+	void cargarTerceraPantalla(string* nombre, string* contrasenia);
 	bool inicializar();
 	void cargarArchivos();
 	void cerrar();
