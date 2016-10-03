@@ -153,6 +153,17 @@ void Cliente::conectar(string nombre, string contrasenia) {
 	if (connect(socketCliente, (struct sockaddr *) &direccionServidor,addr_size) == 0) {
 
 		strcpy(buffer, nombreYPass);
+		struct timeval timeout;
+		timeout.tv_sec = 10;
+		timeout.tv_usec = 0;
+		if (setsockopt (socketCliente, SOL_SOCKET, SO_RCVTIMEO, (char *)&timeout, sizeof(timeout)) < 0)
+		{
+			cout << "No se pudo setear el timeout del recv del socket" << endl;
+		}
+		if (setsockopt (socketCliente, SOL_SOCKET, SO_SNDTIMEO, (char *)&timeout, sizeof(timeout)) < 0)
+		{
+			cout << "No se pudo setear el timeout del send del socket" << endl;
+		}
 		send(socketCliente, buffer, strlen(nombreYPass) + 1, 0);
 		this->nombre = nombre;
 		//this->clientesDisponibles.push_front("hola"); //pongo cualquier cosa para comprobar el ciclo ok.
