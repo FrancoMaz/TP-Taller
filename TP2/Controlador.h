@@ -45,8 +45,11 @@ public:
 	*/
 	bool comprobarCierreVentana();
 
+	//Este método puede ser invocado por otras funciones que requieran salir del juego, por ejemplo el botón Salir de menú
+	void setCerrarVentana();
+
 	//A partir del texto pasado por argumento, lo va actualizando agregando caracteres que se ingresan por teclado
-	bool ingresarCaracteresATexto(string* textoParaActualizar);
+	void ingresarCaracteresATexto(string* textoParaActualizar);
 
 	SDL_Event obtenerEvento();
 };

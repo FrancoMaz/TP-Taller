@@ -39,7 +39,7 @@ bool VentanaSDL::inicializar(){
 			finalizado = false;
 		} else {
 			//Creamos la renderización para la ventana y la sincronización vertical
-			this->renderizacion = SDL_CreateRenderer(ventana, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC );
+			this->renderizacion = SDL_CreateRenderer(this->ventana, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC );
 			if (this->renderizacion == NULL){
 				cout << "La renderización no pudo ser creada. Error: " << SDL_GetError() << endl;
 				finalizado = false;
@@ -77,8 +77,6 @@ void VentanaSDL::actualizar(){
 }
 
 TexturaSDL* VentanaSDL::crearModelo(string ruta, int valor, int opcion){
-	bool cargaExitosa;
-
 	TexturaSDL* textura = new TexturaSDL(this->renderizacion);
 
 	switch (opcion){

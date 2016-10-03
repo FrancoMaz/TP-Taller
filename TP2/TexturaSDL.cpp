@@ -30,6 +30,7 @@ void TexturaSDL::cargarImagen(string ruta){
 	bool finalizado = true;
 
 	this->limpiarTextura();
+	this->limpiarFuente();
 
 	//Cargo la imagen de una ruta especificada
 	SDL_Surface* imagenCargada = IMG_Load(ruta.c_str());

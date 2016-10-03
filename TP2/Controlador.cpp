@@ -53,10 +53,7 @@ void Controlador::botonCerrarVentanaSeleccionado(){
 	}
 }
 
-bool Controlador::ingresarCaracteresATexto(string* textoParaActualizar){
-	//Indicador para poder renderizar el texto que querramos actualizar
-	bool renderizarTexto = false;
-
+void Controlador::ingresarCaracteresATexto(string* textoParaActualizar){
 	while(SDL_PollEvent(&evento) != 0){
 		//Si presionamos el boton X de cerrar ventana...
 		if(evento.type == SDL_QUIT){
@@ -71,7 +68,6 @@ bool Controlador::ingresarCaracteresATexto(string* textoParaActualizar){
 					if (textoParaActualizar->length() == 0){
 						*textoParaActualizar = " ";
 					}
-					renderizarTexto = true;
 				}
 			} else {
 				//Trabajamos con los eventos de entrada para el texto
@@ -84,16 +80,18 @@ bool Controlador::ingresarCaracteresATexto(string* textoParaActualizar){
 							*textoParaActualizar += this->evento.text.text;
 						}
 					}
-					renderizarTexto = true;
 				}
 			}
 		}
 	}
-	return renderizarTexto;
 }
 
 bool Controlador::comprobarCierreVentana(){
 	return botonCerrarVentana;
+}
+
+void Controlador::setCerrarVentana(){
+	this->botonCerrarVentana = true;
 }
 
 SDL_Event Controlador::obtenerEvento(){
