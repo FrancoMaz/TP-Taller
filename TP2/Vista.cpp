@@ -21,6 +21,12 @@ using namespace std;
 Vista::Vista(){
 	this->ventana = new VentanaSDL();
 	this->controlador = new Controlador();
+	this->opacidad = 255;
+
+	this->datos.puerto = " ";
+	this->datos.ip = " ";
+	this->datos.nombre = " ";
+	this->datos.contrasenia = " ";
 }
 
 bool Vista::inicializar(){
@@ -57,7 +63,7 @@ void Vista::cargarPrimeraPantalla(){
 	SDL_Color colorTexto = {255,255,255};
 	textura[11]->actualizarTexto("Trabajo Práctico - Taller de Programación", colorTexto);
 
-	for (float a= 255; a>0; a=a-3){
+	for (this->opacidad; this->opacidad>0; this->opacidad=this->opacidad-3){
 		ventana->limpiar();
 		textura[0]->aplicarPosicion(0,0,0,SDL_FLIP_NONE);
 		textura[1]->aplicarPosicion(180,40,0,SDL_FLIP_NONE);
@@ -65,54 +71,74 @@ void Vista::cargarPrimeraPantalla(){
 		textura[11]->aplicarPosicion(254,560,0,SDL_FLIP_NONE);
 		textura[11]->setAlpha(200);
 		textura[3]->aplicarPosicionConTamanio(0,0,800,600);
-		textura[3]->setAlpha(a);
+		textura[3]->setAlpha(this->opacidad);
 		ventana->actualizar();
 	}
 
 	bool incrementa = true;
-	int a = 255;
+	this->opacidad = 255;
 	//Mientras la ventana no se cierre pulsando X o no se presione el enter, hacer el loop
 	while ((!controlador->comprobarCierreVentana())&&(!controlador->presionarBoton(SDLK_RETURN))){
 		ventana->limpiar();
 		textura[0]->aplicarPosicion(0,0,0,SDL_FLIP_NONE);
 		textura[1]->aplicarPosicion(180,40,0,SDL_FLIP_NONE);
 		textura[2]->aplicarPosicion(200,430,0,SDL_FLIP_NONE);
-		if (a>=255)	incrementa = false;
-		if (a<=0) incrementa = true;
+		if (this->opacidad>=255)	incrementa = false;
+		if (this->opacidad<=0) incrementa = true;
 		if (incrementa){
-			a=a+3;
+			this->opacidad=this->opacidad+3;
 		} else {
-			a=a-3;
+			this->opacidad=this->opacidad-3;
 		}
-		textura[2]->setAlpha(a);
+		textura[2]->setAlpha(this->opacidad);
 		textura[11]->aplicarPosicion(254,560,0,SDL_FLIP_NONE);
 		textura[11]->setAlpha(200);
 		ventana->actualizar();
 	}
+	this->opacidad = 230;
 }
 
-void Vista::cargarSegundaPantalla(int* puerto, string* ip){
+datosConexion Vista::cargarSegundaPantalla(bool aviso){
+	return cargarPantallaIngresoDatos(aviso,2);
+}
+
+datosConexion Vista::cargarTerceraPantalla(bool aviso){
+	return cargarPantallaIngresoDatos(aviso,3);
+}
+
+datosConexion Vista::cargarPantallaIngresoDatos(bool aviso, int numeroPantalla){
 	SDL_Color colorTexto = {255,255,255};
 	SDL_Color colorTextoAmarillo = {227,215,117};
 	SDL_Color colorTextoEntrada = {0,0,0};
 	SDL_Event e;
-	string numeroPuerto = " ";
-	*ip = " ";
-	int a = 230;
+	string campoUno;
+	string campoDos;
 	bool campoUnoSeleccionado = false;
 	bool campoDosSeleccionado = false;
-	bool datosIncorrectos = false;
 	bool siguiente = false;
 
 	//Inicializamos la entrada para textos
 	SDL_StartTextInput();
 
-	textura[9]->actualizarTexto("Ingrese el puerto:",colorTexto);
-	textura[10]->actualizarTexto("Ingrese la IP del servidor:",colorTexto);
-	textura[14]->actualizarTexto("La dirección de ip o el puerto no permiten esta conexión",colorTextoAmarillo);
+	switch(numeroPantalla){
+		case 2:
+			campoUno = this->datos.puerto;
+			campoDos = this->datos.ip;
+			textura[9]->actualizarTexto("Ingrese el puerto:",colorTexto);
+			textura[10]->actualizarTexto("Ingrese la IP del servidor:",colorTexto);
+			textura[14]->actualizarTexto("La dirección de ip o el puerto no permiten esta conexión",colorTextoAmarillo);
+			break;
+		case 3:
+			campoUno = this->datos.nombre;
+			campoDos = this->datos.contrasenia;
+			textura[9]->actualizarTexto("Ingrese el nombre:",colorTexto);
+			textura[10]->actualizarTexto("Ingrese la contraseña:",colorTexto);
+			textura[14]->actualizarTexto("Usuario/contraseña incorrectos, inténtelo de nuevo",colorTextoAmarillo);
+			break;
+	}
 
-	textura[12]->actualizarTexto(numeroPuerto,colorTextoEntrada);
-	textura[13]->actualizarTexto(*ip,colorTextoEntrada);
+	textura[12]->actualizarTexto(campoUno,colorTextoEntrada);
+	textura[13]->actualizarTexto(campoDos,colorTextoEntrada);
 
 	while ((!this->controlador->comprobarCierreVentana())&&(!siguiente)){
 		e = this->controlador->obtenerEvento();
@@ -126,25 +152,25 @@ void Vista::cargarSegundaPantalla(int* puerto, string* ip){
 		if(textura[7]->aplicarPosicionDeBoton(310,358,&e)){
 			campoUnoSeleccionado = true;
 			campoDosSeleccionado = false;
-			datosIncorrectos = false;
+			aviso = false;
 		}
 
 		if (campoUnoSeleccionado){
-			this->controlador->ingresarCaracteresATexto(&numeroPuerto);
+			this->controlador->ingresarCaracteresATexto(&campoUno);
 			textura[7]->aplicarPosicionDeFrame(310,358,2,0,SDL_FLIP_NONE);
-			textura[12]->actualizarTexto(numeroPuerto,colorTextoEntrada);
+			textura[12]->actualizarTexto(campoUno,colorTextoEntrada);
 		}
 
 		if(textura[8]->aplicarPosicionDeBoton(310,423,&e)){
 			campoUnoSeleccionado = false;
 			campoDosSeleccionado = true;
-			datosIncorrectos = false;
+			aviso = false;
 		}
 
 		if (campoDosSeleccionado){
-			this->controlador->ingresarCaracteresATexto(ip);
+			this->controlador->ingresarCaracteresATexto(&campoDos);
 			textura[8]->aplicarPosicionDeFrame(310,423,2,0,SDL_FLIP_NONE);
-			textura[13]->actualizarTexto(*ip,colorTextoEntrada);
+			textura[13]->actualizarTexto(campoDos,colorTextoEntrada);
 		}
 
 		textura[12]->aplicarPosicion(316,363,0,SDL_FLIP_NONE);
@@ -156,40 +182,59 @@ void Vista::cargarSegundaPantalla(int* puerto, string* ip){
 
 		textura[5]->aplicarPosicionDeBoton(30,550,&e);
 
-		if(textura[6]->aplicarPosicionDeBoton(338,475,&e)){
-			campoUnoSeleccionado = false;
-			campoDosSeleccionado = false;
-			*puerto = atoi(numeroPuerto.c_str());	//Convierto string a entero
-			if((*puerto == 7891)&&(*ip == "127.0.0.1")){
-				siguiente = true;
-				datosIncorrectos = false;
-			} else {
-				datosIncorrectos = true;
-			}
+		switch(numeroPantalla){
+			case 2:
+				if(textura[6]->aplicarPosicionDeBoton(338,475,&e)){
+					campoUnoSeleccionado = false;
+					campoDosSeleccionado = false;
+					this->datos.puerto = campoUno;
+					this->datos.ip = campoDos;
+					siguiente = true;
+				}
+				break;
+			case 3:
+				if(textura[15]->aplicarPosicionDeBoton(338,475,&e)){
+					campoUnoSeleccionado = false;
+					campoDosSeleccionado = false;
+					this->datos.nombre = campoUno;
+					this->datos.contrasenia = campoDos;
+					siguiente = true;
+				}
+				break;
 		}
 
-		if((datosIncorrectos)&&((numeroPuerto != " ")||(*ip != " "))){
-			textura[14]->aplicarPosicion(205,530,0,SDL_FLIP_NONE);
+		if((aviso)&&((campoUno != " ")||(campoDos != " "))){
+			switch(numeroPantalla){
+				case 2:
+					textura[14]->aplicarPosicion(205,530,0,SDL_FLIP_NONE);
+					break;
+				case 3:
+					textura[14]->aplicarPosicion(215,530,0,SDL_FLIP_NONE);
+					break;
+			}
 		}
 
 		textura[11]->aplicarPosicion(254,560,0,SDL_FLIP_NONE);
 		textura[11]->setAlpha(200);
 		textura[3]->aplicarPosicionConTamanio(0,0,800,600);
-		textura[3]->setAlpha(a);
+		textura[3]->setAlpha(this->opacidad);
 		ventana->actualizar();
 
 		this->controlador->botonCerrarVentanaSeleccionado();
 
-		a = a-5;
-		if (a <= 0) a = 0;
+		this->opacidad = this->opacidad-5;
+		if (this->opacidad <= 0) this->opacidad = 0;
 	}
 	SDL_StopTextInput();
+	return this->datos;
+}
 
+void Vista::transicionDePantalla(){
 	int angulo = 0;
 	int x = 0;
 	int y = 0;
 	if (!this->controlador->comprobarCierreVentana()){
-		for (float a= 0; a<255; a = a+5){
+		for (this->opacidad = 0; this->opacidad <255; this->opacidad = this->opacidad+5){
 			ventana->limpiar();
 			textura[0]->aplicarPosicion(0,0,0,SDL_FLIP_NONE);
 			textura[1]->aplicarPosicion(180,40,0,SDL_FLIP_NONE);
@@ -205,137 +250,19 @@ void Vista::cargarSegundaPantalla(int* puerto, string* ip){
 			textura[11]->aplicarPosicion(254,560,0,SDL_FLIP_NONE);
 			textura[11]->setAlpha(200);
 			textura[3]->aplicarPosicionConTamanio(0,0,800,600);
-			textura[3]->setAlpha(a);
+			textura[3]->setAlpha(this->opacidad);
 			angulo = angulo + 5;
 			x = x+5;
 			y = y+2;
 			ventana->actualizar();
 		}
 	}
+	this->opacidad = 230;
 }
 
-void Vista::cargarTerceraPantalla(string* nombre, string* contrasenia){
-	SDL_Color colorTexto = {255,255,255};
-	SDL_Color colorTextoAmarillo = {227,215,117};
-	SDL_Color colorTextoEntrada = {0,0,0};
-	SDL_Event e;
-	*nombre = " ";
-	*contrasenia = " ";
-	int a = 230;
-	bool campoUnoSeleccionado = false;
-	bool campoDosSeleccionado = false;
-	bool datosIncorrectos = false;
-	bool siguiente = false;
-
-	//Inicializamos la entrada para textos
-	SDL_StartTextInput();
-
-	textura[9]->actualizarTexto("Ingrese el nombre:",colorTexto);
-	textura[10]->actualizarTexto("Ingrese la contraseña:",colorTexto);
-	textura[14]->actualizarTexto("Usuario/contraseña incorrectos, inténtelo de nuevo",colorTextoAmarillo);
-
-	textura[12]->actualizarTexto(*nombre,colorTextoEntrada);
-	textura[13]->actualizarTexto(*contrasenia,colorTextoEntrada);
-
-	while ((!this->controlador->comprobarCierreVentana())&&(!siguiente)){
-		e = this->controlador->obtenerEvento();
-		ventana->limpiar();
-		textura[0]->aplicarPosicion(0,0,0,SDL_FLIP_NONE);
-		textura[1]->aplicarPosicion(180,40,0,SDL_FLIP_NONE);
-
-		textura[9]->aplicarPosicion(312,337,0,SDL_FLIP_NONE);
-		textura[10]->aplicarPosicion(312,402,0,SDL_FLIP_NONE);
-
-		if(textura[7]->aplicarPosicionDeBoton(310,358,&e)){
-			campoUnoSeleccionado = true;
-			campoDosSeleccionado = false;
-			datosIncorrectos = false;
-		}
-
-		if (campoUnoSeleccionado){
-			this->controlador->ingresarCaracteresATexto(nombre);
-			textura[7]->aplicarPosicionDeFrame(310,358,2,0,SDL_FLIP_NONE);
-			textura[12]->actualizarTexto(*nombre,colorTextoEntrada);
-		}
-
-		if(textura[8]->aplicarPosicionDeBoton(310,423,&e)){
-			campoUnoSeleccionado = false;
-			campoDosSeleccionado = true;
-			datosIncorrectos = false;
-		}
-
-		if (campoDosSeleccionado){
-			this->controlador->ingresarCaracteresATexto(contrasenia);
-			textura[8]->aplicarPosicionDeFrame(310,423,2,0,SDL_FLIP_NONE);
-			textura[13]->actualizarTexto(*contrasenia,colorTextoEntrada);
-		}
-
-		textura[12]->aplicarPosicion(316,363,0,SDL_FLIP_NONE);
-		textura[13]->aplicarPosicion(316,428,0,SDL_FLIP_NONE);
-
-		if (textura[4]->aplicarPosicionDeBoton(656,550,&e)){
-			this->controlador->setCerrarVentana();
-		}
-
-		textura[5]->aplicarPosicionDeBoton(30,550,&e);
-
-		if(textura[15]->aplicarPosicionDeBoton(338,475,&e)){
-			campoUnoSeleccionado = false;
-			campoDosSeleccionado = false;
-			if((*nombre == "User")&&(*contrasenia == "HolaSoyUser")){
-				siguiente = true;
-				datosIncorrectos = false;
-			} else {
-				datosIncorrectos = true;
-			}
-		}
-
-		if((datosIncorrectos)&&((*nombre != " ")||(*contrasenia != " "))){
-			textura[14]->aplicarPosicion(215,530,0,SDL_FLIP_NONE);
-		}
-
-		textura[11]->aplicarPosicion(254,560,0,SDL_FLIP_NONE);
-		textura[11]->setAlpha(200);
-		textura[3]->aplicarPosicionConTamanio(0,0,800,600);
-		textura[3]->setAlpha(a);
-		ventana->actualizar();
-
-		this->controlador->botonCerrarVentanaSeleccionado();
-
-		a = a-5;
-		if (a <= 0) a = 0;
-	}
-	SDL_StopTextInput();
-
-	int angulo = 0;
-	int x = 0;
-	int y = 0;
-	if (!this->controlador->comprobarCierreVentana()){
-		for (float a= 0; a<255; a = a+5){
-			ventana->limpiar();
-			textura[0]->aplicarPosicion(0,0,0,SDL_FLIP_NONE);
-			textura[1]->aplicarPosicion(180,40,0,SDL_FLIP_NONE);
-			textura[9]->aplicarPosicion(312,337,0,SDL_FLIP_NONE);
-			textura[10]->aplicarPosicion(312,402,0,SDL_FLIP_NONE);
-			textura[7]->aplicarPosicionDeFrame(310-x,358-y,0,-angulo,SDL_FLIP_NONE);
-			textura[8]->aplicarPosicionDeFrame(310+x,423-y,0,angulo,SDL_FLIP_NONE);
-			textura[12]->aplicarPosicion(380-x,368-y,-angulo,SDL_FLIP_NONE);
-			textura[13]->aplicarPosicion(360+x,433-y,angulo,SDL_FLIP_NONE);
-			textura[4]->aplicarPosicionDeFrame(656,550,0,0,SDL_FLIP_NONE);
-			textura[5]->aplicarPosicionDeFrame(30,550,0,0,SDL_FLIP_NONE);
-			textura[6]->aplicarPosicionDeFrame(338,475,0,0,SDL_FLIP_NONE);
-			textura[11]->aplicarPosicion(254,560,0,SDL_FLIP_NONE);
-			textura[11]->setAlpha(200);
-			textura[3]->aplicarPosicionConTamanio(0,0,800,600);
-			textura[3]->setAlpha(a);
-			angulo = angulo + 5;
-			x = x+5;
-			y = y+2;
-			ventana->actualizar();
-		}
-	}
+bool Vista::ventanaCerrada(){
+	return controlador->comprobarCierreVentana();
 }
-
 
 void Vista::cerrar(){
 	this->ventana->cerrar();

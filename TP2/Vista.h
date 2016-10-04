@@ -13,23 +13,37 @@
 #include "Controlador.h"
 #include <SDL2/SDL.h>
 #include <vector>
+#include <string>
 
 using namespace std;
+
+struct datosConexion {
+	string puerto;
+	string ip;
+	string nombre;
+	string contrasenia;
+};
 
 class Vista {
 private:
 	VentanaSDL* ventana;
 	Controlador* controlador;
 	vector<TexturaSDL*> textura;
+	datosConexion datos;
+	int opacidad;
+
+	datosConexion cargarPantallaIngresoDatos(bool aviso, int numeroPantalla);
 
 public:
 	Vista();
 	~Vista();
 	void cargarPrimeraPantalla();
-	void cargarSegundaPantalla(int* puerto, string* ip);
-	void cargarTerceraPantalla(string* nombre, string* contrasenia);
+	datosConexion cargarSegundaPantalla(bool aviso);
+	datosConexion cargarTerceraPantalla(bool aviso);
+	void transicionDePantalla();
 	bool inicializar();
 	void cargarArchivos();
+	bool ventanaCerrada();
 	void cerrar();
 };
 

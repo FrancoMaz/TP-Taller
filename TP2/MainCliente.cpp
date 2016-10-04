@@ -19,6 +19,9 @@
 
 using namespace std;
 
+datosConexion datosCliente;
+Vista * vista = new Vista();
+
 struct ComunicacionCliente{
 			Cliente* cliente;
 			bool termino;
@@ -41,110 +44,102 @@ void* verificarConexion(void * arg){
 void* cicloConexion(void* arg) {
 	//Funcion que cicla para las opciones del cliente dentro del thread de comunicacion. Devuelve 1 si la opcion es desconectar, 0 si es salir.
 	Cliente* cliente = (Cliente*) arg;
-	string user, pass;
 	pthread_t threadVerificarConexion;
 	ComunicacionCliente comunicacion;
-	comunicacion.cliente =cliente;
+	comunicacion.cliente = cliente;
 	comunicacion.termino = false;
 
 	bool termino = false;
-	while (cliente->getClientesDisponibles().empty()) {
-		cout << "Ingrese nombre de usuario: ";
-		cin >> user;
-		cout << "Ingrese password: ";
-		cin >> pass;
-		cliente->conectar(user, pass);
-	}
-	//se crea esta hilo para poder verificar la conexion con el servidor
-	pthread_create(&threadVerificarConexion, NULL,&verificarConexion,&comunicacion);
-	pthread_detach(threadVerificarConexion);
-	 //void** escuchando;
-	 //pthread_join(threadVerificarConexion,(void**)&escuchando);
-	 //termino = *((bool*) (&escuchando));
-	cliente->setOpcionMenu(0);
-	while (cliente->getOpcionMenu() != 5 and cliente->getOpcionMenu() != 4 and !cliente->getTermino()) {
-		cliente->mostrarMenuYProcesarOpcion();
-		if (!cliente->getTermino()) {
-			cliente->elegirOpcionDelMenu(cliente->getOpcionMenu());
+	bool datosIncorrectos = false;
+	while ((cliente->getClientesDisponibles().empty())&&(!vista->ventanaCerrada())) {
+		datosCliente = vista->cargarTerceraPantalla(datosIncorrectos);
+		if((datosCliente.nombre != " ")&&(datosCliente.contrasenia != " ")){
+			cliente->conectar(datosCliente.nombre, datosCliente.contrasenia);
 		}
+		datosIncorrectos = true;
 	}
-	if (cliente->getTermino() and cliente->getOpcionMenu() != 5)
-	{
-		int opcion;
-		while (opcion != 5) {
-			cout << endl;
-			cout << "Se cerro la conexion con el servidor. Presione 5 para salir" << endl;
-			cin >> opcion;
+
+	if (!vista->ventanaCerrada()) {
+		//se crea esta hilo para poder verificar la conexion con el servidor
+		pthread_create(&threadVerificarConexion, NULL,&verificarConexion,&comunicacion);
+		pthread_detach(threadVerificarConexion);
+		//void** escuchando;
+		//pthread_join(threadVerificarConexion,(void**)&escuchando);
+		//termino = *((bool*) (&escuchando));
+		cliente->setOpcionMenu(0);
+		while (cliente->getOpcionMenu() != 5 and cliente->getOpcionMenu() != 4 and !cliente->getTermino()) {
+			cliente->mostrarMenuYProcesarOpcion();
+			if (!cliente->getTermino()) {
+				cliente->elegirOpcionDelMenu(cliente->getOpcionMenu());
+			}
+		}
+		if (cliente->getTermino() and cliente->getOpcionMenu() != 5)
+		{
+			int opcion;
+			while (opcion != 5) {
+				cout << endl;
+				cout << "Se cerro la conexion con el servidor. Presione 5 para salir" << endl;
+				cin >> opcion;
 			}
 			cliente->setOpcionMenu(5);
 		}
 
 		//if(accion == 5){ cliente->setOpcionMenu(accion);}
 
-	if (cliente->getOpcionMenu() == 4) {
+		if (cliente->getOpcionMenu() == 4) {
+			return (void*) 1;
+		}
+		//pthread_detach(threadVerificarConexion);
+		return (void*) 0;
+	} else {
 		return (void*) 1;
 	}
-	//pthread_detach(threadVerificarConexion);
-	return (void*) 0;
 }
 
 int main() {
 	bool esValido = false;
-	string ip;
-	int puerto, accion;
+	int accion;
 	bool socketOk = false;
 	pthread_t thrComu;
-	string nombre, contrasenia;
-	Vista * vista = new Vista();
 
 	if (!vista->inicializar()){
 		cout << "El programa no pudo ejecutarse." << endl;
 	} else {
 		vista->cargarArchivos();
 		vista->cargarPrimeraPantalla();
-		vista->cargarSegundaPantalla(&puerto,&ip);
-		Cliente* cliente = new Cliente(ip, puerto);
-		vista->cargarTerceraPantalla(&nombre,&contrasenia);
 
-/*
-		do {
-			bool accionValida = false;
-			cout << "1) Conectar" << endl;
-			cout << "2) Salir" << endl;
-			do {
-				cout << "¿Qué desea hacer? " << endl;
-				cin >> accion;
-				if (cin.good() && (accion == 1 || accion == 2)) {
-					accionValida = true;
-				} else {
-					cin.clear();
-					cin.ignore();
-					cout << "Error: la opcion ingresada no es valida" << endl;
-				}
-			} while (!accionValida);
-			if (accion != 2) {
-				//si no es salir, creo el thread de comunicacion que intenta conectar.
-				int threadOk = pthread_create(&thrComu, NULL, &cicloConexion,cliente);
-				if (threadOk != 0) {
-					cout << "Error al inicializar la conexión." << endl;
-				} else {
-					cliente->setThreadComunicacion(thrComu);
-					void** resultado;
-					pthread_join(cliente->getThreadComunicacion(),(void**) &resultado); //espero que termine el thread de comunicacion que fue invocado..
-					accion = *((int*) (&resultado));
-					if (accion == 1) { //si es 1, es desconectar y vuelve a ingresar al loop que ofrece conectar y desconectar
-						cout << "Desconectado del servidor.." << endl;
-						cliente->vaciarClientesDisponibles();
-					} //si es 0, va a salir automaticamente del loop y del programa.
-				}
+		bool datosIncorrectos = false;
+		while ((!socketOk)&&(!vista->ventanaCerrada())) {
+			datosCliente = vista->cargarSegundaPantalla(datosIncorrectos);
+			socketOk = chequearSocket(datosCliente.ip, atoi(datosCliente.puerto.c_str())); //FALTA IMPLEMENTAR METODO DE CHEQUEAR IP/PUERTO. ESTA MAS ABAJO LA FUNCION.
+			datosIncorrectos = true;
+		}
 
+		if(!vista->ventanaCerrada()){
+			vista->transicionDePantalla();
+			cout << "Socket OK" << endl;
+			Cliente* cliente = new Cliente(datosCliente.ip, atoi(datosCliente.puerto.c_str()));
+			cout << "Bienvenido al sistema de mensajería" << endl;
+
+			//creo el thread de comunicacion que intenta conectar.
+			int threadOk = pthread_create(&thrComu, NULL, &cicloConexion,cliente);
+			if (threadOk != 0) {
+				cout << "Error al inicializar la conexión." << endl;
 			} else {
-				accion = 0; //si la accion es 2, la pongo en 0 para que salga del while
+				cliente->setThreadComunicacion(thrComu);
+				void** resultado;
+				pthread_join(cliente->getThreadComunicacion(),(void**) &resultado); //espero que termine el thread de comunicacion que fue invocado..
+				accion = *((int*) (&resultado));
+				if (accion == 1) { //si es 1, es desconectar y vuelve a ingresar al loop que ofrece conectar y desconectar
+					cout << "Desconectado del servidor.." << endl;
+					cliente->vaciarClientesDisponibles();
+				}
 			}
-		} while (accion != 0); //si la accion es 0, es salir.*/
-		cliente->salir(); //cierra el socket y realiza trabajos de limpieza de memoria
-		cout << "Saliendo del programa..." << endl;
-		vista->cerrar();
+
+			cliente->salir(); //cierra el socket y realiza trabajos de limpieza de memoria
+			cout << "Saliendo del programa..." << endl;
+			vista->cerrar();
+		}
 	}
 	return 0;
 }
