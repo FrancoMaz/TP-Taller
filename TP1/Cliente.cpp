@@ -2,6 +2,7 @@
 #include "Cliente.h"
 #include <iostream>
 #include <string.h>
+#include <unistd.h>
 
 using namespace std;
 
@@ -154,7 +155,7 @@ void Cliente::conectar(string nombre, string contrasenia) {
 
 		strcpy(buffer, nombreYPass);
 		struct timeval timeout;
-		timeout.tv_sec = 10;
+		timeout.tv_sec = 5;
 		timeout.tv_usec = 0;
 		if (setsockopt (socketCliente, SOL_SOCKET, SO_RCVTIMEO, (char *)&timeout, sizeof(timeout)) < 0)
 		{
@@ -221,9 +222,10 @@ void Cliente::enviar(string mensaje, string destinatario) {
 		char* stringDatosMensaje = strdup(("1|" + mensajeAEnviar->getStringDatos()).c_str()); //1 significa enviar.
 		int largo = strlen(stringDatosMensaje);
 		int largoRequest;
+		cout<<"Mensaje enviado: "<<mensaje<<endl;
 		while (largo > 0)
 		{
-			largoRequest = send(this->socketCliente, stringDatosMensaje, largo + 1, 0);
+			largoRequest = send(this->socketCliente, stringDatosMensaje, largo, 0);
 			largo -= largoRequest;
 		}
 		free(mensajeCadena); }
@@ -316,17 +318,17 @@ void Cliente::loremIpsum(double frecuenciaDeEnvios, double cantidadMaximaDeEnvio
 	clienteAleatorioAEnviar = *iterador;
 	//tiempoPorMensaje indica cada cuanto tiempo se manda un mensaje (en segundos)
 	//Se mandan frecuenciaDeEnvios mensajes en 1 segundo, entonces un mensaje se manda en 1/frecuenciaDeEnvios segundos
-	double tiempoPorMensaje = (1/frecuenciaDeEnvios);
+	double tiempoPorMensaje = (1000000/frecuenciaDeEnvios);
+	cout<<"tiempo por mensaje: "<<tiempoPorMensaje<<endl;
 	//Indico el tiempo de inicio
 	clock_t tiempoInicio = clock();
 	for (int i = 0; i < cantidadMaximaDeEnvios; i++) {
 		if (!this->terminoComunicacion) {
 			string cadena;
 			//No tiene que ocurrir nada hasta que el tiempo transcurrido sea igual al tiempo estipulado de envio para cada mensaje
-			do {
-			} while (((double)(clock()-tiempoInicio)/CLOCKS_PER_SEC) < tiempoPorMensaje);
+			usleep(tiempoPorMensaje);
 			//Una vez que se transcurren tiempoPorMensaje segundos se empieza a leer caracteres del archivo
-				for (int j=0; j < tamanioMensaje; j++) {
+			for (int j=0; j < tamanioMensaje; j++) {
 					char c = fgetc(archivo);
 					//Si no hay salto de linea o fin de archivo se guarda el caracter leido
 					if (c != '\n' && c != EOF) {
@@ -342,9 +344,9 @@ void Cliente::loremIpsum(double frecuenciaDeEnvios, double cantidadMaximaDeEnvio
 						archivo = fopen("LoremIpsum.txt","r"); }
 					}
 				//Una vez que se tiene un mensaje completo se envia al cliente elegido aleatoriamente de la lista
-				this->enviar(cadena, clienteAleatorioAEnviar);
+			this->enviar(cadena, clienteAleatorioAEnviar);
 				//Al enviar un mensaje el tiempo de referencia es el actual
-				tiempoInicio = clock();
+				//tiempoInicio = clock();
 		}
 		else {cout << "Se cerro la conexion con el servidor" << endl;}
 	}

@@ -27,13 +27,22 @@ void Logger::escribir(string mensaje, int nivelDeLog) {
 		if (nivelDeLog == 1) {
 			pthread_mutex_lock(&mutexLog);
 			this->archivoLog = fopen("Log.txt", "a");
-			fputs(mensaje.c_str(), this->archivoLog);
+			//fputs(mensaje.c_str(), this->archivoLog);
+			//lo de abajo se tiene que borrar despues
+			stringstream ss;
+			time(&timer);
+			char buffer [80];
+			timeinfo = localtime(&timer);
+			strftime(buffer,80, "%H:%M:%S", timeinfo);
+			ss << buffer;
+			fputs((("[" + ss.str() + "] ") + mensaje).c_str(), this->archivoLog);
+					//hasta aca
 			fclose(this->archivoLog);
 
 			pthread_mutex_unlock(&mutexLog);
 		}
 	} else {
-		// si el modo del logger es DEBUG se debe loggear todoo
+		// si el modo del logger es DEBUG se debe loggear todo
 
 		pthread_mutex_lock(&mutexLog);
 		this->archivoLog = fopen("Log.txt", "a");

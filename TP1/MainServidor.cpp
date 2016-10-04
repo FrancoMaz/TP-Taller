@@ -228,7 +228,7 @@ void* cicloEscuchaCliente(void* arg) {
 	while (conectado and servidor->escuchando) {
 		//en este loop se van a gestionar los send y receive del cliente. aca se va a distinguir que es lo que quiere hacer y actuar segun lo que quiera el cliente.
 		string datosRecibidos;
-
+		pthread_mutex_lock(&servidor->mutexEnviarMensajes);
 		int largoRequest = recv(socketCliente, bufferRecibido, BUFFER_MAX_SIZE,0); //recibo por primera vez
 		if (largoRequest > 0) {
 			datosRecibidos.append(bufferRecibido, largoRequest);
@@ -237,6 +237,7 @@ void* cicloEscuchaCliente(void* arg) {
 				largoRequest = recv(socketCliente, bufferRecibido,BUFFER_MAX_SIZE, 0);
 				datosRecibidos.append(bufferRecibido, largoRequest);
 			}
+			pthread_mutex_unlock(&servidor->mutexEnviarMensajes);
 			if (largoRequest < 0) {
 				string mensaje =
 						"ERROR: Ocurrió un problema con el socket del cliente: "
@@ -263,6 +264,7 @@ void* cicloEscuchaCliente(void* arg) {
 						servidor->guardarLog("Request: Enviar Mensaje, Remitente: " + string(remitente)
 								 	 	 	 	 + ", Destinatario: " + string(destinatario)
 												 	 + ", Mensaje: " + string(mensaje) + string(".\n"),INFO);
+						cout<<"mensaje recibido :"<<mensaje<<endl;
 						encolarMensaje(remitente, destinatario, mensaje, servidor);
 						break;
 					}
