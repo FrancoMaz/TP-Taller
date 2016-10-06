@@ -37,19 +37,19 @@ void Vista::cargarArchivos(){
 	textura.push_back(ventana->crearTextura("Recursos/Menu_fondo.png",0));
 	textura.push_back(ventana->crearTextura("Recursos/Menu_Metal_Slug.png",0));
 	textura.push_back(ventana->crearTextura("Recursos/Menu_Presionar_Enter.png",0));
-	textura.push_back(ventana->crearTextura("Recursos/Efecto_luz.png",0));				//3: texturaEfectoLuz
-	textura.push_back(ventana->crearBoton("Recursos/Boton_Salir.png"));					//4: texturaBotonSalir
-	textura.push_back(ventana->crearBoton("Recursos/Boton_Creditos.png"));				//5: texturaBotonCreditos
-	textura.push_back(ventana->crearBoton("Recursos/Boton_Ingresar.png"));				//6: texturaBotonIngresar
-	textura.push_back(ventana->crearBoton("Recursos/Boton_CampoDeTexto.png"));			//7: campoTextoUno
-	textura.push_back(ventana->crearBoton("Recursos/Boton_CampoDeTexto.png"));			//8: campoTextoDos
-	textura.push_back(ventana->crearTexto("Recursos/arial.ttf",14));					//9: textoIngresePuerto
-	textura.push_back(ventana->crearTexto("Recursos/arial.ttf",14));					//10: textoIngreseIP
-	textura.push_back(ventana->crearTexto("Recursos/msserif_bold.ttf",13));				//11: textoTPTaller
-	textura.push_back(ventana->crearTexto("Recursos/arial.ttf",19));					//12: entradaTextoPuerto
-	textura.push_back(ventana->crearTexto("Recursos/arial.ttf",19));					//13: entradaTextoIP
-	textura.push_back(ventana->crearTexto("Recursos/msserif_bold.ttf",13));				//14: textoDatosNoCoinciden
-	textura.push_back(ventana->crearBoton("Recursos/Boton_Conectar.png"));				//15: texturaBotonConectar
+	textura.push_back(ventana->crearTextura("Recursos/Efecto_luz.png",0));
+	textura.push_back(ventana->crearBoton("Recursos/Boton_Salir.png"));
+	textura.push_back(ventana->crearBoton("Recursos/Boton_Creditos.png"));
+	textura.push_back(ventana->crearBoton("Recursos/Boton_Ingresar.png"));
+	textura.push_back(ventana->crearBoton("Recursos/Boton_CampoDeTexto.png"));
+	textura.push_back(ventana->crearBoton("Recursos/Boton_CampoDeTexto.png"));
+	textura.push_back(ventana->crearTexto("Recursos/arial.ttf",14));
+	textura.push_back(ventana->crearTexto("Recursos/arial.ttf",14));
+	textura.push_back(ventana->crearTexto("Recursos/msserif_bold.ttf",13));
+	textura.push_back(ventana->crearTexto("Recursos/arial.ttf",19));
+	textura.push_back(ventana->crearTexto("Recursos/arial.ttf",19));
+	textura.push_back(ventana->crearTexto("Recursos/msserif_bold.ttf",13));
+	textura.push_back(ventana->crearBoton("Recursos/Boton_Conectar.png"));
 
 	//Defino constantes para cada textura (para evitar llamarlos por índices)
 	#define texturaMenuFondo textura[0]
