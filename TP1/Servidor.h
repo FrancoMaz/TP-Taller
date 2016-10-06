@@ -81,6 +81,7 @@ public:
 	pthread_mutex_t mutexColaNoProcesados;
 	pthread_mutex_t mutexListaProcesados;
 	pthread_mutex_t mutexColasProcesadas;
+	pthread_mutex_t mutexEnviarMensajes;
 	string mensaje;
 	list<string> agregarDestinatarios(string remitente);
 	void procesarMensaje(Mensaje mensaje);
