@@ -1,0 +1,21 @@
+Para ejecutar el TP2 se necesita:
+
+- Las librerías SDL2 :
+	libsdl2-dev			(se instala ingresando en la terminal: apt-get install libsdl2-dev)
+	libsdl2-image-dev	(se instala ingresando en la terminal: apt-get install libsdl2-image-dev)
+	libsdl2-ttf-dev		(se instala ingresando en la terminal: apt-get install libsdl2-ttf-dev)
+	libsdl2-mixer-dev	(se instala ingresando en la terminal: apt-get install libsdl2-mixer-dev)
+
+  *Es recomendable realizar la instalación como superuser
+
+- En el compilador de la terminal agregar:
+	-lSDL2	-lSDL2_image	-lSDL2_ttf	-lSDL2_mixer
+	
+  *Esto es para que el compilador reconozca las librerías SDL
+
+Server:	
+g++ MainServidor.cpp Servidor.cpp Mensaje.cpp Logger.cpp -std=c++11 -lpthread -o server
+
+Cliente:
+g++ MainCliente.cpp Cliente.cpp Mensaje.cpp Logger.cpp VentanaSDL.cpp TexturaSDL.cpp Vista.cpp Controlador.cpp -std=c++11 -lpthread -lSDL2 -lSDL2_image -lSDL2_ttf -o cliente
+
