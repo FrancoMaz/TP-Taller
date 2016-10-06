@@ -29,14 +29,14 @@ void Logger::escribir(string mensaje, int nivelDeLog) {
 			this->archivoLog = fopen("Log.txt", "a");
 			//fputs(mensaje.c_str(), this->archivoLog);
 			//lo de abajo se tiene que borrar despues
-			stringstream ss;
+			/*stringstream ss;
 			time(&timer);
 			char buffer [80];
 			timeinfo = localtime(&timer);
 			strftime(buffer,80, "%H:%M:%S", timeinfo);
 			ss << buffer;
 			fputs((("[" + ss.str() + "] ") + mensaje).c_str(), this->archivoLog);
-					//hasta aca
+			*/		//hasta aca
 			fclose(this->archivoLog);
 
 			pthread_mutex_unlock(&mutexLog);

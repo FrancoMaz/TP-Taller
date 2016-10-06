@@ -222,13 +222,16 @@ void Cliente::enviar(string mensaje, string destinatario) {
 		char* stringDatosMensaje = strdup(("1|" + mensajeAEnviar->getStringDatos()).c_str()); //1 significa enviar.
 		int largo = strlen(stringDatosMensaje);
 		int largoRequest;
-		cout<<"Mensaje enviado: "<<mensaje<<endl;
+		//cout<<"Mensaje enviado: "<<mensaje<<endl;
 		while (largo > 0)
 		{
 			largoRequest = send(this->socketCliente, stringDatosMensaje, largo, 0);
 			largo -= largoRequest;
 		}
-		free(mensajeCadena); }
+		free(mensajeCadena);
+		mensajeAEnviar->~Mensaje();
+	}
+
 	//free(stringDatosMensaje);
 }
 
