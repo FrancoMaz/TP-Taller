@@ -1,0 +1,66 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+
+<Escenario>
+  <Imagen>
+    <Archivo>prueba.png</Archivo>
+    <ZIndex>1</ZIndex>
+    <Velocidad>5</Velocidad>  
+  </Imagen>
+<Imagen>   
+    <Archivo>prueba2.png</Archivo>
+    <ZIndex>3</ZIndex>
+    <Velocidad>2</Velocidad> 
+  </Imagen>
+</Escenario>
+
+<Sprites>
+  <SetRojo>
+    <Carpeta>Rojo</Carpeta>
+    <SpriteSalto>
+      <Id>1</Id>
+      <Imagen>1.png</Imagen>
+    </SpriteSalto> 
+    <SpriteCaminar>
+      <Id>2</Id>
+      <Imagen>2.png</Imagen>
+    </SpriteCaminar>
+    <SpriteAgacharse>
+      <Id>3</Id>
+      <Imagen>3.png</Imagen>
+    </SpriteAgacharse>
+  </SetRojo>
+  <SetVerde>
+    <Carpeta>Verde</Carpeta>
+    <SpriteSalto>
+      <Id>1</Id>
+      <Imagen>1.png</Imagen>
+    </SpriteSalto> 
+    <SpriteCaminar>
+      <Id>2</Id>
+      <Imagen>2.png</Imagen>
+    </SpriteCaminar>
+    <SpriteAgacharse>
+      <Id>3</Id>
+      <Imagen>3.png</Imagen>
+    </SpriteAgacharse>
+  </SetVerde>
+  <SetAmarillo>
+    <Carpeta>Amarillo</Carpeta>
+    <SpriteSalto>
+      <Id>1</Id>
+      <Imagen>1.png</Imagen>
+    </SpriteSalto> 
+    <SpriteCaminar>
+      <Id>2</Id>
+      <Imagen>2.png</Imagen>
+    </SpriteCaminar>
+    <SpriteAgacharse>
+      <Id>3</Id>
+      <Imagen>3.png</Imagen>
+    </SpriteAgacharse>
+  </SetAmarillo>
+</Sprites>
+
+<Configuracion>
+  <Resolucion>800x600</Resolucion>
+</Configuracion>
