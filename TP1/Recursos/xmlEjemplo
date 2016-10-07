@@ -1,15 +1,21 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 
 <Escenario>
+    <Ancho>10</Ancho>
+    <Alto>10</Alto>
   <Imagen>
     <Archivo>prueba.png</Archivo>
     <ZIndex>1</ZIndex>
     <Velocidad>5</Velocidad>  
+    <Ancho>10</Ancho>
+    <Alto>10</Alto>
   </Imagen>
 <Imagen>   
     <Archivo>prueba2.png</Archivo>
     <ZIndex>3</ZIndex>
     <Velocidad>2</Velocidad> 
+    <Ancho>20</Ancho>
+    <Alto>10</Alto>
   </Imagen>
 </Escenario>
 
