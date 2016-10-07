@@ -22,13 +22,15 @@ TexturaSDL::TexturaSDL(SDL_Renderer* renderer){
 }
 
 TexturaSDL::~TexturaSDL(){
-	this->limpiar();
+	this->limpiarTextura();
+	this->limpiarFuente();
 }
 
-bool TexturaSDL::cargarImagen(string ruta){
+void TexturaSDL::cargarImagen(string ruta){
 	bool finalizado = true;
 
-	this->limpiar();
+	this->limpiarTextura();
+	this->limpiarFuente();
 
 	//Cargo la imagen de una ruta especificada
 	SDL_Surface* imagenCargada = IMG_Load(ruta.c_str());
@@ -56,11 +58,15 @@ bool TexturaSDL::cargarImagen(string ruta){
 		SDL_FreeSurface(imagenCargada);
 	}
 
-	return finalizado;
+	//Si no se encuentra la ruta de imagen, cargamos una por defecto
+	if (!finalizado){
+		this->cargarImagenNoEncontrada();
+	}
 }
 
-bool TexturaSDL::cargarTexto(string ruta, int tamanio){
-	this->limpiar();
+void TexturaSDL::cargarTexto(string ruta, int tamanio){
+	this->limpiarTextura();
+	this->limpiarFuente();
 	bool finalizado = true;
 
 	//Abrimos la fuente
@@ -78,10 +84,15 @@ bool TexturaSDL::cargarTexto(string ruta, int tamanio){
 		}
 	}
 
-	return finalizado;
+	//Si no se encuentra la ruta de imagen, cargamos una por defecto
+	if (!finalizado){
+		cout << "Se cargará una fuente por defecto: Arial" << endl;
+		this->cargarTextoPorDefecto(tamanio);
+	}
 }
 
 bool TexturaSDL::actualizarTexto(string texto, SDL_Color color){
+	this->limpiarTextura();
 	//Renderizamos el texto pasado por argumento
 	SDL_Surface* textoCargado = TTF_RenderUTF8_Solid(this->fuente,texto.c_str(),color);
 	if (textoCargado == NULL){
@@ -108,7 +119,7 @@ void TexturaSDL::setAlpha(Uint8 alpha){
 	SDL_SetTextureAlphaMod(this->textura,alpha);
 }
 
-void TexturaSDL::limpiar(){
+void TexturaSDL::limpiarTextura(){
 	//Libero las texturas si estas existen
 	if (this->textura != NULL) {
 		SDL_DestroyTexture(this->textura);
@@ -116,7 +127,9 @@ void TexturaSDL::limpiar(){
 		this->alto = 0;
 		this->ancho = 0;
 	}
+}
 
+void TexturaSDL::limpiarFuente(){
 	//Libero la fuente
 	if (this->fuente != NULL){
 		TTF_CloseFont(this->fuente);
@@ -125,7 +138,7 @@ void TexturaSDL::limpiar(){
 }
 
 void TexturaSDL::aplicarPosicionYTamanio(float x, float y, int ancho, int alto, double rotacion, SDL_RendererFlip flip){
-	SDL_Rect rectangulo = {x,y,ancho,alto};
+	SDL_Rect rectangulo = {(int)x,(int)y,ancho,alto};
 	SDL_Rect* clip = NULL;
 
 	if (this->spriteClips.size() != 0){
@@ -163,6 +176,14 @@ void TexturaSDL::generarSprite(int frames){
 
 void TexturaSDL::frameReset(){
 	this->frameActual = 0;
+}
+
+void TexturaSDL::cargarImagenNoEncontrada(){
+	this->cargarImagen("Recursos/ImagenNoEncontrada.png");
+}
+
+void TexturaSDL::cargarTextoPorDefecto(int tamanio){
+	this->cargarTexto("Recursos/arial.ttf",tamanio);
 }
 
 void TexturaSDL::aplicarPosicion(float x, float y, double rotacion, SDL_RendererFlip flip){

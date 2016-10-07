@@ -29,19 +29,24 @@ private:
 	int alto;
 
 	void aplicarPosicionYTamanio(float x, float y, int ancho, int alto, double rotacion, SDL_RendererFlip flip);
+	void cargarImagenNoEncontrada();
+	void cargarTextoPorDefecto(int tamanio);
 
 public:
 	TexturaSDL(SDL_Renderer* renderer);
 	~TexturaSDL();
 
 	//Elimina las referencias de la textura, liberando memoria
-	void limpiar();
+	void limpiarTextura();
+
+	//Elimina las referencias de la fuente de texto, liberando memoria
+	void limpiarFuente();
 
 	//Carga una imagen de una ruta específica
-	bool cargarImagen(string ruta);
+	void cargarImagen(string ruta);
 
 	//Carga una fuente de texto desde un archivo de fuente .ttf y su tamaño
-	bool cargarTexto(string ruta, int tamanio);
+	void cargarTexto(string ruta, int tamanio);
 
 	//Setea el texto que se va a mostrar con su color
 	bool actualizarTexto(string texto, SDL_Color color);
