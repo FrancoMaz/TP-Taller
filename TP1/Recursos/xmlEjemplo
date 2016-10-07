@@ -18,14 +18,23 @@
     <Carpeta>Rojo</Carpeta>
     <SpriteSalto>
       <Id>1</Id>
+      <CantFotogramas>4</CantFotogramas>
+      <Ancho>100</Ancho>
+      <Alto>50</Alto>
       <Imagen>1.png</Imagen>
     </SpriteSalto> 
     <SpriteCaminar>
       <Id>2</Id>
+      <CantFotogramas>4</CantFotogramas>
+      <Ancho>100</Ancho>
+      <Alto>50</Alto>
       <Imagen>2.png</Imagen>
     </SpriteCaminar>
     <SpriteAgacharse>
       <Id>3</Id>
+      <CantFotogramas>4</CantFotogramas>
+      <Ancho>100</Ancho>
+      <Alto>50</Alto>
       <Imagen>3.png</Imagen>
     </SpriteAgacharse>
   </SetRojo>
@@ -33,14 +42,27 @@
     <Carpeta>Verde</Carpeta>
     <SpriteSalto>
       <Id>1</Id>
+      <CantFotogramas>4</CantFotogramas>
+      <Ancho>100</Ancho>
+      <Alto>50</Alto>
+      <Ancho>100</Ancho>
+      <Alto>50</Alto>
       <Imagen>1.png</Imagen>
     </SpriteSalto> 
     <SpriteCaminar>
       <Id>2</Id>
+      <CantFotogramas>4</CantFotogramas>
+      <Ancho>100</Ancho>
+      <Alto>50</Alto>
+      <Ancho>100</Ancho>
+      <Alto>50</Alto>
       <Imagen>2.png</Imagen>
     </SpriteCaminar>
     <SpriteAgacharse>
       <Id>3</Id>
+      <CantFotogramas>4</CantFotogramas>
+      <Ancho>100</Ancho>
+      <Alto>50</Alto>
       <Imagen>3.png</Imagen>
     </SpriteAgacharse>
   </SetVerde>
@@ -48,14 +70,23 @@
     <Carpeta>Amarillo</Carpeta>
     <SpriteSalto>
       <Id>1</Id>
+      <CantFotogramas>4</CantFotogramas>
+      <Ancho>100</Ancho>
+      <Alto>50</Alto>
       <Imagen>1.png</Imagen>
     </SpriteSalto> 
     <SpriteCaminar>
       <Id>2</Id>
+      <CantFotogramas>4</CantFotogramas>
+      <Ancho>100</Ancho>
+      <Alto>50</Alto>
       <Imagen>2.png</Imagen>
     </SpriteCaminar>
     <SpriteAgacharse>
       <Id>3</Id>
+      <CantFotogramas>4</CantFotogramas>
+      <Ancho>100</Ancho>
+      <Alto>50</Alto>
       <Imagen>3.png</Imagen>
     </SpriteAgacharse>
   </SetAmarillo>
@@ -63,4 +94,5 @@
 
 <Configuracion>
   <Resolucion>800x600</Resolucion>
+  <MaxJugadores>6</MaxJugadores>
 </Configuracion>
