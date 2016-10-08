@@ -22,6 +22,7 @@ private:
 
 public:
 	XmlParser(string path);
+	int cantidadMaximaDeJugadores();
 	virtual ~XmlParser();
 };
 

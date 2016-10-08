@@ -8,6 +8,7 @@
 #include "XmlParser.h"
 
 XmlParser::XmlParser(string xmlPath) {
+
 	// Create empty XML document within memory
 	pugi::xml_document doc;
 	// Load XML file into memory
@@ -16,7 +17,12 @@ XmlParser::XmlParser(string xmlPath) {
 		cout << "Parse error: " << result.description() << ", character pos= " << result.offset << endl;
 	}
 	// A valid XML document must have a single root node, in our case the root node is "Configuration"
-	this-> rootNode = doc.document_element();
+	this->rootNode = doc.document_element();
+}
+
+int XmlParser::cantidadMaximaDeJugadores() {
+	string tagName = "CantMaxJugadores";
+	return this->rootNode.child(tagName.c_str()).value();
 }
 
 XmlParser::~XmlParser() {
