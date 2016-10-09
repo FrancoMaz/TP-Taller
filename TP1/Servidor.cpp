@@ -59,8 +59,7 @@ void Servidor::guardarDatosDeUsuarios() {
 				}
 				nroItem++;
 			}
-			queue<Mensaje>* colaMensajes = new queue<Mensaje>;
-			mensajesProcesados.mensajes = colaMensajes;
+			mensajesProcesados.jugador = new Jugador();
 			datosUsuarios->push_back(datosCapturados);
 			listaMensajesProcesados->push_back(mensajesProcesados);
 		}
@@ -107,7 +106,7 @@ void Servidor::guardarLog(string mensaje, const int nivelDeLog) {
 }
 
 
-void Servidor::crearMensaje(Mensaje mensaje) {
+void Servidor::crearMensaje(Evento mensaje) {
 	this->colaMensajesNoProcesados.push(mensaje);
 }
 
@@ -115,23 +114,42 @@ void Servidor::procesarMensajes() {
 
 	if (!colaMensajesNoProcesados.empty()) {
 		pthread_mutex_lock(&mutexColaNoProcesados);
-		Mensaje mensajeAProcesar = colaMensajesNoProcesados.front();
+		Evento mensajeAProcesar = colaMensajesNoProcesados.front();
 		colaMensajesNoProcesados.pop();
 		pthread_mutex_unlock(&mutexColaNoProcesados);
 		for (list<MensajesProcesados>::iterator usuarioActual = listaMensajesProcesados->begin();
 				usuarioActual != listaMensajesProcesados->end();usuarioActual++) {
 			MensajesProcesados listaMensajes;
 			listaMensajes = *usuarioActual;
-			if (listaMensajes.destinatario == mensajeAProcesar.getDestinatario()) {
-				pthread_mutex_lock(&mutexListaProcesados);
-				listaMensajes.mensajes->push(mensajeAProcesar);
-				pthread_mutex_unlock(&mutexListaProcesados);
-				this->mensaje = "Procesando mensaje para "
-						+ listaMensajes.destinatario + "\n";
+			if (listaMensajes.destinatario != mensajeAProcesar.getRemitente()) {
+				pair<int,int> nuevaPosicion = this->actualizarPosicion(mensajeAProcesar.getTeclaPresionada());
+				listaMensajes.jugador -> actualizarPosicion(nuevaPosicion);
+				this->mensaje = "Procesando mensaje para " + listaMensajes.destinatario + "\n";
 				this->guardarLog(mensaje, DEBUG);
 			}
 		}
 	}
+}
+
+pair<int,int> Servidor::actualizarPosicion(SDL_Keycode teclaPresionada) {
+	pair<int,int> nuevaPosicion;
+	if (teclaPresionada == SDLK_RIGHT)
+	{
+		nuevaPosicion.first += 1;
+	}
+	if (teclaPresionada == SDLK_LEFT)
+	{
+		nuevaPosicion.first -= 1;
+	}
+	if (teclaPresionada == SDLK_UP)
+	{
+		nuevaPosicion.second -= 1;
+	}
+	if (teclaPresionada == SDLK_DOWN)
+	{
+		nuevaPosicion.second += 1;
+	}
+	return nuevaPosicion;
 }
 
 void Servidor::comenzarEscucha() {
@@ -213,7 +231,7 @@ void Servidor::finalizarEscucha() {
 	close(welcomeSocket);
 }
 
-queue<Mensaje> Servidor::getColaMensajesNoProcesados() {
+queue<Evento> Servidor::getColaMensajesNoProcesados() {
 	return this->colaMensajesNoProcesados;
 }
 
@@ -276,8 +294,7 @@ list<string> Servidor::agregarDestinatarios(string remitente) {
 }
 string Servidor::traerMensajesProcesados(char* nombreCliente) {
 
-	queue<Mensaje>* colaDeMensajes;
-
+	string mensajeAEnviar;
 	for (list<Servidor::MensajesProcesados>::iterator datoActual =
 			listaMensajesProcesados->begin();
 			datoActual != listaMensajesProcesados->end(); datoActual++) {
@@ -285,13 +302,11 @@ string Servidor::traerMensajesProcesados(char* nombreCliente) {
 		MensajesProcesados mensaje;
 		mensaje = *datoActual;
 		if (mensaje.destinatario == nombreCliente) {
-			colaDeMensajes = mensaje.mensajes;
+			mensajeAEnviar = mensaje.destinatario + '|' + mensaje.jugador->getStringPosicion() + '#';
 		}
 	}
 
-	string mensajesConcatenados = concatenarMensajes(colaDeMensajes);
-
-	return mensajesConcatenados;
+	return mensajeAEnviar;
 
 }
 string Servidor::concatenarMensajes(queue<Mensaje>* colaDeMensajes) {

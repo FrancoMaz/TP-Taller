@@ -1,7 +1,7 @@
 
 OBJSCLI = MainCliente.cpp Cliente.cpp Mensaje.cpp Logger.cpp VentanaSDL.cpp TexturaSDL.cpp Vista.cpp Controlador.cpp
 
-OBJSSERV = MainServidor.cpp Servidor.cpp Mensaje.cpp Logger.cpp
+OBJSSERV = MainServidor.cpp Servidor.cpp Mensaje.cpp Logger.cpp Evento.cpp Jugador.cpp
 
 CC = g++ 
 

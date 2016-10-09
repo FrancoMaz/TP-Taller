@@ -23,6 +23,9 @@
 #include "Cliente.h"
 #include "Logger.h"
 #include "Mensaje.h"
+#include "Evento.h"
+#include "Jugador.h"
+#include <utility>
 #define MAX_CANT_CLIENTES 6
 #define BUFFER_MAX_SIZE 200
 const int INFO = 1;
@@ -38,7 +41,7 @@ private:
 	int socketServer;
 	int cantClientesConectados = 0;
 	char* nombreArchivo;
-	queue<Mensaje> colaMensajesNoProcesados;
+	queue<Evento> colaMensajesNoProcesados;
 	Logger* logger;
 	struct sockaddr_in serverAddr;
 	struct sockaddr_storage serverStorage;
@@ -52,7 +55,7 @@ private:
 	};
 	struct MensajesProcesados {
 		string destinatario;
-		queue<Mensaje>* mensajes;
+		Jugador* jugador;
 	};
 	list<Datos>* datosUsuarios;
 	list<MensajesProcesados>* listaMensajesProcesados;
@@ -68,10 +71,10 @@ public:
 	list<Cliente> obtenerClientes();
 	void guardarLog(string mensaje, const int nivelDeLog);
 	list<Mensaje> obtenerMensajes(Cliente cliente);
-	void crearMensaje(Mensaje mensaje);
+	void crearMensaje(Evento mensaje);
 	void comenzarEscucha();
 	void finalizarEscucha();
-	queue<Mensaje> getColaMensajesNoProcesados();
+	queue<Evento> getColaMensajesNoProcesados();
 	void splitDatos(char* datos, string* nombre, string* pass);
 	void recibirMensaje();
 	void setThreadProceso(pthread_t thrProceso);
@@ -89,6 +92,7 @@ public:
 	string concatenarMensajes(queue<Mensaje>* colaDeMensajes);
 	void procesarMensajes();
 	void restarCantidadClientesConectados();
+	pair<int,int> actualizarPosicion(SDL_Keycode teclaPresionada);
 };
 
 #endif /* TP1_SERVIDOR_H_ */
