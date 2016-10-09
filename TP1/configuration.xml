@@ -103,8 +103,8 @@
 	</Sprites>
 
 	<Ventana>
-	  <Ancho>800</ancho>
-	  <Alto>600</alto>
+	  <Ancho>800</Ancho>
+	  <Alto>600</Alto>
 	</Ventana>
 	
 	<CantMaxJugadores>6</CantMaxJugadores>

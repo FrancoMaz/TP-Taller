@@ -8,7 +8,7 @@
 #ifndef XMLPARSER_H_
 #define XMLPARSER_H_
 
-#include <pugixml.hpp>
+#include "pugixml.hpp"
 #include <string>
 #include <iostream>
 
@@ -22,7 +22,8 @@ private:
 
 public:
 	XmlParser(string path);
-	int cantidadMaximaDeJugadores();
+	const char * cantidadMaximaDeJugadores();
+	pair<const char *, const char *> tamanioVentana();
 	virtual ~XmlParser();
 };
 
