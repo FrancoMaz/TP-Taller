@@ -137,27 +137,31 @@ void TexturaSDL::limpiarFuente(){
 	}
 }
 
-void TexturaSDL::aplicarPosicionYTamanio(float x, float y, int ancho, int alto, double rotacion, SDL_RendererFlip flip){
+void TexturaSDL::aplicarPosicionYTamanio(float x, float y, int ancho, int alto, SDL_Rect* clip, double rotacion, SDL_RendererFlip flip){
 	SDL_Rect rectangulo = {(int)x,(int)y,ancho,alto};
-	SDL_Rect* clip = NULL;
 
 	if (this->spriteClips.size() != 0){
-		//El frameActual lo divido por 6 para reducir la velocidad de fotogramas
-		clip = &this->spriteClips[this->frameActual/6];
+		//El frameActual lo divido por 8 para reducir la velocidad de fotogramas
+		clip = &this->spriteClips[this->frameActual/8];
 		rectangulo.w = clip->w;
 		rectangulo.h = clip->h;
 		this->frameActual++;
-		if((this->frameActual/6) >= this->spriteClips.size()){
+		if((this->frameActual/8) >= this->spriteClips.size()){
 			this->frameReset();
 		}
 	}
 
+	if (clip != NULL){
+		rectangulo.w = clip->w;
+		rectangulo.h = clip->h;
+	}
 
 	SDL_RenderCopyEx(this->render, this->textura, clip, &rectangulo,rotacion,NULL,flip);
 }
 
 void TexturaSDL::generarSprite(int frames){
 	if (frames >= 2){
+		this->spriteClips.clear();
 		SDL_Rect clips[frames];
 		int clipAncho = (this->ancho)/frames;
 
@@ -187,7 +191,7 @@ void TexturaSDL::cargarTextoPorDefecto(int tamanio){
 }
 
 void TexturaSDL::aplicarPosicion(float x, float y, double rotacion, SDL_RendererFlip flip){
-	this->aplicarPosicionYTamanio(x,y,this->ancho,this->alto, rotacion, flip);
+	this->aplicarPosicionYTamanio(x,y,this->ancho,this->alto, NULL, rotacion, flip);
 }
 
 bool TexturaSDL::aplicarPosicionDeBoton(float x, float y, SDL_Event* e){
@@ -248,14 +252,18 @@ bool TexturaSDL::aplicarPosicionDeBoton(float x, float y, SDL_Event* e){
 }
 
 void TexturaSDL::aplicarPosicionConTamanio(float x, float y, int ancho, int alto){
-	this->aplicarPosicionYTamanio(x,y,ancho,alto,0,SDL_FLIP_NONE);
+	this->aplicarPosicionYTamanio(x,y,ancho,alto,NULL,0,SDL_FLIP_NONE);
 }
 
 void TexturaSDL::aplicarPosicionDeFrame(float x, float y, int frame, double rotacion, SDL_RendererFlip flip){
 	if(frame < this->spriteClips.size()){
-		this->frameActual = frame*6;
-		this->aplicarPosicionYTamanio(x,y,this->ancho,this->alto, rotacion, flip);
+		this->frameActual = frame*8;
+		this->aplicarPosicionYTamanio(x,y,this->ancho,this->alto, NULL, rotacion, flip);
 	}
+}
+
+void TexturaSDL::aplicarPosicionDePorcion(float x, float y, SDL_Rect* clip, double rotacion, SDL_RendererFlip flip){
+	this->aplicarPosicionYTamanio(x,y,this->ancho,this->alto, clip, rotacion, flip);
 }
 
 int TexturaSDL::getAncho(){
@@ -264,4 +272,20 @@ int TexturaSDL::getAncho(){
 
 int TexturaSDL::getAlto(){
 	return this->alto;
+}
+
+int TexturaSDL::getAnchoSprite(){
+	if (this->spriteClips.size() != 0){
+		return (this->ancho/this->spriteClips.size());
+	} else {
+		return this->ancho;
+	}
+}
+
+int TexturaSDL::getAltoSprite(){
+	if (this->spriteClips.size() != 0){
+		return (this->alto/this->spriteClips.size());
+	} else {
+		return this->alto;
+	}
 }

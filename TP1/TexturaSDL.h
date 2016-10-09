@@ -28,7 +28,7 @@ private:
 	int ancho;
 	int alto;
 
-	void aplicarPosicionYTamanio(float x, float y, int ancho, int alto, double rotacion, SDL_RendererFlip flip);
+	void aplicarPosicionYTamanio(float x, float y, int ancho, int alto, SDL_Rect* clip, double rotacion, SDL_RendererFlip flip);
 	void cargarImagenNoEncontrada();
 	void cargarTextoPorDefecto(int tamanio);
 
@@ -64,6 +64,9 @@ public:
 	//(por ejemplo, si pasa la fecha del mouse sobre el boton, debería cambiar su textura, o al hacer clic)
 	bool aplicarPosicionDeBoton(float x, float y, SDL_Event* e);
 
+	//Idem pero aplica una porción de textura definida por las dimensiones de clip
+	void aplicarPosicionDePorcion(float x, float y, SDL_Rect* clip, double rotacion, SDL_RendererFlip flip);
+
 	//Establecer transparencias (alpha = 0 transparente; alpha = 255 opaco)
 	void setAlpha(Uint8 alpha);
 
@@ -76,6 +79,10 @@ public:
 	//Obtengo el ancho y el alto
 	int getAncho();
 	int getAlto();
+
+	//Obtengo el ancho y el alto de un sprite generado
+	int getAnchoSprite();
+	int getAltoSprite();
 };
 
 #endif /* TP2_TEXTURASDL_H_ */

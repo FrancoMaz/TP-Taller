@@ -66,32 +66,38 @@ void* cicloConexion(void* arg) {
 	 	 //void** escuchando;
 	 	 //pthread_join(threadVerificarConexion,(void**)&escuchando);
 	 	 //termino = *((bool*) (&escuchando));
-		vista->cargarEscenario(0,0);
-		cliente->setOpcionMenu(0);
-		while (cliente->getOpcionMenu() != 5 and cliente->getOpcionMenu() != 4 and !cliente->getTermino()) {
-			cliente->mostrarMenuYProcesarOpcion();
-			if (!cliente->getTermino()) {
-				cliente->elegirOpcionDelMenu(cliente->getOpcionMenu());
-			}
-		}
-		if (cliente->getTermino() and cliente->getOpcionMenu() != 5)
-		{
-			int opcion;
-			while (opcion != 5) {
-				cout << endl;
-				cout << "Se cerro la conexion con el servidor. Presione 5 para salir" << endl;
-				cin >> opcion;
+
+		vista->cargarEscenario(0,0,3712,600);
+
+		if (!vista->ventanaCerrada()) {
+			cliente->setOpcionMenu(0);
+			while (cliente->getOpcionMenu() != 5 and cliente->getOpcionMenu() != 4 and !cliente->getTermino()) {
+				cliente->mostrarMenuYProcesarOpcion();
+				if (!cliente->getTermino()) {
+					cliente->elegirOpcionDelMenu(cliente->getOpcionMenu());
 				}
-				cliente->setOpcionMenu(5);
 			}
+			if (cliente->getTermino() and cliente->getOpcionMenu() != 5)
+			{
+				int opcion;
+				while (opcion != 5) {
+					cout << endl;
+					cout << "Se cerro la conexion con el servidor. Presione 5 para salir" << endl;
+					cin >> opcion;
+					}
+					cliente->setOpcionMenu(5);
+				}
 
-			//if(accion == 5){ cliente->setOpcionMenu(accion);}
+				//if(accion == 5){ cliente->setOpcionMenu(accion);}
 
-		if (cliente->getOpcionMenu() == 4) {
+			if (cliente->getOpcionMenu() == 4) {
+				return (void*) 1;
+			}
+			//pthread_detach(threadVerificarConexion);
+			return (void*) 0;
+		} else {
 			return (void*) 1;
 		}
-		//pthread_detach(threadVerificarConexion);
-		return (void*) 0;
 	} else {
 		return (void*) 1;
 	}

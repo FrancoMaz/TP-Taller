@@ -50,6 +50,8 @@ void Vista::cargarArchivos(){
 	textura.push_back(ventana->crearTexto("Recursos/arial.ttf",19));
 	textura.push_back(ventana->crearTexto("Recursos/msserif_bold.ttf",13));
 	textura.push_back(ventana->crearBoton("Recursos/Boton_Conectar.png"));
+	textura.push_back(ventana->crearTextura("Recursos/Fondo_escenario.png",0));
+	textura.push_back(ventana->crearTextura("Recursos/Jugador.png",3));
 
 	//Defino constantes para cada textura (para evitar llamarlos por índices)
 	#define texturaMenuFondo textura[0]
@@ -68,6 +70,8 @@ void Vista::cargarArchivos(){
 	#define entradaTextoIP textura[13]
 	#define textoDatosNoCoinciden textura[14]
 	#define texturaBotonConectar textura[15]
+	#define texturaFondoEscenario textura[16]
+	#define texturaJugador textura[17]
 }
 
 void Vista::cargarPrimeraPantalla(){
@@ -281,22 +285,32 @@ void Vista::transicionDePantalla(){
 	this->opacidad = 230;
 }
 
-void Vista::cargarEscenario(int x, int y){
+void Vista::cargarEscenario(int x, int y, int anchoEscenario, int altoEscenario){
 	x = 20;
 	y = 20;
+	anchoEscenario = texturaFondoEscenario->getAncho();
+	altoEscenario = texturaFondoEscenario->getAlto();
 	int velocidad_X = 0;
 	int velocidad_Y = 0;
-	int const velocidad = 10;
+	int const velocidad = 5;
+	SDL_Rect camara = {0,0,ANCHO_VENTANA,ALTO_VENTANA};
+	SDL_RendererFlip flip = SDL_FLIP_NONE;
 	while(!this->controlador->comprobarCierreVentana()){
 		this->ventana->limpiar();
 		while(SDL_PollEvent(&evento)){
 			//Si presiono las teclas
 			if(this->controlador->presionarBoton(SDLK_RIGHT)){
 				velocidad_X += velocidad;
+				texturaJugador->cargarImagen("Recursos/Jugador_corriendo.png");
+				texturaJugador->generarSprite(9);
+				flip = SDL_FLIP_NONE;
 			}
 
 			if(this->controlador->presionarBoton(SDLK_LEFT)){
 				velocidad_X -= velocidad;
+				texturaJugador->cargarImagen("Recursos/Jugador_corriendo.png");
+				texturaJugador->generarSprite(9);
+				flip = SDL_FLIP_HORIZONTAL;
 			}
 
 			if(this->controlador->presionarBoton(SDLK_UP)){
@@ -310,10 +324,16 @@ void Vista::cargarEscenario(int x, int y){
 			//Si suelto las teclas
 			if(this->controlador->soltarBoton(SDLK_RIGHT)){
 				velocidad_X -= velocidad;
+				texturaJugador->cargarImagen("Recursos/Jugador.png");
+				texturaJugador->generarSprite(3);
+				flip = SDL_FLIP_NONE;
 			}
 
 			if(this->controlador->soltarBoton(SDLK_LEFT)){
 				velocidad_X += velocidad;
+				texturaJugador->cargarImagen("Recursos/Jugador.png");
+				texturaJugador->generarSprite(3);
+				flip = SDL_FLIP_HORIZONTAL;
 			}
 
 			if(this->controlador->soltarBoton(SDLK_UP)){
@@ -330,17 +350,40 @@ void Vista::cargarEscenario(int x, int y){
 		y += velocidad_Y;
 
 		//Para que el punto no se vaya de pantalla
-		if((x < 0)||(x + texturaMenuMetalSlug->getAncho() > ANCHO_VENTANA)){
+		if((x < 0)||(x + texturaJugador->getAnchoSprite() > anchoEscenario)){
 			//Muevo para atrás
 			x -= velocidad_X;
 		}
 
-		if((y < 0)||(y + texturaMenuMetalSlug->getAlto() > ALTO_VENTANA)){
+		if((y < 0)||(y + texturaJugador->getAltoSprite() > altoEscenario)){
 			//Muevo para atrás
 			y -= velocidad_Y;
 		}
 
-		texturaMenuMetalSlug->aplicarPosicion(x,y,0,SDL_FLIP_NONE);
+		//Centro la cámara en el jugador
+		camara.x = (x + texturaJugador->getAnchoSprite()/2) - ANCHO_VENTANA/2;
+		camara.y = (y + texturaJugador->getAltoSprite()/2) - ALTO_VENTANA/2;
+
+		//Mantengo la cámara dentro de los límites del escenario
+		if (camara.x < 0){
+			camara.x = 0;
+		}
+
+		if (camara.y < 0){
+			camara.y = 0;
+		}
+
+		if (camara.x > anchoEscenario - camara.w){
+			camara.x = anchoEscenario - camara.w;
+		}
+
+		if (camara.y > altoEscenario - camara.h){
+			camara.y = altoEscenario - camara.h;
+		}
+
+
+		texturaFondoEscenario->aplicarPosicionDePorcion(0,0,&camara,0,SDL_FLIP_NONE);
+		texturaJugador->aplicarPosicion(x-camara.x,y-camara.y,0,flip);
 		this->ventana->actualizar();
 	}
 }
