@@ -13,9 +13,10 @@
 
 using namespace std;
 
+extern SDL_Event evento;
+
 class Controlador {
 private:
-	SDL_Event evento;
 	bool botonCerrarVentana;
 	const Uint8* teclaEscaneada;
 
@@ -50,8 +51,6 @@ public:
 
 	//A partir del texto pasado por argumento, lo va actualizando agregando caracteres que se ingresan por teclado
 	void ingresarCaracteresATexto(string* textoParaActualizar);
-
-	SDL_Event obtenerEvento();
 };
 
 #endif /* TP2_CONTROLADOR_H_ */

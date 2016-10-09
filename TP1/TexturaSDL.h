@@ -72,6 +72,10 @@ public:
 
 	//Resetea el fotograma del sprite a cero
 	void frameReset();
+
+	//Obtengo el ancho y el alto
+	int getAncho();
+	int getAlto();
 };
 
 #endif /* TP2_TEXTURASDL_H_ */

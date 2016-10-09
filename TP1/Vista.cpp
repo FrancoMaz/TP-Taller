@@ -72,17 +72,17 @@ void Vista::cargarArchivos(){
 
 void Vista::cargarPrimeraPantalla(){
 	for (float y=-290; y<40; y=y+5){
-		ventana->limpiar();
+		this->ventana->limpiar();
 		texturaMenuFondo->aplicarPosicion(0,0,0,SDL_FLIP_NONE);
 		texturaMenuMetalSlug->aplicarPosicion(180,y,0,SDL_FLIP_NONE);
-		ventana->actualizar();
+		this->ventana->actualizar();
 	}
 
 	SDL_Color colorTexto = {255,255,255};
-	textura[11]->actualizarTexto("Trabajo Práctico - Taller de Programación", colorTexto);
+	textoTPTaller->actualizarTexto("Trabajo Práctico - Taller de Programación", colorTexto);
 
 	for (this->opacidad; this->opacidad>0; this->opacidad=this->opacidad-3){
-		ventana->limpiar();
+		this->ventana->limpiar();
 		texturaMenuFondo->aplicarPosicion(0,0,0,SDL_FLIP_NONE);
 		texturaMenuMetalSlug->aplicarPosicion(180,40,0,SDL_FLIP_NONE);
 		texturaPresionarEnter->aplicarPosicion(200,430,0,SDL_FLIP_NONE);
@@ -90,14 +90,15 @@ void Vista::cargarPrimeraPantalla(){
 		textoTPTaller->setAlpha(200);
 		texturaEfectoLuz->aplicarPosicionConTamanio(0,0,800,600);
 		texturaEfectoLuz->setAlpha(this->opacidad);
-		ventana->actualizar();
+		this->ventana->actualizar();
 	}
 
 	bool incrementa = true;
+	bool botonEnter = false;
 	this->opacidad = 255;
 	//Mientras la ventana no se cierre pulsando X o no se presione el enter, hacer el loop
-	while ((!controlador->comprobarCierreVentana())&&(!controlador->presionarBoton(SDLK_RETURN))){
-		ventana->limpiar();
+	while ((!controlador->comprobarCierreVentana())&&(!botonEnter)){
+		this->ventana->limpiar();
 		texturaMenuFondo->aplicarPosicion(0,0,0,SDL_FLIP_NONE);
 		texturaMenuMetalSlug->aplicarPosicion(180,40,0,SDL_FLIP_NONE);
 		texturaPresionarEnter->aplicarPosicion(200,430,0,SDL_FLIP_NONE);
@@ -111,7 +112,11 @@ void Vista::cargarPrimeraPantalla(){
 		texturaPresionarEnter->setAlpha(this->opacidad);
 		textoTPTaller->aplicarPosicion(254,560,0,SDL_FLIP_NONE);
 		textoTPTaller->setAlpha(200);
-		ventana->actualizar();
+		this->ventana->actualizar();
+
+		while(SDL_PollEvent(&evento) != 0){
+			botonEnter = controlador->presionarBoton(SDLK_RETURN);
+		}
 	}
 	this->opacidad = 230;
 }
@@ -128,7 +133,6 @@ datosConexion Vista::cargarPantallaIngresoDatos(bool aviso, int numeroPantalla){
 	SDL_Color colorTexto = {255,255,255};
 	SDL_Color colorTextoAmarillo = {227,215,117};
 	SDL_Color colorTextoEntrada = {0,0,0};
-	SDL_Event e;
 	string campoUno;
 	string campoDos;
 	bool campoUnoSeleccionado = false;
@@ -155,19 +159,18 @@ datosConexion Vista::cargarPantallaIngresoDatos(bool aviso, int numeroPantalla){
 			break;
 	}
 
-	textura[12]->actualizarTexto(campoUno,colorTextoEntrada);
-	textura[13]->actualizarTexto(campoDos,colorTextoEntrada);
+	entradaTextoPuerto->actualizarTexto(campoUno,colorTextoEntrada);
+	entradaTextoIP->actualizarTexto(campoDos,colorTextoEntrada);
 
 	while ((!this->controlador->comprobarCierreVentana())&&(!siguiente)){
-		e = this->controlador->obtenerEvento();
-		ventana->limpiar();
+		this->ventana->limpiar();
 		texturaMenuFondo->aplicarPosicion(0,0,0,SDL_FLIP_NONE);
 		texturaMenuMetalSlug->aplicarPosicion(180,40,0,SDL_FLIP_NONE);
 
 		textoIngresePuerto->aplicarPosicion(312,337,0,SDL_FLIP_NONE);
 		textoIngreseIP->aplicarPosicion(312,402,0,SDL_FLIP_NONE);
 
-		if(campoTextoUno->aplicarPosicionDeBoton(310,358,&e)){
+		if(campoTextoUno->aplicarPosicionDeBoton(310,358,&evento)){
 			campoUnoSeleccionado = true;
 			campoDosSeleccionado = false;
 			aviso = false;
@@ -179,7 +182,7 @@ datosConexion Vista::cargarPantallaIngresoDatos(bool aviso, int numeroPantalla){
 			entradaTextoPuerto->actualizarTexto(campoUno,colorTextoEntrada);
 		}
 
-		if(campoTextoDos->aplicarPosicionDeBoton(310,423,&e)){
+		if(campoTextoDos->aplicarPosicionDeBoton(310,423,&evento)){
 			campoUnoSeleccionado = false;
 			campoDosSeleccionado = true;
 			aviso = false;
@@ -194,15 +197,15 @@ datosConexion Vista::cargarPantallaIngresoDatos(bool aviso, int numeroPantalla){
 		entradaTextoPuerto->aplicarPosicion(316,363,0,SDL_FLIP_NONE);
 		entradaTextoIP->aplicarPosicion(316,428,0,SDL_FLIP_NONE);
 
-		if (texturaBotonSalir->aplicarPosicionDeBoton(656,550,&e)){
+		if (texturaBotonSalir->aplicarPosicionDeBoton(656,550,&evento)){
 			this->controlador->setCerrarVentana();
 		}
 
-		texturaBotonCreditos->aplicarPosicionDeBoton(30,550,&e);
+		texturaBotonCreditos->aplicarPosicionDeBoton(30,550,&evento);
 
 		switch(numeroPantalla){
 			case 2:
-				if(texturaBotonIngresar->aplicarPosicionDeBoton(338,475,&e)){
+				if(texturaBotonIngresar->aplicarPosicionDeBoton(338,475,&evento)){
 					campoUnoSeleccionado = false;
 					campoDosSeleccionado = false;
 					this->datos.puerto = campoUno;
@@ -211,7 +214,7 @@ datosConexion Vista::cargarPantallaIngresoDatos(bool aviso, int numeroPantalla){
 				}
 				break;
 			case 3:
-				if(texturaBotonConectar->aplicarPosicionDeBoton(338,475,&e)){
+				if(texturaBotonConectar->aplicarPosicionDeBoton(338,475,&evento)){
 					campoUnoSeleccionado = false;
 					campoDosSeleccionado = false;
 					this->datos.nombre = campoUno;
@@ -236,7 +239,7 @@ datosConexion Vista::cargarPantallaIngresoDatos(bool aviso, int numeroPantalla){
 		textoTPTaller->setAlpha(200);
 		texturaEfectoLuz->aplicarPosicionConTamanio(0,0,800,600);
 		texturaEfectoLuz->setAlpha(this->opacidad);
-		ventana->actualizar();
+		this->ventana->actualizar();
 
 		this->controlador->botonCerrarVentanaSeleccionado();
 
@@ -253,7 +256,7 @@ void Vista::transicionDePantalla(){
 	int y = 0;
 	if (!this->controlador->comprobarCierreVentana()){
 		for (this->opacidad = 0; this->opacidad <255; this->opacidad = this->opacidad+5){
-			ventana->limpiar();
+			this->ventana->limpiar();
 			texturaMenuFondo->aplicarPosicion(0,0,0,SDL_FLIP_NONE);
 			texturaMenuMetalSlug->aplicarPosicion(180,40,0,SDL_FLIP_NONE);
 			textoIngresePuerto->aplicarPosicion(312,337,0,SDL_FLIP_NONE);
@@ -272,10 +275,74 @@ void Vista::transicionDePantalla(){
 			angulo = angulo + 5;
 			x = x+5;
 			y = y+2;
-			ventana->actualizar();
+			this->ventana->actualizar();
 		}
 	}
 	this->opacidad = 230;
+}
+
+void Vista::cargarEscenario(int x, int y){
+	x = 20;
+	y = 20;
+	int velocidad_X = 0;
+	int velocidad_Y = 0;
+	int const velocidad = 10;
+	while(!this->controlador->comprobarCierreVentana()){
+		this->ventana->limpiar();
+		while(SDL_PollEvent(&evento)){
+			//Si presiono las teclas
+			if(this->controlador->presionarBoton(SDLK_RIGHT)){
+				velocidad_X += velocidad;
+			}
+
+			if(this->controlador->presionarBoton(SDLK_LEFT)){
+				velocidad_X -= velocidad;
+			}
+
+			if(this->controlador->presionarBoton(SDLK_UP)){
+				velocidad_Y -= velocidad;
+			}
+
+			if(this->controlador->presionarBoton(SDLK_DOWN)){
+				velocidad_Y += velocidad;
+			}
+
+			//Si suelto las teclas
+			if(this->controlador->soltarBoton(SDLK_RIGHT)){
+				velocidad_X -= velocidad;
+			}
+
+			if(this->controlador->soltarBoton(SDLK_LEFT)){
+				velocidad_X += velocidad;
+			}
+
+			if(this->controlador->soltarBoton(SDLK_UP)){
+				velocidad_Y += velocidad;
+			}
+
+			if(this->controlador->soltarBoton(SDLK_DOWN)){
+				velocidad_Y -= velocidad;
+			}
+		}
+
+		//Actualizo las posiciones del objeto
+		x += velocidad_X;
+		y += velocidad_Y;
+
+		//Para que el punto no se vaya de pantalla
+		if((x < 0)||(x + texturaMenuMetalSlug->getAncho() > ANCHO_VENTANA)){
+			//Muevo para atrás
+			x -= velocidad_X;
+		}
+
+		if((y < 0)||(y + texturaMenuMetalSlug->getAlto() > ALTO_VENTANA)){
+			//Muevo para atrás
+			y -= velocidad_Y;
+		}
+
+		texturaMenuMetalSlug->aplicarPosicion(x,y,0,SDL_FLIP_NONE);
+		this->ventana->actualizar();
+	}
 }
 
 bool Vista::ventanaCerrada(){

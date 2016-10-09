@@ -257,3 +257,11 @@ void TexturaSDL::aplicarPosicionDeFrame(float x, float y, int frame, double rota
 		this->aplicarPosicionYTamanio(x,y,this->ancho,this->alto, rotacion, flip);
 	}
 }
+
+int TexturaSDL::getAncho(){
+	return this->ancho;
+}
+
+int TexturaSDL::getAlto(){
+	return this->alto;
+}
