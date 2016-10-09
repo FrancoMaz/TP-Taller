@@ -67,7 +67,7 @@ void* cicloConexion(void* arg) {
 	 	 //pthread_join(threadVerificarConexion,(void**)&escuchando);
 	 	 //termino = *((bool*) (&escuchando));
 
-		vista->cargarEscenario(0,0,3712,600);
+		vista->cargarEscenario();
 
 		if (!vista->ventanaCerrada()) {
 			cliente->setOpcionMenu(0);

@@ -32,9 +32,6 @@ public:
 	//Idem arriba, pero si el botón se suelta
 	bool soltarBoton(SDL_Keycode boton);
 
-	//Escanea el boton que está siendo presionado, generalmente es bueno para el cambio de texturas
-	bool escanearBoton(SDL_Scancode boton);
-
 	//Comprueba si se presionó el boton X de cerrar ventana
 	void botonCerrarVentanaSeleccionado();
 

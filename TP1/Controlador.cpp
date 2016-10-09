@@ -41,10 +41,6 @@ bool Controlador::aplicarEvento(SDL_Keycode boton, Uint32 tipo){
 	return seleccionado;
 }
 
-bool Controlador::escanearBoton(SDL_Scancode boton){
-	return this->teclaEscaneada[boton];
-}
-
 void Controlador::botonCerrarVentanaSeleccionado(){
 	while(SDL_PollEvent(&evento) != 0){
 		if(evento.type == SDL_QUIT){
