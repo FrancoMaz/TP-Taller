@@ -17,19 +17,17 @@ XmlParser::XmlParser(string xmlPath) {
 	if (!result) {
 		cout << "Parse error: " << result.description() << ", character pos= " << result.offset << endl;
 	}
-	// A valid XML document must have a single root node, in our case the root node is "Configuration"
-	this->rootNode = doc.document_element();
+	// A valid XML document must have a single root node, in our case the root node is "Configuracion"
+
+	this->rootNode = doc.child("Configuracion");
 }
 
 const char* XmlParser::cantidadMaximaDeJugadores() {
-	string tagName = "CantMaxJugadores";
-	return this->rootNode.child(tagName.c_str()).value();
+	return this->rootNode.child_value("CantMaxJugadores");
 }
 
 pair<const char*, const char*> XmlParser::tamanioVentana() {
-	string tagName = "Ventana";
-	pugi::xml_node ventana = this->rootNode.child(tagName.c_str());
-	pair<const char*,const char*> dimensiones(ventana.child("Ancho").value(), ventana.child("Alto").value());
+	pair<const char*,const char*> dimensiones(this->rootNode.child("Ventana").child_value("Ancho"), this->rootNode.child("Ventana").child_value("Alto"));
 	return dimensiones;
 }
 
