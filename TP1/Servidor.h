@@ -54,11 +54,11 @@ private:
 		string contrasenia;
 	};
 	struct MensajesProcesados {
-		string destinatario;
 		Jugador* jugador;
+		queue<string>* posiciones;
 	};
 	list<Datos>* datosUsuarios;
-	list<Jugador>* listaJugadores;
+	list<MensajesProcesados>* listaMensajesProcesados;
 
 public:
 	Servidor();
@@ -89,7 +89,7 @@ public:
 	list<string> agregarDestinatarios(string remitente);
 	void procesarMensaje(Mensaje mensaje);
 	string traerMensajesProcesados(char* nombreCliente);
-	string concatenarMensajes(queue<Mensaje>* colaDeMensajes);
+	string concatenarMensajes(queue<string>* posiciones);
 	void procesarMensajes();
 	void restarCantidadClientesConectados();
 	pair<int,int> actualizarPosicion(SDL_Keycode teclaPresionada);

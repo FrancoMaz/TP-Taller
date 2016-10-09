@@ -23,7 +23,7 @@ public:
 	Jugador(string nombre);
 	virtual ~Jugador();
 	void actualizarPosicion(pair<int,int> nuevaPosicion);
-	string getStringPosicion();
+	string getStringJugador();
 	string getNombre();
 
 };

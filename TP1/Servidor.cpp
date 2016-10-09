@@ -28,7 +28,7 @@ Servidor::Servidor(char* nombreArchivoDeUsuarios, int puerto, Logger* logger) {
 	/*---- Bind the address struct to the socket ----*/
 	bind(this->welcomeSocket, (struct sockaddr *) &serverAddr, sizeof(serverAddr));
 	this->datosUsuarios = new list<Datos>();
-	this->listaJugadores = new list<Jugador>();
+	this->listaMensajesProcesados = new list<MensajesProcesados>();
 	stringstream ss;
 	ss << puerto;
 	mensaje = "Se creó correctamente el servidor en el puerto: " + ss.str() + ", ip: 192.168.1.10" + "\n";
@@ -80,8 +80,10 @@ void Servidor::autenticar(string nombre, string contrasenia, list<string>& usuar
 				&& (strcmp(usuario.contrasenia.c_str(), contrasenia.c_str())
 						== 0)) {
 			autenticacionOK = true;
-			Jugador* jugador = new Jugador(usuario.nombre);
-			this->listaJugadores->push_back(*jugador);
+			MensajesProcesados mensajesProcesados;
+			mensajesProcesados.jugador = new Jugador(usuario.nombre);
+			mensajesProcesados.posiciones = new queue<string>();
+			this->listaMensajesProcesados->push_back(mensajesProcesados);
 		} else {
 			usuarios.push_back(usuario.nombre);
 		}
@@ -115,12 +117,13 @@ void Servidor::procesarMensajes() {
 		Evento mensajeAProcesar = colaMensajesNoProcesados.front();
 		colaMensajesNoProcesados.pop();
 		pthread_mutex_unlock(&mutexColaNoProcesados);
-		for (list<Jugador>::iterator usuarioActual = listaJugadores->begin();
-				usuarioActual != listaJugadores->end();usuarioActual++) {
-			Jugador jugador = *usuarioActual;
-			if (jugador.getNombre() != mensajeAProcesar.getRemitente()) {
-				pair<int,int> nuevaPosicion = this->actualizarPosicion(mensajeAProcesar.getTeclaPresionada());
-				jugador.actualizarPosicion(nuevaPosicion);
+		for (list<MensajesProcesados>::iterator usuarioActual = listaMensajesProcesados->begin();
+				usuarioActual != listaMensajesProcesados->end();usuarioActual++) {
+			MensajesProcesados mensaje = *usuarioActual;
+			pair<int,int> nuevaPosicion = this->actualizarPosicion(mensajeAProcesar.getTeclaPresionada());
+			mensaje.jugador->actualizarPosicion(nuevaPosicion);
+			if (mensaje.jugador->getNombre() != mensajeAProcesar.getRemitente()) {
+				mensaje.posiciones->push(mensaje.jugador->getStringJugador());
 				/*this->mensaje = "Procesando mensaje para " + listaMensajes.destinatario + "\n";
 				this->guardarLog(mensaje, DEBUG);*/
 			}
@@ -291,35 +294,32 @@ list<string> Servidor::agregarDestinatarios(string remitente) {
 }
 string Servidor::traerMensajesProcesados(char* nombreCliente) {
 
-	string mensajeAEnviar;
-	for (list<Jugador>::iterator datoActual =
-			listaJugadores->begin();
-			datoActual != listaJugadores->end(); datoActual++) {
-
-		Jugador jugador = *datoActual;
-		if (jugador.getNombre() == nombreCliente) {
-			mensajeAEnviar = jugador.getNombre() + '|' + jugador.getStringPosicion() + '#';
+	queue<string>* posiciones;
+	for (list<MensajesProcesados>::iterator datoActual =
+			listaMensajesProcesados->begin();
+			datoActual != listaMensajesProcesados->end(); datoActual++) {
+		MensajesProcesados mensaje;
+		mensaje = *datoActual;
+		if (mensaje.jugador->getNombre() == nombreCliente) {
+			posiciones = mensaje.posiciones;
 		}
 	}
-
-	return mensajeAEnviar;
+	string mensajesConcatenados = concatenarMensajes(posiciones);
+	return mensajesConcatenados;
 
 }
-string Servidor::concatenarMensajes(queue<Mensaje>* colaDeMensajes) {
+string Servidor::concatenarMensajes(queue<string>* posiciones) {
 
-	Mensaje mensaje;
+	string mensajePosiciones;
 	string mensajesConcatenados = "";
-	if (colaDeMensajes->empty()) {
+	if (posiciones->empty()) {
 		string noHayMensajes = "#noHayMensajes#";
 		mensajesConcatenados.append(noHayMensajes);
 	}
-	while (!colaDeMensajes->empty()) {
-		mensaje = colaDeMensajes->front();
-		colaDeMensajes->pop();
-		mensajesConcatenados += mensaje.getRemitente();
-		mensajesConcatenados += "|";
-		mensajesConcatenados += mensaje.getTexto();
-		mensajesConcatenados += "#";
+	while (!posiciones->empty()) {
+		mensajePosiciones = posiciones->front();
+		posiciones->pop();
+		mensajesConcatenados += mensajePosiciones;
 	}
 	string lala = mensajesConcatenados.substr(0, mensajesConcatenados.length() -1);
 	lala += "@";

@@ -25,9 +25,9 @@ void Jugador::actualizarPosicion(pair<int,int> nuevaPosicion)
 	posicion.second = nuevaPosicion.second;
 }
 
-string Jugador::getStringPosicion()
+string Jugador::getStringJugador()
 {
-	return (posicion.first + "|" + posicion.second);
+	return (nombre + to_string(posicion.first) + "|" + to_string(posicion.second) + "#");
 }
 
 string Jugador::getNombre()
