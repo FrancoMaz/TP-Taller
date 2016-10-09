@@ -28,7 +28,7 @@ Servidor::Servidor(char* nombreArchivoDeUsuarios, int puerto, Logger* logger) {
 	/*---- Bind the address struct to the socket ----*/
 	bind(this->welcomeSocket, (struct sockaddr *) &serverAddr, sizeof(serverAddr));
 	this->datosUsuarios = new list<Datos>();
-	this->listaMensajesProcesados = new list<MensajesProcesados>();
+	this->listaJugadores = new list<Jugador>();
 	stringstream ss;
 	ss << puerto;
 	mensaje = "Se creó correctamente el servidor en el puerto: " + ss.str() + ", ip: 192.168.1.10" + "\n";
@@ -46,22 +46,18 @@ void Servidor::guardarDatosDeUsuarios() {
 	if (myfile.is_open()) {
 		while (getline(myfile, linea)) {
 			Datos datosCapturados;
-			MensajesProcesados mensajesProcesados;
 			nroItem = 0;
 			istringstream lineaActual(linea);
 				while (getline(lineaActual, csvItem, ',')) {
 				if (nroItem == 0) {
 					datosCapturados.nombre = csvItem;
-					mensajesProcesados.destinatario = csvItem;
 				}
 				if (nroItem == 1) {
 					datosCapturados.contrasenia = csvItem;
 				}
 				nroItem++;
 			}
-			mensajesProcesados.jugador = new Jugador();
 			datosUsuarios->push_back(datosCapturados);
-			listaMensajesProcesados->push_back(mensajesProcesados);
 		}
 
 		myfile.close();
@@ -84,6 +80,8 @@ void Servidor::autenticar(string nombre, string contrasenia, list<string>& usuar
 				&& (strcmp(usuario.contrasenia.c_str(), contrasenia.c_str())
 						== 0)) {
 			autenticacionOK = true;
+			Jugador* jugador = new Jugador(usuario.nombre);
+			this->listaJugadores->push_back(*jugador);
 		} else {
 			usuarios.push_back(usuario.nombre);
 		}
@@ -117,15 +115,14 @@ void Servidor::procesarMensajes() {
 		Evento mensajeAProcesar = colaMensajesNoProcesados.front();
 		colaMensajesNoProcesados.pop();
 		pthread_mutex_unlock(&mutexColaNoProcesados);
-		for (list<MensajesProcesados>::iterator usuarioActual = listaMensajesProcesados->begin();
-				usuarioActual != listaMensajesProcesados->end();usuarioActual++) {
-			MensajesProcesados listaMensajes;
-			listaMensajes = *usuarioActual;
-			if (listaMensajes.destinatario != mensajeAProcesar.getRemitente()) {
+		for (list<Jugador>::iterator usuarioActual = listaJugadores->begin();
+				usuarioActual != listaJugadores->end();usuarioActual++) {
+			Jugador jugador = *usuarioActual;
+			if (jugador.getNombre() != mensajeAProcesar.getRemitente()) {
 				pair<int,int> nuevaPosicion = this->actualizarPosicion(mensajeAProcesar.getTeclaPresionada());
-				listaMensajes.jugador -> actualizarPosicion(nuevaPosicion);
-				this->mensaje = "Procesando mensaje para " + listaMensajes.destinatario + "\n";
-				this->guardarLog(mensaje, DEBUG);
+				jugador.actualizarPosicion(nuevaPosicion);
+				/*this->mensaje = "Procesando mensaje para " + listaMensajes.destinatario + "\n";
+				this->guardarLog(mensaje, DEBUG);*/
 			}
 		}
 	}
@@ -295,14 +292,13 @@ list<string> Servidor::agregarDestinatarios(string remitente) {
 string Servidor::traerMensajesProcesados(char* nombreCliente) {
 
 	string mensajeAEnviar;
-	for (list<Servidor::MensajesProcesados>::iterator datoActual =
-			listaMensajesProcesados->begin();
-			datoActual != listaMensajesProcesados->end(); datoActual++) {
+	for (list<Jugador>::iterator datoActual =
+			listaJugadores->begin();
+			datoActual != listaJugadores->end(); datoActual++) {
 
-		MensajesProcesados mensaje;
-		mensaje = *datoActual;
-		if (mensaje.destinatario == nombreCliente) {
-			mensajeAEnviar = mensaje.destinatario + '|' + mensaje.jugador->getStringPosicion() + '#';
+		Jugador jugador = *datoActual;
+		if (jugador.getNombre() == nombreCliente) {
+			mensajeAEnviar = jugador.getNombre() + '|' + jugador.getStringPosicion() + '#';
 		}
 	}
 

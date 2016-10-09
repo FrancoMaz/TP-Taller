@@ -12,8 +12,8 @@ Jugador::Jugador(pair<int,int> posicionInicial) {
 	posicion.second = posicionInicial.second;
 }
 
-Jugador::Jugador() {
-
+Jugador::Jugador(string nombre) {
+	this->nombre = nombre;
 }
 Jugador::~Jugador() {
 	// TODO Auto-generated destructor stub
@@ -28,4 +28,9 @@ void Jugador::actualizarPosicion(pair<int,int> nuevaPosicion)
 string Jugador::getStringPosicion()
 {
 	return (posicion.first + "|" + posicion.second);
+}
+
+string Jugador::getNombre()
+{
+	return this->nombre;
 }

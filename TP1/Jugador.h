@@ -16,13 +16,15 @@ using namespace std;
 class Jugador {
 private:
 	pair<int,int> posicion;
+	string nombre;
 
 public:
 	Jugador(pair<int,int> posicionInicial);
-	Jugador();
+	Jugador(string nombre);
 	virtual ~Jugador();
 	void actualizarPosicion(pair<int,int> nuevaPosicion);
 	string getStringPosicion();
+	string getNombre();
 
 };
 

@@ -58,7 +58,7 @@ private:
 		Jugador* jugador;
 	};
 	list<Datos>* datosUsuarios;
-	list<MensajesProcesados>* listaMensajesProcesados;
+	list<Jugador>* listaJugadores;
 
 public:
 	Servidor();
