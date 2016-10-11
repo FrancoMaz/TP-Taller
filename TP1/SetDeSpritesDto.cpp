@@ -7,9 +7,9 @@
 
 #include "SetDeSpritesDto.h"
 
-SetDeSpritesDto::SetDeSpritesDto() {
-	// TODO Auto-generated constructor stub
-
+SetDeSpritesDto::SetDeSpritesDto(const char* carpeta, list<SpriteDto>* sprites) {
+	this->carpeta = carpeta;
+	this->sprites = sprites;
 }
 
 SetDeSpritesDto::~SetDeSpritesDto() {

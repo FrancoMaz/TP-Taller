@@ -23,7 +23,7 @@ private:
 	const char* path;
 	const char* zIndex;
 public:
-	SpriteDto();
+	SpriteDto(const char* id, const char* cantidadDeFotogramas, const char* ancho, const char* alto, const char* path, const char* zIndex);
 	virtual ~SpriteDto();
 };
 

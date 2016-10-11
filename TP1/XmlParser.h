@@ -13,6 +13,8 @@
 #include <list>
 #include <iostream>
 #include "ImagenDto.h"
+#include "SpriteDto.h"
+#include "SetDeSpritesDto.h"
 
 using namespace std;
 

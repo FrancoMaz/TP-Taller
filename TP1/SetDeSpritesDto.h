@@ -11,6 +11,7 @@
 #include <string>
 #include <list>
 #include <iostream>
+#include "SpriteDto.h"
 
 using namespace std;
 
@@ -18,10 +19,10 @@ class SetDeSpritesDto {
 
 private:
 	const char* carpeta;
-	list<SpriteDto> sprites;
+	list<SpriteDto>* sprites;
 
 public:
-	SetDeSpritesDto();
+	SetDeSpritesDto(const char* carpeta, list<SpriteDto>* sprites);
 	virtual ~SetDeSpritesDto();
 };
 

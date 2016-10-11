@@ -44,13 +44,18 @@ list<ImagenDto>* XmlParser::escenario() {
 	return images;
 }
 
-/*list<SetDeSpritesDto>* XmlParser::sprites() {
+list<SetDeSpritesDto>* XmlParser::sprites() {
 	list<SetDeSpritesDto>* setDeSprites = new list<SetDeSpritesDto>;
-	for (pugi::xml_node sprites = this->rootNode.child("Sprites").first_child(); sprites; sprites = sprites.next_sibling()) {
-		ImagenDto* imagen = new ImagenDto(image.child_value("Archivo"), image.child_value("z-index"), image.child_value("Velocidad"));
-		images->push_back(*imagen);
+	for (pugi::xml_node set = this->rootNode.child("Sprites"); set; set = set.next_sibling()) {
+		list<SpriteDto>* sprites = new list<SpriteDto>;
+		for (pugi::xml_node sprite = this->rootNode.child("SpriteSalto"); sprite; sprite = sprite.next_sibling()) {
+			SpriteDto* spriteDto = new SpriteDto(sprite.child_value("Id"), sprite.child_value("CantFotogramas"), sprite.child_value("Ancho"), sprite.child_value("Alto"), sprite.child_value("Imagen"), sprite.child_value("z-index"));
+			sprites->push_back(*spriteDto);
+		}
+		SetDeSpritesDto* setDeSprites = new SetDeSpritesDto(set.child_value("Carpeta"), sprites);
 	}
-}*/
+	return setDeSprites;
+}
 
 XmlParser::~XmlParser() {
 	// TODO Auto-generated destructor stub
