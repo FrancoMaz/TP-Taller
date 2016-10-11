@@ -10,7 +10,9 @@
 
 #include "pugixml.hpp"
 #include <string>
+#include <list>
 #include <iostream>
+#include "ImagenDto.h"
 
 using namespace std;
 
@@ -24,6 +26,8 @@ public:
 	XmlParser(string path);
 	const char * cantidadMaximaDeJugadores();
 	pair<const char *, const char *> tamanioVentana();
+	list<ImagenDto>* escenario();
+	list<SetDeSpritesDto>* sprites();
 	virtual ~XmlParser();
 };
 

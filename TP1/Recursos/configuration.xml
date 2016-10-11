@@ -4,7 +4,7 @@
 	<Escenario>
 	  <Imagen>
 	    <Archivo>prueba.png</Archivo>
-	    <ZIndex>1</ZIndex>
+	    <z-index>1</z-index>
 	    <Velocidad>5</Velocidad>  
 	  </Imagen>
 	  <Imagen>   

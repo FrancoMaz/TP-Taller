@@ -31,6 +31,27 @@ pair<const char*, const char*> XmlParser::tamanioVentana() {
 	return dimensiones;
 }
 
+list<ImagenDto>* XmlParser::escenario() {
+	list<ImagenDto>* images = new list<ImagenDto>;
+	for (pugi::xml_node image = this->rootNode.child("Escenario").first_child(); image; image = image.next_sibling()) {
+		ImagenDto* imagen = new ImagenDto(image.child_value("Archivo"), image.child_value("z-index"), image.child_value("Velocidad"));
+		images->push_back(*imagen);
+	}
+
+	for (list<ImagenDto>::iterator i = images->begin(); i != images->end();i++) {
+		cout << (*i).getPath() << (*i).getVelocidad() << (*i).getZIndex() << endl;
+	}
+	return images;
+}
+
+/*list<SetDeSpritesDto>* XmlParser::sprites() {
+	list<SetDeSpritesDto>* setDeSprites = new list<SetDeSpritesDto>;
+	for (pugi::xml_node sprites = this->rootNode.child("Sprites").first_child(); sprites; sprites = sprites.next_sibling()) {
+		ImagenDto* imagen = new ImagenDto(image.child_value("Archivo"), image.child_value("z-index"), image.child_value("Velocidad"));
+		images->push_back(*imagen);
+	}
+}*/
+
 XmlParser::~XmlParser() {
 	// TODO Auto-generated destructor stub
 }
