@@ -59,7 +59,7 @@ list<ImagenDto>* XmlParser::getEscenario() {
 list<SetDeSpritesDto>* XmlParser::getSprites() {
 	if (this->sprites->empty()) {
 		for (pugi::xml_node set = this->rootNode.child("Sprites").child("SetRojo"); set; set = set.next_sibling()) {
-			list<SpriteDto>* sprites = new list<SpriteDto>;
+			list<SpriteDto>* sprites = new list<SpriteDto>();
 			for (pugi::xml_node sprite = set.child("SpriteSalto"); sprite; sprite = sprite.next_sibling()) {
 				SpriteDto* spriteDto = new SpriteDto(sprite.child_value("Id"), sprite.child_value("CantFotogramas"), sprite.child_value("Ancho"), sprite.child_value("Alto"), sprite.child_value("Imagen"), sprite.child_value("z-index"));
 				sprites->push_back(*spriteDto);
