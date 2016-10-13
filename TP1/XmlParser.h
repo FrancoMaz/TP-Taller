@@ -21,15 +21,20 @@ using namespace std;
 class XmlParser {
 
 private:
+	// TODO continuar de poner como atributos todos los elementos del xml
 	string xmlPath;
 	pugi::xml_node rootNode;
+	const char* cantidadMaximaDeJugadores;
+	pair<const char*, const char*> tamanioVentana;
+	list<ImagenDto>* escenario;
+	list<SetDeSpritesDto>* sprites;
 
 public:
 	XmlParser(string path);
-	const char * cantidadMaximaDeJugadores();
-	pair<const char *, const char *> tamanioVentana();
-	list<ImagenDto>* escenario();
-	list<SetDeSpritesDto>* sprites();
+	const char * getCantidadMaximaDeJugadores();
+	pair<const char *, const char *> getTamanioVentana();
+	list<ImagenDto>* getEscenario();
+	list<SetDeSpritesDto>* getSprites();
 	virtual ~XmlParser();
 };
 

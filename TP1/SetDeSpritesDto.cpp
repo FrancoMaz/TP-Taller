@@ -12,6 +12,14 @@ SetDeSpritesDto::SetDeSpritesDto(const char* carpeta, list<SpriteDto>* sprites) 
 	this->sprites = sprites;
 }
 
+const char* SetDeSpritesDto::getCarpeta() {
+	return this->carpeta;
+}
+
+list<SpriteDto>* SetDeSpritesDto::getSprites() {
+	return this->sprites;
+}
+
 SetDeSpritesDto::~SetDeSpritesDto() {
 	// TODO Auto-generated destructor stub
 }

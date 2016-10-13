@@ -16,6 +16,30 @@ SpriteDto::SpriteDto(const char* id, const char* cantidadDeFotogramas, const cha
 	this->zIndex = zIndex;
 }
 
+const char* SpriteDto::getId() {
+	return this->getId();
+}
+
+const char* SpriteDto::getCantidadDeFotogramas() {
+	return this->cantidadDeFotogramas;
+}
+
+const char* SpriteDto::getAncho() {
+	return this->ancho;
+}
+
+const char* SpriteDto::getAlto() {
+	return this->alto;
+}
+
+const char* SpriteDto::getPath() {
+	return this->path;
+}
+
+const char* SpriteDto::getZIndex() {
+	return this->zIndex;
+}
+
 SpriteDto::~SpriteDto() {
 	// TODO Auto-generated destructor stub
 }

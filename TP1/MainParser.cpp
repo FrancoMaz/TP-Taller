@@ -6,11 +6,13 @@
  */
 
 #include "XmlParser.h"
-#include "pugixml.hpp"
 
 int main() {
 	XmlParser* parser = new XmlParser("Recursos/configuration.xml");
-	cout << "Cantidad maxima de jugadores: " << parser->cantidadMaximaDeJugadores() << endl;
-	cout << "Ancho de ventana: " << parser->tamanioVentana().first << " Alto de ventana: " << parser->tamanioVentana().second << endl;
-	parser->escenario();
+	cout << "Cantidad maxima de jugadores: " << parser->getCantidadMaximaDeJugadores() << endl;
+	cout << "Ancho de ventana: " << parser->getTamanioVentana().first << " Alto de ventana: " << parser->getTamanioVentana().second << endl;
+	parser->getEscenario();
+	parser->getSprites();
+
+    return 0;
 }
