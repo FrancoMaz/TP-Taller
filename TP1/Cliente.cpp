@@ -26,9 +26,150 @@ void Cliente::inicializarSocket(){
 	memset(direccionServidor.sin_zero, '\0', sizeof direccionServidor.sin_zero);
 }
 
-void Cliente::mostrarMenuYProcesarOpcion() {
+ImagenDto* Cliente::deserializarImagen(string imagenCadena){
+
+	const char* nombre, *zIndex, *velocidad;
+	char str[imagenCadena.length()];
+	strcpy(str, imagenCadena.c_str());
+	char* campo = strtok(str, ",");
+	nombre = campo;
+	campo = strtok(NULL,",");
+	zIndex = campo;
+	campo = strtok(NULL, ">"); //va a tomar el ultimo campo no importa el delimitador porque va a ser el final.
+	velocidad = campo;
+	ImagenDto *imagenReconstruida = new ImagenDto(nombre,zIndex,velocidad);
+
+	return imagenReconstruida;
+}
+
+SetDeSpritesDto* Cliente::deserializarSprite(string spriteCadena){
+
+	const char* id, *cantFotogramas,* ancho,* alto, *imagen, *zIndex;
+	char* carpeta;
+	char str[spriteCadena.length()];
+	strcpy(str, spriteCadena.c_str());
+	list<SpriteDto>* spritesAccion = new list<SpriteDto>();
+	char* campo = strtok(str, ";");
+	//El separador entre las distintas acciones en un sprite son los ";",
+	//y el separador para los campos que estan dentro de cada accion es la ","
+	campo = strtok(NULL,",");
+	id = campo;
+	campo = strtok(NULL,",");
+	cantFotogramas = campo;
+	campo = strtok(NULL,",");
+	ancho = campo;
+	campo = strtok(NULL,",");
+	alto = campo;
+	campo = strtok(NULL,",");
+	imagen = campo;
+	campo = strtok(NULL,";");
+	zIndex = campo;
+	SpriteDto* spriteSalto = new SpriteDto(id,cantFotogramas,ancho,alto,imagen,zIndex);
+	spritesAccion->push_back(*spriteSalto);
+ 	//setSpriteReconstruido.agregarSpriteAccion(spriteSalto);
+
+	campo = strtok(NULL,",");
+	id = campo;
+	campo = strtok(NULL,",");
+	cantFotogramas = campo;
+	campo = strtok(NULL,",");
+	ancho = campo;
+	campo = strtok(NULL,",");
+	alto = campo;
+	campo = strtok(NULL,",");
+	imagen = campo;
+	campo = strtok(NULL,";");
+	zIndex = campo;
+	SpriteDto* spriteCaminar = new SpriteDto(id,cantFotogramas,ancho,alto,imagen,zIndex);
+	spritesAccion->push_back(*spriteCaminar);
+	//setSpriteReconstruido.agregarSpriteAccion(spriteCaminar);
+
+	campo = strtok(NULL,",");
+	id = campo;
+	campo = strtok(NULL,",");
+	cantFotogramas = campo;
+	campo = strtok(NULL,",");
+	ancho = campo;
+	campo = strtok(NULL,",");
+	alto = campo;
+	campo = strtok(NULL,",");
+	imagen = campo;
+	//como va a ser el ultimo va a llegar a null asi que no creo que le de bola al "|"
+	campo = strtok(NULL,"|");
+	zIndex = campo;
+	SpriteDto* spriteAgacharse = new SpriteDto(id,cantFotogramas,ancho,alto,imagen,zIndex);
+	spritesAccion->push_back(*spriteAgacharse);
+	SetDeSpritesDto* setSpriteReconstruido = new SetDeSpritesDto(carpeta,spritesAccion);
+	return setSpriteReconstruido;
+}
+
+void Cliente::deserializarHandshake(string handshake){
+
+	char str[handshake.length()];
+	strcpy(str, handshake.c_str());
+	char* campo = strtok(str, "[");
+    const char *escenario,*sprites,*ventana;
+    escenario = "Escenario";
+    sprites = "Sprites";
+    ventana = "Ventana";
+	while (campo != NULL) {
+		if (strcmp(campo,"Escenario") == 0){
+			//recupero la imagen1
+	   		campo = strtok(NULL,"|");
+	   		ImagenDto imagen1 = deserializarImagen(campo);
+	   		//recupero la imagen2
+	   		campo = strtok(NULL,"]");
+	   		ImagenDto imagen2 = deserializarImagen(campo);
+	   	}
+	   	if(strcmp(campo,"Sprites") == 0){
+	   		//recupero sprite1
+	   		campo = strtok(NULL,"|");
+	   		SpriteDto sprite1 = deserializarSprite(campo);
+	   		//recupero sprite2
+	   		campo = strtok(NULL,"|");
+	   		SpriteDto sprite2 = deserializarSprite(campo);
+	   		//recupero sprite3
+	   		campo = strtok(NULL,"]");
+	   		SpriteDto sprite3 = deserializarSprite(campo);
+	   	}
+	   	if(strcmp(campo,"Ventana") == 0){
+	   		//obtengo ancho
+	   		campo = strtok(NULL,",");
+	   		char* ancho = campo;
+	   		//obtengo alto
+	   		campo = strtok(NULL,"]");
+	   		char* alto = campo;
+	   	}
+	   	campo = strtok(NULL,"[");
+	}
+}
+void Cliente::recibirHandshake(){
+
+       char colaMensaje[BUFFER_MAX_SIZE];
+       memset(colaMensaje, '\0', BUFFER_MAX_SIZE);
+       string datosRecibidos = "";
+       int largoRequest;
+       do {
+               largoRequest = recv(this->socketCliente, colaMensaje, BUFFER_MAX_SIZE, 0);
+       } while (largoRequest == 0);
+
+       datosRecibidos += string(colaMensaje);
+       memset(colaMensaje, '\0', strlen(colaMensaje));
+       while (largoRequest >= BUFFER_MAX_SIZE and !stringTerminaCon(datosRecibidos, "@")){ //mientras el largoRequest sea del tamaño del max size, sigo pidiendo
+               int largo;
+                       //mientras haya cosas que leer, sigo recibiendo.
+               do {//sigue aca mientras no recibe nada, cuando recibe algo sale de este do while
+                       largo = recv(socketCliente, colaMensaje, BUFFER_MAX_SIZE, 0);
+                       largoRequest += largo;
+               } while (largoRequest < BUFFER_MAX_SIZE);
+               if (largoRequest > 0){datosRecibidos += string(colaMensaje); }
+               memset(colaMensaje, '\0', strlen(colaMensaje));
+       }
+}
+
+void Cliente::mostrarMenuYProcesarOpcion(string handshake) {
 	bool esValido = false;
-		cout << "1) Enviar Mensaje" << endl;
+	  	cout << "Biblioteca de imagenes:" << endl;
 		cout << "2) Recibir Mensajes" << endl;
 		cout << "3) Lorem Ipsum" << endl;
 		cout << "4) Desconectar" << endl;

@@ -23,6 +23,7 @@
 #include "Cliente.h"
 #include "Logger.h"
 #include "Mensaje.h"
+#include "XmlParser.h"
 #define MAX_CANT_CLIENTES 6
 #define BUFFER_MAX_SIZE 200
 const int INFO = 1;
@@ -56,10 +57,13 @@ private:
 	};
 	list<Datos>* datosUsuarios;
 	list<MensajesProcesados>* listaMensajesProcesados;
+	XmlParser* parser;
 
 public:
 	Servidor();
 	Servidor(char* nombreArchivoDeUsuarios, int puerto, Logger* logger);
+	void guardarDatosDeConfiguracion();
+	void enviarHandshake(int socket);
 	virtual ~Servidor();
 	void guardarDatosDeUsuarios();
 	bool fileExists(string fileName);

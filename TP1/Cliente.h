@@ -25,6 +25,9 @@
 #include <iterator>
 #include "Mensaje.h"
 #include <queue>
+#include "ImagenDto.h"
+#include "SpriteDto.h"
+#include "SetDeSpritesDto.h"
 #define BUFFER_MAX_SIZE 200
 using namespace std;
 
@@ -47,7 +50,11 @@ public:
 	Cliente();
 	Cliente(string ip, int puerto);
 	virtual ~Cliente();
-	void mostrarMenuYProcesarOpcion();
+	ImagenDto* deserializarImagen(string imagenCadena);
+	SetDeSpritesDto* deserializarSprite(string spriteCadena);
+	void deserializarHandshake(string handshake);
+	void recibirHandshake();
+	void mostrarMenuYProcesarOpcion(string handshake);
 	void elegirOpcionDelMenu(int opcion);
 	void conectar(string nombre, string contrasenia);
 	void desconectar();

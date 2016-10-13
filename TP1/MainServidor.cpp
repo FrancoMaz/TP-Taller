@@ -130,6 +130,8 @@ void* procesar(void* arg) {
 	int socket = parametros->socketCliente;
 
 	pthread_mutex_lock(&servidor->mutexListaProcesados);
+	//aca se recuperan los mensajes procesados  del usuario que se desea
+	//Nosotros deberiamos poder elegir entre mandar el handshake o mandar mensajes generales
 	string mensajesProcesados = servidor->traerMensajesProcesados(usuario);
 	pthread_mutex_unlock(&servidor->mutexListaProcesados);
 
@@ -225,6 +227,8 @@ void* cicloEscuchaCliente(void* arg) {
 	bool conectado = true;
 	while (conectado and servidor->escuchando) {
 		//en este loop se van a gestionar los send y receive del cliente. aca se va a distinguir que es lo que quiere hacer y actuar segun lo que quiera el cliente.
+		servidor->enviarHandshake(socketCliente);
+		enviarMensajesProcesadosA(strdup(nombre.c_str()), servidor, socketCliente);
 		string datosRecibidos;
 		int largoRequest = recv(socketCliente, bufferRecibido, BUFFER_MAX_SIZE,0); //recibo por primera vez
 		if (largoRequest > 0) {
@@ -267,8 +271,7 @@ void* cicloEscuchaCliente(void* arg) {
 					case 2: { //2 es recibir
 						servidor->guardarLog("Request: Recibir Mensajes. " + nombre + string(".\n"),INFO);
 						char* usuarioQueSolicita = strtok(NULL, "#");
-						enviarMensajesProcesadosA(usuarioQueSolicita, servidor,
-								socketCliente);
+						enviarMensajesProcesadosA(usuarioQueSolicita, servidor, socketCliente);
 						break;
 					}
 					case 3:{//3 es verificar conexion

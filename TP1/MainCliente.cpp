@@ -58,6 +58,8 @@ void* cicloConexion(void* arg) {
 		}
 		datosIncorrectos = true;
 	}
+	//supongo que los datos fueron correctos entonces paso a recibir Handshake
+	cliente->recibirHandshake();
 
 	if (!vista->ventanaCerrada()) {
 		//se crea esta hilo para poder verificar la conexion con el servidor
@@ -68,7 +70,7 @@ void* cicloConexion(void* arg) {
 	 	 //termino = *((bool*) (&escuchando));
 		cliente->setOpcionMenu(0);
 		while (cliente->getOpcionMenu() != 5 and cliente->getOpcionMenu() != 4 and !cliente->getTermino()) {
-			cliente->mostrarMenuYProcesarOpcion();
+			//cliente->mostrarMenuYProcesarOpcion();
 			if (!cliente->getTermino()) {
 				cliente->elegirOpcionDelMenu(cliente->getOpcionMenu());
 			}

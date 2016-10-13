@@ -6,8 +6,7 @@
  */
 
 #include "Servidor.h"
-#include <string.h>
-#include <stdlib.h>
+
 using namespace std;
 
 Servidor::Servidor(char* nombreArchivoDeUsuarios, int puerto, Logger* logger) {
@@ -33,11 +32,28 @@ Servidor::Servidor(char* nombreArchivoDeUsuarios, int puerto, Logger* logger) {
 	ss << puerto;
 	mensaje = "Se creó correctamente el servidor en el puerto: " + ss.str() + ", ip: 192.168.1.10" + "\n";
 	this->guardarLog(mensaje, DEBUG);
-	this->guardarDatosDeUsuarios();
+	this->guardarDatosDeConfiguracion();
+
 }
 
-Servidor::~Servidor() {
+Servidor::~Servidor() { }
+
+void Servidor::guardarDatosDeConfiguracion() {
+   string path;
+   cout << "Ingrese el path del archivo de configuracion" << endl;
+   cin >> path;
+   this->parser = new XmlParser(path);
 }
+
+void Servidor::enviarHandshake(int socket){
+	list<ImagenDto>* escenario;
+	list<SetDeSpritesDto>* setDeSprites;
+	pair<const char*, const char*> ventana;
+	string handshake = "";
+
+
+}
+
 
 void Servidor::guardarDatosDeUsuarios() {
 	string linea, csvItem;
@@ -112,7 +128,7 @@ void Servidor::crearMensaje(Mensaje mensaje) {
 }
 
 void Servidor::procesarMensajes() {
-
+//Se procesa los mensajes de todos los clientes en sus respectivas listas de mensajesProcesados
 	if (!colaMensajesNoProcesados.empty()) {
 		pthread_mutex_lock(&mutexColaNoProcesados);
 		Mensaje mensajeAProcesar = colaMensajesNoProcesados.front();
