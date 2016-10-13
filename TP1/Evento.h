@@ -25,6 +25,7 @@ public:
 	string serializar();
 	SDL_Keycode getTeclaPresionada();
 	string getRemitente();
+	string getEventoSerializado();
 };
 
 #endif /* EVENTO_H_ */

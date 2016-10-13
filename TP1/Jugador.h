@@ -10,6 +10,7 @@
 
 #include <utility>
 #include <string>
+#include <SDL2/SDL.h>
 
 using namespace std;
 
@@ -22,7 +23,7 @@ public:
 	Jugador(pair<int,int> posicionInicial);
 	Jugador(string nombre);
 	virtual ~Jugador();
-	void actualizarPosicion(pair<int,int> nuevaPosicion);
+	void actualizarPosicion(SDL_Keycode teclaPresionada);
 	string getStringJugador();
 	string getNombre();
 

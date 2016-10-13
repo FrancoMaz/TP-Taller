@@ -57,9 +57,28 @@ void* encolar(void* arg) {
 	parametrosThreadEncolarMensaje parametrosEncolarMensaje = *(parametrosThreadEncolarMensaje*) arg;
 	Servidor* servidor = parametrosEncolarMensaje.servidor;
 	Evento* mensaje = parametrosEncolarMensaje.mensajeNoProcesado;
+	cout << "Servidor en encolar: " << parametrosEncolarMensaje.servidor << endl;
+	//list<string>* destinatarios = servidor->agregarDestinatarios();
+	list<string> destinatarios;
+	destinatarios.push_back("flan");
+	cout << "Antes del mutex" << endl;
 	pthread_mutex_lock(&parametrosEncolarMensaje.servidor->mutexColaNoProcesados);
-	servidor->crearMensaje(*mensaje);
+	cout << "Despues del mutex" << endl;
+	for (list<string>::iterator datoActual = destinatarios.begin();
+			datoActual != destinatarios.end(); datoActual++) {
+		string usuario;
+		usuario = *datoActual;
+		Evento* msj = new Evento(mensaje->getRemitente(), mensaje->getEventoSerializado());
+		/*servidor->mensaje = "Encolando mensaje: " + msj->getTexto()
+		+ ". De: " + msj->getRemitente() + ". Para: "
+		+ msj->getDestinatario() + ". \n";*/
+		parametrosEncolarMensaje.servidor->crearMensaje(*msj);
+		//servidor->guardarLog(servidor->mensaje, DEBUG);
+		msj->~Evento();
+	}
+
 	pthread_mutex_unlock(&parametrosEncolarMensaje.servidor->mutexColaNoProcesados);
+	mensaje->~Evento();
 
 	/*servidor->mensaje = "Encolando mensaje: " + mensaje->getTexto() + ". De: "
 	 + mensaje->getRemitente() + ". Para: " + mensaje->getDestinatario()
@@ -117,7 +136,8 @@ void encolarMensaje(char* remitente, char* mensaje, Servidor* servidor) {
 	else{
 		servidor->guardarLog("Thread de encolar mensaje creado correctamente.\n",DEBUG);
 	}
-	pthread_detach(threadEncolarMensaje); //lo marco
+	//pthread_detach(threadEncolarMensaje); //lo marco
+	pthread_join(threadEncolarMensaje, NULL);
 }
 
 void* procesar(void* arg) {
@@ -129,12 +149,11 @@ void* procesar(void* arg) {
 	pthread_mutex_lock(&servidor->mutexListaProcesados);
 	string mensajesProcesados = servidor->traerMensajesProcesados(usuario);
 	pthread_mutex_unlock(&servidor->mutexListaProcesados);
-
 	int largo = strlen(mensajesProcesados.c_str());
 	std::ostringstream oss;
 	oss << largo;
 	string largoString = oss.str();
-	servidor->guardarLog("Tamaño del response: " + largoString + string(".\n"),DEBUG);
+	//servidor->guardarLog("Tamaño del response: " + largoString + string(".\n"),DEBUG);
 	char buffer[BUFFER_MAX_SIZE];
 	int inicio = 0;
 	int ok;
@@ -172,7 +191,7 @@ void* procesar(void* arg) {
 		servidor->guardarLog("ERROR: Ocurrió un problema con el socket del cliente: " + string(usuario)+ string(".\n"),DEBUG);
 	}
 	//strcpy(buffer, mensajesProcesados.c_str()); //aca muere, el problema es este strcpy y el string y char*
-	servidor->guardarLog("Mensajes para el cliente:" + string(usuario) + ", Mensajes: " + mensajesProcesados + string(".\n"),INFO);
+	//servidor->guardarLog("Mensajes para el cliente:" + string(usuario) + ", Mensajes: " + mensajesProcesados + string(".\n"),INFO);
 
 	//cout<<"socket Cliente: "<<socket<<endl;
 	//largo -= send(socket, buffer, BUFFER_MAX_SIZE + 1, 0);
@@ -194,16 +213,17 @@ void enviarMensajesProcesadosA(char* usuario, Servidor* servidor, int socket) {
 		servidor->guardarLog("ERROR: No se pudo crear el thread de recibir mensajes.\n", DEBUG);
 	}
 	else{
-		servidor->guardarLog("Thread de recibir mensajes creado correctamente.\n",DEBUG);
+		//servidor->guardarLog("Thread de recibir mensajes creado correctamente.\n",DEBUG);
 	}
 	pthread_join(threadEnviarMensajesProcesados, NULL);
-	servidor->guardarLog("Fin envio de mensajes a: " + string(usuario) + string(".\n"),INFO);
+	//servidor->guardarLog("Fin envio de mensajes a: " + string(usuario) + string(".\n"),INFO);
 	//pthread_detach(threadEnviarMensajesProcesados); //lo marco
 }
 
 void* cicloProcesarMensajes(void* arg) {
 	Servidor* servidor = (Servidor*) arg;
 	while (servidor->escuchando) {
+		clock_t tiempoInicio = clock();
 		servidor->procesarMensajes();
 	}
 }
@@ -218,6 +238,7 @@ void* cicloEscuchaCliente(void* arg) {
 	servidor->guardarLog("Escuchando al cliente: " + nombre + string(".\n"),
 			INFO);
 	char bufferRecibido[BUFFER_MAX_SIZE];
+	memset(bufferRecibido, '\0', BUFFER_MAX_SIZE);
 	bool conectado = true;
 	while (conectado and servidor->escuchando) {
 		//en este loop se van a gestionar los send y receive del cliente. aca se va a distinguir que es lo que quiere hacer y actuar segun lo que quiera el cliente.
@@ -225,10 +246,12 @@ void* cicloEscuchaCliente(void* arg) {
 		int largoRequest = recv(socketCliente, bufferRecibido, BUFFER_MAX_SIZE,0); //recibo por primera vez
 		if (largoRequest > 0) {
 			datosRecibidos.append(bufferRecibido, largoRequest);
+			memset(bufferRecibido, '\0', strlen(bufferRecibido));
 			while (largoRequest >= BUFFER_MAX_SIZE and !stringTerminaCon(datosRecibidos, "@")) {
 				//mientras haya cosas que leer, sigo recibiendo.
 				largoRequest = recv(socketCliente, bufferRecibido,BUFFER_MAX_SIZE, 0);
 				datosRecibidos.append(bufferRecibido, largoRequest);
+				memset(bufferRecibido, '\0', strlen(bufferRecibido));
 			}
 			if (largoRequest < 0) {
 				string mensaje =
@@ -252,8 +275,6 @@ void* cicloEscuchaCliente(void* arg) {
 					case 1: { //1 es enviar
 						char* remitente = strtok(NULL, "|");
 						char* mensaje = strtok(NULL, "#");
-
-
 						/*char* remitente = strtok(NULL, "|");
 						char* destinatario = strtok(NULL, "|");
 						char* mensaje = strtok(NULL, "#");
@@ -265,7 +286,7 @@ void* cicloEscuchaCliente(void* arg) {
 						break;
 					}
 					case 2: { //2 es recibir
-						servidor->guardarLog("Request: Recibir Mensajes. " + nombre + string(".\n"),INFO);
+						//servidor->guardarLog("Request: Recibir Mensajes. " + nombre + string(".\n"),INFO);
 						char* usuarioQueSolicita = strtok(NULL, "#");
 						enviarMensajesProcesadosA(usuarioQueSolicita, servidor, socketCliente);
 						break;

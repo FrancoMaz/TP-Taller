@@ -74,8 +74,8 @@ void Cliente::elegirOpcionDelMenu(int opcion) {
 					getline(cin,mensajeAEnviar);
 					if (numeroDestinatario != (this->clientesDisponibles.size()) + 1){
 						string nombreDestinatario = this->devolverNombre(numeroDestinatario - 1);
-						this->enviar(mensajeAEnviar, nombreDestinatario);
-					} else {this -> enviar(mensajeAEnviar, "Todos");}
+						//this->enviar(mensajeAEnviar, nombreDestinatario);
+					} //else {this -> enviar(mensajeAEnviar, "Todos");}
 				}
 			}
 			break;
@@ -213,32 +213,23 @@ void Cliente::salir() {
 	this->desconectar();
 }
 
-void Cliente::enviar(string mensaje, string destinatario) {
+void Cliente::enviar(string mensaje) {
 	//Se envia un mensaje a un usuario o a todos (este ultimo caso sucede cuando el destinatario es el string "Todos").
-
 	if(!(this->terminoComunicacion)){
 		char* mensajeCadena = strdup(mensaje.c_str());
-		Mensaje *mensajeAEnviar = new Mensaje(this->nombre, destinatario, mensaje);
-		char* stringDatosMensaje = strdup(("1|" + mensajeAEnviar->getStringDatos()).c_str()); //1 significa enviar.
+		Evento *mensajeAEnviar = new Evento(this->nombre, mensaje);
+		char* stringDatosMensaje = strdup(("1|" + mensajeAEnviar->serializar()).c_str()); //1 significa enviar.
 		int largo = strlen(stringDatosMensaje);
 		int largoRequest;
-		//cout<<"Mensaje enviado: "<<mensaje<<endl;
 		while (largo > 0)
 		{
 			largoRequest = send(this->socketCliente, stringDatosMensaje, largo, 0);
 			largo -= largoRequest;
 		}
 		free(mensajeCadena);
-		mensajeAEnviar->~Mensaje();
+		mensajeAEnviar->~Evento();
 	}
-
 	//free(stringDatosMensaje);
-}
-
-void Cliente::enviarMensajeATodos(string mensaje) {
-	for (list<string>::iterator i = this->clientesDisponibles.begin(); i != this->clientesDisponibles.end(); i++) {
-			this -> enviar(mensaje,*i);
-	}
 }
 
 void Cliente::recibir() {
@@ -284,19 +275,22 @@ bool Cliente::stringTerminaCon(std::string const &fullString, std::string const 
 
 void Cliente::mostrarUltimosMensajes(string colaMensajes)
 {   string mensajeVacio = "#noHayMensajes@";
-	cout << "Ultimos mensajes recibidos: " << endl;
-	if(strcmp(colaMensajes.c_str(), mensajeVacio.c_str()) == 0){
-		cout<<"No hay mensajes nuevos"<<endl;}
-	else{
+	//cout << "Ultimos mensajes recibidos: " << endl;
+	if(strcmp(colaMensajes.c_str(), mensajeVacio.c_str()) != 0){
+		//cout<<"No hay mensajes nuevos"<<endl;}
+	//else{
 		colaMensajes[colaMensajes.length() - 1] = '#';
 		char str[colaMensajes.length()];
 		strcpy(str, colaMensajes.c_str());
+		cout << "string: " << str << endl;
 		char* texto = strtok(str, "|");
 		// hacer que no imprima arroba
 		while (texto != NULL) {
 			cout<<"Mensaje de "<<texto<<":"<<endl;
+			texto = strtok(NULL,"|");
+			cout << "Posicion x: " << texto << endl;
 			texto = strtok(NULL,"#");
-			cout << texto << endl;
+			cout << "Posicion y: " << texto << endl;
 			cout<<endl;
 			texto = strtok(NULL, "|");
 		}
@@ -347,7 +341,7 @@ void Cliente::loremIpsum(double frecuenciaDeEnvios, double cantidadMaximaDeEnvio
 						archivo = fopen("LoremIpsum.txt","r"); }
 					}
 				//Una vez que se tiene un mensaje completo se envia al cliente elegido aleatoriamente de la lista
-			this->enviar(cadena, clienteAleatorioAEnviar);
+			//this->enviar(cadena, clienteAleatorioAEnviar);
 				//Al enviar un mensaje el tiempo de referencia es el actual
 				//tiempoInicio = clock();
 		}

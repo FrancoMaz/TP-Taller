@@ -41,7 +41,7 @@ private:
 	int socketServer;
 	int cantClientesConectados = 0;
 	char* nombreArchivo;
-	queue<Evento> colaMensajesNoProcesados;
+	queue<Evento>* colaMensajesNoProcesados;
 	Logger* logger;
 	struct sockaddr_in serverAddr;
 	struct sockaddr_storage serverStorage;
@@ -59,6 +59,7 @@ private:
 	};
 	list<Datos>* datosUsuarios;
 	list<MensajesProcesados>* listaMensajesProcesados;
+	list<string>* usuariosConectados;
 
 public:
 	Servidor();
@@ -74,7 +75,7 @@ public:
 	void crearMensaje(Evento mensaje);
 	void comenzarEscucha();
 	void finalizarEscucha();
-	queue<Evento> getColaMensajesNoProcesados();
+	queue<Evento>* getColaMensajesNoProcesados();
 	void splitDatos(char* datos, string* nombre, string* pass);
 	void recibirMensaje();
 	void setThreadProceso(pthread_t thrProceso);
@@ -86,7 +87,7 @@ public:
 	pthread_mutex_t mutexColasProcesadas;
 	pthread_mutex_t mutexEnviarMensajes;
 	string mensaje;
-	list<string> agregarDestinatarios(string remitente);
+	list<string>* agregarDestinatarios();
 	void procesarMensaje(Mensaje mensaje);
 	string traerMensajesProcesados(char* nombreCliente);
 	string concatenarMensajes(queue<string>* posiciones);

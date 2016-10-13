@@ -14,20 +14,32 @@ Jugador::Jugador(pair<int,int> posicionInicial) {
 
 Jugador::Jugador(string nombre) {
 	this->nombre = nombre;
+	posicion.first = 20;
+	posicion.second = 20;
 }
 Jugador::~Jugador() {
 	// TODO Auto-generated destructor stub
 }
 
-void Jugador::actualizarPosicion(pair<int,int> nuevaPosicion)
+void Jugador::actualizarPosicion(SDL_Keycode teclaPresionada)
 {
-	posicion.first = nuevaPosicion.first;
-	posicion.second = nuevaPosicion.second;
+	if (teclaPresionada == SDLK_RIGHT)
+		{
+			posicion.first += 1;
+		}
+		if (teclaPresionada == SDLK_LEFT)
+		{
+			posicion.first -= 1;
+		}
+		if (teclaPresionada == SDLK_UP)
+		{
+			posicion.second -= 1;
+		}
 }
 
 string Jugador::getStringJugador()
 {
-	return (nombre + to_string(posicion.first) + "|" + to_string(posicion.second) + "#");
+	return (nombre + "|" + to_string(posicion.first) + "|" + to_string(posicion.second) + "#");
 }
 
 string Jugador::getNombre()

@@ -16,11 +16,13 @@
 #include <netdb.h>
 #include "Cliente.h"
 #include "Vista.h"
+#include "Controlador.h"
 
 using namespace std;
 
 datosConexion datosCliente;
 Vista * vista = new Vista();
+Controlador* controlador = new Controlador();
 
 struct ComunicacionCliente{
 			Cliente* cliente;
@@ -41,10 +43,37 @@ void* verificarConexion(void * arg){
     //comunicacion->termino = cliente->corroborarConexion();
 }
 
+void* recibirPosicionJugadores(void* arg) {
+	Cliente* cliente = (Cliente*) arg;
+	while(!controlador->comprobarCierreVentana()){
+		cliente -> recibir();
+		//usleep(5000000);
+	}
+}
+
+void* enviarEventos(void* arg) {
+	Cliente* cliente = (Cliente*) arg;
+	while(!controlador->comprobarCierreVentana()){
+		while(SDL_PollEvent(&evento)){
+			if(controlador->presionarBoton(SDLK_RIGHT)){
+				cliente->enviar("Tecla Derecha");
+			}
+			if(controlador->presionarBoton(SDLK_LEFT)){
+				cliente->enviar("Tecla Izquierda");
+			}
+			if(controlador->presionarBoton(SDLK_UP)){
+				cliente->enviar("Tecla Arriba");
+			}
+		}
+	}
+}
+
 void* cicloConexion(void* arg) {
 	//Funcion que cicla para las opciones del cliente dentro del thread de comunicacion. Devuelve 1 si la opcion es desconectar, 0 si es salir.
 	Cliente* cliente = (Cliente*) arg;
 	pthread_t threadVerificarConexion;
+	pthread_t threadRecibirPosicionJugadores;
+	pthread_t threadEnviarEventos;
 	ComunicacionCliente comunicacion;
 	comunicacion.cliente =cliente;
 	comunicacion.termino = false;
@@ -61,15 +90,22 @@ void* cicloConexion(void* arg) {
 
 	if (!vista->ventanaCerrada()) {
 		//se crea esta hilo para poder verificar la conexion con el servidor
-		pthread_create(&threadVerificarConexion, NULL,&verificarConexion,&comunicacion);
-		pthread_detach(threadVerificarConexion);
+		//pthread_create(&threadVerificarConexion, NULL,&verificarConexion,&comunicacion);
+		//pthread_detach(threadVerificarConexion);
 	 	 //void** escuchando;
 	 	 //pthread_join(threadVerificarConexion,(void**)&escuchando);
 	 	 //termino = *((bool*) (&escuchando));
+		pthread_create(&threadEnviarEventos, NULL, &enviarEventos, cliente);
+		//pthread_join(threadEnviarEventos, NULL);
 
-		vista->cargarEscenario(0,0,3712,600);
+		pthread_create(&threadRecibirPosicionJugadores, NULL, &recibirPosicionJugadores, cliente);
+		//pthread_join(threadRecibirPosicionJugadores, NULL);
+		pthread_detach(threadEnviarEventos);
+		pthread_detach(threadRecibirPosicionJugadores);
 
-		if (!vista->ventanaCerrada()) {
+		vista->cargarEscenario();
+
+		/*if (!vista->ventanaCerrada()) {
 			cliente->setOpcionMenu(0);
 			while (cliente->getOpcionMenu() != 5 and cliente->getOpcionMenu() != 4 and !cliente->getTermino()) {
 				cliente->mostrarMenuYProcesarOpcion();
@@ -99,7 +135,7 @@ void* cicloConexion(void* arg) {
 			return (void*) 1;
 		}
 	} else {
-		return (void*) 1;
+		return (void*) 1;*/
 	}
 }
 

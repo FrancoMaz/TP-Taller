@@ -16,6 +16,8 @@
 #include <string>
 #include <vector>
 
+#define PI 3.14159265
+
 using namespace std;
 
 Vista::Vista(){
@@ -285,14 +287,16 @@ void Vista::transicionDePantalla(){
 	this->opacidad = 230;
 }
 
-void Vista::cargarEscenario(int x, int y, int anchoEscenario, int altoEscenario){
-	x = 20;
-	y = 20;
-	anchoEscenario = texturaFondoEscenario->getAncho();
-	altoEscenario = texturaFondoEscenario->getAlto();
+void Vista::cargarEscenario(){
+	int x = 20;
+	int y = 415;
+	int anchoEscenario = texturaFondoEscenario->getAncho();
+	int altoEscenario = texturaFondoEscenario->getAlto();
 	int velocidad_X = 0;
 	int velocidad_Y = 0;
+	bool saltar = false;
 	int const velocidad = 5;
+	double angulo = 0;
 	SDL_Rect camara = {0,0,ANCHO_VENTANA,ALTO_VENTANA};
 	SDL_RendererFlip flip = SDL_FLIP_NONE;
 	while(!this->controlador->comprobarCierreVentana()){
@@ -314,11 +318,13 @@ void Vista::cargarEscenario(int x, int y, int anchoEscenario, int altoEscenario)
 			}
 
 			if(this->controlador->presionarBoton(SDLK_UP)){
-				velocidad_Y -= velocidad;
+				if(angulo == 0){
+					saltar = true;
+				}
 			}
 
 			if(this->controlador->presionarBoton(SDLK_DOWN)){
-				velocidad_Y += velocidad;
+
 			}
 
 			//Si suelto las teclas
@@ -337,12 +343,24 @@ void Vista::cargarEscenario(int x, int y, int anchoEscenario, int altoEscenario)
 			}
 
 			if(this->controlador->soltarBoton(SDLK_UP)){
-				velocidad_Y += velocidad;
+
 			}
 
 			if(this->controlador->soltarBoton(SDLK_DOWN)){
-				velocidad_Y -= velocidad;
+
 			}
+		}
+
+		//Compruebo el salto
+		if(saltar){
+			velocidad_Y = -7*cos(angulo);
+			angulo += PI/50;
+			if (angulo > (PI + (PI/50))){
+				angulo = 0;
+				saltar = false;
+			}
+		} else {
+			velocidad_Y = 0;
 		}
 
 		//Actualizo las posiciones del objeto

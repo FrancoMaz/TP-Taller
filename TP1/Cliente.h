@@ -25,6 +25,8 @@
 #include <iterator>
 #include "Mensaje.h"
 #include <queue>
+#include "Evento.h"
+
 #define BUFFER_MAX_SIZE 200
 using namespace std;
 
@@ -52,7 +54,7 @@ public:
 	void conectar(string nombre, string contrasenia);
 	void desconectar();
 	void salir();
-	void enviar(string mensaje, string destinatario);
+	void enviar(string mensaje);
 	void recibir();
 	void loremIpsum(double frecuenciaDeEnvios,double cantidadMaximaDeEnvios);
 	string getNombre();

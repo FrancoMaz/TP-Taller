@@ -29,6 +29,8 @@ Servidor::Servidor(char* nombreArchivoDeUsuarios, int puerto, Logger* logger) {
 	bind(this->welcomeSocket, (struct sockaddr *) &serverAddr, sizeof(serverAddr));
 	this->datosUsuarios = new list<Datos>();
 	this->listaMensajesProcesados = new list<MensajesProcesados>();
+	this->colaMensajesNoProcesados = new queue<Evento>();
+	this->usuariosConectados = new list<string>();
 	stringstream ss;
 	ss << puerto;
 	mensaje = "Se creó correctamente el servidor en el puerto: " + ss.str() + ", ip: 192.168.1.10" + "\n";
@@ -84,10 +86,13 @@ void Servidor::autenticar(string nombre, string contrasenia, list<string>& usuar
 			mensajesProcesados.jugador = new Jugador(usuario.nombre);
 			mensajesProcesados.posiciones = new queue<string>();
 			this->listaMensajesProcesados->push_back(mensajesProcesados);
+			this->usuariosConectados->push_back(usuario.nombre);
+			cout << "Entra aca" << endl;
 		} else {
 			usuarios.push_back(usuario.nombre);
 		}
 	}
+	cout << this->usuariosConectados->front() << endl;
 	if (autenticacionOK) {
 		cout << "Autenticación OK" << endl;
 		mensaje = "Autenticación OK \n";
@@ -107,32 +112,33 @@ void Servidor::guardarLog(string mensaje, const int nivelDeLog) {
 
 
 void Servidor::crearMensaje(Evento mensaje) {
-	this->colaMensajesNoProcesados.push(mensaje);
+	this->colaMensajesNoProcesados->push(mensaje);
 }
 
 void Servidor::procesarMensajes() {
 
-	if (!colaMensajesNoProcesados.empty()) {
+	if (!colaMensajesNoProcesados->empty()) {
 		pthread_mutex_lock(&mutexColaNoProcesados);
-		Evento mensajeAProcesar = colaMensajesNoProcesados.front();
-		colaMensajesNoProcesados.pop();
+		Evento mensajeAProcesar = colaMensajesNoProcesados->front();
+		colaMensajesNoProcesados->pop();
 		pthread_mutex_unlock(&mutexColaNoProcesados);
 		for (list<MensajesProcesados>::iterator usuarioActual = listaMensajesProcesados->begin();
 				usuarioActual != listaMensajesProcesados->end();usuarioActual++) {
 			MensajesProcesados mensaje = *usuarioActual;
-			pair<int,int> nuevaPosicion = this->actualizarPosicion(mensajeAProcesar.getTeclaPresionada());
-			mensaje.jugador->actualizarPosicion(nuevaPosicion);
-			if (mensaje.jugador->getNombre() != mensajeAProcesar.getRemitente()) {
-				mensaje.posiciones->push(mensaje.jugador->getStringJugador());
-				/*this->mensaje = "Procesando mensaje para " + listaMensajes.destinatario + "\n";
-				this->guardarLog(mensaje, DEBUG);*/
-			}
+			//pair<int,int> nuevaPosicion = this->actualizarPosicion(mensajeAProcesar.getTeclaPresionada());
+			mensaje.jugador->actualizarPosicion(mensajeAProcesar.getTeclaPresionada());
+			mensaje.posiciones->push(mensaje.jugador->getStringJugador());
+			/*this->mensaje = "Procesando mensaje para " + listaMensajes.destinatario + "\n";
+			this->guardarLog(mensaje, DEBUG);*/
 		}
 	}
 }
 
 pair<int,int> Servidor::actualizarPosicion(SDL_Keycode teclaPresionada) {
 	pair<int,int> nuevaPosicion;
+	int velocidad_X = 0;
+	int velocidad_Y = 0;
+	int const velocidad = 5;
 	if (teclaPresionada == SDLK_RIGHT)
 	{
 		nuevaPosicion.first += 1;
@@ -231,7 +237,7 @@ void Servidor::finalizarEscucha() {
 	close(welcomeSocket);
 }
 
-queue<Evento> Servidor::getColaMensajesNoProcesados() {
+queue<Evento>* Servidor::getColaMensajesNoProcesados() {
 	return this->colaMensajesNoProcesados;
 }
 
@@ -280,17 +286,19 @@ string Servidor::serializarLista(list<string> datos) {
 	return buffer;
 }
 
-list<string> Servidor::agregarDestinatarios(string remitente) {
-	list<string> destinatarios;
-	for (list<Servidor::Datos>::iterator datoActual = datosUsuarios->begin();
-			datoActual != datosUsuarios->end(); datoActual++) {
-		Datos usuario;
+list<string>* Servidor::agregarDestinatarios() {
+
+	return this->usuariosConectados;
+	/*list<string> destinatarios;
+	cout << "Antes del for" << endl;
+	cout << usuariosConectados->front() << endl;
+	for (list<string>::iterator datoActual = usuariosConectados->begin();
+			datoActual != usuariosConectados->end(); datoActual++) {
+		string usuario;
 		usuario = *datoActual;
-		if (usuario.nombre != remitente) {
-			destinatarios.push_back(usuario.nombre);
+		destinatarios.push_back(usuario);
 		}
-	}
-	return destinatarios;
+	return destinatarios;*/
 }
 string Servidor::traerMensajesProcesados(char* nombreCliente) {
 
