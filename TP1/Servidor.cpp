@@ -50,7 +50,12 @@ void Servidor::enviarHandshake(int socket){
 	list<SetDeSpritesDto>* setDeSprites;
 	pair<const char*, const char*> ventana;
 	string handshake = "";
-
+	//Se recorren las imagenes del escenario
+	for (list<ImagenDto>::iterator datoActual = escenario->begin();
+				datoActual != escenario->end(); datoActual++) {
+			ImagenDto imagen;
+			imagen = *datoActual;
+	}
 
 }
 
