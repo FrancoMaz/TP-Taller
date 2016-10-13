@@ -57,12 +57,12 @@ void* encolar(void* arg) {
 	parametrosThreadEncolarMensaje parametrosEncolarMensaje = *(parametrosThreadEncolarMensaje*) arg;
 	Servidor* servidor = parametrosEncolarMensaje.servidor;
 	Evento* mensaje = parametrosEncolarMensaje.mensajeNoProcesado;
-	//list<string>* destinatarios = servidor->agregarDestinatarios();
-	list<string> destinatarios;
-	destinatarios.push_back("flan");
+	list<string>* destinatarios = servidor->agregarDestinatarios();
+	//list<string> destinatarios;
+	//destinatarios.push_back("flan");
 	pthread_mutex_lock(&parametrosEncolarMensaje.servidor->mutexColaNoProcesados);
-	for (list<string>::iterator datoActual = destinatarios.begin();
-			datoActual != destinatarios.end(); datoActual++) {
+	for (list<string>::iterator datoActual = destinatarios->begin();
+			datoActual != destinatarios->end(); datoActual++) {
 		string usuario;
 		usuario = *datoActual;
 		Evento* msj = new Evento(mensaje->getRemitente(), mensaje->getEventoSerializado());
