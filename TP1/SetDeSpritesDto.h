@@ -23,6 +23,8 @@ private:
 
 public:
 	SetDeSpritesDto(const char* carpeta, list<SpriteDto>* sprites);
+	const char* getCarpeta();
+	list<SpriteDto>* getSprites();
 	virtual ~SetDeSpritesDto();
 };
 

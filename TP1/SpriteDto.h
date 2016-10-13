@@ -24,6 +24,12 @@ private:
 	const char* zIndex;
 public:
 	SpriteDto(const char* id, const char* cantidadDeFotogramas, const char* ancho, const char* alto, const char* path, const char* zIndex);
+	const char* getId();
+	const char* getCantidadDeFotogramas();
+	const char* getAncho();
+	const char* getAlto();
+	const char* getPath();
+	const char* getZIndex();
 	virtual ~SpriteDto();
 };
 
