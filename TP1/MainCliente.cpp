@@ -64,6 +64,12 @@ void* enviarEventos(void* arg) {
 			if(controlador->presionarBoton(SDLK_UP)){
 				cliente->enviar("Tecla Arriba");
 			}
+			if(controlador->soltarBoton(SDLK_RIGHT)){
+				cliente->enviar("Soltar Tecla Derecha");
+			}
+			if(controlador->soltarBoton(SDLK_LEFT)){
+				cliente->enviar("Soltar Tecla Izquierda");
+			}
 		}
 	}
 }

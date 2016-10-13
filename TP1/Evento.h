@@ -15,17 +15,21 @@ using namespace std;
 
 class Evento {
 private:
-	SDL_Keycode teclaPresionada;
+	SDL_Keycode tecla;
 	string remitente;
 	string eventoSerializado;
+	bool sePresionoTecla;
 public:
 	Evento(string remitente, string eventoSerializado);
 	virtual ~Evento();
 	void deserializar(string evento);
 	string serializar();
-	SDL_Keycode getTeclaPresionada();
+	SDL_Keycode getTecla();
 	string getRemitente();
 	string getEventoSerializado();
+	bool getSePresionoTecla();
+	void setSePresionoTecla();
+
 };
 
 #endif /* EVENTO_H_ */

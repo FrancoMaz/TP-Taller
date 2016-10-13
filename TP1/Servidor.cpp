@@ -87,12 +87,10 @@ void Servidor::autenticar(string nombre, string contrasenia, list<string>& usuar
 			mensajesProcesados.posiciones = new queue<string>();
 			this->listaMensajesProcesados->push_back(mensajesProcesados);
 			this->usuariosConectados->push_back(usuario.nombre);
-			cout << "Entra aca" << endl;
 		} else {
 			usuarios.push_back(usuario.nombre);
 		}
 	}
-	cout << this->usuariosConectados->front() << endl;
 	if (autenticacionOK) {
 		cout << "Autenticación OK" << endl;
 		mensaje = "Autenticación OK \n";
@@ -126,7 +124,8 @@ void Servidor::procesarMensajes() {
 				usuarioActual != listaMensajesProcesados->end();usuarioActual++) {
 			MensajesProcesados mensaje = *usuarioActual;
 			//pair<int,int> nuevaPosicion = this->actualizarPosicion(mensajeAProcesar.getTeclaPresionada());
-			mensaje.jugador->actualizarPosicion(mensajeAProcesar.getTeclaPresionada());
+			mensajeAProcesar.setSePresionoTecla();
+			mensaje.jugador->actualizarPosicion(mensajeAProcesar.getTecla(), mensajeAProcesar.getSePresionoTecla());
 			mensaje.posiciones->push(mensaje.jugador->getStringJugador());
 			/*this->mensaje = "Procesando mensaje para " + listaMensajes.destinatario + "\n";
 			this->guardarLog(mensaje, DEBUG);*/
@@ -138,7 +137,6 @@ pair<int,int> Servidor::actualizarPosicion(SDL_Keycode teclaPresionada) {
 	pair<int,int> nuevaPosicion;
 	int velocidad_X = 0;
 	int velocidad_Y = 0;
-	int const velocidad = 5;
 	if (teclaPresionada == SDLK_RIGHT)
 	{
 		nuevaPosicion.first += 1;

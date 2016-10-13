@@ -57,13 +57,10 @@ void* encolar(void* arg) {
 	parametrosThreadEncolarMensaje parametrosEncolarMensaje = *(parametrosThreadEncolarMensaje*) arg;
 	Servidor* servidor = parametrosEncolarMensaje.servidor;
 	Evento* mensaje = parametrosEncolarMensaje.mensajeNoProcesado;
-	cout << "Servidor en encolar: " << parametrosEncolarMensaje.servidor << endl;
 	//list<string>* destinatarios = servidor->agregarDestinatarios();
 	list<string> destinatarios;
 	destinatarios.push_back("flan");
-	cout << "Antes del mutex" << endl;
 	pthread_mutex_lock(&parametrosEncolarMensaje.servidor->mutexColaNoProcesados);
-	cout << "Despues del mutex" << endl;
 	for (list<string>::iterator datoActual = destinatarios.begin();
 			datoActual != destinatarios.end(); datoActual++) {
 		string usuario;
@@ -223,7 +220,6 @@ void enviarMensajesProcesadosA(char* usuario, Servidor* servidor, int socket) {
 void* cicloProcesarMensajes(void* arg) {
 	Servidor* servidor = (Servidor*) arg;
 	while (servidor->escuchando) {
-		clock_t tiempoInicio = clock();
 		servidor->procesarMensajes();
 	}
 }
@@ -275,6 +271,7 @@ void* cicloEscuchaCliente(void* arg) {
 					case 1: { //1 es enviar
 						char* remitente = strtok(NULL, "|");
 						char* mensaje = strtok(NULL, "#");
+						cout << "Mensaje: " << mensaje << endl;
 						/*char* remitente = strtok(NULL, "|");
 						char* destinatario = strtok(NULL, "|");
 						char* mensaje = strtok(NULL, "#");

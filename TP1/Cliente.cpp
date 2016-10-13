@@ -282,15 +282,16 @@ void Cliente::mostrarUltimosMensajes(string colaMensajes)
 		colaMensajes[colaMensajes.length() - 1] = '#';
 		char str[colaMensajes.length()];
 		strcpy(str, colaMensajes.c_str());
-		cout << "string: " << str << endl;
 		char* texto = strtok(str, "|");
 		// hacer que no imprima arroba
 		while (texto != NULL) {
 			cout<<"Mensaje de "<<texto<<":"<<endl;
 			texto = strtok(NULL,"|");
 			cout << "Posicion x: " << texto << endl;
-			texto = strtok(NULL,"#");
+			texto = strtok(NULL,"|");
 			cout << "Posicion y: " << texto << endl;
+			texto = strtok(NULL,"#");
+			cout << "Sprite a ejecutar: " << texto << endl;
 			cout<<endl;
 			texto = strtok(NULL, "|");
 		}
