@@ -24,7 +24,7 @@ XmlParser::XmlParser(string xmlPath) {
 	pair<const char*, const char*> dimensiones ("", "");
 	this->tamanioVentana = dimensiones;
 	this->escenario = new list<ImagenDto>();
-	this->sprites = new list<SetDeSpritesDto>();
+	//this->sprites = new list<SetDeSpritesDto*>();
 }
 
 const char* XmlParser::getCantidadMaximaDeJugadores() {
@@ -56,29 +56,36 @@ list<ImagenDto>* XmlParser::getEscenario() {
 	return this->escenario;
 }
 
-list<SetDeSpritesDto>* XmlParser::getSprites() {
-	if (this->sprites->empty()) {
+void XmlParser::showSprites(list<SpriteDto*> sprites) {
+	for (list<SpriteDto*>::iterator j = sprites.begin(); j != sprites.end();j++) {
+		SpriteDto* sprite = *j;
+		cout << sprite->getId() << endl;
+		cout << sprite->getCantidadDeFotogramas() << endl;
+		cout << sprite->getAncho() << endl;
+		cout << (*j)->getAlto() << endl;
+		cout << (*j)->getPath() << endl;
+		cout << (*j)->getZIndex() << endl;
+	}
+}
+
+
+list<SetDeSpritesDto*> XmlParser::getSprites() {
+	if (this->sprites.empty()) {
 		for (pugi::xml_node set = this->rootNode.child("Sprites").child("SetRojo"); set; set = set.next_sibling()) {
-			list<SpriteDto>* sprites = new list<SpriteDto>();
+			list<SpriteDto*> sprites;
 			for (pugi::xml_node sprite = set.child("SpriteSalto"); sprite; sprite = sprite.next_sibling()) {
 				SpriteDto* spriteDto = new SpriteDto(sprite.child_value("Id"), sprite.child_value("CantFotogramas"), sprite.child_value("Ancho"), sprite.child_value("Alto"), sprite.child_value("Imagen"), sprite.child_value("z-index"));
-				sprites->push_back(*spriteDto);
+				sprites.push_back(spriteDto);
 			}
 			SetDeSpritesDto* setDeSprites = new SetDeSpritesDto(set.child_value("Carpeta"), sprites);
-			this->sprites->push_back(*setDeSprites);
+			this->sprites.push_back(setDeSprites);
 		}
 	}
 
-	for (list<SetDeSpritesDto>::iterator i = this->sprites->begin(); i != this->sprites->end();i++) {
-		cout << (*i).getCarpeta() << endl;
-		for (list<SpriteDto>::iterator j = (*i).getSprites()->begin(); j != (*i).getSprites()->end();j++) {
-			cout << (*j).getId() << endl;
-			cout << (*j).getCantidadDeFotogramas() << endl;
-			cout << (*j).getAncho() << endl;
-			cout << (*j).getAlto() << endl;
-			cout << (*j).getPath() << endl;
-			cout << (*j).getZIndex() << endl;
-		}
+	for (list<SetDeSpritesDto*>::iterator i = this->sprites.begin(); i != this->sprites.end();i++) {
+		SetDeSpritesDto* setSpriteActual = (*i);
+		cout << setSpriteActual->getCarpeta() << endl;
+		this->showSprites(setSpriteActual->getSprites());
 	}
 
 	return this->sprites;
