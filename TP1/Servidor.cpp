@@ -120,13 +120,22 @@ void Servidor::procesarMensajes() {
 		Evento mensajeAProcesar = colaMensajesNoProcesados->front();
 		colaMensajesNoProcesados->pop();
 		pthread_mutex_unlock(&mutexColaNoProcesados);
+		string stringJugador;
 		for (list<MensajesProcesados>::iterator usuarioActual = listaMensajesProcesados->begin();
 				usuarioActual != listaMensajesProcesados->end();usuarioActual++) {
 			MensajesProcesados mensaje = *usuarioActual;
 			//pair<int,int> nuevaPosicion = this->actualizarPosicion(mensajeAProcesar.getTeclaPresionada());
-			mensajeAProcesar.setSePresionoTecla();
-			mensaje.jugador->actualizarPosicion(mensajeAProcesar.getTecla(), mensajeAProcesar.getSePresionoTecla());
-			mensaje.posiciones->push(mensaje.jugador->getStringJugador());
+			if (mensaje.jugador->getNombre() == mensajeAProcesar.getRemitente())
+			{
+				mensajeAProcesar.setSePresionoTecla();
+				mensaje.jugador->actualizarPosicion(mensajeAProcesar.getTecla(), mensajeAProcesar.getSePresionoTecla());
+				stringJugador = mensaje.jugador->getStringJugador();
+			}
+		}
+		for (list<MensajesProcesados>::iterator usuarioActual = listaMensajesProcesados->begin();
+				usuarioActual != listaMensajesProcesados->end();usuarioActual++) {
+			MensajesProcesados mensaje = *usuarioActual;
+			mensaje.posiciones->push(stringJugador);
 			/*this->mensaje = "Procesando mensaje para " + listaMensajes.destinatario + "\n";
 			this->guardarLog(mensaje, DEBUG);*/
 		}
