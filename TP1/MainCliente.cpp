@@ -36,6 +36,36 @@ bool chequearSocket(string ip, int puerto) {
 
 	return (ip == ipServer && puerto == puertoDeEscucha);
 }
+
+void procesarUltimosMensajes(string colaMensajes)
+{   string mensajeVacio = "#noHayMensajes@";
+	//cout << "Ultimos mensajes recibidos: " << endl;
+	if(strcmp(colaMensajes.c_str(), mensajeVacio.c_str()) != 0){
+		//cout<<"No hay mensajes nuevos"<<endl;}
+	//else{
+		colaMensajes[colaMensajes.length() - 1] = '#';
+		char str[colaMensajes.length()];
+		strcpy(str, colaMensajes.c_str());
+		char* texto = strtok(str, "|");
+		// hacer que no imprima arroba
+		while (texto != NULL) {
+			char* remitente = texto;
+			texto = strtok(NULL,"|");
+			char* x = texto;
+			texto = strtok(NULL,"|");
+			char* y = texto;
+			texto = strtok(NULL,"#");
+			char* spriteAEjecutar = texto;
+			texto = strtok(NULL,"|");
+			cout<<"Mensaje de "<<remitente<<":"<<endl;
+			cout << "Posicion x: " << x << endl;
+			cout << "Posicion y: " << y << endl;
+			cout << "Sprite a ejecutar: " << spriteAEjecutar << endl;
+			cout<<endl;
+		}
+	}
+}
+
 void* verificarConexion(void * arg){
 	ComunicacionCliente* comunicacion = (ComunicacionCliente*)arg;
 	Cliente* cliente = comunicacion->cliente;
@@ -45,8 +75,10 @@ void* verificarConexion(void * arg){
 
 void* recibirPosicionJugadores(void* arg) {
 	Cliente* cliente = (Cliente*) arg;
+	string datosRecibidos;
 	while(!controlador->comprobarCierreVentana()){
-		cliente -> recibir();
+		datosRecibidos = cliente -> recibir();
+		procesarUltimosMensajes(datosRecibidos);
 		//usleep(5000000);
 	}
 }

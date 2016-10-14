@@ -55,7 +55,7 @@ public:
 	void desconectar();
 	void salir();
 	void enviar(string mensaje);
-	void recibir();
+	string recibir();
 	void loremIpsum(double frecuenciaDeEnvios,double cantidadMaximaDeEnvios);
 	string getNombre();
 	int getOpcionMenu();
