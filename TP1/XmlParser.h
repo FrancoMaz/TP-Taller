@@ -27,14 +27,15 @@ private:
 	const char* cantidadMaximaDeJugadores;
 	pair<const char*, const char*> tamanioVentana;
 	list<ImagenDto>* escenario;
-	list<SetDeSpritesDto>* sprites;
+	list<SetDeSpritesDto*> sprites;
 
 public:
 	XmlParser(string path);
 	const char * getCantidadMaximaDeJugadores();
 	pair<const char *, const char *> getTamanioVentana();
 	list<ImagenDto>* getEscenario();
-	list<SetDeSpritesDto>* getSprites();
+	list<SetDeSpritesDto*> getSprites();
+	void showSprites(list<SpriteDto*> sprites);
 	virtual ~XmlParser();
 };
 

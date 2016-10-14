@@ -19,12 +19,12 @@ class SetDeSpritesDto {
 
 private:
 	const char* carpeta;
-	list<SpriteDto>* sprites;
+	list<SpriteDto*> sprites;
 
 public:
-	SetDeSpritesDto(const char* carpeta, list<SpriteDto>* sprites);
+	SetDeSpritesDto(const char* carpeta, list<SpriteDto*> sprites);
 	const char* getCarpeta();
-	list<SpriteDto>* getSprites();
+	list<SpriteDto*> getSprites();
 	virtual ~SetDeSpritesDto();
 };
 
