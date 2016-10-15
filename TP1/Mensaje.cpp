@@ -11,6 +11,7 @@ Mensaje::Mensaje(string remitente, string destinatario, string textoMensaje) {
 	this -> clienteRemitente = remitente;
 	this -> clienteDestinatario = destinatario;
 	this -> textoMensaje = textoMensaje;
+	this -> eventoSerializado = textoMensaje;
 
 }
 
@@ -27,7 +28,7 @@ string Mensaje::getTexto(){
 }
 
 string Mensaje::getStringDatos(){
-	return (this->clienteRemitente + '|' + this->clienteDestinatario + '|' + this->textoMensaje + '#');
+	return (this->clienteRemitente + '|' + this->clienteDestinatario + '|' + this->textoMensaje);
 }
 
 void Mensaje::setearDatos(char* datosMensaje){
@@ -57,6 +58,7 @@ string Mensaje::getDestinatario(){
 
 SDL_Keycode Mensaje::deserializar(string evento)
 {
+
 	if (evento == "Tecla Derecha")
 	{
 		return SDLK_RIGHT;
