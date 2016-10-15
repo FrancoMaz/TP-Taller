@@ -28,7 +28,7 @@ void Cliente::inicializarSocket(){
 
 ImagenDto* Cliente::deserializarImagen(string imagenCadena){
 
-	const char* nombre, *zIndex, *velocidad;
+	const char *nombre, *zIndex, *velocidad;
 	char str[imagenCadena.length()];
 	strcpy(str, imagenCadena.c_str());
 	char* campo = strtok(str, ",");
@@ -44,11 +44,11 @@ ImagenDto* Cliente::deserializarImagen(string imagenCadena){
 
 SetDeSpritesDto* Cliente::deserializarSprite(string spriteCadena){
 
-	const char* id, *cantFotogramas,* ancho,* alto, *imagen, *zIndex;
+	const char* id, *cantFotogramas, *ancho, *alto, *imagen, *zIndex;
 	char* carpeta;
 	char str[spriteCadena.length()];
 	strcpy(str, spriteCadena.c_str());
-	list<SpriteDto>* spritesAccion = new list<SpriteDto>();
+	list<SpriteDto*> spritesAccion; //= new list<SpriteDto*>();
 	char* campo = strtok(str, ";");
 	//El separador entre las distintas acciones en un sprite son los ";",
 	//y el separador para los campos que estan dentro de cada accion es la ","
@@ -65,7 +65,7 @@ SetDeSpritesDto* Cliente::deserializarSprite(string spriteCadena){
 	campo = strtok(NULL,";");
 	zIndex = campo;
 	SpriteDto* spriteSalto = new SpriteDto(id,cantFotogramas,ancho,alto,imagen,zIndex);
-	spritesAccion->push_back(*spriteSalto);
+	spritesAccion.push_back(spriteSalto);
  	//setSpriteReconstruido.agregarSpriteAccion(spriteSalto);
 
 	campo = strtok(NULL,",");
@@ -81,7 +81,7 @@ SetDeSpritesDto* Cliente::deserializarSprite(string spriteCadena){
 	campo = strtok(NULL,";");
 	zIndex = campo;
 	SpriteDto* spriteCaminar = new SpriteDto(id,cantFotogramas,ancho,alto,imagen,zIndex);
-	spritesAccion->push_back(*spriteCaminar);
+	spritesAccion.push_back(spriteCaminar);
 	//setSpriteReconstruido.agregarSpriteAccion(spriteCaminar);
 
 	campo = strtok(NULL,",");
@@ -98,7 +98,7 @@ SetDeSpritesDto* Cliente::deserializarSprite(string spriteCadena){
 	campo = strtok(NULL,"|");
 	zIndex = campo;
 	SpriteDto* spriteAgacharse = new SpriteDto(id,cantFotogramas,ancho,alto,imagen,zIndex);
-	spritesAccion->push_back(*spriteAgacharse);
+	spritesAccion.push_back(spriteAgacharse);
 	SetDeSpritesDto* setSpriteReconstruido = new SetDeSpritesDto(carpeta,spritesAccion);
 	return setSpriteReconstruido;
 }
@@ -116,21 +116,21 @@ void Cliente::deserializarHandshake(string handshake){
 		if (strcmp(campo,"Escenario") == 0){
 			//recupero la imagen1
 	   		campo = strtok(NULL,"|");
-	   		ImagenDto imagen1 = deserializarImagen(campo);
+	   		ImagenDto* imagen1 = deserializarImagen(campo);
 	   		//recupero la imagen2
 	   		campo = strtok(NULL,"]");
-	   		ImagenDto imagen2 = deserializarImagen(campo);
+	   		ImagenDto* imagen2 = deserializarImagen(campo);
 	   	}
 	   	if(strcmp(campo,"Sprites") == 0){
 	   		//recupero sprite1
 	   		campo = strtok(NULL,"|");
-	   		SpriteDto sprite1 = deserializarSprite(campo);
+	   		SetDeSpritesDto* sprite1 = deserializarSprite(campo);
 	   		//recupero sprite2
 	   		campo = strtok(NULL,"|");
-	   		SpriteDto sprite2 = deserializarSprite(campo);
+	   		SetDeSpritesDto* sprite2 = deserializarSprite(campo);
 	   		//recupero sprite3
 	   		campo = strtok(NULL,"]");
-	   		SpriteDto sprite3 = deserializarSprite(campo);
+	   		SetDeSpritesDto* sprite3 = deserializarSprite(campo);
 	   	}
 	   	if(strcmp(campo,"Ventana") == 0){
 	   		//obtengo ancho
@@ -165,6 +165,7 @@ void Cliente::recibirHandshake(){
                if (largoRequest > 0){datosRecibidos += string(colaMensaje); }
                memset(colaMensaje, '\0', strlen(colaMensaje));
        }
+       cout<<"handshake recibido: "<<datosRecibidos<<endl;
 }
 
 void Cliente::mostrarMenuYProcesarOpcion(string handshake) {
@@ -284,7 +285,7 @@ void Cliente::corroborarConexion() {
 	}
  }
 
-void Cliente::conectar(string nombre, string contrasenia) {
+bool Cliente::conectar(string nombre, string contrasenia) {
 	//Se establece la conexion con el servidor mediante autenticacion. El servidor devuelve la lista con todos los usuarios disponibles
 	this->inicializarSocket();
 	char buffer[BUFFER_MAX_SIZE];
@@ -316,12 +317,20 @@ void Cliente::conectar(string nombre, string contrasenia) {
 			cout << "Usuario/clave incorrectos, inténtelo de nuevo" << endl;
 			close(socketCliente);
 		} else {
+			string opcion = "5|" + nombre;
 			cout << "Conectandose al puerto: " << this->puertoServidor << endl;
+			cout<<opcion<<endl;
+			memset(buffer, '\0', strlen(buffer));
+			strcpy(buffer,opcion.c_str());
+			send(socketCliente,buffer,opcion.length(),0);
 			splitUsuarios(datosRecibidos);
+			this->recibirHandshake();
+			return true;
 		}
 	} else {
 		cout << "Error conectandose al puerto" << endl;
 	}
+	return false;
 	//free(nombreYPass);
 }
 

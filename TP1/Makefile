@@ -1,7 +1,7 @@
 
-OBJSCLI = MainCliente.cpp Cliente.cpp Mensaje.cpp Logger.cpp VentanaSDL.cpp TexturaSDL.cpp Vista.cpp Controlador.cpp
+OBJSCLI = MainCliente.cpp Cliente.cpp Mensaje.cpp Logger.cpp VentanaSDL.cpp TexturaSDL.cpp Vista.cpp Controlador.cpp SetDeSpritesDto.cpp SpriteDto.cpp ImagenDto.cpp
 
-OBJSSERV = MainServidor.cpp Servidor.cpp Mensaje.cpp Logger.cpp
+OBJSSERV = MainServidor.cpp Servidor.cpp Mensaje.cpp Logger.cpp XmlParser.cpp SetDeSpritesDto.cpp SpriteDto.cpp ImagenDto.cpp  pugixml.hpp pugixml.cpp pugiconfig.hpp
 
 CC = g++ 
 

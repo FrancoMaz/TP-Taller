@@ -227,8 +227,7 @@ void* cicloEscuchaCliente(void* arg) {
 	bool conectado = true;
 	while (conectado and servidor->escuchando) {
 		//en este loop se van a gestionar los send y receive del cliente. aca se va a distinguir que es lo que quiere hacer y actuar segun lo que quiera el cliente.
-		servidor->enviarHandshake(socketCliente);
-		enviarMensajesProcesadosA(strdup(nombre.c_str()), servidor, socketCliente);
+		//enviarMensajesProcesadosA(strdup(nombre.c_str()), servidor, socketCliente);
 		string datosRecibidos;
 		int largoRequest = recv(socketCliente, bufferRecibido, BUFFER_MAX_SIZE,0); //recibo por primera vez
 		if (largoRequest > 0) {
@@ -297,6 +296,12 @@ void* cicloEscuchaCliente(void* arg) {
 						servidor->guardarLog("Cantidad de clientes conectados: " + conectados + string("\n"),INFO);
 						pthread_exit(NULL);
 						break;
+					}
+					case 5:{//5 es enviarHandShake
+						char* cliente = strtok(NULL, "|");
+						cout<<"le llega un 5: "<<cliente<<endl;
+						servidor->enviarHandshake(socketCliente,cliente);
+						enviarMensajesProcesadosA(cliente, servidor, socketCliente);
 					}
 				}
 			}

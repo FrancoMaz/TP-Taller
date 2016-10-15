@@ -51,15 +51,17 @@ void* cicloConexion(void* arg) {
 
 	bool termino = false;
 	bool datosIncorrectos = false;
-	while ((cliente->getClientesDisponibles().empty())&&(!vista->ventanaCerrada())) {
+	bool conexion = false;
+	//while ((cliente->getClientesDisponibles().empty())&&(!vista->ventanaCerrada())) {
+	while (!conexion &&(!vista->ventanaCerrada())) {
 		datosCliente = vista->cargarTerceraPantalla(datosIncorrectos);
 		if((datosCliente.nombre != " ")&&(datosCliente.contrasenia != " ")){
-			cliente->conectar(datosCliente.nombre, datosCliente.contrasenia);
+			conexion = cliente->conectar(datosCliente.nombre, datosCliente.contrasenia);
+		//datosIncorrectos = true;
 		}
-		datosIncorrectos = true;
 	}
 	//supongo que los datos fueron correctos entonces paso a recibir Handshake
-	cliente->recibirHandshake();
+	//cliente->recibirHandshake();
 
 	if (!vista->ventanaCerrada()) {
 		//se crea esta hilo para poder verificar la conexion con el servidor

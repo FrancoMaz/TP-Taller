@@ -32,6 +32,7 @@ Servidor::Servidor(char* nombreArchivoDeUsuarios, int puerto, Logger* logger) {
 	ss << puerto;
 	mensaje = "Se creó correctamente el servidor en el puerto: " + ss.str() + ", ip: 192.168.1.10" + "\n";
 	this->guardarLog(mensaje, DEBUG);
+	this->guardarDatosDeUsuarios();
 	this->guardarDatosDeConfiguracion();
 
 }
@@ -45,18 +46,17 @@ void Servidor::guardarDatosDeConfiguracion() {
    this->parser = new XmlParser(path);
 }
 
-void Servidor::enviarHandshake(int socket){
+void Servidor::enviarHandshake(int socket, char* cliente){
 	list<ImagenDto>* escenario;
 	list<SetDeSpritesDto>* setDeSprites;
 	pair<const char*, const char*> ventana;
-	string handshake = "";
-	//Se recorren las imagenes del escenario
-	for (list<ImagenDto>::iterator datoActual = escenario->begin();
-				datoActual != escenario->end(); datoActual++) {
-			ImagenDto imagen;
-			imagen = *datoActual;
-	}
-
+	string handshake = this->parser->serializarEscenario();
+	handshake += this->parser->serializarSetDeSprites();
+	handshake += this->parser->serializarVentana();
+	//cout<<handshake<<endl;
+	Mensaje* mensajeHandShake = new Mensaje("servidor",cliente,handshake);
+	cout<<"handshake: "<<mensajeHandShake->getTexto()<<endl;
+	this->crearMensaje(*mensajeHandShake);
 }
 
 
@@ -97,6 +97,7 @@ void Servidor::autenticar(string nombre, string contrasenia, list<string>& usuar
 
 	bool autenticacionOK = false;
 	this->usuarios.clear();
+	cout << "Nombre: " << nombre << "Pass: " << contrasenia << endl;
 	for (list<Datos>::iterator datoActual = datosUsuarios->begin();
 			datoActual != datosUsuarios->end(); datoActual++) {
 
@@ -129,6 +130,7 @@ void Servidor::guardarLog(string mensaje, const int nivelDeLog) {
 
 
 void Servidor::crearMensaje(Mensaje mensaje) {
+	cout<<"llega a la cola no procesados"<<endl;
 	this->colaMensajesNoProcesados.push(mensaje);
 }
 

@@ -33,9 +33,12 @@ public:
 	XmlParser(string path);
 	const char * getCantidadMaximaDeJugadores();
 	pair<const char *, const char *> getTamanioVentana();
+	string serializarVentana();
 	list<ImagenDto>* getEscenario();
+	string serializarEscenario();
 	list<SetDeSpritesDto*> getSprites();
-	void showSprites(list<SpriteDto*> sprites);
+	string serializarSprites(list<SpriteDto*> sprites);
+	string serializarSetDeSprites();
 	virtual ~XmlParser();
 };
 

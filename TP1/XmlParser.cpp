@@ -34,12 +34,37 @@ const char* XmlParser::getCantidadMaximaDeJugadores() {
 	return this->cantidadMaximaDeJugadores;
 }
 
+string XmlParser::serializarVentana(){
+	string ventanaConcatenada = "Ventana[";
+	ventanaConcatenada += this->getTamanioVentana().first;
+	ventanaConcatenada += ",";
+	ventanaConcatenada += this->getTamanioVentana().second;
+	ventanaConcatenada += "]";
+	return ventanaConcatenada;
+}
+
 pair<const char*, const char*> XmlParser::getTamanioVentana() {
 	if (this->tamanioVentana.first == "" && this->tamanioVentana.second == "") {
 		pair<const char*,const char*> dimensiones(this->rootNode.child("Ventana").child_value("Ancho"), this->rootNode.child("Ventana").child_value("Alto"));
 		this->tamanioVentana = dimensiones;
 	}
 	return this->tamanioVentana;
+}
+
+string XmlParser::serializarEscenario(){
+	this->getEscenario();
+	string escenarioConcatenado = "Escenario[";
+	for (list<ImagenDto>::iterator i = this->escenario->begin(); i != this->escenario->end();i++) {
+		escenarioConcatenado += (*i).getPath();
+		escenarioConcatenado += ",";
+		escenarioConcatenado += (*i).getZIndex();
+		escenarioConcatenado += ",";
+		escenarioConcatenado += (*i).getVelocidad();
+		escenarioConcatenado += "|";
+	}
+	escenarioConcatenado += "]";
+	return escenarioConcatenado;
+
 }
 
 list<ImagenDto>* XmlParser::getEscenario() {
@@ -50,24 +75,41 @@ list<ImagenDto>* XmlParser::getEscenario() {
 		}
 	}
 
-	for (list<ImagenDto>::iterator i = this->escenario->begin(); i != this->escenario->end();i++) {
-		cout << (*i).getPath() << (*i).getVelocidad() << (*i).getZIndex() << endl;
-	}
 	return this->escenario;
 }
 
-void XmlParser::showSprites(list<SpriteDto*> sprites) {
+string XmlParser::serializarSprites(list<SpriteDto*> sprites) {
+	string spriteConcatenado="";
 	for (list<SpriteDto*>::iterator j = sprites.begin(); j != sprites.end();j++) {
 		SpriteDto* sprite = *j;
-		cout << sprite->getId() << endl;
-		cout << sprite->getCantidadDeFotogramas() << endl;
-		cout << sprite->getAncho() << endl;
-		cout << (*j)->getAlto() << endl;
-		cout << (*j)->getPath() << endl;
-		cout << (*j)->getZIndex() << endl;
+		spriteConcatenado += sprite->getId();
+		spriteConcatenado += ",";
+		spriteConcatenado += sprite->getCantidadDeFotogramas();
+		spriteConcatenado += ",";
+		spriteConcatenado += sprite->getAncho();
+		spriteConcatenado += ",";
+		spriteConcatenado += sprite->getAlto();
+		spriteConcatenado += ",";
+		spriteConcatenado += sprite->getPath();
+		spriteConcatenado += ",";
+		spriteConcatenado += sprite->getZIndex();
+		spriteConcatenado += ";";
 	}
+	return spriteConcatenado;
 }
-
+string XmlParser::serializarSetDeSprites(){
+	this->getSprites();
+	string setDeSpritesconcatenados = "SetSprites[";
+	for (list<SetDeSpritesDto*>::iterator i = this->sprites.begin(); i != this->sprites.end();i++) {
+		SetDeSpritesDto* setSpriteActual = (*i);
+		setDeSpritesconcatenados += setSpriteActual->getCarpeta();
+		setDeSpritesconcatenados += ";";
+		setDeSpritesconcatenados += this->serializarSprites(setSpriteActual->getSprites());
+		setDeSpritesconcatenados += "|";
+	}
+	setDeSpritesconcatenados += "]";
+	return setDeSpritesconcatenados;
+}
 
 list<SetDeSpritesDto*> XmlParser::getSprites() {
 	if (this->sprites.empty()) {
@@ -80,12 +122,6 @@ list<SetDeSpritesDto*> XmlParser::getSprites() {
 			SetDeSpritesDto* setDeSprites = new SetDeSpritesDto(set.child_value("Carpeta"), sprites);
 			this->sprites.push_back(setDeSprites);
 		}
-	}
-
-	for (list<SetDeSpritesDto*>::iterator i = this->sprites.begin(); i != this->sprites.end();i++) {
-		SetDeSpritesDto* setSpriteActual = (*i);
-		cout << setSpriteActual->getCarpeta() << endl;
-		this->showSprites(setSpriteActual->getSprites());
 	}
 
 	return this->sprites;

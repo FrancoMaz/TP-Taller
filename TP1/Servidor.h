@@ -63,7 +63,7 @@ public:
 	Servidor();
 	Servidor(char* nombreArchivoDeUsuarios, int puerto, Logger* logger);
 	void guardarDatosDeConfiguracion();
-	void enviarHandshake(int socket);
+	void enviarHandshake(int socket,char* cliente);
 	virtual ~Servidor();
 	void guardarDatosDeUsuarios();
 	bool fileExists(string fileName);

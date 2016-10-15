@@ -56,7 +56,7 @@ public:
 	void recibirHandshake();
 	void mostrarMenuYProcesarOpcion(string handshake);
 	void elegirOpcionDelMenu(int opcion);
-	void conectar(string nombre, string contrasenia);
+	bool conectar(string nombre, string contrasenia);
 	void desconectar();
 	void salir();
 	void enviar(string mensaje, string destinatario);
