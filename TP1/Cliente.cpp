@@ -112,37 +112,46 @@ void Cliente::deserializarHandshake(string handshake){
     escenario = "Escenario";
     sprites = "Sprites";
     ventana = "Ventana";
-	while (campo != NULL) {
+
+    structHandshake handshakeReconstruido;
+    while (campo != NULL) {
 		if (strcmp(campo,"Escenario") == 0){
 			//recupero la imagen1
 	   		campo = strtok(NULL,"|");
-	   		ImagenDto* imagen1 = deserializarImagen(campo);
+	   		handshakeReconstruido.imagen1 = deserializarImagen(campo);
 	   		//recupero la imagen2
 	   		campo = strtok(NULL,"]");
-	   		ImagenDto* imagen2 = deserializarImagen(campo);
+	   		handshakeReconstruido.imagen2 = deserializarImagen(campo);
 	   	}
 	   	if(strcmp(campo,"Sprites") == 0){
 	   		//recupero sprite1
 	   		campo = strtok(NULL,"|");
-	   		SetDeSpritesDto* sprite1 = deserializarSprite(campo);
+	   		handshakeReconstruido.sprite1 = deserializarSprite(campo);
 	   		//recupero sprite2
 	   		campo = strtok(NULL,"|");
-	   		SetDeSpritesDto* sprite2 = deserializarSprite(campo);
+	   		handshakeReconstruido.sprite2 = deserializarSprite(campo);
 	   		//recupero sprite3
 	   		campo = strtok(NULL,"]");
-	   		SetDeSpritesDto* sprite3 = deserializarSprite(campo);
+	   		handshakeReconstruido.sprite3 = deserializarSprite(campo);
 	   	}
 	   	if(strcmp(campo,"Ventana") == 0){
 	   		//obtengo ancho
 	   		campo = strtok(NULL,",");
-	   		char* ancho = campo;
+	   		handshakeReconstruido.ancho = campo;
 	   		//obtengo alto
 	   		campo = strtok(NULL,"]");
-	   		char* alto = campo;
+	   		handshakeReconstruido.alto = campo;
 	   	}
 	   	campo = strtok(NULL,"[");
 	}
+
+    this->verificarBiblioteca(handshakeReconstruido);
 }
+
+bool Cliente::verificarBiblioteca(structHandshake handshake) {
+
+}
+
 void Cliente::recibirHandshake(){
 
        char colaMensaje[BUFFER_MAX_SIZE];

@@ -45,6 +45,15 @@ private:
 	pthread_t threadChecker;
 	list<string> clientesDisponibles;
 	bool terminoComunicacion;
+	struct structHandshake{
+		ImagenDto* imagen1;
+		ImagenDto* imagen2;
+		SetDeSpritesDto* sprite1;
+		SetDeSpritesDto* sprite2;
+		SetDeSpritesDto* sprite3;
+		char* alto;
+		char* ancho;
+	};
 
 public:
 	Cliente();
@@ -78,6 +87,7 @@ public:
 	void corroborarConexion();
 	bool getTermino();
 	bool stringTerminaCon(std::string const &fullString, std::string const &ending);
+	bool verificarBiblioteca(structHandshake handshake);
 };
 
 #endif /* TP1_CLIENTE_H_ */
