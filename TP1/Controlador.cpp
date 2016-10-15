@@ -32,7 +32,7 @@ bool Controlador::aplicarEvento(SDL_Keycode boton, Uint32 tipo){
 	if(evento.type == SDL_QUIT){
 		this->botonCerrarVentana = true;
 	} else {
-		if(evento.type == tipo && evento.key.repeat == 0){
+		if(evento.type == tipo){
 			if(evento.key.keysym.sym == boton){
 				seleccionado = true;
 			}

@@ -62,6 +62,7 @@ void procesarUltimosMensajes(string colaMensajes)
 			cout << "Posicion y: " << y << endl;
 			cout << "Sprite a ejecutar: " << spriteAEjecutar << endl;
 			cout<<endl;
+			vista->actualizarJugador(string(remitente),atoi((string(x).c_str())),atoi(string(y).c_str()));
 		}
 	}
 }
@@ -87,6 +88,7 @@ void* enviarEventos(void* arg) {
 	Cliente* cliente = (Cliente*) arg;
 	while(!controlador->comprobarCierreVentana()){
 		while(SDL_PollEvent(&evento)){
+			usleep(1000);
 			if(controlador->presionarBoton(SDLK_RIGHT)){
 				cliente->enviar("Tecla Derecha");
 			}
@@ -102,6 +104,7 @@ void* enviarEventos(void* arg) {
 			if(controlador->soltarBoton(SDLK_LEFT)){
 				cliente->enviar("Soltar Tecla Izquierda");
 			}
+
 		}
 	}
 }
