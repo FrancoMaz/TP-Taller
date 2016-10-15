@@ -302,6 +302,7 @@ void Vista::cargarEscenario(){
 	SDL_Rect camara = {0,0,ANCHO_VENTANA,ALTO_VENTANA};
 	SDL_RendererFlip flip = SDL_FLIP_NONE;
 	while(!this->controlador->comprobarCierreVentana()){
+		/*
 		this->ventana->limpiar();
 		while(SDL_PollEvent(&evento)){
 			//Si presiono las teclas
@@ -404,8 +405,17 @@ void Vista::cargarEscenario(){
 
 		texturaFondoEscenario->aplicarPosicionDePorcion(0,0,&camara,0,SDL_FLIP_NONE);
 		texturaJugador->aplicarPosicion(x-camara.x,y-camara.y,0,flip);
-		this->ventana->actualizar();
+		this->ventana->actualizar();*/
 	}
+}
+
+void Vista::actualizarJugador(string remitente, int x, int y)
+{
+	SDL_Rect camara = {0,0,ANCHO_VENTANA,ALTO_VENTANA};
+	this->ventana->limpiar();
+	texturaFondoEscenario->aplicarPosicionDePorcion(0,0,&camara,0,SDL_FLIP_NONE);
+	texturaJugador->aplicarPosicion(x,y,0,SDL_FLIP_NONE);
+	this->ventana->actualizar();
 }
 
 bool Vista::ventanaCerrada(){

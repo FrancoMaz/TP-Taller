@@ -64,6 +64,17 @@ void* encolar(void* arg) {
 	 + ". \n";
 	 servidor->guardarLog(servidor->mensaje, DEBUG);*/
 
+	pthread_mutex_lock(
+			&parametrosEncolarMensaje.servidor->mutexColaNoProcesados);
+	servidor->crearMensaje(*mensaje);
+	servidor->mensaje = "Encolando mensaje: " + mensaje->getTexto()
+			+ ". De: " + mensaje->getRemitente() + ". Para: "
+			+ mensaje->getDestinatario() + ". \n";
+	servidor->guardarLog(servidor->mensaje, DEBUG);
+	pthread_mutex_unlock(
+			&parametrosEncolarMensaje.servidor->mutexColaNoProcesados);
+
+	/*
 	if (mensaje->getDestinatario().compare("Todos") != 0) {
 		pthread_mutex_lock(
 				&parametrosEncolarMensaje.servidor->mutexColaNoProcesados);
@@ -99,7 +110,7 @@ void* encolar(void* arg) {
 		}
 		pthread_mutex_unlock( &parametrosEncolarMensaje.servidor->mutexColaNoProcesados);
 		mensaje->~Mensaje();
-	}
+	}*/
 	return NULL;
 }
 

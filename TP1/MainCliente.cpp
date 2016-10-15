@@ -21,6 +21,7 @@ using namespace std;
 
 datosConexion datosCliente;
 Vista * vista = new Vista();
+Controlador* controlador = new Controlador();
 
 struct ComunicacionCliente{
 			Cliente* cliente;
@@ -41,10 +42,77 @@ void* verificarConexion(void * arg){
     //comunicacion->termino = cliente->corroborarConexion();
 }
 
+void procesarUltimosMensajes(string mensajes)
+{   string mensajeVacio = "#noHayMensajes@";
+	//cout << "Ultimos mensajes recibidos: " << endl;
+	if(strcmp(mensajes.c_str(), mensajeVacio.c_str()) != 0){
+		//cout<<"No hay mensajes nuevos"<<endl;}
+	//else{
+		mensajes[mensajes.length() - 1] = '#';
+		char str[mensajes.length()];
+		strcpy(str, mensajes.c_str());
+		char* texto = strtok(str, "|");
+		// hacer que no imprima arroba
+		while (texto != NULL) {
+			char* remitente = texto;
+			texto = strtok(NULL,"|");
+			char* x = texto;
+			texto = strtok(NULL,"|");
+			char* y = texto;
+			texto = strtok(NULL,"#");
+			char* spriteAEjecutar = texto;
+			texto = strtok(NULL,"|");
+			cout<<"Mensaje de "<<remitente<<":"<<endl;
+			cout << "Posicion x: " << x << endl;
+			cout << "Posicion y: " << y << endl;
+			cout << "Sprite a ejecutar: " << spriteAEjecutar << endl;
+			cout<<endl;
+			vista->actualizarJugador(string(remitente),atoi((string(x).c_str())),atoi(string(y).c_str()));
+		}
+	}
+}
+
+void* recibirPosicionJugadores(void* arg) {
+	Cliente* cliente = (Cliente*) arg;
+	string datosRecibidos;
+	while(!controlador->comprobarCierreVentana()){
+		datosRecibidos = cliente -> recibir();
+		procesarUltimosMensajes(datosRecibidos);
+		//usleep(5000000);
+	}
+}
+
+void* enviarEventos(void* arg) {
+	Cliente* cliente = (Cliente*) arg;
+	while(!controlador->comprobarCierreVentana()){
+		while(SDL_PollEvent(&evento)){
+			usleep(1000);
+			if(controlador->presionarBoton(SDLK_RIGHT)){
+				cliente->enviar("Tecla Derecha","Todos");
+			}
+			if(controlador->presionarBoton(SDLK_LEFT)){
+				cliente->enviar("Tecla Izquierda","Todos");
+			}
+			if(controlador->presionarBoton(SDLK_UP)){
+				cliente->enviar("Tecla Arriba","Todos");
+			}
+			if(controlador->soltarBoton(SDLK_RIGHT)){
+				cliente->enviar("Soltar Tecla Derecha","Todos");
+			}
+			if(controlador->soltarBoton(SDLK_LEFT)){
+				cliente->enviar("Soltar Tecla Izquierda","Todos");
+			}
+
+		}
+	}
+}
+
 void* cicloConexion(void* arg) {
 	//Funcion que cicla para las opciones del cliente dentro del thread de comunicacion. Devuelve 1 si la opcion es desconectar, 0 si es salir.
 	Cliente* cliente = (Cliente*) arg;
 	pthread_t threadVerificarConexion;
+	pthread_t threadEnviarEventos;
+	pthread_t threadRecibirPosicionJugadores;
 	ComunicacionCliente comunicacion;
 	comunicacion.cliente =cliente;
 	comunicacion.termino = false;
@@ -66,9 +134,13 @@ void* cicloConexion(void* arg) {
 	 	 //void** escuchando;
 	 	 //pthread_join(threadVerificarConexion,(void**)&escuchando);
 	 	 //termino = *((bool*) (&escuchando));
+		pthread_create(&threadEnviarEventos, NULL, &enviarEventos, cliente);
+		pthread_detach(threadEnviarEventos);
+		pthread_create(&threadRecibirPosicionJugadores, NULL, &recibirPosicionJugadores,cliente);
+		pthread_detach(threadRecibirPosicionJugadores);
 
 		vista->cargarEscenario();
-
+/*
 		if (!vista->ventanaCerrada()) {
 			cliente->setOpcionMenu(0);
 			while (cliente->getOpcionMenu() != 5 and cliente->getOpcionMenu() != 4 and !cliente->getTermino()) {
@@ -99,7 +171,7 @@ void* cicloConexion(void* arg) {
 			return (void*) 1;
 		}
 	} else {
-		return (void*) 1;
+		return (void*) 1;*/
 	}
 }
 

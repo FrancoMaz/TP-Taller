@@ -52,6 +52,7 @@ private:
 	};
 	struct MensajesProcesados {
 		string destinatario;
+		Jugador* jugador;
 		queue<Mensaje>* mensajes;
 	};
 	list<Datos>* datosUsuarios;

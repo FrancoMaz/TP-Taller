@@ -46,6 +46,7 @@ public:
 	void cargarArchivos();
 	bool ventanaCerrada();
 	void cerrar();
+	void actualizarJugador(string remitente, int x, int y);
 };
 
 #endif /* TP2_VISTA_H_ */
