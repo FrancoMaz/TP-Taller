@@ -59,6 +59,7 @@ void Servidor::guardarDatosDeUsuarios() {
 				}
 				nroItem++;
 			}
+			mensajesProcesados.jugador = new Jugador(datosCapturados.nombre);
 			queue<Mensaje>* colaMensajes = new queue<Mensaje>;
 			mensajesProcesados.mensajes = colaMensajes;
 			datosUsuarios->push_back(datosCapturados);
@@ -114,6 +115,7 @@ void Servidor::crearMensaje(Mensaje mensaje) {
 void Servidor::procesarMensajes() {
 
 	if (!colaMensajesNoProcesados.empty()) {
+		cout << "procesando" << endl;
 		pthread_mutex_lock(&mutexColaNoProcesados);
 		Mensaje mensajeAProcesar = colaMensajesNoProcesados.front();
 		colaMensajesNoProcesados.pop();
@@ -134,6 +136,7 @@ void Servidor::procesarMensajes() {
 			}
 		}
 		Mensaje* mensajePosicionActualizada;
+		cout << mensajeJugadorPosActualizada << endl;
 		for (list<MensajesProcesados>::iterator usuarioActual = listaMensajesProcesados->begin();
 				usuarioActual != listaMensajesProcesados->end();usuarioActual++) {
 			MensajesProcesados listaMensajes;

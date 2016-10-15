@@ -48,7 +48,8 @@ void procesarUltimosMensajes(string mensajes)
 	if(strcmp(mensajes.c_str(), mensajeVacio.c_str()) != 0){
 		//cout<<"No hay mensajes nuevos"<<endl;}
 	//else{
-		mensajes[mensajes.length() - 1] = '#';
+		//mensajes[mensajes.length() - 1] = '#';
+		cout << mensajes << endl;
 		char str[mensajes.length()];
 		strcpy(str, mensajes.c_str());
 		char* texto = strtok(str, "|");
@@ -56,12 +57,14 @@ void procesarUltimosMensajes(string mensajes)
 		while (texto != NULL) {
 			char* remitente = texto;
 			texto = strtok(NULL,"|");
+			char* destinatario = texto;
+			texto = strtok(NULL,"|");
 			char* x = texto;
 			texto = strtok(NULL,"|");
 			char* y = texto;
 			texto = strtok(NULL,"#");
 			char* spriteAEjecutar = texto;
-			texto = strtok(NULL,"|");
+			texto = strtok(NULL,"@");
 			cout<<"Mensaje de "<<remitente<<":"<<endl;
 			cout << "Posicion x: " << x << endl;
 			cout << "Posicion y: " << y << endl;
@@ -78,7 +81,7 @@ void* recibirPosicionJugadores(void* arg) {
 	while(!controlador->comprobarCierreVentana()){
 		datosRecibidos = cliente->recibir();
 		procesarUltimosMensajes(datosRecibidos);
-		//usleep(5000000);
+		usleep(1000);
 	}
 }
 

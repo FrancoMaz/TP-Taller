@@ -34,6 +34,7 @@ Jugador::~Jugador() {
 
 void Jugador::actualizarPosicion(SDL_Keycode tecla, bool sePresionoTecla)
 {
+	velocidades.first = 0;
 	if (tecla == SDLK_RIGHT && sePresionoTecla)
 	{
 		velocidades.first += velocidad;
