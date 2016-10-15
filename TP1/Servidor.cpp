@@ -125,7 +125,7 @@ void Servidor::procesarMensajes() {
 			listaMensajes = *usuarioActual;
 			if (listaMensajes.destinatario == mensajeAProcesar.getRemitente()) {
 				pthread_mutex_lock(&mutexListaProcesados);
-				listaMensajes.jugador->actualizarPosicion(mensajeAProcesar.getTecla(),mensajeAProcesar.getSePresionoTecla());
+				listaMensajes.jugador->actualizarPosicion(mensajeAProcesar.deserializar(mensajeAProcesar.getTexto()),mensajeAProcesar.sePresionoTecla());
 				mensajeJugadorPosActualizada = listaMensajes.jugador->getStringJugador();
 				pthread_mutex_unlock(&mutexListaProcesados);
 				this->mensaje = "Procesando mensaje para "
@@ -133,15 +133,15 @@ void Servidor::procesarMensajes() {
 				this->guardarLog(mensaje, DEBUG);
 			}
 		}
-		Mensaje mensajePosicionActualizada;
+		Mensaje* mensajePosicionActualizada;
 		for (list<MensajesProcesados>::iterator usuarioActual = listaMensajesProcesados->begin();
 				usuarioActual != listaMensajesProcesados->end();usuarioActual++) {
 			MensajesProcesados listaMensajes;
 			listaMensajes = *usuarioActual;
-			if (listaMensajes.destinatario == mensajeAProcesar.getDestinatario() or listaMensajes.destinatario == "Todos") {
+			if (listaMensajes.destinatario == mensajeAProcesar.getDestinatario() or mensajeAProcesar.getDestinatario() == "Todos") {
 				mensajePosicionActualizada = new Mensaje(mensajeAProcesar.getRemitente(),listaMensajes.destinatario,mensajeJugadorPosActualizada);
 				pthread_mutex_lock(&mutexListaProcesados);
-				listaMensajes.mensajes->push(mensajePosicionActualizada);
+				listaMensajes.mensajes->push(*mensajePosicionActualizada);
 				pthread_mutex_unlock(&mutexListaProcesados);
 				this->mensaje = "Procesando mensaje para "
 						+ listaMensajes.destinatario + "\n";

@@ -47,11 +47,48 @@ void Mensaje::setearDatos(char* datosMensaje){
 		pos++;}
 	}
 
-
 string Mensaje::getRemitente(){
 	return this->clienteRemitente;
 }
 
 string Mensaje::getDestinatario(){
 	return this->clienteDestinatario;
+}
+
+SDL_Keycode Mensaje::deserializar(string evento)
+{
+	if (evento == "Tecla Derecha")
+	{
+		return SDLK_RIGHT;
+	}
+	else if (evento == "Tecla Izquierda")
+	{
+		return SDLK_LEFT;
+	}
+	else if (evento == "Tecla Arriba")
+	{
+		return SDLK_UP;
+	}
+	else if (evento == "Tecla R")
+	{
+		return SDLK_r;
+	}
+	else if (evento == "Soltar Tecla Derecha")
+	{
+		return SDLK_RIGHT;
+	}
+	else if (evento == "Soltar Tecla Izquierda")
+	{
+		return SDLK_LEFT;
+	}
+	return -1;
+}
+
+bool Mensaje::sePresionoTecla()
+{
+	if (eventoSerializado == "Tecla Derecha" or eventoSerializado == "Tecla Izquierda" or eventoSerializado == "Tecla Arriba")
+	{
+		return true;
+	}
+	return false;
 }

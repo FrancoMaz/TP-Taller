@@ -23,6 +23,7 @@
 #include "Cliente.h"
 #include "Logger.h"
 #include "Mensaje.h"
+#include "Jugador.h"
 #define MAX_CANT_CLIENTES 6
 #define BUFFER_MAX_SIZE 200
 const int INFO = 1;

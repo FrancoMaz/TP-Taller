@@ -76,7 +76,7 @@ void* recibirPosicionJugadores(void* arg) {
 	Cliente* cliente = (Cliente*) arg;
 	string datosRecibidos;
 	while(!controlador->comprobarCierreVentana()){
-		datosRecibidos = cliente -> recibir();
+		datosRecibidos = cliente->recibir();
 		procesarUltimosMensajes(datosRecibidos);
 		//usleep(5000000);
 	}
@@ -129,8 +129,8 @@ void* cicloConexion(void* arg) {
 
 	if (!vista->ventanaCerrada()) {
 		//se crea esta hilo para poder verificar la conexion con el servidor
-		pthread_create(&threadVerificarConexion, NULL,&verificarConexion,&comunicacion);
-		pthread_detach(threadVerificarConexion);
+		//pthread_create(&threadVerificarConexion, NULL,&verificarConexion,&comunicacion);
+		//pthread_detach(threadVerificarConexion);
 	 	 //void** escuchando;
 	 	 //pthread_join(threadVerificarConexion,(void**)&escuchando);
 	 	 //termino = *((bool*) (&escuchando));

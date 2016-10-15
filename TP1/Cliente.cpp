@@ -241,7 +241,7 @@ void Cliente::enviarMensajeATodos(string mensaje) {
 	}
 }
 
-void Cliente::recibir() {
+string Cliente::recibir() {
 	//Se reciben todos los mensajes en la secuencia en la que fueron enviados
 	char colaMensajes[BUFFER_MAX_SIZE];
 	memset(colaMensajes, '\0', BUFFER_MAX_SIZE);
@@ -271,7 +271,7 @@ void Cliente::recibir() {
 		}
 		memset(colaMensajes, '\0', strlen(colaMensajes));
 	}
-	this -> mostrarUltimosMensajes(datosRecibidos);
+	return datosRecibidos;
 }
 
 bool Cliente::stringTerminaCon(std::string const &fullString, std::string const &ending) {

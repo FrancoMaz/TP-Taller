@@ -11,6 +11,7 @@
 #include <string>
 #include <string.h>
 #include <sstream>
+#include <SDL2/SDL.h>
 using namespace std;
 
 class Mensaje {
@@ -23,11 +24,14 @@ public:
 	void setearDatos(char* datosMensaje);
 	string getRemitente();
 	string getDestinatario();
+	SDL_Keycode deserializar(string evento);
+	bool sePresionoTecla();
 
 private:
 	string clienteRemitente;
 	string clienteDestinatario;
 	string textoMensaje;
+	string eventoSerializado;
 };
 
 #endif /* MENSAJE_H_ */
