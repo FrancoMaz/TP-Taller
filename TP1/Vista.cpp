@@ -16,8 +16,6 @@
 #include <string>
 #include <vector>
 
-#include <iostream>
-
 #define PI 3.14159265
 
 using namespace std;
@@ -54,8 +52,11 @@ void Vista::cargarArchivos(){
 	textura.push_back(ventana->crearTexto("Recursos/arial.ttf",19));
 	textura.push_back(ventana->crearTexto("Recursos/msserif_bold.ttf",13));
 	textura.push_back(ventana->crearBoton("Recursos/Boton_Conectar.png"));
-	textura.push_back(ventana->crearTextura("Recursos/Fondo_escenario.png",0));
 	textura.push_back(ventana->crearTextura("Recursos/Jugador.png",3));
+	textura.push_back(ventana->crearTextura("Recursos/Fondo_Escenario_capa_1.png",0));
+	textura.push_back(ventana->crearTextura("Recursos/Fondo_Escenario_capa_2.png",0));
+	textura.push_back(ventana->crearTextura("Recursos/Fondo_Escenario_capa_3.png",0));
+	textura.push_back(ventana->crearTextura("Recursos/Fondo_Escenario_capa_4.png",0));
 
 	//Defino constantes para cada textura (para evitar llamarlos por índices)
 	#define texturaMenuFondo textura[0]
@@ -74,8 +75,11 @@ void Vista::cargarArchivos(){
 	#define entradaTextoIP textura[13]
 	#define textoDatosNoCoinciden textura[14]
 	#define texturaBotonConectar textura[15]
-	#define texturaFondoEscenario textura[16]
-	#define texturaJugador textura[17]
+	#define texturaJugador textura[16]
+	#define texturaFondoEscenarioCapaUno textura[17]
+	#define texturaFondoEscenarioCapaDos textura[18]
+	#define texturaFondoEscenarioCapaTres textura[19]
+	#define texturaFondoEscenarioCapaCuatro textura[20]
 }
 
 void Vista::cargarPrimeraPantalla(){
@@ -290,17 +294,24 @@ void Vista::transicionDePantalla(){
 }
 
 void Vista::cargarEscenario(){
-	int x = 20;
-	int y = 415;
-	int anchoEscenario = texturaFondoEscenario->getAncho();
-	int altoEscenario = texturaFondoEscenario->getAlto();
+	int jugador_X = 20;
+	int jugador_Y = 415;
+	int capa_X = 0;
+	int anchoEscenario = texturaFondoEscenarioCapaUno->getAncho();
+	int altoEscenario = texturaFondoEscenarioCapaUno->getAlto();
 	int velocidad_X = 0;
 	int velocidad_Y = 0;
 	bool saltar = false;
-	int const velocidad = 5;
+	int const velocidad = 4;
 	double angulo = 0;
 	SDL_Rect camara = {0,0,ANCHO_VENTANA,ALTO_VENTANA};
+	SDL_Rect capaNubes = {0,0,ANCHO_VENTANA,ALTO_VENTANA};
+	SDL_Rect capaArena = {0,0,ANCHO_VENTANA,ALTO_VENTANA};
+
 	SDL_RendererFlip flip = SDL_FLIP_NONE;
+
+	float velocidad_nubes = 0;
+
 	while(!this->controlador->comprobarCierreVentana()){
 		this->ventana->limpiar();
 		while(SDL_PollEvent(&evento)){
@@ -366,23 +377,23 @@ void Vista::cargarEscenario(){
 		}
 
 		//Actualizo las posiciones del objeto
-		x += velocidad_X;
-		y += velocidad_Y;
+		jugador_X += velocidad_X;
+		jugador_Y += velocidad_Y;
 
 		//Para que el punto no se vaya de pantalla
-		if((x < 0)||(x + texturaJugador->getAnchoSprite() > anchoEscenario)){
+		if((jugador_X < 0)||(jugador_X + texturaJugador->getAnchoSprite() > anchoEscenario)){
 			//Muevo para atrás
-			x -= velocidad_X;
+			jugador_X -= velocidad_X;
 		}
 
-		if((y < 0)||(y + texturaJugador->getAltoSprite() > altoEscenario)){
+		if((jugador_Y < 0)||(jugador_Y + texturaJugador->getAltoSprite() > altoEscenario)){
 			//Muevo para atrás
-			y -= velocidad_Y;
+			jugador_Y -= velocidad_Y;
 		}
 
 		//Centro la cámara en el jugador
-		camara.x = (x + texturaJugador->getAnchoSprite()/2) - ANCHO_VENTANA/2;
-		camara.y = (y + texturaJugador->getAltoSprite()/2) - ALTO_VENTANA/2;
+		camara.x = (jugador_X + texturaJugador->getAnchoSprite()/2) - ANCHO_VENTANA/2;
+		camara.y = (jugador_Y + texturaJugador->getAltoSprite()/2) - ALTO_VENTANA/2;
 
 		//Mantengo la cámara dentro de los límites del escenario
 		if (camara.x < 0){
@@ -402,8 +413,28 @@ void Vista::cargarEscenario(){
 		}
 
 
-		texturaFondoEscenario->aplicarPosicionDePorcion(0,0,&camara,0,SDL_FLIP_NONE);
-		texturaJugador->aplicarPosicion(x-camara.x,y-camara.y,0,flip);
+		//Establezco el movimiento de las nubes
+		velocidad_nubes = velocidad_nubes - 0.2;
+		capaNubes.x = -velocidad_nubes;
+		capaNubes.y = camara.y;
+
+		texturaFondoEscenarioCapaCuatro->aplicarPosicionDePorcion(0,0,&capaNubes,0,SDL_FLIP_NONE);
+
+		//Establezco la capa arena
+		capaArena.y = camara.y;
+		if(!(camara.x == 0 || camara.x == anchoEscenario - camara.w)){
+			capa_X += velocidad_X;
+		}
+
+		capaArena.x = (camara.x + capa_X)/8;
+		texturaFondoEscenarioCapaTres->aplicarPosicionDePorcion(0,0,&capaArena,0,SDL_FLIP_NONE);
+
+		capaArena.x = (camara.x + capa_X)/5;
+		texturaFondoEscenarioCapaDos->aplicarPosicionDePorcion(0,0,&capaArena,0,SDL_FLIP_NONE);
+
+		//Establezco la primera capa y el jugador
+		texturaFondoEscenarioCapaUno->aplicarPosicionDePorcion(0,0,&camara,0,SDL_FLIP_NONE);
+		texturaJugador->aplicarPosicion(jugador_X-camara.x,jugador_Y-camara.y,0,flip);
 		this->ventana->actualizar();
 	}
 }

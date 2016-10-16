@@ -40,7 +40,7 @@ void TexturaSDL::cargarImagen(string ruta){
 		finalizado = false;
 	} else {
 		//Colocamos el color al que vamos a tomarlo como transparente (tomo el color blanco)
-		SDL_SetColorKey(imagenCargada,SDL_TRUE,SDL_MapRGB(imagenCargada->format,254,254,0));
+		SDL_SetColorKey(imagenCargada,SDL_TRUE,SDL_MapRGB(imagenCargada->format,25,0,22));
 		//Creamos una textura a partir de los pixeles del surface/imagen cargada
 		this->textura = SDL_CreateTextureFromSurface(this->render, imagenCargada);
 		if (this->textura == NULL){
