@@ -301,6 +301,7 @@ void* cicloEscuchaCliente(void* arg) {
 						char* cliente = strtok(NULL, "|");
 						cout<<"le llega un 5: "<<cliente<<endl;
 						servidor->enviarHandshake(socketCliente,cliente);
+						usleep(2000000);
 						enviarMensajesProcesadosA(cliente, servidor, socketCliente);
 					}
 				}
