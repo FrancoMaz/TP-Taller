@@ -35,10 +35,11 @@ const char* XmlParser::getCantidadMaximaDeJugadores() {
 }
 
 string XmlParser::serializarVentana(){
+	this->getTamanioVentana();
 	string ventanaConcatenada = "Ventana[";
-	ventanaConcatenada += this->getTamanioVentana().first;
+	ventanaConcatenada += this->tamanioVentana.first; // ancho
 	ventanaConcatenada += ",";
-	ventanaConcatenada += this->getTamanioVentana().second;
+	ventanaConcatenada += this->tamanioVentana.second; // alto
 	ventanaConcatenada += "]";
 	return ventanaConcatenada;
 }
@@ -56,10 +57,13 @@ string XmlParser::serializarEscenario(){
 	string escenarioConcatenado = "Escenario[";
 	for (list<ImagenDto>::iterator i = this->escenario->begin(); i != this->escenario->end();i++) {
 		escenarioConcatenado += (*i).getPath();
+		//cout << (*i).getPath() << endl;
 		escenarioConcatenado += ",";
 		escenarioConcatenado += (*i).getZIndex();
+		//cout << (*i).getZIndex() << endl;
 		escenarioConcatenado += ",";
 		escenarioConcatenado += (*i).getVelocidad();
+		//cout << (*i).getVelocidad() << endl;
 		escenarioConcatenado += "|";
 	}
 	escenarioConcatenado += "]";

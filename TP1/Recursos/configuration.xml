@@ -49,16 +49,12 @@
 	      <CantFotogramas>4</CantFotogramas>
 	      <Ancho>100</Ancho>
 	      <Alto>50</Alto>
-	      <Ancho>100</Ancho>
-	      <Alto>50</Alto>
 	      <Imagen>1.png</Imagen>
 	      <z-index>3</z-index>
 	    </SpriteSalto> 
 	    <SpriteCaminar>
 	      <Id>2</Id>
 	      <CantFotogramas>4</CantFotogramas>
-	      <Ancho>100</Ancho>
-	      <Alto>50</Alto>
 	      <Ancho>100</Ancho>
 	      <Alto>50</Alto>
 	      <Imagen>2.png</Imagen>

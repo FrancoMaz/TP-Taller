@@ -51,9 +51,9 @@ void Servidor::enviarHandshake(int socket, char* cliente){
 	list<SetDeSpritesDto>* setDeSprites;
 	pair<const char*, const char*> ventana;
 	string handshake = this->parser->serializarEscenario();
+	cout << "Escenario serializado: " << handshake << endl;
 	handshake += this->parser->serializarSetDeSprites();
 	handshake += this->parser->serializarVentana();
-	//cout<<handshake<<endl;
 	Mensaje* mensajeHandShake = new Mensaje("servidor",cliente,handshake);
 	cout<<"handshake: "<<mensajeHandShake->getTexto()<<endl;
 	this->crearMensaje(*mensajeHandShake);
