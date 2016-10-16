@@ -28,6 +28,7 @@ Servidor::Servidor(char* nombreArchivoDeUsuarios, int puerto, Logger* logger) {
 	/*---- Bind the address struct to the socket ----*/
 	bind(this->welcomeSocket, (struct sockaddr *) &serverAddr, sizeof(serverAddr));
 	this->datosUsuarios = new list<Datos>();
+	this->jugadores = new vector<Jugador>();
 	this->listaMensajesProcesados = new list<MensajesProcesados>();
 	stringstream ss;
 	ss << puerto;
@@ -59,7 +60,9 @@ void Servidor::guardarDatosDeUsuarios() {
 				}
 				nroItem++;
 			}
-			mensajesProcesados.jugador = new Jugador(datosCapturados.nombre);
+			Jugador jugador = new Jugador(datosCapturados.nombre);
+			//mensajesProcesados.jugador = jugador;
+			jugadores->push_back(jugador);
 			queue<Mensaje>* colaMensajes = new queue<Mensaje>;
 			mensajesProcesados.mensajes = colaMensajes;
 			datosUsuarios->push_back(datosCapturados);

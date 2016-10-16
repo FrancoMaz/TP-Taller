@@ -27,6 +27,7 @@ private:
 	bool saltar;
 	double angulo;
 	string spriteAEjecutar;
+	bool conectado = false;
 
 public:
 	Jugador(pair<int,int> posicionInicial);

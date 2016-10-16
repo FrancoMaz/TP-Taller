@@ -57,6 +57,7 @@ private:
 		queue<Mensaje>* mensajes;
 	};
 	list<Datos>* datosUsuarios;
+	vector<Jugador>* jugadores;
 	list<MensajesProcesados>* listaMensajesProcesados;
 
 public:
