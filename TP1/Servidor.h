@@ -58,6 +58,10 @@ private:
 	};
 	list<Datos>* datosUsuarios;
 	list<MensajesProcesados>* listaMensajesProcesados;
+	struct ParametrosServidor {
+		Mensaje mensajeAProcesar;
+		Servidor* servidor;
+	};
 
 public:
 	Servidor();
@@ -91,6 +95,9 @@ public:
 	string concatenarMensajes(queue<Mensaje>* colaDeMensajes);
 	void procesarMensajes();
 	void restarCantidadClientesConectados();
+	static void* actualizarPosiciones(void *arg);
+	list<MensajesProcesados>* getListaMensajesProcesados();
+	void actualizarPosicionesSalto(Mensaje mensajeAProcesar);
 };
 
 #endif /* TP1_SERVIDOR_H_ */

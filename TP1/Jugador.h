@@ -15,7 +15,9 @@
 #include "VentanaSDL.h"
 #include "TexturaSDL.h"
 
-#define velocidad 5
+#define velocidad 2
+#define PI 3.14159265
+#define VELMAX 10
 
 using namespace std;
 
@@ -37,6 +39,7 @@ public:
 	string getStringJugador();
 	string getNombre();
 	string getSpriteAEjecutar();
+	bool salto();
 
 };
 

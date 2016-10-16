@@ -7,9 +7,6 @@
 
 #include "Jugador.h"
 
-#define PI 3.14159265
-#define VELMAX 20
-
 Jugador::Jugador(pair<int,int> posicionInicial) {
 	posicion.first = posicionInicial.first;
 	posicion.second = posicionInicial.second;
@@ -34,7 +31,15 @@ Jugador::~Jugador() {
 
 void Jugador::actualizarPosicion(SDL_Keycode tecla, bool sePresionoTecla)
 {
-	velocidades.first = 0;
+	if (velocidades.first > VELMAX)
+	{
+		velocidades.first = VELMAX;
+	}
+	else if (velocidades.first < -VELMAX)
+	{
+		velocidades.first = -VELMAX;
+	}
+
 	if (tecla == SDLK_RIGHT && sePresionoTecla)
 	{
 		velocidades.first += velocidad;
@@ -82,6 +87,8 @@ void Jugador::actualizarPosicion(SDL_Keycode tecla, bool sePresionoTecla)
 
 	posicion.first += velocidades.first;
 	posicion.second += velocidades.second;
+
+
 }
 
 string Jugador::getStringJugador()
@@ -97,4 +104,9 @@ string Jugador::getNombre()
 string Jugador::getSpriteAEjecutar()
 {
 	return this->spriteAEjecutar;
+}
+
+bool Jugador::salto()
+{
+	return this->saltar;
 }
