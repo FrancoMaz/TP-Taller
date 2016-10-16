@@ -46,24 +46,18 @@ void Servidor::guardarDatosDeUsuarios() {
 	if (myfile.is_open()) {
 		while (getline(myfile, linea)) {
 			Datos datosCapturados;
-			MensajesProcesados mensajesProcesados;
 			nroItem = 0;
 			istringstream lineaActual(linea);
 				while (getline(lineaActual, csvItem, ',')) {
 				if (nroItem == 0) {
 					datosCapturados.nombre = csvItem;
-					mensajesProcesados.destinatario = csvItem;
 				}
 				if (nroItem == 1) {
 					datosCapturados.contrasenia = csvItem;
 				}
 				nroItem++;
 			}
-			mensajesProcesados.jugador = new Jugador(datosCapturados.nombre);
-			queue<Mensaje>* colaMensajes = new queue<Mensaje>;
-			mensajesProcesados.mensajes = colaMensajes;
 			datosUsuarios->push_back(datosCapturados);
-			listaMensajesProcesados->push_back(mensajesProcesados);
 		}
 
 		myfile.close();
@@ -86,6 +80,12 @@ void Servidor::autenticar(string nombre, string contrasenia, list<string>& usuar
 				&& (strcmp(usuario.contrasenia.c_str(), contrasenia.c_str())
 						== 0)) {
 			autenticacionOK = true;
+			MensajesProcesados mensajesProcesados;
+			mensajesProcesados.destinatario = usuario.nombre;
+			mensajesProcesados.jugador = new Jugador(usuario.nombre);
+			queue<Mensaje>* colaMensajes = new queue<Mensaje>;
+			mensajesProcesados.mensajes = colaMensajes;
+			listaMensajesProcesados->push_back(mensajesProcesados);
 		} else {
 			usuarios.push_back(usuario.nombre);
 		}
@@ -115,7 +115,6 @@ void Servidor::crearMensaje(Mensaje mensaje) {
 void Servidor::procesarMensajes() {
 
 	if (!colaMensajesNoProcesados.empty()) {
-		cout << "procesando" << endl;
 		pthread_mutex_lock(&mutexColaNoProcesados);
 		Mensaje mensajeAProcesar = colaMensajesNoProcesados.front();
 		colaMensajesNoProcesados.pop();
@@ -328,7 +327,7 @@ string Servidor::concatenarMensajes(queue<Mensaje>* colaDeMensajes) {
 		mensajesConcatenados += mensaje.getRemitente();
 		mensajesConcatenados += "|";
 		mensajesConcatenados += mensaje.getTexto();
-		mensajesConcatenados += "#";
+		//mensajesConcatenados += "#";
 	}
 	string lala = mensajesConcatenados.substr(0, mensajesConcatenados.length() -1);
 	lala += "@";

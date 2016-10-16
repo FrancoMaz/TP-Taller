@@ -38,30 +38,34 @@ void Jugador::actualizarPosicion(SDL_Keycode tecla, bool sePresionoTecla)
 	if (tecla == SDLK_RIGHT && sePresionoTecla)
 	{
 		velocidades.first += velocidad;
-		spriteAEjecutar = "Jugador Corriendo Derecha";
+		spriteAEjecutar = "Jugador_corriendo";
+		condicionSprite = "Normal";
 	}
 	if (tecla == SDLK_LEFT && sePresionoTecla)
 	{
 		velocidades.first -= velocidad;
-		spriteAEjecutar = "Jugador Corriendo Izquierda";
+		spriteAEjecutar = "Jugador_corriendo";
+		condicionSprite = "Espejado";
 	}
 	if (tecla == SDLK_UP && sePresionoTecla)
 	{
 		if(angulo == 0)
 		{
 			saltar = true;
-			spriteAEjecutar = "Jugador Saltando";
+			//spriteAEjecutar = "Jugador Saltando";
 		}
 	}
 	if(tecla == SDLK_RIGHT && !sePresionoTecla)
 	{
 		velocidades.first -= velocidad;
-		spriteAEjecutar = "Jugador Derecha";
+		spriteAEjecutar = "Jugador";
+		condicionSprite = "Normal";
 	}
 	if(tecla == SDLK_LEFT && !sePresionoTecla)
 	{
 		velocidades.first += velocidad;
-		spriteAEjecutar = "Jugador Izquierda";
+		spriteAEjecutar = "Jugador";
+		condicionSprite = "Espejado";
 	}
 
 	if(saltar)
@@ -82,7 +86,7 @@ void Jugador::actualizarPosicion(SDL_Keycode tecla, bool sePresionoTecla)
 
 string Jugador::getStringJugador()
 {
-	return (nombre + "|" + to_string(posicion.first) + "|" + to_string(posicion.second) + "|" + spriteAEjecutar + "#");
+	return (nombre + "|" + to_string(posicion.first) + "|" + to_string(posicion.second) + "|" + spriteAEjecutar + "|" + condicionSprite + "#");
 }
 
 string Jugador::getNombre()
