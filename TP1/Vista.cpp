@@ -413,12 +413,36 @@ void Vista::cargarEscenario(){
 		}
 
 
-		//Establezco el movimiento de las nubes
+		//Establezco el movimiento de la capa de las nubes
+		capaNubes.y = camara.y;
 		velocidad_nubes = velocidad_nubes - 0.2;
 		capaNubes.x = -velocidad_nubes;
-		capaNubes.y = camara.y;
 
-		texturaFondoEscenarioCapaCuatro->aplicarPosicionDePorcion(0,0,&capaNubes,0,SDL_FLIP_NONE);
+		/* Paralaje infinito de nubes */
+		//Si el extremo derehco del rectángulo llega al final de la textura de la capa
+		if((capaNubes.x + ANCHO_VENTANA) > texturaFondoEscenarioCapaCuatro->getAncho()){
+			//Creo una posición auxiliar para no perder el valor de capaNubes.x
+			int posicionAuxiliar = 0;
+			//Renderizo la porción derecha de la textura y la posiciono en x=0
+			capaNubes.w = texturaFondoEscenarioCapaCuatro->getAncho() - capaNubes.x;
+			texturaFondoEscenarioCapaCuatro->aplicarPosicionDePorcion(0,0,&capaNubes,0,SDL_FLIP_NONE);
+			posicionAuxiliar = capaNubes.x;
+
+			//Renderizo la porción izquierda de la textura, y la posiciono a continuación de la textura renderizada arriba
+			capaNubes.w = ANCHO_VENTANA - (texturaFondoEscenarioCapaCuatro->getAncho() - capaNubes.x);
+			capaNubes.x = 0;
+			texturaFondoEscenarioCapaCuatro->aplicarPosicionDePorcion((ANCHO_VENTANA - capaNubes.w),0,&capaNubes,0,SDL_FLIP_NONE);
+			capaNubes.x = posicionAuxiliar;
+
+			//Si el rectángulo se fue por completo de la textura, reseteo todos los valores
+			if (capaNubes.x > texturaFondoEscenarioCapaCuatro->getAncho()){
+				capaNubes.x = 0;
+				velocidad_nubes = 0;
+				capaNubes.w = ANCHO_VENTANA;
+			}
+		} else {
+			texturaFondoEscenarioCapaCuatro->aplicarPosicionDePorcion(0,0,&capaNubes,0,SDL_FLIP_NONE);
+		}
 
 		//Establezco la capa arena
 		capaArena.y = camara.y;
