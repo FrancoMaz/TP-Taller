@@ -31,15 +31,17 @@ ImagenDto* Cliente::deserializarImagen(string imagenCadena){
 	const char *nombre, *zIndex, *velocidad;
 	char str[imagenCadena.length()];
 	strcpy(str, imagenCadena.c_str());
-	char* campo = strtok(str, ",");
-	nombre = campo;
-	campo = strtok(NULL,",");
-	zIndex = campo;
-	campo = strtok(NULL, ">"); //va a tomar el ultimo campo no importa el delimitador porque va a ser el final.
-	velocidad = campo;
-	ImagenDto *imagenReconstruida = new ImagenDto(nombre,zIndex,velocidad);
-
-	return imagenReconstruida;
+	if(str != NULL){
+		char* campo = strtok(str, ",");
+		nombre = campo;
+		campo = strtok(NULL,",");
+		zIndex = campo;
+		campo = strtok(NULL, "|"); //va a tomar el ultimo campo no importa el delimitador porque va a ser el final.
+		velocidad = campo;
+		ImagenDto *imagenReconstruida = new ImagenDto(nombre,zIndex,velocidad);
+		return imagenReconstruida;
+	}
+	return NULL;
 }
 
 SetDeSpritesDto* Cliente::deserializarSprite(string spriteCadena){
@@ -49,7 +51,9 @@ SetDeSpritesDto* Cliente::deserializarSprite(string spriteCadena){
 	char str[spriteCadena.length()];
 	strcpy(str, spriteCadena.c_str());
 	list<SpriteDto*> spritesAccion; //= new list<SpriteDto*>();
+	cout<<"setSprite: "<<str<<endl;
 	char* campo = strtok(str, ";");
+	carpeta = campo;
 	//El separador entre las distintas acciones en un sprite son los ";",
 	//y el separador para los campos que estan dentro de cada accion es la ","
 	campo = strtok(NULL,",");
@@ -107,15 +111,18 @@ void Cliente::deserializarHandshake(string handshake){
 
 	char str[handshake.length()];
 	strcpy(str, handshake.c_str());
-	char* campo = strtok(str, "[");
+	char* campo = strtok(str, "|");
+	campo = strtok(NULL, "[");
     const char *escenario,*sprites,*ventana;
     escenario = "Escenario";
-    sprites = "Sprites";
+    sprites = "SetSprites";
     ventana = "Ventana";
-
     structHandshake handshakeReconstruido;
+
     while (campo != NULL) {
+    	cout<<"Esta entrando al deserializarHandshake"<<endl;
 		if (strcmp(campo,"Escenario") == 0){
+			cout<<"entra aca porque es un escenario"<<endl;
 			//recupero la imagen1
 	   		campo = strtok(NULL,"|");
 	   		handshakeReconstruido.imagen1 = deserializarImagen(campo);
@@ -123,18 +130,18 @@ void Cliente::deserializarHandshake(string handshake){
 	   		campo = strtok(NULL,"]");
 	   		handshakeReconstruido.imagen2 = deserializarImagen(campo);
 	   	}
-	   	if(strcmp(campo,"Sprites") == 0){
+	   	if(strcmp(campo,sprites) == 0){
 	   		//recupero sprite1
 	   		campo = strtok(NULL,"|");
-	   		handshakeReconstruido.sprite1 = deserializarSprite(campo);
+	   		handshakeReconstruido.setSprite1 = deserializarSprite(campo);
 	   		//recupero sprite2
 	   		campo = strtok(NULL,"|");
-	   		handshakeReconstruido.sprite2 = deserializarSprite(campo);
+	   		handshakeReconstruido.setSprite2 = deserializarSprite(campo);
 	   		//recupero sprite3
 	   		campo = strtok(NULL,"]");
-	   		handshakeReconstruido.sprite3 = deserializarSprite(campo);
+	   		handshakeReconstruido.setSprite3 = deserializarSprite(campo);
 	   	}
-	   	if(strcmp(campo,"Ventana") == 0){
+	   	if(strcmp(campo,ventana) == 0){
 	   		//obtengo ancho
 	   		campo = strtok(NULL,",");
 	   		handshakeReconstruido.ancho = campo;
@@ -145,11 +152,52 @@ void Cliente::deserializarHandshake(string handshake){
 	   	campo = strtok(NULL,"[");
 	}
 
-    this->verificarBiblioteca(handshakeReconstruido);
+   if(this->verificarBiblioteca(handshakeReconstruido)){
+	   cout<<"Usted tiene todas las imagenes necesarias"<<endl;
+   }
+   else{cout<< "se cargan las imagenes por defecto"<<endl;}
+}
+
+void Cliente::recorrerSprites(list<SpriteDto*> sprites, SpriteDto *sprite1,SpriteDto *sprite2,SpriteDto *sprite3){
+
+	for (list<SpriteDto*>::iterator spriteActual = sprites.begin(); spriteActual != sprites.end();spriteActual++) {
+		sprite1 = *spriteActual;
+		spriteActual++;
+		sprite2 = *spriteActual;
+		spriteActual++;
+		sprite3 = *spriteActual;
+		}
+
 }
 
 bool Cliente::verificarBiblioteca(structHandshake handshake) {
 
+	SpriteDto* sprite1, *sprite2, *sprite3;
+	list<SpriteDto*> spritesAccion;
+	string verificacion = "";
+	cout<<"Verificacion de biblioteca de imagenes"<<endl;
+	cout<<"Se listan las imagenes de la biblioteca :"<<endl;
+
+	cout<<"-"<<handshake.imagen1->getPath()<<endl;
+	cout<<"-"<<handshake.imagen2->getPath()<<endl;
+	recorrerSprites(handshake.setSprite1->getSprites(),sprite1,sprite2,sprite3);
+	cout<<"-"<<sprite1->getId()<<endl;
+	cout<<"-"<<sprite2->getId()<<endl;
+	cout<<"-"<<sprite3->getId()<<endl;
+	recorrerSprites(handshake.setSprite2->getSprites(),sprite1,sprite2,sprite3);
+	cout<<"-"<<sprite1->getId()<<endl;
+	cout<<"-"<<sprite2->getId()<<endl;
+	cout<<"-"<<sprite3->getId()<<endl;
+	recorrerSprites(handshake.setSprite3->getSprites(),sprite1,sprite2,sprite3);
+	cout<<"-"<<sprite1->getId()<<endl;
+	cout<<"-"<<sprite2->getId()<<endl;
+	cout<<"-"<<sprite3->getId()<<endl;
+	cout<<"Tiene todas las imagenes?? S/N"<<endl;
+	cin>>verificacion;
+	if(verificacion == "S" or verificacion == "s"){
+		return true;
+	}
+	return false;
 }
 
 void Cliente::recibirHandshake(){
@@ -175,6 +223,7 @@ void Cliente::recibirHandshake(){
                memset(colaMensaje, '\0', strlen(colaMensaje));
        }
        cout<<"handshake recibido: "<<datosRecibidos<<endl;
+       this->deserializarHandshake(datosRecibidos);
 }
 
 void Cliente::mostrarMenuYProcesarOpcion(string handshake) {

@@ -48,9 +48,9 @@ private:
 	struct structHandshake{
 		ImagenDto* imagen1;
 		ImagenDto* imagen2;
-		SetDeSpritesDto* sprite1;
-		SetDeSpritesDto* sprite2;
-		SetDeSpritesDto* sprite3;
+		SetDeSpritesDto* setSprite1;
+		SetDeSpritesDto* setSprite2;
+		SetDeSpritesDto* setSprite3;
 		char* alto;
 		char* ancho;
 	};
@@ -62,6 +62,7 @@ public:
 	ImagenDto* deserializarImagen(string imagenCadena);
 	SetDeSpritesDto* deserializarSprite(string spriteCadena);
 	void deserializarHandshake(string handshake);
+	void recorrerSprites(list<SpriteDto*> sprites, SpriteDto* sprite1,SpriteDto* sprite2,SpriteDto* sprite3);
 	void recibirHandshake();
 	void mostrarMenuYProcesarOpcion(string handshake);
 	void elegirOpcionDelMenu(int opcion);
