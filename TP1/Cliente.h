@@ -26,6 +26,9 @@
 #include "Mensaje.h"
 #include <queue>
 #include "Vista.h"
+#include "ImagenDto.h"
+#include "SpriteDto.h"
+#include "SetDeSpritesDto.h"
 #define BUFFER_MAX_SIZE 200
 using namespace std;
 
@@ -44,14 +47,28 @@ private:
 	list<string> clientesDisponibles;
 	pthread_mutex_t mutexSocket;
 	bool terminoComunicacion;
+	struct structHandshake{
+			ImagenDto* imagen1;
+			ImagenDto* imagen2;
+			SetDeSpritesDto* setSprite1;
+			SetDeSpritesDto* setSprite2;
+			SetDeSpritesDto* setSprite3;
+			char* alto;
+			char* ancho;
+	};
 
 public:
 	Cliente();
 	Cliente(string ip, int puerto);
 	virtual ~Cliente();
+	ImagenDto* deserializarImagen(char* campo);
+	SetDeSpritesDto* deserializarSprite(char* campo);
+	void deserializarHandshake(string handshake);
+	void recorrerSprites(list<SpriteDto*> sprites, list<const char*> *archivos);
+	void recibirHandshake();
 	void mostrarMenuYProcesarOpcion();
 	void elegirOpcionDelMenu(int opcion);
-	void conectar(string nombre, string contrasenia);
+	bool conectar(string nombre, string contrasenia);
 	void desconectar();
 	void salir();
 	void enviar(string mensaje, string destinatario);
@@ -82,6 +99,8 @@ public:
 
 	//Comprueba si se inicio el juego
 	bool checkearInicioJuego(Vista* vista);
+	bool verificarBiblioteca(structHandshake handshake);
+	bool verificarExistencia(const char* archivo);
 };
 
 #endif /* TP1_CLIENTE_H_ */

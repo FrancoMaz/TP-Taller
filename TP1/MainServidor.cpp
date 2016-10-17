@@ -140,9 +140,9 @@ void* procesar(void* arg) {
 	char* usuario = parametros->usuario;
 	int socket = parametros->socketCliente;
 
-	pthread_mutex_lock(&servidor->mutexListaProcesados);
+	//pthread_mutex_lock(&servidor->mutexListaProcesados);
 	string mensajesProcesados = servidor->traerMensajesProcesados(usuario);
-	pthread_mutex_unlock(&servidor->mutexListaProcesados);
+	//pthread_mutex_unlock(&servidor->mutexListaProcesados);
 
 	int largo = strlen(mensajesProcesados.c_str());
 	std::ostringstream oss;
@@ -160,7 +160,9 @@ void* procesar(void* arg) {
 				ok = send(socket, buffer, strlen(buffer), 0);
 			}while (ok == 0 );
 			*/
+			pthread_mutex_lock(&servidor->mutexSocket);
 			ok = send(socket, buffer, strlen(buffer), 0);
+			pthread_mutex_unlock(&servidor->mutexSocket);
 			if (ok == 0){
 				servidor->guardarLog("Se cerró la conexión con el cliente " + string(usuario) + string(".\n"),DEBUG);
 			}
@@ -174,7 +176,9 @@ void* procesar(void* arg) {
 	} else {
 		strcpy(buffer, mensajesProcesados.c_str());
 	}
-	ok = send(socket,buffer,strlen(buffer),0);
+	//pthread_mutex_lock(&servidor->mutexSocket);
+	ok = send(socket, buffer, strlen(buffer), 0);
+	//pthread_mutex_unlock(&servidor->mutexSocket);
 	if (ok == 0){
 		servidor->guardarLog("Se cerró la conexión con el cliente " + string(usuario) + string(".\n"),DEBUG);
 	}
@@ -228,12 +232,16 @@ void* cicloEscuchaCliente(void* arg) {
 	while (conectado and servidor->escuchando) {
 		//en este loop se van a gestionar los send y receive del cliente. aca se va a distinguir que es lo que quiere hacer y actuar segun lo que quiera el cliente.
 		string datosRecibidos;
+		//pthread_mutex_lock(&servidor->mutexSocket);
 		int largoRequest = recv(socketCliente, bufferRecibido, BUFFER_MAX_SIZE,0); //recibo por primera vez
+		//pthread_mutex_unlock(&servidor->mutexSocket);
 		if (largoRequest > 0) {
 			datosRecibidos.append(bufferRecibido, largoRequest);
 			while (largoRequest >= BUFFER_MAX_SIZE and !stringTerminaCon(datosRecibidos, "@")) {
 				//mientras haya cosas que leer, sigo recibiendo.
+				//pthread_mutex_lock(&servidor->mutexSocket);
 				largoRequest = recv(socketCliente, bufferRecibido,BUFFER_MAX_SIZE, 0);
+				//pthread_mutex_unlock(&servidor->mutexSocket);
 				datosRecibidos.append(bufferRecibido, largoRequest);
 			}
 			if (largoRequest < 0) {
@@ -312,6 +320,16 @@ void* cicloEscuchaCliente(void* arg) {
 						}
 						strcpy(comenzoJuego,comenzo.c_str());
 						send(socketCliente,comenzoJuego,strlen(comenzoJuego),0);
+					}
+					case 6:{//6 es enviarHandShake
+						cout << "Le llega un 6" << endl;
+						char* cliente = strtok(NULL, "|");
+						if (cliente != NULL)
+						{
+							servidor->enviarHandshake(socketCliente,cliente);
+							usleep(1000000);
+							enviarMensajesProcesadosA(cliente, servidor, socketCliente);
+						}
 					}
 				}
 			}

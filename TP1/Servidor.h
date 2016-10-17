@@ -24,6 +24,7 @@
 #include "Logger.h"
 #include "Mensaje.h"
 #include "Jugador.h"
+#include "XmlParser.h"
 #define MAX_CANT_CLIENTES 6
 #define BUFFER_MAX_SIZE 200
 const int INFO = 1;
@@ -63,6 +64,7 @@ private:
 		Mensaje mensajeAProcesar;
 		Servidor* servidor;
 	};
+	XmlParser* parser;
 
 public:
 	Servidor();
@@ -109,7 +111,9 @@ public:
 
 	//obtiene el estado inicial de los jugadores serializado para enviarlo via socket
 	string getEstadoInicialSerializado();
-
+	void guardarDatosDeConfiguracion();
+	void enviarHandshake(int socket,char* cliente);
+	pthread_mutex_t mutexSocket;
 	int cantJugadoresConectadosMax = 2;
 };
 

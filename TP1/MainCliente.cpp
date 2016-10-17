@@ -70,8 +70,8 @@ void procesarUltimosMensajes(string mensajes)
 			cout << "Posicion x: " << x << endl;
 			cout << "Posicion y: " << y << endl;
 			cout << "Sprite a ejecutar: " << spriteAEjecutar << endl;
-			cout << "Condicion: " << condicion << endl;
-			*/
+			cout << "Condicion: " << condicion << endl;*/
+
 			vista->actualizarJugador(string(remitente),atoi((string(x).c_str())),atoi(string(y).c_str()));
 		}
 	}
@@ -125,12 +125,13 @@ void* cicloConexion(void* arg) {
 
 	bool termino = false;
 	bool datosIncorrectos = false;
-	while ((cliente->getClientesDisponibles().empty())&&(!vista->ventanaCerrada())) {
+	bool conexion = false;
+	while ((!conexion)&&(!vista->ventanaCerrada())) {
 		datosCliente = vista->cargarTerceraPantalla(datosIncorrectos);
 		if((datosCliente.nombre != " ")&&(datosCliente.contrasenia != " ")){
-			cliente->conectar(datosCliente.nombre, datosCliente.contrasenia);
+			conexion = cliente->conectar(datosCliente.nombre, datosCliente.contrasenia);
 		}
-		datosIncorrectos = true;
+		//datosIncorrectos = true;
 	}
 
 	if (!vista->ventanaCerrada()) {
@@ -140,10 +141,9 @@ void* cicloConexion(void* arg) {
 		bool inicio;
 		do
 		{
-			usleep(1000000);
+			usleep(2000000);
 			inicio = cliente->checkearInicioJuego(vista);
 		}while (!inicio);
-
 		pthread_create(&threadEnviarEventos, NULL, &enviarEventos, cliente);
 		pthread_detach(threadEnviarEventos);
 		pthread_create(&threadRecibirPosicionJugadores, NULL, &recibirPosicionJugadores,cliente);

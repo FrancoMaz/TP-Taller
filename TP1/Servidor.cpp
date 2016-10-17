@@ -35,9 +35,29 @@ Servidor::Servidor(char* nombreArchivoDeUsuarios, int puerto, Logger* logger) {
 	mensaje = "Se creó correctamente el servidor en el puerto: " + ss.str() + ", ip: 192.168.1.10" + "\n";
 	this->guardarLog(mensaje, DEBUG);
 	this->guardarDatosDeUsuarios();
+	this->guardarDatosDeConfiguracion();
 }
 
 Servidor::~Servidor() {
+}
+
+void Servidor::guardarDatosDeConfiguracion() {
+   string path;
+   cout << "Ingrese el path del archivo de configuracion" << endl;
+   cin >> path;
+   this->parser = new XmlParser(path);
+}
+
+void Servidor::enviarHandshake(int socket, char* cliente){
+	list<ImagenDto>* escenario;
+	list<SetDeSpritesDto>* setDeSprites;
+	pair<const char*, const char*> ventana;
+	string handshake = this->parser->serializarEscenario();
+	handshake += this->parser->serializarSetDeSprites();
+	handshake += this->parser->serializarVentana();
+	handshake += "#";
+	Mensaje* mensajeHandShake = new Mensaje("servidor",cliente,handshake);
+	this->crearMensaje(*mensajeHandShake);
 }
 
 void Servidor::guardarDatosDeUsuarios() {
@@ -214,7 +234,18 @@ void Servidor::procesarMensajes() {
 		Mensaje mensajeAProcesar = colaMensajesNoProcesados.front();
 		colaMensajesNoProcesados.pop();
 		pthread_mutex_unlock(&mutexColaNoProcesados);
-		if (mensajeAProcesar.getTexto() == "Tecla Arriba")
+		if (mensajeAProcesar.getRemitente() == "servidor")
+		{
+			for (list<MensajesProcesados>::iterator usuarioActual = listaMensajesProcesados->begin();
+					usuarioActual != listaMensajesProcesados->end();usuarioActual++) {
+					MensajesProcesados listaMensajes;
+					listaMensajes = *usuarioActual;
+					if (listaMensajes.destinatario == mensajeAProcesar.getDestinatario()) {
+						listaMensajes.mensajes->push(mensajeAProcesar);
+					}
+			}
+		}
+		else if (mensajeAProcesar.getTexto() == "Tecla Arriba")
 		{
 			/*ParametrosServidor parametrosServidor;
 			parametrosServidor.mensajeAProcesar = mensajeAProcesar;
@@ -294,6 +325,7 @@ pair<int,string> Servidor::aceptarConexion() {
 
 	this->addr_size = sizeof serverStorage;
 	int socketCliente = accept(welcomeSocket,(struct sockaddr *) &this->serverStorage, &this->addr_size);
+	//pthread_mutex_lock(&mutexSocket);
 	int ok = recv(socketCliente, datosRecibidos, BUFFER_MAX_SIZE, 0);
 	if (ok < 0){
 		this->guardarLog("No se pudieron recibir los datos para la conexion.",INFO);
@@ -338,6 +370,7 @@ pair<int,string> Servidor::aceptarConexion() {
 		this->guardarLog(mensaje, DEBUG);
 		ok = send(socketCliente, buffer, BUFFER_MAX_SIZE, 0);
 	}
+	//pthread_mutex_unlock(&mutexSocket);
 	if (ok < 0){
 		this->guardarLog("No se pudieron enviar los datos de la lista a traves de la conexion del cliente " + nombre + ".",INFO);
 		this->guardarLog("ERROR: Problema con el send del socket.",DEBUG);
