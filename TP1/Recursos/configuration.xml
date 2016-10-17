@@ -18,7 +18,7 @@
 	  <SetRojo>
 	    <Carpeta>Rojo</Carpeta>
 	    <SpriteSalto>
-	      <Id>1</Id>
+	      <Id>saltoRojo.png</Id>
 	      <CantFotogramas>4</CantFotogramas>
 	      <Ancho>100</Ancho>
 	      <Alto>50</Alto>
@@ -26,7 +26,7 @@
 	      <z-index>3</z-index>
 	    </SpriteSalto> 
 	    <SpriteCaminar>
-	      <Id>2</Id>
+	      <Id>caminarRojo.png</Id>
 	      <CantFotogramas>4</CantFotogramas>
 	      <Ancho>100</Ancho>
 	      <Alto>50</Alto>
@@ -34,7 +34,7 @@
 	      <z-index>3</z-index>
 	    </SpriteCaminar>
 	    <SpriteAgacharse>
-	      <Id>3</Id>
+	      <Id>agacharseRojo.png</Id>
 	      <CantFotogramas>4</CantFotogramas>
 	      <Ancho>100</Ancho>
 	      <Alto>50</Alto>
@@ -45,7 +45,7 @@
 	  <SetVerde>
 	    <Carpeta>Verde</Carpeta>
 	    <SpriteSalto>
-	      <Id>1</Id>
+	      <Id>saltoVerde.png</Id>
 	      <CantFotogramas>4</CantFotogramas>
 	      <Ancho>100</Ancho>
 	      <Alto>50</Alto>
@@ -53,7 +53,7 @@
 	      <z-index>3</z-index>
 	    </SpriteSalto> 
 	    <SpriteCaminar>
-	      <Id>2</Id>
+	      <Id>caminarVerde.png</Id>
 	      <CantFotogramas>4</CantFotogramas>
 	      <Ancho>100</Ancho>
 	      <Alto>50</Alto>
@@ -61,7 +61,7 @@
 	      <z-index>3</z-index>
 	    </SpriteCaminar>
 	    <SpriteAgacharse>
-	      <Id>3</Id>
+	      <Id>agacharseVerde.png</Id>
 	      <CantFotogramas>4</CantFotogramas>
 	      <Ancho>100</Ancho>
 	      <Alto>50</Alto>
@@ -72,7 +72,7 @@
 	  <SetAmarillo>
 	    <Carpeta>Amarillo</Carpeta>
 	    <SpriteSalto>
-	      <Id>1</Id>
+	      <Id>saltoAmarillo.png</Id>
 	      <CantFotogramas>4</CantFotogramas>
 	      <Ancho>100</Ancho>
 	      <Alto>50</Alto>
@@ -80,7 +80,7 @@
 	      <z-index>3</z-index>
 	    </SpriteSalto> 
 	    <SpriteCaminar>
-	      <Id>2</Id>
+	      <Id>caminarAmarillo.png</Id>
 	      <CantFotogramas>4</CantFotogramas>
 	      <Ancho>100</Ancho>
 	      <Alto>50</Alto>
@@ -88,7 +88,7 @@
 	      <z-index>3</z-index>
 	    </SpriteCaminar>
 	    <SpriteAgacharse>
-	      <Id>3</Id>
+	      <Id>agacharseAmarillo.png</Id>
 	      <CantFotogramas>4</CantFotogramas>
 	      <Ancho>100</Ancho>
 	      <Alto>50</Alto>

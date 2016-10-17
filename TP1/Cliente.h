@@ -59,10 +59,10 @@ public:
 	Cliente();
 	Cliente(string ip, int puerto);
 	virtual ~Cliente();
-	ImagenDto* deserializarImagen(string imagenCadena);
-	SetDeSpritesDto* deserializarSprite(string spriteCadena);
+	ImagenDto* deserializarImagen(char* campo);
+	SetDeSpritesDto* deserializarSprite(char* campo);
 	void deserializarHandshake(string handshake);
-	void recorrerSprites(list<SpriteDto*> sprites, SpriteDto* sprite1,SpriteDto* sprite2,SpriteDto* sprite3);
+	void recorrerSprites(list<SpriteDto*> sprites);
 	void recibirHandshake();
 	void mostrarMenuYProcesarOpcion(string handshake);
 	void elegirOpcionDelMenu(int opcion);

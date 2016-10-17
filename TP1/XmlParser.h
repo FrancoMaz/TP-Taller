@@ -39,6 +39,7 @@ public:
 	list<SetDeSpritesDto*> getSprites();
 	string serializarSprites(list<SpriteDto*> sprites);
 	string serializarSetDeSprites();
+	void mostrarSprites(SpriteDto* sprite);
 	virtual ~XmlParser();
 };
 
