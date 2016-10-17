@@ -70,7 +70,7 @@ void Servidor::guardarDatosDeUsuarios() {
 			MensajesProcesados mensajesProcesados;
 			nroItem = 0;
 			istringstream lineaActual(linea);
-				while (getline(lineaActual, csvItem, ',')) {
+			while (getline(lineaActual, csvItem, ',')) {
 				if (nroItem == 0) {
 					datosCapturados.nombre = csvItem;
 					mensajesProcesados.destinatario = csvItem;

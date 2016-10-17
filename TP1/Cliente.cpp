@@ -26,6 +26,7 @@ void Cliente::inicializarSocket(){
 	memset(direccionServidor.sin_zero, '\0', sizeof direccionServidor.sin_zero);
 }
 
+//----------------------------METODOS PARA EL HANDSHAKE-------------------------------------
 ImagenDto* Cliente::deserializarImagen(char* campo){
 
 	const char *nombre, *zIndex, *velocidad;
@@ -34,7 +35,6 @@ ImagenDto* Cliente::deserializarImagen(char* campo){
 	zIndex = campo;
 	campo = strtok(NULL, "|"); //va a tomar el ultimo campo no importa el delimitador porque va a ser el final.
 	velocidad = campo;
-	cout<<velocidad<<endl;
 	ImagenDto *imagenReconstruida = new ImagenDto(nombre,zIndex,velocidad);
 	return imagenReconstruida;
 }
@@ -49,12 +49,10 @@ SetDeSpritesDto* Cliente::deserializarSprite(char* campo){
 	//y el separador para los campos que estan dentro de cada accion es la ","
 	campo = strtok(NULL,",");
 	id = campo;
-	cout<<id<<endl;
 	campo = strtok(NULL,",");
 	cantFotogramas = campo;
 	campo = strtok(NULL,",");
 	ancho = campo;
-	cout<<id<<endl;
 	campo = strtok(NULL,",");
 	alto = campo;
 	campo = strtok(NULL,",");
@@ -153,33 +151,35 @@ void Cliente::deserializarHandshake(string handshake){
    else{cout<< "se cargan las imagenes por defecto"<<endl;}
 }
 
-void Cliente::recorrerSprites(list<SpriteDto*> sprites){
+void Cliente::recorrerSprites(list<SpriteDto*> sprites, list<const char*> *archivos){
     SpriteDto* spriteAccion;
 	for (list<SpriteDto*>::iterator spriteActual = sprites.begin(); spriteActual != sprites.end();spriteActual++) {
 		spriteAccion = *spriteActual;
-		cout<<"-"<<spriteAccion->getId()<<endl;
+		archivos->push_back(spriteAccion->getId());
 		}
 }
 
+bool Cliente::verificarExistencia(const char* archivo){
+
+	string recursos = "Recursos/";
+	recursos.append(archivo,strlen(archivo));
+	ifstream infile(recursos.c_str());
+	return infile.good();
+}
+
 bool Cliente::verificarBiblioteca(structHandshake handshake) {
-
-	SpriteDto* sprite1, *sprite2, *sprite3;
-	list<SpriteDto*> spritesAccion;
-	string verificacion = "";
-	cout<<"Verificacion de biblioteca de imagenes"<<endl;
-	cout<<"Se listan las imagenes de la biblioteca:"<<endl;
-
-	cout<<"-"<<handshake.imagen1->getPath()<<endl;
-	cout<<"-"<<handshake.imagen2->getPath()<<endl;
-	recorrerSprites(handshake.setSprite1->getSprites());
-	recorrerSprites(handshake.setSprite2->getSprites());
-	recorrerSprites(handshake.setSprite3->getSprites());
-	cout<<"Tiene todas las imagenes?? S/N"<<endl;
-	cin>>verificacion;
-	if(verificacion == "S" or verificacion == "s"){
-		return true;
+	list<const char*> archivos;
+	archivos.push_back(handshake.imagen1->getPath());
+	archivos.push_back(handshake.imagen2->getPath());
+	recorrerSprites(handshake.setSprite1->getSprites(), &archivos);
+	recorrerSprites(handshake.setSprite2->getSprites(), &archivos);
+	recorrerSprites(handshake.setSprite3->getSprites(), &archivos);
+	for (list<const char*>::iterator archivoActual = archivos.begin(); archivoActual != archivos.end();archivoActual++){
+		const char* nombreArchivo = *archivoActual;
+		if(!verificarExistencia(nombreArchivo)){return false;}
 	}
-	return false;
+	return true;
+
 }
 
 void Cliente::recibirHandshake(){
@@ -207,6 +207,8 @@ void Cliente::recibirHandshake(){
        cout<<"handshake recibido: "<<datosRecibidos<<endl;
        this->deserializarHandshake(datosRecibidos);
 }
+//-------------------------------ACA TERMINAN LOS METODOS PARA EL HANDSHAKE-------------------------------
+
 
 void Cliente::mostrarMenuYProcesarOpcion(string handshake) {
 	bool esValido = false;

@@ -62,7 +62,7 @@ public:
 	ImagenDto* deserializarImagen(char* campo);
 	SetDeSpritesDto* deserializarSprite(char* campo);
 	void deserializarHandshake(string handshake);
-	void recorrerSprites(list<SpriteDto*> sprites);
+	void recorrerSprites(list<SpriteDto*> sprites, list<const char*> *archivos);
 	void recibirHandshake();
 	void mostrarMenuYProcesarOpcion(string handshake);
 	void elegirOpcionDelMenu(int opcion);
@@ -89,6 +89,7 @@ public:
 	bool getTermino();
 	bool stringTerminaCon(std::string const &fullString, std::string const &ending);
 	bool verificarBiblioteca(structHandshake handshake);
+	bool verificarExistencia(const char* archivo);
 };
 
 #endif /* TP1_CLIENTE_H_ */

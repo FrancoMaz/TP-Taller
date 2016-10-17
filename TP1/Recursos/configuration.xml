@@ -3,12 +3,12 @@
 <Configuracion>
 	<Escenario>
 	  <Imagen>
-	    <Archivo>prueba.png</Archivo>
+	    <Archivo>imagen1.png</Archivo>
 	    <z-index>1</z-index>
 	    <Velocidad>5</Velocidad>  
 	  </Imagen>
 	  <Imagen>   
-	    <Archivo>prueba2.png</Archivo>
+	    <Archivo>imagen2.png</Archivo>
 	    <z-index>3</z-index>
 	    <Velocidad>2</Velocidad> 
 	  </Imagen>
@@ -22,7 +22,7 @@
 	      <CantFotogramas>4</CantFotogramas>
 	      <Ancho>100</Ancho>
 	      <Alto>50</Alto>
-	      <Imagen>1.png</Imagen>
+	      <Imagen>Recursos/</Imagen>
 	      <z-index>3</z-index>
 	    </SpriteSalto> 
 	    <SpriteCaminar>
@@ -30,7 +30,7 @@
 	      <CantFotogramas>4</CantFotogramas>
 	      <Ancho>100</Ancho>
 	      <Alto>50</Alto>
-	      <Imagen>2.png</Imagen>
+	      <Imagen>Recursos/</Imagen>
 	      <z-index>3</z-index>
 	    </SpriteCaminar>
 	    <SpriteAgacharse>
@@ -38,7 +38,7 @@
 	      <CantFotogramas>4</CantFotogramas>
 	      <Ancho>100</Ancho>
 	      <Alto>50</Alto>
-	      <Imagen>3.png</Imagen>
+	      <Imagen>Recursos/</Imagen>
 	      <z-index>3</z-index>
 	    </SpriteAgacharse>
 	  </SetRojo>
@@ -49,7 +49,7 @@
 	      <CantFotogramas>4</CantFotogramas>
 	      <Ancho>100</Ancho>
 	      <Alto>50</Alto>
-	      <Imagen>1.png</Imagen>
+	      <Imagen>Recuros/</Imagen>
 	      <z-index>3</z-index>
 	    </SpriteSalto> 
 	    <SpriteCaminar>
@@ -57,7 +57,7 @@
 	      <CantFotogramas>4</CantFotogramas>
 	      <Ancho>100</Ancho>
 	      <Alto>50</Alto>
-	      <Imagen>2.png</Imagen>
+	      <Imagen>Recursos/</Imagen>
 	      <z-index>3</z-index>
 	    </SpriteCaminar>
 	    <SpriteAgacharse>
@@ -65,7 +65,7 @@
 	      <CantFotogramas>4</CantFotogramas>
 	      <Ancho>100</Ancho>
 	      <Alto>50</Alto>
-	      <Imagen>3.png</Imagen>
+	      <Imagen>Recursos/</Imagen>
 	      <z-index>3</z-index>
 	    </SpriteAgacharse>
 	  </SetVerde>
@@ -76,7 +76,7 @@
 	      <CantFotogramas>4</CantFotogramas>
 	      <Ancho>100</Ancho>
 	      <Alto>50</Alto>
-	      <Imagen>1.png</Imagen>
+	      <Imagen>Recursos/</Imagen>
 	      <z-index>3</z-index>
 	    </SpriteSalto> 
 	    <SpriteCaminar>
@@ -84,7 +84,7 @@
 	      <CantFotogramas>4</CantFotogramas>
 	      <Ancho>100</Ancho>
 	      <Alto>50</Alto>
-	      <Imagen>2.png</Imagen>
+	      <Imagen>Recursos/</Imagen>
 	      <z-index>3</z-index>
 	    </SpriteCaminar>
 	    <SpriteAgacharse>
@@ -92,7 +92,7 @@
 	      <CantFotogramas>4</CantFotogramas>
 	      <Ancho>100</Ancho>
 	      <Alto>50</Alto>
-	      <Imagen>3.png</Imagen>
+	      <Imagen>Recursos/</Imagen>
 	      <z-index>3</z-index>
 	    </SpriteAgacharse>
 	  </SetAmarillo>
