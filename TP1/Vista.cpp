@@ -53,10 +53,10 @@ void Vista::cargarArchivos(){
 	textura.push_back(ventana->crearTexto("Recursos/msserif_bold.ttf",13));
 	textura.push_back(ventana->crearBoton("Recursos/Boton_Conectar.png"));
 	textura.push_back(ventana->crearTextura("Recursos/Jugador.png",3));
-	textura.push_back(ventana->crearTextura("Recursos/Fondo_Escenario_capa_1.png",0));
-	textura.push_back(ventana->crearTextura("Recursos/Fondo_Escenario_capa_2.png",0));
-	textura.push_back(ventana->crearTextura("Recursos/Fondo_Escenario_capa_3.png",0));
-	textura.push_back(ventana->crearTextura("Recursos/Fondo_Escenario_capa_4.png",0));
+	textura.push_back(ventana->crearTextura("Recursos/TP2_test/Fondo_Escenario_capa_1_test.png",0));
+	textura.push_back(ventana->crearTextura("Recursos/TP2_test/Fondo_Escenario_capa_2_test.png",0));
+	textura.push_back(ventana->crearTextura("Recursos/TP2_test/Fondo_Escenario_capa_3_test.png",0));
+	textura.push_back(ventana->crearTextura("Recursos/TP2_test/Fondo_Escenario_capa_4_test.png",0));
 
 	//Defino constantes para cada textura (para evitar llamarlos por índices)
 	#define texturaMenuFondo textura[0]

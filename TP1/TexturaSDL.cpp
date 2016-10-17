@@ -147,7 +147,7 @@ void TexturaSDL::aplicarPosicionYTamanio(float x, float y, int ancho, int alto, 
 		rectangulo.h = clip->h;
 		this->frameActual++;
 		if((this->frameActual/8) >= this->spriteClips.size()){
-			this->frameReset();
+			this->frameActual = 0;
 		}
 	}
 
@@ -176,10 +176,6 @@ void TexturaSDL::generarSprite(int frames){
 	} else {
 		this->spriteClips.clear();
 	}
-}
-
-void TexturaSDL::frameReset(){
-	this->frameActual = 0;
 }
 
 void TexturaSDL::cargarImagenNoEncontrada(){

@@ -73,9 +73,6 @@ public:
 	//Genera un sprite con la cantidad de fotogramas (frames) que se le pasa por argumento
 	void generarSprite(int frames);
 
-	//Resetea el fotograma del sprite a cero
-	void frameReset();
-
 	//Obtengo el ancho y el alto
 	int getAncho();
 	int getAlto();
