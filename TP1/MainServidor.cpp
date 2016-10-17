@@ -174,10 +174,6 @@ void* procesar(void* arg) {
 	} else {
 		strcpy(buffer, mensajesProcesados.c_str());
 	}
-	/*do{
-		ok = send(socket, buffer, strlen(buffer), 0);
-	}while (ok == 0);
-	*/
 	ok = send(socket,buffer,strlen(buffer),0);
 	if (ok == 0){
 		servidor->guardarLog("Se cerró la conexión con el cliente " + string(usuario) + string(".\n"),DEBUG);
@@ -185,14 +181,8 @@ void* procesar(void* arg) {
 	else if (ok < 0){
 		servidor->guardarLog("ERROR: Ocurrió un problema con el socket del cliente: " + string(usuario)+ string(".\n"),DEBUG);
 	}
-	//strcpy(buffer, mensajesProcesados.c_str()); //aca muere, el problema es este strcpy y el string y char*
 	servidor->guardarLog("Mensajes para el cliente:" + string(usuario) + ", Mensajes: " + mensajesProcesados + string(".\n"),INFO);
 
-	//cout<<"socket Cliente: "<<socket<<endl;
-	//largo -= send(socket, buffer, BUFFER_MAX_SIZE + 1, 0);
-	/*while (largo > 0) {
-		largo -= send(socket, buffer, BUFFER_MAX_SIZE + 1, 0);
-	}*/
 	return NULL;
 }
 void enviarMensajesProcesadosA(char* usuario, Servidor* servidor, int socket) {
@@ -234,6 +224,7 @@ void* cicloEscuchaCliente(void* arg) {
 			INFO);
 	char bufferRecibido[BUFFER_MAX_SIZE];
 	bool conectado = true;
+	servidor->setJugadorConectado(nombre);
 	while (conectado and servidor->escuchando) {
 		//en este loop se van a gestionar los send y receive del cliente. aca se va a distinguir que es lo que quiere hacer y actuar segun lo que quiera el cliente.
 		string datosRecibidos;
@@ -250,11 +241,13 @@ void* cicloEscuchaCliente(void* arg) {
 						"ERROR: Ocurrió un problema con el socket del cliente: "
 								+ nombre + string(".\n");
 				conectado = false;
+				servidor->setJugadorDesconectado(nombre);
 				servidor->guardarLog(mensaje, DEBUG);
 				servidor->restarCantidadClientesConectados();
 			}
 			else if (largoRequest == 0){
 				conectado = false;
+				servidor->setJugadorDesconectado(nombre);
 				servidor->guardarLog("Se cerró la conexión con el cliente: " + nombre + string(".\n"),DEBUG);
 			}
 			else {
@@ -272,6 +265,7 @@ void* cicloEscuchaCliente(void* arg) {
 								 	 	 	 	 + ", Destinatario: " + string(destinatario)
 												 	 + ", Mensaje: " + string(mensaje) + string(".\n"),INFO);
 						//cout<<"mensaje recibido :"<<mensaje<<endl;
+						//cout << "Mensaje: " << mensaje << endl;
 						encolarMensaje(remitente, destinatario, mensaje, servidor);
 						break;
 					}
@@ -306,6 +300,19 @@ void* cicloEscuchaCliente(void* arg) {
 						pthread_exit(NULL);
 						break;
 					}
+					case 5:{
+						char comenzoJuego[BUFFER_MAX_SIZE];
+						string comenzo;
+						if (servidor->getJugadoresConectados()->size() == servidor->cantJugadoresConectadosMax){
+							string jugadoresInicio = servidor->getEstadoInicialSerializado();
+							comenzo = "0|"  + jugadoresInicio + "@";
+						}
+						else{
+							comenzo = "1@";
+						}
+						strcpy(comenzoJuego,comenzo.c_str());
+						send(socketCliente,comenzoJuego,strlen(comenzoJuego),0);
+					}
 				}
 			}
 		} else {
@@ -315,7 +322,9 @@ void* cicloEscuchaCliente(void* arg) {
 			}
 			else{
 				mensaje = "ERROR: Ocurrió un problema con el socket del cliente: " + nombre + string(".\n");
-			}conectado = false;
+			}
+			servidor->setJugadorDesconectado(nombre);
+			conectado = false;
 			servidor->guardarLog(mensaje, DEBUG);
 			servidor->restarCantidadClientesConectados();
 			std::ostringstream oss;

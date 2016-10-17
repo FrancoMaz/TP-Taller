@@ -75,7 +75,7 @@ void Vista::cargarArchivos(){
 	#define textoDatosNoCoinciden textura[14]
 	#define texturaBotonConectar textura[15]
 	#define texturaFondoEscenario textura[16]
-	#define texturaJugador textura[17]
+	#define texturaJugadorPrueba textura[17]
 }
 
 void Vista::cargarPrimeraPantalla(){
@@ -290,122 +290,16 @@ void Vista::transicionDePantalla(){
 }
 
 void Vista::cargarEscenario(){
-	int x = 20;
-	int y = 415;
-	int anchoEscenario = texturaFondoEscenario->getAncho();
-	int altoEscenario = texturaFondoEscenario->getAlto();
-	int velocidad_X = 0;
-	int velocidad_Y = 0;
-	bool saltar = false;
-	int const velocidad = 5;
-	double angulo = 0;
 	SDL_Rect camara = {0,0,ANCHO_VENTANA,ALTO_VENTANA};
-	SDL_RendererFlip flip = SDL_FLIP_NONE;
+	this->ventana->limpiar();
+	texturaFondoEscenario->aplicarPosicionDePorcion(0,0,&camara,0,SDL_FLIP_NONE);
+	for (int i = 0; i < vistaJugadores.size(); i++){
+		vistaJugador vistaJugador = vistaJugadores.at(i);
+		vistaJugador.texturaJugador->aplicarPosicion(vistaJugador.x,vistaJugador.y,0,SDL_FLIP_NONE);
+	}
+	this->ventana->actualizar();
 	while(!this->controlador->comprobarCierreVentana()){
-		/*
-		this->ventana->limpiar();
-		while(SDL_PollEvent(&evento)){
-			//Si presiono las teclas
-			if(this->controlador->presionarBoton(SDLK_RIGHT)){
-				velocidad_X += velocidad;
-				texturaJugador->cargarImagen("Recursos/Jugador_corriendo.png");
-				texturaJugador->generarSprite(9);
-				flip = SDL_FLIP_NONE;
-			}
 
-			if(this->controlador->presionarBoton(SDLK_LEFT)){
-				velocidad_X -= velocidad;
-				texturaJugador->cargarImagen("Recursos/Jugador_corriendo.png");
-				texturaJugador->generarSprite(9);
-				flip = SDL_FLIP_HORIZONTAL;
-			}
-
-			if(this->controlador->presionarBoton(SDLK_UP)){
-				if(angulo == 0){
-					saltar = true;
-				}
-			}
-
-			if(this->controlador->presionarBoton(SDLK_DOWN)){
-
-			}
-
-			//Si suelto las teclas
-			if(this->controlador->soltarBoton(SDLK_RIGHT)){
-				velocidad_X -= velocidad;
-				texturaJugador->cargarImagen("Recursos/Jugador.png");
-				texturaJugador->generarSprite(3);
-				flip = SDL_FLIP_NONE;
-			}
-
-			if(this->controlador->soltarBoton(SDLK_LEFT)){
-				velocidad_X += velocidad;
-				texturaJugador->cargarImagen("Recursos/Jugador.png");
-				texturaJugador->generarSprite(3);
-				flip = SDL_FLIP_HORIZONTAL;
-			}
-
-			if(this->controlador->soltarBoton(SDLK_UP)){
-
-			}
-
-			if(this->controlador->soltarBoton(SDLK_DOWN)){
-
-			}
-		}
-
-		//Compruebo el salto
-		if(saltar){
-			velocidad_Y = -7*cos(angulo);
-			angulo += PI/50;
-			if (angulo > (PI + (PI/50))){
-				angulo = 0;
-				saltar = false;
-			}
-		} else {
-			velocidad_Y = 0;
-		}
-
-		//Actualizo las posiciones del objeto
-		x += velocidad_X;
-		y += velocidad_Y;
-
-		//Para que el punto no se vaya de pantalla
-		if((x < 0)||(x + texturaJugador->getAnchoSprite() > anchoEscenario)){
-			//Muevo para atrás
-			x -= velocidad_X;
-		}
-
-		if((y < 0)||(y + texturaJugador->getAltoSprite() > altoEscenario)){
-			//Muevo para atrás
-			y -= velocidad_Y;
-		}
-
-		//Centro la cámara en el jugador
-		camara.x = (x + texturaJugador->getAnchoSprite()/2) - ANCHO_VENTANA/2;
-		camara.y = (y + texturaJugador->getAltoSprite()/2) - ALTO_VENTANA/2;
-
-		//Mantengo la cámara dentro de los límites del escenario
-		if (camara.x < 0){
-			camara.x = 0;
-		}
-
-		if (camara.y < 0){
-			camara.y = 0;
-		}
-
-		if (camara.x > anchoEscenario - camara.w){
-			camara.x = anchoEscenario - camara.w;
-		}
-
-		if (camara.y > altoEscenario - camara.h){
-			camara.y = altoEscenario - camara.h;
-		}
-
-
-		texturaFondoEscenario->aplicarPosicionDePorcion(0,0,&camara,0,SDL_FLIP_NONE);
-		texturaJugador->aplicarPosicion(x-camara.x,y-camara.y,0,flip);
-		this->ventana->actualizar();*/
 	}
 }
 
@@ -414,7 +308,20 @@ void Vista::actualizarJugador(string remitente, int x, int y)
 	SDL_Rect camara = {0,0,ANCHO_VENTANA,ALTO_VENTANA};
 	this->ventana->limpiar();
 	texturaFondoEscenario->aplicarPosicionDePorcion(0,0,&camara,0,SDL_FLIP_NONE);
-	texturaJugador->aplicarPosicion(x,y,0,SDL_FLIP_NONE);
+	TexturaSDL* texturaJugadorX;
+	for (int i = 0; i < vistaJugadores.size(); i++){
+		vistaJugador vistaJugador = vistaJugadores.at(i);
+		if (vistaJugador.nombre == remitente)
+		{
+			texturaJugadorX = vistaJugador.texturaJugador;
+			texturaJugadorX->aplicarPosicion(x,y,0,SDL_FLIP_NONE);
+			break;
+		}
+		else{
+			texturaJugadorX = vistaJugador.texturaJugador;
+			texturaJugadorX->aplicarPosicion(vistaJugador.x,vistaJugador.y,0,SDL_FLIP_NONE);
+		}
+	}
 	this->ventana->actualizar();
 }
 
@@ -424,5 +331,15 @@ bool Vista::ventanaCerrada(){
 
 void Vista::cerrar(){
 	this->ventana->cerrar();
+}
+
+void Vista::cargarVistaInicialJugador(string nombre, int x, int y)
+{
+	vistaJugador vistaJugador;
+	vistaJugador.texturaJugador = ventana->crearTextura("Recursos/Jugador.png",3);
+	vistaJugador.nombre = nombre;
+	vistaJugador.x = x;
+	vistaJugador.y = y;
+	vistaJugadores.push_back(vistaJugador);
 }
 

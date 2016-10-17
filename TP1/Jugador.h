@@ -15,7 +15,9 @@
 #include "VentanaSDL.h"
 #include "TexturaSDL.h"
 
-#define velocidad 5
+#define velocidad 2
+#define PI 3.14159265
+#define VELMAX 10
 
 using namespace std;
 
@@ -28,6 +30,7 @@ private:
 	double angulo;
 	string spriteAEjecutar;
 	bool conectado = false;
+	string condicionSprite;
 
 public:
 	Jugador(pair<int,int> posicionInicial);
@@ -37,7 +40,10 @@ public:
 	string getStringJugador();
 	string getNombre();
 	string getSpriteAEjecutar();
-
+	bool salto();
+	void setDesconectado();
+	void setConectado();
+	bool getConectado();
+	string serializarInicio();
 };
-
 #endif /* JUGADOR_H_ */

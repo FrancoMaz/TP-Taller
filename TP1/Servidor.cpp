@@ -28,7 +28,7 @@ Servidor::Servidor(char* nombreArchivoDeUsuarios, int puerto, Logger* logger) {
 	/*---- Bind the address struct to the socket ----*/
 	bind(this->welcomeSocket, (struct sockaddr *) &serverAddr, sizeof(serverAddr));
 	this->datosUsuarios = new list<Datos>();
-	this->jugadores = new vector<Jugador>();
+	this->jugadores = new vector<Jugador*>();
 	this->listaMensajesProcesados = new list<MensajesProcesados>();
 	stringstream ss;
 	ss << puerto;
@@ -53,20 +53,20 @@ void Servidor::guardarDatosDeUsuarios() {
 				while (getline(lineaActual, csvItem, ',')) {
 				if (nroItem == 0) {
 					datosCapturados.nombre = csvItem;
-					mensajesProcesados.destinatario = csvItem;
 				}
 				if (nroItem == 1) {
 					datosCapturados.contrasenia = csvItem;
 				}
 				nroItem++;
 			}
-			Jugador jugador = new Jugador(datosCapturados.nombre);
+			Jugador* jugador = new Jugador(datosCapturados.nombre);
 			//mensajesProcesados.jugador = jugador;
+			pthread_mutex_lock(&mutexVectorJugadores);
 			jugadores->push_back(jugador);
+			pthread_mutex_unlock(&mutexVectorJugadores);
 			queue<Mensaje>* colaMensajes = new queue<Mensaje>;
 			mensajesProcesados.mensajes = colaMensajes;
 			datosUsuarios->push_back(datosCapturados);
-			listaMensajesProcesados->push_back(mensajesProcesados);
 		}
 
 		myfile.close();
@@ -89,6 +89,12 @@ void Servidor::autenticar(string nombre, string contrasenia, list<string>& usuar
 				&& (strcmp(usuario.contrasenia.c_str(), contrasenia.c_str())
 						== 0)) {
 			autenticacionOK = true;
+			MensajesProcesados mensajesProcesados;
+			mensajesProcesados.destinatario = usuario.nombre;
+			//mensajesProcesados.jugador = new Jugador(usuario.nombre);
+			queue<Mensaje>* colaMensajes = new queue<Mensaje>;
+			mensajesProcesados.mensajes = colaMensajes;
+			listaMensajesProcesados->push_back(mensajesProcesados);
 		} else {
 			usuarios.push_back(usuario.nombre);
 		}
@@ -115,16 +121,123 @@ void Servidor::crearMensaje(Mensaje mensaje) {
 	this->colaMensajesNoProcesados.push(mensaje);
 }
 
+list<Servidor::MensajesProcesados>* Servidor::getListaMensajesProcesados()
+{
+	return listaMensajesProcesados;
+}
+
+void* Servidor::actualizarPosiciones(void* arg)
+{
+	ParametrosServidor parametrosServidor = *(ParametrosServidor*) arg;
+	Mensaje mensajeAProcesar = parametrosServidor.mensajeAProcesar;
+	Servidor* servidor = parametrosServidor.servidor;
+	bool jugadorSalto;
+	do {
+	string mensajeJugadorPosActualizada = "";
+	for (list<MensajesProcesados>::iterator usuarioActual = servidor->getListaMensajesProcesados()->begin();
+		usuarioActual != servidor->getListaMensajesProcesados()->end();usuarioActual++) {
+		MensajesProcesados listaMensajes;
+		listaMensajes = *usuarioActual;
+		if (listaMensajes.destinatario == mensajeAProcesar.getRemitente()) {
+			pthread_mutex_lock(&servidor->mutexListaProcesados);
+			listaMensajes.jugador->actualizarPosicion(mensajeAProcesar.deserializar(mensajeAProcesar.getTexto()),mensajeAProcesar.sePresionoTecla());
+			mensajeJugadorPosActualizada = listaMensajes.jugador->getStringJugador();
+			jugadorSalto = listaMensajes.jugador->salto();
+			pthread_mutex_unlock(&servidor->mutexListaProcesados);
+			/*this->mensaje = "Procesando mensaje para "
+					+ listaMensajes.destinatario + "\n";
+			this->guardarLog(mensaje, DEBUG);*/
+		}
+	}
+	Mensaje* mensajePosicionActualizada;
+	for (list<MensajesProcesados>::iterator usuarioActual = servidor->getListaMensajesProcesados()->begin();
+			usuarioActual != servidor->getListaMensajesProcesados()->end();usuarioActual++) {
+		MensajesProcesados listaMensajes;
+		listaMensajes = *usuarioActual;
+		if (listaMensajes.destinatario == mensajeAProcesar.getDestinatario() or mensajeAProcesar.getDestinatario() == "Todos") {
+			mensajePosicionActualizada = new Mensaje(mensajeAProcesar.getRemitente(),listaMensajes.destinatario,mensajeJugadorPosActualizada);
+			pthread_mutex_lock(&servidor->mutexListaProcesados);
+			listaMensajes.mensajes->push(*mensajePosicionActualizada);
+			pthread_mutex_unlock(&servidor->mutexListaProcesados);
+			/*this->mensaje = "Procesando mensaje para "
+					+ listaMensajes.destinatario + "\n";
+			this->guardarLog(mensaje, DEBUG);*/
+		}
+	}
+	} while (jugadorSalto);
+}
+
+
+void Servidor::actualizarPosicionesSalto(Mensaje mensajeAProcesar)
+{
+	bool jugadorSalto;
+	do {
+		string mensajeJugadorPosActualizada = "";
+		pthread_mutex_lock(&mutexVectorJugadores);
+		Jugador* jugador = this->obtenerJugador(mensajeAProcesar.getRemitente());
+		jugador->actualizarPosicion(mensajeAProcesar.deserializar(mensajeAProcesar.getTexto()),mensajeAProcesar.sePresionoTecla());
+		jugadorSalto = jugador->salto();
+		mensajeJugadorPosActualizada = jugador->getStringJugador();
+		pthread_mutex_unlock(&mutexVectorJugadores);
+		/*
+		string mensajeJugadorPosActualizada = "";
+		for (list<MensajesProcesados>::iterator usuarioActual = listaMensajesProcesados->begin();
+			usuarioActual != listaMensajesProcesados->end();usuarioActual++) {
+			MensajesProcesados listaMensajes;
+			listaMensajes = *usuarioActual;
+			if (listaMensajes.destinatario == mensajeAProcesar.getRemitente()) {
+				pthread_mutex_lock(&mutexListaProcesados);
+				listaMensajes.jugador->actualizarPosicion(mensajeAProcesar.deserializar(mensajeAProcesar.getTexto()),mensajeAProcesar.sePresionoTecla());
+				mensajeJugadorPosActualizada = listaMensajes.jugador->getStringJugador();
+				jugadorSalto = listaMensajes.jugador->salto();
+				pthread_mutex_unlock(&mutexListaProcesados);
+				this->mensaje = "Procesando mensaje para "
+						+ listaMensajes.destinatario + "\n";
+				this->guardarLog(mensaje, DEBUG);
+			}
+		}*/
+		encolarMensajeProcesadoParaCadaCliente(mensajeAProcesar,mensajeJugadorPosActualizada);
+	} while (jugadorSalto);
+}
+
+Jugador* Servidor::obtenerJugador(string nombre){
+	for (int i = 0; i < jugadores->size(); i++)
+	{
+		Jugador* jugador = jugadores->at(i);
+		if (jugador->getNombre() == nombre)
+		{
+			return jugador;
+			break;
+		}
+	}
+}
+
 void Servidor::procesarMensajes() {
 
 	if (!colaMensajesNoProcesados.empty()) {
-		cout << "procesando" << endl;
+		pthread_t threadSalto;
 		pthread_mutex_lock(&mutexColaNoProcesados);
 		Mensaje mensajeAProcesar = colaMensajesNoProcesados.front();
 		colaMensajesNoProcesados.pop();
 		pthread_mutex_unlock(&mutexColaNoProcesados);
-		string mensajeJugadorPosActualizada = "";
-		for (list<MensajesProcesados>::iterator usuarioActual = listaMensajesProcesados->begin();
+		if (mensajeAProcesar.getTexto() == "Tecla Arriba")
+		{
+			/*ParametrosServidor parametrosServidor;
+			parametrosServidor.mensajeAProcesar = mensajeAProcesar;
+			parametrosServidor.servidor = this;*/
+			this->actualizarPosicionesSalto(mensajeAProcesar);
+			/*pthread_create(&threadSalto,NULL,&actualizarPosiciones,&parametrosServidor);
+			pthread_detach(threadSalto);*/
+		}
+		else
+		{
+			string mensajeJugadorPosActualizada = "";
+			pthread_mutex_lock(&mutexVectorJugadores);
+			Jugador* jugador = this->obtenerJugador(mensajeAProcesar.getRemitente());
+			jugador->actualizarPosicion(mensajeAProcesar.deserializar(mensajeAProcesar.getTexto()),mensajeAProcesar.sePresionoTecla());
+			mensajeJugadorPosActualizada = jugador->getStringJugador();
+			pthread_mutex_unlock(&mutexVectorJugadores);
+		/*for (list<MensajesProcesados>::iterator usuarioActual = listaMensajesProcesados->begin();
 			usuarioActual != listaMensajesProcesados->end();usuarioActual++) {
 			MensajesProcesados listaMensajes;
 			listaMensajes = *usuarioActual;
@@ -138,13 +251,24 @@ void Servidor::procesarMensajes() {
 				this->guardarLog(mensaje, DEBUG);
 			}
 		}
-		Mensaje* mensajePosicionActualizada;
-		cout << mensajeJugadorPosActualizada << endl;
-		for (list<MensajesProcesados>::iterator usuarioActual = listaMensajesProcesados->begin();
-				usuarioActual != listaMensajesProcesados->end();usuarioActual++) {
-			MensajesProcesados listaMensajes;
-			listaMensajes = *usuarioActual;
-			if (listaMensajes.destinatario == mensajeAProcesar.getDestinatario() or mensajeAProcesar.getDestinatario() == "Todos") {
+		*/
+			encolarMensajeProcesadoParaCadaCliente(mensajeAProcesar,mensajeJugadorPosActualizada);
+		}
+	}
+}
+
+void Servidor::encolarMensajeProcesadoParaCadaCliente(Mensaje mensajeAProcesar, string mensajeJugadorPosActualizada){
+	Mensaje* mensajePosicionActualizada;
+	for (list<MensajesProcesados>::iterator usuarioActual = listaMensajesProcesados->begin();usuarioActual != listaMensajesProcesados->end();usuarioActual++)
+	{
+		MensajesProcesados listaMensajes;
+		listaMensajes = *usuarioActual;
+		if (listaMensajes.destinatario == mensajeAProcesar.getDestinatario() or mensajeAProcesar.getDestinatario() == "Todos")
+		{
+			pthread_mutex_lock(&mutexVectorJugadores);
+			Jugador* jugador = this->obtenerJugador(listaMensajes.destinatario);
+			if (jugador->getConectado())
+			{
 				mensajePosicionActualizada = new Mensaje(mensajeAProcesar.getRemitente(),listaMensajes.destinatario,mensajeJugadorPosActualizada);
 				pthread_mutex_lock(&mutexListaProcesados);
 				listaMensajes.mensajes->push(*mensajePosicionActualizada);
@@ -153,6 +277,7 @@ void Servidor::procesarMensajes() {
 						+ listaMensajes.destinatario + "\n";
 				this->guardarLog(mensaje, DEBUG);
 			}
+			pthread_mutex_unlock(&mutexVectorJugadores);
 		}
 	}
 }
@@ -331,7 +456,7 @@ string Servidor::concatenarMensajes(queue<Mensaje>* colaDeMensajes) {
 		mensajesConcatenados += mensaje.getRemitente();
 		mensajesConcatenados += "|";
 		mensajesConcatenados += mensaje.getTexto();
-		mensajesConcatenados += "#";
+		//mensajesConcatenados += "#";
 	}
 	string lala = mensajesConcatenados.substr(0, mensajesConcatenados.length() -1);
 	lala += "@";
@@ -342,3 +467,45 @@ string Servidor::concatenarMensajes(queue<Mensaje>* colaDeMensajes) {
 void Servidor::restarCantidadClientesConectados(){
 	this->cantClientesConectados -= 1;
 }
+
+vector<Jugador*>* Servidor::getJugadores()
+{
+	return jugadores;
+}
+
+void Servidor::setJugadorConectado(string nombre)
+{
+	Jugador* jugador = this->obtenerJugador(nombre);
+	jugador->setConectado();
+}
+
+void Servidor::setJugadorDesconectado(string nombre)
+{
+	Jugador* jugador = this->obtenerJugador(nombre);
+	jugador->setDesconectado();
+}
+
+vector<Jugador*>* Servidor::getJugadoresConectados()
+{
+	vector<Jugador*>* jugadoresConectados = new vector<Jugador*>();
+	for (int i = 0; i < jugadores->size(); i++)
+	{
+		if (jugadores->at(i)->getConectado())
+		{
+			jugadoresConectados->push_back(jugadores->at(i));
+		}
+	}
+	return jugadoresConectados;
+}
+
+string Servidor::getEstadoInicialSerializado()
+{
+	string estadoInicial = "";
+	vector<Jugador*>* jugadoresConectados = getJugadoresConectados();
+	for (int i = 0; i < jugadoresConectados->size(); i++)
+	{
+		estadoInicial += jugadoresConectados->at(i)->serializarInicio() + "#";
+	}
+	return estadoInicial;
+}
+

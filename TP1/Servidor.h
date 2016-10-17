@@ -57,8 +57,12 @@ private:
 		queue<Mensaje>* mensajes;
 	};
 	list<Datos>* datosUsuarios;
-	vector<Jugador>* jugadores;
+	vector<Jugador*>* jugadores;
 	list<MensajesProcesados>* listaMensajesProcesados;
+	struct ParametrosServidor {
+		Mensaje mensajeAProcesar;
+		Servidor* servidor;
+	};
 
 public:
 	Servidor();
@@ -85,6 +89,7 @@ public:
 	pthread_mutex_t mutexListaProcesados;
 	pthread_mutex_t mutexColasProcesadas;
 	pthread_mutex_t mutexEnviarMensajes;
+	pthread_mutex_t mutexVectorJugadores;
 	string mensaje;
 	list<string> agregarDestinatarios(string remitente);
 	void procesarMensaje(Mensaje mensaje);
@@ -92,6 +97,20 @@ public:
 	string concatenarMensajes(queue<Mensaje>* colaDeMensajes);
 	void procesarMensajes();
 	void restarCantidadClientesConectados();
+	static void* actualizarPosiciones(void *arg);
+	list<MensajesProcesados>* getListaMensajesProcesados();
+	void actualizarPosicionesSalto(Mensaje mensajeAProcesar);
+	vector<Jugador*>* getJugadores();
+	void setJugadorConectado(string nombre);
+	void setJugadorDesconectado(string nombre);
+	Jugador* obtenerJugador(string nombre);
+	vector<Jugador*>* getJugadoresConectados();
+	void encolarMensajeProcesadoParaCadaCliente(Mensaje mensajeAProcesar, string mensajeJugadorPosActualizada);
+
+	//obtiene el estado inicial de los jugadores serializado para enviarlo via socket
+	string getEstadoInicialSerializado();
+
+	int cantJugadoresConectadosMax = 2;
 };
 
 #endif /* TP1_SERVIDOR_H_ */

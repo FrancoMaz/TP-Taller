@@ -25,6 +25,7 @@
 #include <iterator>
 #include "Mensaje.h"
 #include <queue>
+#include "Vista.h"
 #define BUFFER_MAX_SIZE 200
 using namespace std;
 
@@ -71,6 +72,15 @@ public:
 	void corroborarConexion();
 	bool getTermino();
 	bool stringTerminaCon(std::string const &fullString, std::string const &ending);
+
+	//Metodo que envia el request al servidor.
+	void enviarRequest(string request);
+
+	//Metodo que envia el request al servidor.
+	string recibirResponse();
+
+	//Comprueba si se inicio el juego
+	bool checkearInicioJuego(Vista* vista);
 };
 
 #endif /* TP1_CLIENTE_H_ */

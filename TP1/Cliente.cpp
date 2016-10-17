@@ -403,3 +403,63 @@ bool Cliente::getTermino()
 {
 	return this->terminoComunicacion;
 }
+
+void Cliente::enviarRequest(string request){
+	char buffer[BUFFER_MAX_SIZE];
+	const char* req = request.c_str();
+	strcpy(buffer, request.c_str());
+	int largoEnviado = 0;
+	int largoTotal = strlen(req);
+	do{
+		largoEnviado += send(socketCliente,buffer,strlen(req),0);
+	} while (largoEnviado < largoTotal);
+}
+
+string Cliente::recibirResponse(){
+	char colaMensajes[BUFFER_MAX_SIZE];
+	memset(colaMensajes, '\0', BUFFER_MAX_SIZE);
+	int largoRecibido = 0;
+	string datosRecibidos = "";
+	do
+	{
+		largoRecibido += recv(socketCliente,colaMensajes,BUFFER_MAX_SIZE,0);
+		datosRecibidos += string(colaMensajes);
+		memset(colaMensajes, '\0', strlen(colaMensajes));
+	}while (largoRecibido >= BUFFER_MAX_SIZE and !stringTerminaCon(datosRecibidos, "@")); //mientras el largoRequest sea del tamaño del max size, sigo pidiendo
+	return datosRecibidos;
+}
+
+bool Cliente::checkearInicioJuego(Vista* vista)
+{
+	//Devuelve falso si no se inicio el juego o true si se inicio. A su vez carga la vista inicial de los jugadores en caso de que se haya iniciado.
+	this->enviarRequest("5|"); //5 es el case de request se inicio el juego.
+	string response = this->recibirResponse();
+	response = response.substr(0,response.length() - 1);
+	char strResponse[response.length()];
+	strcpy(strResponse, response.c_str());
+	char* strComenzo = strtok(strResponse,"|#");
+
+	char* nombreJugador;
+	char* x;
+	char* y;
+
+	int comenzo = atoi(strComenzo);
+	if (comenzo != 0){
+		return false;
+	}
+	else{
+		strComenzo = strtok(NULL,"|#");
+		while (strComenzo != NULL){
+			nombreJugador = strComenzo;
+			strComenzo = strtok(NULL,"|#");
+			x = strComenzo;
+			strComenzo = strtok(NULL,"|#");
+			y = strComenzo;
+			strComenzo = strtok(NULL,"|#");
+
+			vista->cargarVistaInicialJugador(nombreJugador,atoi(x),atoi(y));
+		}
+		return true;
+	}
+	return false;
+}

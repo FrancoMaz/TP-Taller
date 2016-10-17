@@ -31,6 +31,13 @@ private:
 	vector<TexturaSDL*> textura;
 	datosConexion datos;
 	int opacidad;
+	struct vistaJugador{
+		TexturaSDL* texturaJugador;
+		string nombre;
+		int x;
+		int y;
+	};
+	vector<vistaJugador> vistaJugadores;
 
 	datosConexion cargarPantallaIngresoDatos(bool aviso, int numeroPantalla);
 
@@ -47,6 +54,8 @@ public:
 	bool ventanaCerrada();
 	void cerrar();
 	void actualizarJugador(string remitente, int x, int y);
+	void cargarVistaInicialJugador(string nombre, int x, int y);
+
 };
 
 #endif /* TP2_VISTA_H_ */

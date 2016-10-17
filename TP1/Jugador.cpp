@@ -7,9 +7,6 @@
 
 #include "Jugador.h"
 
-#define PI 3.14159265
-#define VELMAX 20
-
 Jugador::Jugador(pair<int,int> posicionInicial) {
 	posicion.first = posicionInicial.first;
 	posicion.second = posicionInicial.second;
@@ -34,16 +31,26 @@ Jugador::~Jugador() {
 
 void Jugador::actualizarPosicion(SDL_Keycode tecla, bool sePresionoTecla)
 {
-	velocidades.first = 0;
+	if (velocidades.first > VELMAX)
+	{
+		velocidades.first = VELMAX;
+	}
+	else if (velocidades.first < -VELMAX)
+	{
+		velocidades.first = -VELMAX;
+	}
+
 	if (tecla == SDLK_RIGHT && sePresionoTecla)
 	{
 		velocidades.first += velocidad;
-		spriteAEjecutar = "Jugador Corriendo Derecha";
+		spriteAEjecutar = "Jugador_corriendo";
+		condicionSprite = "Normal";
 	}
 	if (tecla == SDLK_LEFT && sePresionoTecla)
 	{
 		velocidades.first -= velocidad;
-		spriteAEjecutar = "Jugador Corriendo Izquierda";
+		spriteAEjecutar = "Jugador_corriendo";
+		condicionSprite = "Espejado";
 	}
 	if (tecla == SDLK_UP && sePresionoTecla)
 	{
@@ -55,13 +62,15 @@ void Jugador::actualizarPosicion(SDL_Keycode tecla, bool sePresionoTecla)
 	}
 	if(tecla == SDLK_RIGHT && !sePresionoTecla)
 	{
-		velocidades.first -= velocidad;
-		spriteAEjecutar = "Jugador Derecha";
+		velocidades.first = 0;
+		spriteAEjecutar = "Jugador";
+		condicionSprite = "Normal";
 	}
 	if(tecla == SDLK_LEFT && !sePresionoTecla)
 	{
-		velocidades.first += velocidad;
-		spriteAEjecutar = "Jugador Izquierda";
+		velocidades.first = 0;
+		spriteAEjecutar = "Jugador";
+		condicionSprite = "Espejado";
 	}
 
 	if(saltar)
@@ -78,11 +87,23 @@ void Jugador::actualizarPosicion(SDL_Keycode tecla, bool sePresionoTecla)
 
 	posicion.first += velocidades.first;
 	posicion.second += velocidades.second;
+
+
+}
+
+void Jugador::setConectado()
+{
+	this->conectado = true;
+}
+
+void Jugador::setDesconectado()
+{
+	this->conectado = false;
 }
 
 string Jugador::getStringJugador()
 {
-	return (nombre + "|" + to_string(posicion.first) + "|" + to_string(posicion.second) + "|" + spriteAEjecutar + "#");
+	return (nombre + "|" + to_string(posicion.first) + "|" + to_string(posicion.second) + "|" + spriteAEjecutar + "|" + condicionSprite + "#");
 }
 
 string Jugador::getNombre()
@@ -93,4 +114,18 @@ string Jugador::getNombre()
 string Jugador::getSpriteAEjecutar()
 {
 	return this->spriteAEjecutar;
+}
+
+bool Jugador::salto()
+{
+	return this->saltar;
+}
+
+bool Jugador::getConectado(){
+	return conectado;
+}
+
+string Jugador::serializarInicio()
+{
+	return (nombre + "|" + to_string(posicion.first) + "|" + to_string(posicion.second));
 }
