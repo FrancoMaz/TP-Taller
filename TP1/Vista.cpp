@@ -301,12 +301,17 @@ void Vista::cargarEscenario(){
 	int altoEscenario = texturaFondoEscenarioCapaUno->getAlto();
 	int velocidad_X = 0;
 	int velocidad_Y = 0;
+	int velocidad_capaDos_X, velocidad_capaTres_X = 0;
 	bool saltar = false;
-	int const velocidad = 4;
+	int const velocidad = 3;
 	double angulo = 0;
 	SDL_Rect camara = {0,0,ANCHO_VENTANA,ALTO_VENTANA};
+
+	//Los siguientes rectángulos se encargan de renderizar cada capa
 	SDL_Rect capaNubes = {0,0,ANCHO_VENTANA,ALTO_VENTANA};
-	SDL_Rect capaArena = {0,0,ANCHO_VENTANA,ALTO_VENTANA};
+	SDL_Rect capaDosArena = {0,0,ANCHO_VENTANA,ALTO_VENTANA};
+	SDL_Rect capaTresArena = {0,0,ANCHO_VENTANA,ALTO_VENTANA};
+	SDL_Rect capaCiudad = {0,0,ANCHO_VENTANA,ALTO_VENTANA};
 
 	SDL_RendererFlip flip = SDL_FLIP_NONE;
 
@@ -380,8 +385,8 @@ void Vista::cargarEscenario(){
 		jugador_X += velocidad_X;
 		jugador_Y += velocidad_Y;
 
-		//Para que el punto no se vaya de pantalla
-		if((jugador_X < 0)||(jugador_X + texturaJugador->getAnchoSprite() > anchoEscenario)){
+		//Para que el jugador no se vaya de pantalla
+		if(jugador_X < camara.x){
 			//Muevo para atrás
 			jugador_X -= velocidad_X;
 		}
@@ -392,7 +397,16 @@ void Vista::cargarEscenario(){
 		}
 
 		//Centro la cámara en el jugador
-		camara.x = (jugador_X + texturaJugador->getAnchoSprite()/2) - ANCHO_VENTANA/2;
+		//Con esta condición hago que la cámara no pueda volver hacia atras cuando el jugador avanzó por el escenario
+		if((jugador_X + texturaJugador->getAnchoSprite()/2) - camara.x > ANCHO_VENTANA/2){
+			camara.x = (jugador_X + texturaJugador->getAnchoSprite()/2) - ANCHO_VENTANA/2;
+
+			//Establezco la velocidad de las capas del fondo
+			velocidad_capaDos_X += velocidad_X;
+			velocidad_capaTres_X += velocidad_X;
+		}
+
+
 		camara.y = (jugador_Y + texturaJugador->getAltoSprite()/2) - ALTO_VENTANA/2;
 
 		//Mantengo la cámara dentro de los límites del escenario
@@ -404,14 +418,9 @@ void Vista::cargarEscenario(){
 			camara.y = 0;
 		}
 
-		if (camara.x > anchoEscenario - camara.w){
-			camara.x = anchoEscenario - camara.w;
-		}
-
 		if (camara.y > altoEscenario - camara.h){
 			camara.y = altoEscenario - camara.h;
 		}
-
 
 		//Establezco el movimiento de la capa de las nubes
 		capaNubes.y = camara.y;
@@ -419,22 +428,22 @@ void Vista::cargarEscenario(){
 		capaNubes.x = -velocidad_nubes;
 
 		/* Paralaje infinito de nubes */
-		//Si el extremo derehco del rectángulo llega al final de la textura de la capa
+		//Si la textura comienza a salirse de pantalla
 		if((capaNubes.x + ANCHO_VENTANA) > texturaFondoEscenarioCapaCuatro->getAncho()){
 			//Creo una posición auxiliar para no perder el valor de capaNubes.x
 			int posicionAuxiliar = 0;
-			//Renderizo la porción derecha de la textura y la posiciono en x=0
+			//Renderizo la porción derecha de la textura saliente y la posiciono en x=0
 			capaNubes.w = texturaFondoEscenarioCapaCuatro->getAncho() - capaNubes.x;
 			texturaFondoEscenarioCapaCuatro->aplicarPosicionDePorcion(0,0,&capaNubes,0,SDL_FLIP_NONE);
 			posicionAuxiliar = capaNubes.x;
 
-			//Renderizo la porción izquierda de la textura, y la posiciono a continuación de la textura renderizada arriba
+			//Renderizo la porción izquierda de la textura entrante, y la posiciono a continuación de la textura renderizada arriba
 			capaNubes.w = ANCHO_VENTANA - (texturaFondoEscenarioCapaCuatro->getAncho() - capaNubes.x);
 			capaNubes.x = 0;
 			texturaFondoEscenarioCapaCuatro->aplicarPosicionDePorcion((ANCHO_VENTANA - capaNubes.w),0,&capaNubes,0,SDL_FLIP_NONE);
 			capaNubes.x = posicionAuxiliar;
 
-			//Si el rectángulo se fue por completo de la textura, reseteo todos los valores
+			//Si la textura saliente salió por completo de la pantalla, reseteo todos los valores
 			if (capaNubes.x > texturaFondoEscenarioCapaCuatro->getAncho()){
 				capaNubes.x = 0;
 				velocidad_nubes = 0;
@@ -445,19 +454,116 @@ void Vista::cargarEscenario(){
 		}
 
 		//Establezco la capa arena
-		capaArena.y = camara.y;
-		if(!(camara.x == 0 || camara.x == anchoEscenario - camara.w)){
-			capa_X += velocidad_X;
+		capaTresArena.y = camara.y;
+
+		/* Paralaje infinito de las arenas */
+		//Con esta ecuación establezco la velocidad de las capas para que todas terminen alineadas al término del escenario
+		capaTresArena.x = abs((velocidad_capaTres_X)*(texturaFondoEscenarioCapaTres->getAncho() - ANCHO_VENTANA)/(anchoEscenario - ANCHO_VENTANA));
+
+		//Si la textura comienza a salirse de pantalla
+		if((capaTresArena.x + ANCHO_VENTANA) > texturaFondoEscenarioCapaTres->getAncho()){
+			//Creo una posición auxiliar para no perder el valor de capaTresArena.x
+			int posicionAuxiliar = 0;
+
+			capaTresArena.w = texturaFondoEscenarioCapaTres->getAncho() - capaTresArena.x;
+			texturaFondoEscenarioCapaTres->aplicarPosicionDePorcion(0,0,&capaTresArena,0,SDL_FLIP_NONE);
+			posicionAuxiliar = capaTresArena.x;
+
+			//Renderizo la porción izquierda de la textura entrante, y la posiciono a continuación de la textura renderizada arriba
+			capaTresArena.w = ANCHO_VENTANA - (texturaFondoEscenarioCapaTres->getAncho() - capaTresArena.x);
+			capaTresArena.x = 0;
+			texturaFondoEscenarioCapaTres->aplicarPosicionDePorcion((ANCHO_VENTANA - capaTresArena.w),0,&capaTresArena,0,SDL_FLIP_NONE);
+			capaTresArena.x = posicionAuxiliar;
+
+			//Si la textura saliente salió por completo de la pantalla, reseteo todos los valores
+			if (capaTresArena.x > texturaFondoEscenarioCapaTres->getAncho()){
+				velocidad_capaTres_X = 0;
+				capaTresArena.w = ANCHO_VENTANA;
+			}
+		} else {
+			texturaFondoEscenarioCapaTres->aplicarPosicionDePorcion(0,0,&capaTresArena,0,SDL_FLIP_NONE);
 		}
 
-		capaArena.x = (camara.x + capa_X)/8;
-		texturaFondoEscenarioCapaTres->aplicarPosicionDePorcion(0,0,&capaArena,0,SDL_FLIP_NONE);
 
-		capaArena.x = (camara.x + capa_X)/5;
-		texturaFondoEscenarioCapaDos->aplicarPosicionDePorcion(0,0,&capaArena,0,SDL_FLIP_NONE);
+		capaDosArena.x = abs((velocidad_capaDos_X)*(texturaFondoEscenarioCapaDos->getAncho() - ANCHO_VENTANA)/(anchoEscenario - ANCHO_VENTANA));
+
+		if((capaDosArena.x + ANCHO_VENTANA) > texturaFondoEscenarioCapaDos->getAncho()){
+			//Creo una posición auxiliar para no perder el valor de capaDosArena.x
+			int posicionAuxiliar = 0;
+
+			capaDosArena.w = texturaFondoEscenarioCapaDos->getAncho() - capaDosArena.x;
+			texturaFondoEscenarioCapaDos->aplicarPosicionDePorcion(0,0,&capaDosArena,0,SDL_FLIP_NONE);
+			posicionAuxiliar = capaDosArena.x;
+
+			//Renderizo la porción izquierda de la textura entrante, y la posiciono a continuación de la textura renderizada arriba
+			capaDosArena.w = ANCHO_VENTANA - (texturaFondoEscenarioCapaDos->getAncho() - capaDosArena.x);
+			capaDosArena.x = 0;
+			texturaFondoEscenarioCapaDos->aplicarPosicionDePorcion((ANCHO_VENTANA - capaDosArena.w),0,&capaDosArena,0,SDL_FLIP_NONE);
+			capaDosArena.x = posicionAuxiliar;
+
+			//Si la textura saliente salió por completo de la pantalla, reseteo todos los valores
+			if (capaDosArena.x > texturaFondoEscenarioCapaDos->getAncho()){
+				velocidad_capaDos_X = 0;
+				capaDosArena.w = ANCHO_VENTANA;
+			}
+		} else {
+			texturaFondoEscenarioCapaDos->aplicarPosicionDePorcion(0,0,&capaDosArena,0,SDL_FLIP_NONE);
+		}
+
 
 		//Establezco la primera capa y el jugador
-		texturaFondoEscenarioCapaUno->aplicarPosicionDePorcion(0,0,&camara,0,SDL_FLIP_NONE);
+		capaCiudad.x = camara.x;
+		capaCiudad.y = camara.y;
+
+		/* Paralaje infinito de la ciudad */
+		//Si la 1era textura comienza a salirse de pantalla
+		if((capaCiudad.x + ANCHO_VENTANA) > texturaFondoEscenarioCapaUno->getAncho()){
+			//Y si el rectángulo está renderizando entre la 1era textura y la 2da textura (reflejada)
+			if(capaCiudad.x < texturaFondoEscenarioCapaUno->getAncho()){
+				//Renderizo la porción derecha de la 1er textura y la posiciono en x=0
+				capaCiudad.w = texturaFondoEscenarioCapaUno->getAncho() - capaCiudad.x;
+				texturaFondoEscenarioCapaUno->aplicarPosicionDePorcion(0,0,&capaCiudad,0,SDL_FLIP_NONE);
+
+				//Renderizo la porción izquierda de la 2da textura (reflejada), y la posiciono a continuación de la textura renderizada arriba
+				//Tener en cuenta que reflejar una textura con SDL_FLIP_HORIZONTAL implica también reflejar las posiciones y dimensiones aplicadas sobre el mismo
+				capaCiudad.w = ANCHO_VENTANA - (texturaFondoEscenarioCapaUno->getAncho() - capaCiudad.x);
+				capaCiudad.x = (texturaFondoEscenarioCapaUno->getAncho() - capaCiudad.w);
+				texturaFondoEscenarioCapaUno->aplicarPosicionDePorcion((ANCHO_VENTANA - capaCiudad.w),0,&capaCiudad,0,SDL_FLIP_HORIZONTAL);
+			} else {
+				/* Si acá el rectángulo entró a renderizar por completo la 2da textura (reflejada), donde la 1era textura ya salió por completo de pantalla,
+				   renderizo el ancho completo de la ventana ya que estoy en la 2da textura */
+				capaCiudad.w = ANCHO_VENTANA;
+				//A medida que avanzo, capaCiudad.x va disminuyendo (en la textura reflejada disminuye de izquierda a derecha)
+				capaCiudad.x = (texturaFondoEscenarioCapaUno->getAncho() - ANCHO_VENTANA) - (capaCiudad.x - texturaFondoEscenarioCapaUno->getAncho());
+
+				// Si la 2da textura (reflejada) comienza a salirse de pantalla
+				if(capaCiudad.x < 0){
+					//Renderizo la porción derecha de la 2da textura y la posiciono en x=0
+					capaCiudad.w = ANCHO_VENTANA + capaCiudad.x;
+					capaCiudad.x = 0;
+					texturaFondoEscenarioCapaUno->aplicarPosicionDePorcion(0,0,&capaCiudad,0,SDL_FLIP_HORIZONTAL);
+
+					//Renderizo la porción izquierda de la 1era textura, y la posiciono a continuación de la 2da textura renderizada arriba
+					capaCiudad.w = ANCHO_VENTANA - (capaCiudad.w);
+					texturaFondoEscenarioCapaUno->aplicarPosicionDePorcion((ANCHO_VENTANA - capaCiudad.w),0,&capaCiudad,0,SDL_FLIP_NONE);
+
+					//Si la 2da textura salió por completo de pantalla y se renderiza por completo la 1era textura, reseteo todas las variables
+					if (capaCiudad.w > ANCHO_VENTANA){
+						camara.x = 0;
+						capaCiudad.w = ANCHO_VENTANA;
+						capaCiudad.x = 0;
+						jugador_X = ANCHO_VENTANA/2 - texturaJugador->getAnchoSprite()/2;
+					}
+				} else {
+					texturaFondoEscenarioCapaUno->aplicarPosicionDePorcion(0,0,&capaCiudad,0,SDL_FLIP_HORIZONTAL);
+				}
+			}
+		} else {
+			capaCiudad.w = ANCHO_VENTANA;
+			texturaFondoEscenarioCapaUno->aplicarPosicionDePorcion(0,0,&capaCiudad,0,SDL_FLIP_NONE);
+		}
+
+
 		texturaJugador->aplicarPosicion(jugador_X-camara.x,jugador_Y-camara.y,0,flip);
 		this->ventana->actualizar();
 	}
