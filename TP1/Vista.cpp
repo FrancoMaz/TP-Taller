@@ -295,7 +295,7 @@ void Vista::transicionDePantalla(){
 
 void Vista::cargarEscenario(){
 	int jugador_X = 20;
-	int jugador_Y = 415;
+	int jugador_Y = 410;
 	int capa_X = 0;
 	int anchoEscenario = texturaFondoEscenarioCapaUno->getAncho();
 	int altoEscenario = texturaFondoEscenarioCapaUno->getAlto();
@@ -323,21 +323,27 @@ void Vista::cargarEscenario(){
 			//Si presiono las teclas
 			if(this->controlador->presionarBoton(SDLK_RIGHT)){
 				velocidad_X += velocidad;
-				texturaJugador->cargarImagen("Recursos/Jugador_corriendo.png");
-				texturaJugador->generarSprite(9);
+				if(!saltar){
+					texturaJugador->cargarImagen("Recursos/Jugador_corriendo.png");
+					texturaJugador->generarSprite(9);
+				}
 				flip = SDL_FLIP_NONE;
 			}
 
 			if(this->controlador->presionarBoton(SDLK_LEFT)){
 				velocidad_X -= velocidad;
-				texturaJugador->cargarImagen("Recursos/Jugador_corriendo.png");
-				texturaJugador->generarSprite(9);
+				if(!saltar){
+					texturaJugador->cargarImagen("Recursos/Jugador_corriendo.png");
+					texturaJugador->generarSprite(9);
+				}
 				flip = SDL_FLIP_HORIZONTAL;
 			}
 
 			if(this->controlador->presionarBoton(SDLK_UP)){
 				if(angulo == 0){
 					saltar = true;
+					texturaJugador->cargarImagen("Recursos/Jugador_saltando.png");
+					texturaJugador->generarSprite(9);
 				}
 			}
 
@@ -348,15 +354,19 @@ void Vista::cargarEscenario(){
 			//Si suelto las teclas
 			if(this->controlador->soltarBoton(SDLK_RIGHT)){
 				velocidad_X -= velocidad;
-				texturaJugador->cargarImagen("Recursos/Jugador.png");
-				texturaJugador->generarSprite(3);
+				if(!saltar){
+					texturaJugador->cargarImagen("Recursos/Jugador.png");
+					texturaJugador->generarSprite(3);
+				}
 				flip = SDL_FLIP_NONE;
 			}
 
 			if(this->controlador->soltarBoton(SDLK_LEFT)){
 				velocidad_X += velocidad;
-				texturaJugador->cargarImagen("Recursos/Jugador.png");
-				texturaJugador->generarSprite(3);
+				if(!saltar){
+					texturaJugador->cargarImagen("Recursos/Jugador.png");
+					texturaJugador->generarSprite(3);
+				}
 				flip = SDL_FLIP_HORIZONTAL;
 			}
 
@@ -376,6 +386,13 @@ void Vista::cargarEscenario(){
 			if (angulo > (PI + (PI/50))){
 				angulo = 0;
 				saltar = false;
+				if (velocidad_X != 0){
+					texturaJugador->cargarImagen("Recursos/Jugador_corriendo.png");
+					texturaJugador->generarSprite(9);
+				} else {
+					texturaJugador->cargarImagen("Recursos/Jugador.png");
+					texturaJugador->generarSprite(3);
+				}
 			}
 		} else {
 			velocidad_Y = 0;
