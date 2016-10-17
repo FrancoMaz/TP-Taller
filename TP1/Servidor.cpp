@@ -133,7 +133,14 @@ void* Servidor::actualizarPosiciones(void* arg)
 	Servidor* servidor = parametrosServidor.servidor;
 	bool jugadorSalto;
 	do {
-	string mensajeJugadorPosActualizada = "";
+		string mensajeJugadorPosActualizada = "";
+		pthread_mutex_lock(&servidor->mutexVectorJugadores);
+		Jugador* jugador = servidor->obtenerJugador(mensajeAProcesar.getRemitente());
+		jugador->actualizarPosicion(mensajeAProcesar.deserializar(mensajeAProcesar.getTexto()),mensajeAProcesar.sePresionoTecla());
+		jugadorSalto = jugador->salto();
+		mensajeJugadorPosActualizada = jugador->getStringJugador();
+		pthread_mutex_unlock(&servidor->mutexVectorJugadores);
+	/*string mensajeJugadorPosActualizada = "";
 	for (list<MensajesProcesados>::iterator usuarioActual = servidor->getListaMensajesProcesados()->begin();
 		usuarioActual != servidor->getListaMensajesProcesados()->end();usuarioActual++) {
 		MensajesProcesados listaMensajes;
@@ -144,26 +151,13 @@ void* Servidor::actualizarPosiciones(void* arg)
 			mensajeJugadorPosActualizada = listaMensajes.jugador->getStringJugador();
 			jugadorSalto = listaMensajes.jugador->salto();
 			pthread_mutex_unlock(&servidor->mutexListaProcesados);
-			/*this->mensaje = "Procesando mensaje para "
+			this->mensaje = "Procesando mensaje para "
 					+ listaMensajes.destinatario + "\n";
-			this->guardarLog(mensaje, DEBUG);*/
+			this->guardarLog(mensaje, DEBUG)
 		}
-	}
-	Mensaje* mensajePosicionActualizada;
-	for (list<MensajesProcesados>::iterator usuarioActual = servidor->getListaMensajesProcesados()->begin();
-			usuarioActual != servidor->getListaMensajesProcesados()->end();usuarioActual++) {
-		MensajesProcesados listaMensajes;
-		listaMensajes = *usuarioActual;
-		if (listaMensajes.destinatario == mensajeAProcesar.getDestinatario() or mensajeAProcesar.getDestinatario() == "Todos") {
-			mensajePosicionActualizada = new Mensaje(mensajeAProcesar.getRemitente(),listaMensajes.destinatario,mensajeJugadorPosActualizada);
-			pthread_mutex_lock(&servidor->mutexListaProcesados);
-			listaMensajes.mensajes->push(*mensajePosicionActualizada);
-			pthread_mutex_unlock(&servidor->mutexListaProcesados);
-			/*this->mensaje = "Procesando mensaje para "
-					+ listaMensajes.destinatario + "\n";
-			this->guardarLog(mensaje, DEBUG);*/
-		}
-	}
+	}*/
+
+	servidor->encolarMensajeProcesadoParaCadaCliente(mensajeAProcesar,mensajeJugadorPosActualizada);
 	} while (jugadorSalto);
 }
 
@@ -224,7 +218,8 @@ void Servidor::procesarMensajes() {
 		{
 			/*ParametrosServidor parametrosServidor;
 			parametrosServidor.mensajeAProcesar = mensajeAProcesar;
-			parametrosServidor.servidor = this;*/
+			parametrosServidor.servidor = this;
+			*/
 			this->actualizarPosicionesSalto(mensajeAProcesar);
 			/*pthread_create(&threadSalto,NULL,&actualizarPosiciones,&parametrosServidor);
 			pthread_detach(threadSalto);*/

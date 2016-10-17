@@ -42,6 +42,7 @@ private:
 	pthread_t threadProcesador;
 	pthread_t threadChecker;
 	list<string> clientesDisponibles;
+	pthread_mutex_t mutexSocket;
 	bool terminoComunicacion;
 
 public:

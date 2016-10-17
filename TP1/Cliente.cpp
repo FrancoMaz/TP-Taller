@@ -124,11 +124,13 @@ void Cliente::corroborarConexion() {
 
 		do {
 			} while ((double)((clock()-tiempoInicio)/CLOCKS_PER_SEC) < 5);
+		pthread_mutex_lock(&mutexSocket);
 		ok = send(this->socketCliente, escuchando, strlen(escuchando), 0);
 		if (ok > 0)
 		{
 			ok = recv(this->socketCliente, buffer, BUFFER_MAX_SIZE, 0);
 		}
+		pthread_mutex_unlock(&mutexSocket);
  	}
 	if (this->opcionMenu != 4) {
 		this->terminoComunicacion = true;
@@ -165,10 +167,12 @@ void Cliente::conectar(string nombre, string contrasenia) {
 		{
 			cout << "No se pudo setear el timeout del send del socket" << endl;
 		}
+		pthread_mutex_lock(&mutexSocket);
 		send(socketCliente, buffer, strlen(nombreYPass) + 1, 0);
 		this->nombre = nombre;
 		//this->clientesDisponibles.push_front("hola"); //pongo cualquier cosa para comprobar el ciclo ok.
 		recv(socketCliente, datosRecibidos, BUFFER_MAX_SIZE, 0);
+		pthread_mutex_unlock(&mutexSocket);
 		string datos = datosRecibidos;
 		string desconectarse = "Desconectar";
 		if (strcmp(datos.c_str(), desconectarse.c_str()) == 0) {
@@ -202,7 +206,9 @@ void Cliente::desconectar() {
 	char buffer[BUFFER_MAX_SIZE];
 	char* desconectar = "4|";
 	strcpy(buffer, desconectar);
+	pthread_mutex_lock(&mutexSocket);
 	send(socketCliente,buffer,strlen(desconectar),0);
+	pthread_mutex_unlock(&mutexSocket);
 	close(socketCliente);
 }
 
@@ -223,11 +229,13 @@ void Cliente::enviar(string mensaje, string destinatario) {
 		int largo = strlen(stringDatosMensaje);
 		int largoRequest;
 		//cout<<"Mensaje enviado: "<<mensaje<<endl;
+		pthread_mutex_lock(&mutexSocket);
 		while (largo > 0)
 		{
 			largoRequest = send(this->socketCliente, stringDatosMensaje, largo, 0);
 			largo -= largoRequest;
 		}
+		pthread_mutex_unlock(&mutexSocket);
 		free(mensajeCadena);
 		mensajeAEnviar->~Mensaje();
 	}
@@ -247,6 +255,7 @@ string Cliente::recibir() {
 	memset(colaMensajes, '\0', BUFFER_MAX_SIZE);
 	string metodo = "2|" + this->nombre + "#";
 	char* recibir = strdup(metodo.c_str()); //2 es recibir
+	pthread_mutex_lock(&mutexSocket);
 	send(this->socketCliente, recibir, strlen(recibir), 0);
 	string datosRecibidos = "";
 	int largoRequest;
@@ -271,6 +280,7 @@ string Cliente::recibir() {
 		}
 		memset(colaMensajes, '\0', strlen(colaMensajes));
 	}
+	pthread_mutex_unlock(&mutexSocket);
 	return datosRecibidos;
 }
 
@@ -410,9 +420,11 @@ void Cliente::enviarRequest(string request){
 	strcpy(buffer, request.c_str());
 	int largoEnviado = 0;
 	int largoTotal = strlen(req);
+	pthread_mutex_lock(&mutexSocket);
 	do{
 		largoEnviado += send(socketCliente,buffer,strlen(req),0);
 	} while (largoEnviado < largoTotal);
+	pthread_mutex_unlock(&mutexSocket);
 }
 
 string Cliente::recibirResponse(){
@@ -420,12 +432,14 @@ string Cliente::recibirResponse(){
 	memset(colaMensajes, '\0', BUFFER_MAX_SIZE);
 	int largoRecibido = 0;
 	string datosRecibidos = "";
+	pthread_mutex_lock(&mutexSocket);
 	do
 	{
 		largoRecibido += recv(socketCliente,colaMensajes,BUFFER_MAX_SIZE,0);
 		datosRecibidos += string(colaMensajes);
 		memset(colaMensajes, '\0', strlen(colaMensajes));
 	}while (largoRecibido >= BUFFER_MAX_SIZE and !stringTerminaCon(datosRecibidos, "@")); //mientras el largoRequest sea del tamaño del max size, sigo pidiendo
+	pthread_mutex_unlock(&mutexSocket);
 	return datosRecibidos;
 }
 
