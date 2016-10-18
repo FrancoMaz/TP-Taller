@@ -257,7 +257,7 @@ void TexturaSDL::aplicarPosicionConTamanio(float x, float y, int ancho, int alto
 
 void TexturaSDL::aplicarPosicionDeFrame(float x, float y, int frame, double rotacion, SDL_RendererFlip flip){
 	if(frame < this->spriteClips.size()){
-		this->frameActual = frame*8;
+		this->frameActual = frame;
 		this->aplicarPosicionYTamanio(x,y,this->ancho,this->alto, NULL, rotacion, flip);
 	}
 }

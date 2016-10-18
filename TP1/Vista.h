@@ -14,6 +14,7 @@
 #include <SDL2/SDL.h>
 #include <vector>
 #include <string>
+#include "VistaJugador.h"
 
 using namespace std;
 
@@ -38,7 +39,7 @@ private:
 		int y;
 		string sprite;
 	};
-	vector<vistaJugador> vistaJugadores;
+	vector<VistaJugador*> vistaJugadores;
 
 	datosConexion cargarPantallaIngresoDatos(bool aviso, int numeroPantalla);
 
