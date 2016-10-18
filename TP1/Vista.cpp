@@ -294,8 +294,8 @@ void Vista::cargarEscenario(){
 	this->ventana->limpiar();
 	texturaFondoEscenario->aplicarPosicionDePorcion(0,0,&camara,0,SDL_FLIP_NONE);
 	for (int i = 0; i < vistaJugadores.size(); i++){
-		vistaJugador vistaJugador = vistaJugadores.at(i);
-		vistaJugador.texturaJugador->aplicarPosicion(vistaJugador.x,vistaJugador.y,0,SDL_FLIP_NONE);
+		VistaJugador* vistaJugador = vistaJugadores.at(i);
+		vistaJugador->texturaJugador->aplicarPosicion(vistaJugador->x,vistaJugador->y,0,SDL_FLIP_NONE);
 	}
 	this->ventana->actualizar();
 	while(!this->controlador->comprobarCierreVentana()){
@@ -310,17 +310,17 @@ void Vista::actualizarJugador(string remitente, int x, int y)
 	texturaFondoEscenario->aplicarPosicionDePorcion(0,0,&camara,0,SDL_FLIP_NONE);
 	TexturaSDL* texturaJugadorX;
 	for (int i = 0; i < vistaJugadores.size(); i++){
-		vistaJugador vistaJugador = vistaJugadores.at(i);
-		if (vistaJugador.nombre == remitente)
+		VistaJugador* vistaJugador = vistaJugadores.at(i);
+		texturaJugadorX = vistaJugador->texturaJugador;
+		cout << vistaJugador->nombre << endl;
+		cout << to_string(vistaJugador->x) << endl;
+		cout << to_string(vistaJugador->y) << endl;
+		if (vistaJugador->nombre == remitente)
 		{
-			texturaJugadorX = vistaJugador.texturaJugador;
-			texturaJugadorX->aplicarPosicion(x,y,0,SDL_FLIP_NONE);
-			break;
+ 			vistaJugador->x = x;
+			vistaJugador->y = y;
 		}
-		else{
-			texturaJugadorX = vistaJugador.texturaJugador;
-			texturaJugadorX->aplicarPosicion(vistaJugador.x,vistaJugador.y,0,SDL_FLIP_NONE);
-		}
+		texturaJugadorX->aplicarPosicion(vistaJugador->x,vistaJugador->y,0,SDL_FLIP_NONE);
 	}
 	this->ventana->actualizar();
 }
@@ -335,11 +335,13 @@ void Vista::cerrar(){
 
 void Vista::cargarVistaInicialJugador(string nombre, int x, int y)
 {
-	vistaJugador vistaJugador;
-	vistaJugador.texturaJugador = ventana->crearTextura("Recursos/Jugador.png",3);
+	VistaJugador* vistaJugador;
+	/*vistaJugador.texturaJugador = ventana->crearTextura("Recursos/Jugador.png",3);
 	vistaJugador.nombre = nombre;
 	vistaJugador.x = x;
 	vistaJugador.y = y;
+	*/
+	vistaJugador = new VistaJugador(nombre,x,y,(ventana->crearTextura("Recursos/Jugador.png",3)));
 	vistaJugadores.push_back(vistaJugador);
 }
 

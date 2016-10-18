@@ -66,12 +66,6 @@ void procesarUltimosMensajes(string mensajes)
 			texto = strtok(NULL,"#");
 			char* condicion = texto;
 			texto = strtok(NULL,"|");
-			/*cout<<"Mensaje de "<<remitente<<":"<<endl;
-			cout << "Posicion x: " << x << endl;
-			cout << "Posicion y: " << y << endl;
-			cout << "Sprite a ejecutar: " << spriteAEjecutar << endl;
-			cout << "Condicion: " << condicion << endl;
-			*/
 			vista->actualizarJugador(string(remitente),atoi((string(x).c_str())),atoi(string(y).c_str()));
 		}
 	}

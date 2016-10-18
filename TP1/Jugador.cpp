@@ -88,7 +88,6 @@ void Jugador::actualizarPosicion(SDL_Keycode tecla, bool sePresionoTecla)
 	posicion.first += velocidades.first;
 	posicion.second += velocidades.second;
 
-
 }
 
 void Jugador::setConectado()

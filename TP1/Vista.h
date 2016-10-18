@@ -11,6 +11,7 @@
 #include "VentanaSDL.h"
 #include "TexturaSDL.h"
 #include "Controlador.h"
+#include "VistaJugador.h"
 #include <SDL2/SDL.h>
 #include <vector>
 #include <string>
@@ -37,7 +38,7 @@ private:
 		int x;
 		int y;
 	};
-	vector<vistaJugador> vistaJugadores;
+	vector<VistaJugador*> vistaJugadores;
 
 	datosConexion cargarPantallaIngresoDatos(bool aviso, int numeroPantalla);
 

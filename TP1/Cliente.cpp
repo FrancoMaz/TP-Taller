@@ -153,6 +153,7 @@ void Cliente::conectar(string nombre, string contrasenia) {
 	this->addr_size = sizeof direccionServidor;
 	char* nombreYPass = strdup((nombre + ',' + contrasenia).c_str()); // convierte el string de const char* a char*
 	cout << "Intentando conectarse con el servidor. . ." << endl;
+	pthread_mutex_lock(&mutexSocket);
 	if (connect(socketCliente, (struct sockaddr *) &direccionServidor,addr_size) == 0) {
 
 		strcpy(buffer, nombreYPass);
@@ -167,7 +168,6 @@ void Cliente::conectar(string nombre, string contrasenia) {
 		{
 			cout << "No se pudo setear el timeout del send del socket" << endl;
 		}
-		pthread_mutex_lock(&mutexSocket);
 		send(socketCliente, buffer, strlen(nombreYPass) + 1, 0);
 		this->nombre = nombre;
 		//this->clientesDisponibles.push_front("hola"); //pongo cualquier cosa para comprobar el ciclo ok.
@@ -452,7 +452,6 @@ bool Cliente::checkearInicioJuego(Vista* vista)
 	char strResponse[response.length()];
 	strcpy(strResponse, response.c_str());
 	char* strComenzo = strtok(strResponse,"|#");
-
 	char* nombreJugador;
 	char* x;
 	char* y;
@@ -470,7 +469,6 @@ bool Cliente::checkearInicioJuego(Vista* vista)
 			strComenzo = strtok(NULL,"|#");
 			y = strComenzo;
 			strComenzo = strtok(NULL,"|#");
-
 			vista->cargarVistaInicialJugador(nombreJugador,atoi(x),atoi(y));
 		}
 		return true;
