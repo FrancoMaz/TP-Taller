@@ -22,7 +22,7 @@ private:
 public:
 	ImagenDto(const char* path, const char* zIndex, const char* velocidad);
 	virtual ~ImagenDto();
-	const char* getPath();
+	string getPath();
 	const char* getZIndex();
 	const char* getVelocidad();
 };

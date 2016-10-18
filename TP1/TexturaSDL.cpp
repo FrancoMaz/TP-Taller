@@ -142,11 +142,11 @@ void TexturaSDL::aplicarPosicionYTamanio(float x, float y, int ancho, int alto, 
 
 	if (this->spriteClips.size() != 0){
 		//El frameActual lo divido por 8 para reducir la velocidad de fotogramas
-		clip = &this->spriteClips[this->frameActual/8];
+		clip = &this->spriteClips[this->frameActual];
 		rectangulo.w = clip->w;
 		rectangulo.h = clip->h;
 		this->frameActual++;
-		if((this->frameActual/8) >= this->spriteClips.size()){
+		if((this->frameActual) >= this->spriteClips.size()){
 			this->frameReset();
 		}
 	}

@@ -303,23 +303,44 @@ void Vista::cargarEscenario(){
 	}
 }
 
-void Vista::actualizarJugador(string remitente, int x, int y)
+void Vista::actualizarJugador(string remitente, int x, int y, string sprite, string condicion, int cantidadDeFotogramas)
 {
 	SDL_Rect camara = {0,0,ANCHO_VENTANA,ALTO_VENTANA};
 	this->ventana->limpiar();
 	texturaFondoEscenario->aplicarPosicionDePorcion(0,0,&camara,0,SDL_FLIP_NONE);
+	SDL_RendererFlip flip = SDL_FLIP_NONE;
 	TexturaSDL* texturaJugadorX;
 	for (int i = 0; i < vistaJugadores.size(); i++){
 		vistaJugador vistaJugador = vistaJugadores.at(i);
 		if (vistaJugador.nombre == remitente)
 		{
 			texturaJugadorX = vistaJugador.texturaJugador;
-			texturaJugadorX->aplicarPosicion(x,y,0,SDL_FLIP_NONE);
+			texturaJugadorX->cargarImagen("Recursos/" + sprite + ".png");
+			texturaJugadorX->generarSprite(cantidadDeFotogramas);
+			if (condicion == "Normal")
+			{
+				flip = SDL_FLIP_NONE;
+			}
+			else
+			{
+				flip = SDL_FLIP_HORIZONTAL;
+			}
+			texturaJugadorX->aplicarPosicion(x,y,0,flip);
 			break;
 		}
 		else{
 			texturaJugadorX = vistaJugador.texturaJugador;
-			texturaJugadorX->aplicarPosicion(vistaJugador.x,vistaJugador.y,0,SDL_FLIP_NONE);
+			texturaJugadorX->cargarImagen("Recursos/" + sprite + ".png");
+			texturaJugadorX->generarSprite(cantidadDeFotogramas);
+			if (condicion == "Normal")
+				{
+					flip = SDL_FLIP_NONE;
+				}
+			else
+				{
+					flip = SDL_FLIP_HORIZONTAL;
+				}
+			texturaJugadorX->aplicarPosicion(vistaJugador.x,vistaJugador.y,0,flip);
 		}
 	}
 	this->ventana->actualizar();

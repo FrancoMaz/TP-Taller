@@ -57,7 +57,7 @@ void Jugador::actualizarPosicion(SDL_Keycode tecla, bool sePresionoTecla)
 		if(angulo == 0)
 		{
 			saltar = true;
-			spriteAEjecutar = "Jugador Saltando";
+			//spriteAEjecutar = "Jugador Saltando";
 		}
 	}
 	if(tecla == SDLK_RIGHT && !sePresionoTecla)

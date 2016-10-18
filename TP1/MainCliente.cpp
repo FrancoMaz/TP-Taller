@@ -16,6 +16,7 @@
 #include <netdb.h>
 #include "Cliente.h"
 #include "Vista.h"
+#include "Handshake.h"
 
 using namespace std;
 
@@ -42,13 +43,33 @@ void* verificarConexion(void * arg){
     //comunicacion->termino = cliente->corroborarConexion();
 }
 
-void procesarUltimosMensajes(string mensajes)
+int getCantidadDeFotogramas(string spriteAEjecutar, Handshake* handshake)
+{
+	list<SpriteDto*> listaSprites = handshake->getSprites1()->getSprites();
+	cout << "path: " << handshake->getImagen1()->getPath() << endl;
+	int cantFotogramas = 0;
+	for (list<SpriteDto*>::iterator spriteActual = listaSprites.begin();
+			spriteActual != listaSprites.end();spriteActual++)
+	{
+		SpriteDto* sprite;
+		sprite = *spriteActual;
+		cout << "id: " << sprite->getId() << endl;
+		if ((spriteAEjecutar + ".png") == string(sprite->getId()))
+		{
+			cantFotogramas = atoi(sprite->getCantidadDeFotogramas());
+		}
+	}
+	return cantFotogramas;
+}
+
+void procesarUltimosMensajes(string mensajes, Cliente* cliente)
 {   string mensajeVacio = "#noHayMensajes@";
 	//cout << "Ultimos mensajes recibidos: " << endl;
 	if(strcmp(mensajes.c_str(), mensajeVacio.c_str()) != 0){
 		//cout<<"No hay mensajes nuevos"<<endl;}
 	//else{
 		//cout << mensajes << endl;
+		mensajes[mensajes.length() - 1] = '#';
 		char str[mensajes.length()];
 		strcpy(str, mensajes.c_str());
 		char* texto = strtok(str, "|");
@@ -66,13 +87,29 @@ void procesarUltimosMensajes(string mensajes)
 			texto = strtok(NULL,"#");
 			char* condicion = texto;
 			texto = strtok(NULL,"|");
-			/*cout<<"Mensaje de "<<remitente<<":"<<endl;
+			string handshakeRecibido = cliente->getHandshakeRecibido();
+			Handshake* handshakeDeserializado = cliente->deserializarHandshake(handshakeRecibido, false);
+			list<SpriteDto*> listaSprites = handshakeDeserializado->getSprites1()->getSprites();
+			int cantidadDeFotogramas = 0;
+			for (list<SpriteDto*>::iterator spriteActual = listaSprites.begin();
+					spriteActual != listaSprites.end();spriteActual++)
+			{
+				SpriteDto* sprite;
+				sprite = *spriteActual;
+				if ((string(spriteAEjecutar) + ".png") == string(sprite->getId()))
+				{
+					cantidadDeFotogramas = atoi(sprite->getCantidadDeFotogramas());
+				}
+			}
+			//int cantidadDeFotogramas = getCantidadDeFotogramas(string(spriteAEjecutar), handshakeDeserializado);
+			cout<<"Mensaje de "<<remitente<<":"<<endl;
 			cout << "Posicion x: " << x << endl;
 			cout << "Posicion y: " << y << endl;
 			cout << "Sprite a ejecutar: " << spriteAEjecutar << endl;
-			cout << "Condicion: " << condicion << endl;*/
+			cout << "Condicion: " << condicion << endl;
+			cout << "CantidadDeFotogramas: " << cantidadDeFotogramas << endl;
 
-			vista->actualizarJugador(string(remitente),atoi((string(x).c_str())),atoi(string(y).c_str()));
+			vista->actualizarJugador(string(remitente),atoi((string(x).c_str())),atoi(string(y).c_str()), string(spriteAEjecutar), string(condicion), cantidadDeFotogramas);
 		}
 	}
 }
@@ -82,8 +119,8 @@ void* recibirPosicionJugadores(void* arg) {
 	string datosRecibidos;
 	while(!controlador->comprobarCierreVentana()){
 		datosRecibidos = cliente->recibir();
-		procesarUltimosMensajes(datosRecibidos);
-		usleep(100000);
+		procesarUltimosMensajes(datosRecibidos, cliente);
+		usleep(1/1000);
 	}
 }
 

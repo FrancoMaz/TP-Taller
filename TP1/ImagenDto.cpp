@@ -13,8 +13,8 @@ ImagenDto::ImagenDto(const char* path, const char* zIndex, const char* velocidad
 	this->velocidad = velocidad;
 }
 
-const char* ImagenDto::getPath() {
-	return this->path;
+string ImagenDto::getPath() {
+	return string(this->path);
 }
 
 const char* ImagenDto::getZIndex() {

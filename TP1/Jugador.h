@@ -15,9 +15,9 @@
 #include "VentanaSDL.h"
 #include "TexturaSDL.h"
 
-#define velocidad 2
+#define velocidad 5
 #define PI 3.14159265
-#define VELMAX 10
+#define VELMAX 20
 
 using namespace std;
 

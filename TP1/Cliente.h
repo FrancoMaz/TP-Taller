@@ -29,6 +29,7 @@
 #include "ImagenDto.h"
 #include "SpriteDto.h"
 #include "SetDeSpritesDto.h"
+#include "Handshake.h"
 #define BUFFER_MAX_SIZE 200
 using namespace std;
 
@@ -56,6 +57,8 @@ private:
 			char* alto;
 			char* ancho;
 	};
+	Handshake* handshake;
+	string handshakeRecibido;
 
 public:
 	Cliente();
@@ -63,8 +66,8 @@ public:
 	virtual ~Cliente();
 	ImagenDto* deserializarImagen(char* campo);
 	SetDeSpritesDto* deserializarSprite(char* campo);
-	void deserializarHandshake(string handshake);
-	void recorrerSprites(list<SpriteDto*> sprites, list<const char*> *archivos);
+	Handshake* deserializarHandshake(string handshake, bool primeraVez);
+	void recorrerSprites(list<SpriteDto*> sprites, list<string> *archivos);
 	void recibirHandshake();
 	void mostrarMenuYProcesarOpcion();
 	void elegirOpcionDelMenu(int opcion);
@@ -99,8 +102,10 @@ public:
 
 	//Comprueba si se inicio el juego
 	bool checkearInicioJuego(Vista* vista);
-	bool verificarBiblioteca(structHandshake handshake);
-	bool verificarExistencia(const char* archivo);
+	bool verificarBiblioteca(Handshake* handshake);
+	bool verificarExistencia(string archivo);
+	int getCantidadDeFotogramas(string sprite);
+	string getHandshakeRecibido();
 };
 
 #endif /* TP1_CLIENTE_H_ */

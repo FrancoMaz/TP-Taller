@@ -16,8 +16,8 @@ SpriteDto::SpriteDto(const char* id, const char* cantidadDeFotogramas, const cha
 	this->zIndex = zIndex;
 }
 
-const char* SpriteDto::getId() {
-	return this->id;
+string SpriteDto::getId() {
+	return string(this->id);
 }
 
 const char* SpriteDto::getCantidadDeFotogramas() {

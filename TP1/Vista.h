@@ -36,6 +36,7 @@ private:
 		string nombre;
 		int x;
 		int y;
+		string sprite;
 	};
 	vector<vistaJugador> vistaJugadores;
 
@@ -53,7 +54,7 @@ public:
 	void cargarArchivos();
 	bool ventanaCerrada();
 	void cerrar();
-	void actualizarJugador(string remitente, int x, int y);
+	void actualizarJugador(string remitente, int x, int y, string sprite, string condicion, int cantidadDeFotogramas);
 	void cargarVistaInicialJugador(string nombre, int x, int y);
 
 };

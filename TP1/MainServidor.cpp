@@ -160,9 +160,9 @@ void* procesar(void* arg) {
 				ok = send(socket, buffer, strlen(buffer), 0);
 			}while (ok == 0 );
 			*/
-			pthread_mutex_lock(&servidor->mutexSocket);
+			//pthread_mutex_lock(&servidor->mutexSocket);
 			ok = send(socket, buffer, strlen(buffer), 0);
-			pthread_mutex_unlock(&servidor->mutexSocket);
+			//pthread_mutex_unlock(&servidor->mutexSocket);
 			if (ok == 0){
 				servidor->guardarLog("Se cerró la conexión con el cliente " + string(usuario) + string(".\n"),DEBUG);
 			}

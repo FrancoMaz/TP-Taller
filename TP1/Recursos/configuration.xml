@@ -25,22 +25,22 @@
 	      <Imagen>Recursos/</Imagen>
 	      <z-index>3</z-index>
 	    </SpriteSalto> 
-	    <SpriteCaminar>
-	      <Id>caminarRojo.png</Id>
-	      <CantFotogramas>4</CantFotogramas>
+	    <SpriteCorrer>
+	      <Id>Jugador_corriendo.png</Id>
+	      <CantFotogramas>9</CantFotogramas>
 	      <Ancho>100</Ancho>
 	      <Alto>50</Alto>
 	      <Imagen>Recursos/</Imagen>
 	      <z-index>3</z-index>
-	    </SpriteCaminar>
-	    <SpriteAgacharse>
-	      <Id>agacharseRojo.png</Id>
-	      <CantFotogramas>4</CantFotogramas>
+	    </SpriteCorrer>
+	    <SpriteQuieto>
+	      <Id>Jugador.png</Id>
+	      <CantFotogramas>3</CantFotogramas>
 	      <Ancho>100</Ancho>
 	      <Alto>50</Alto>
 	      <Imagen>Recursos/</Imagen>
 	      <z-index>3</z-index>
-	    </SpriteAgacharse>
+	    </SpriteQuieto>
 	  </SetRojo>
 	  <SetVerde>
 	    <Carpeta>Verde</Carpeta>
