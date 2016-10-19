@@ -59,10 +59,10 @@ string XmlParser::serializarEscenario(){
 		escenarioConcatenado += (*i).getPath();
 		//cout << (*i).getPath() << endl;
 		escenarioConcatenado += ",";
-		escenarioConcatenado += (*i).getZIndex();
+		escenarioConcatenado += (*i).getAncho();
 		//cout << (*i).getZIndex() << endl;
 		escenarioConcatenado += ",";
-		escenarioConcatenado += (*i).getVelocidad();
+		escenarioConcatenado += (*i).getAlto();
 		//cout << (*i).getVelocidad() << endl;
 		escenarioConcatenado += "|";
 	}
