@@ -17,14 +17,14 @@ using namespace std;
 class ImagenDto {
 private:
 	const char* path;
-	const char* zIndex;
-	const char* velocidad;
+	const char* ancho;
+	const char* alto;
 public:
-	ImagenDto(const char* path, const char* zIndex, const char* velocidad);
+	ImagenDto(const char* path, const char* ancho, const char* alto);
 	virtual ~ImagenDto();
 	string getPath();
-	const char* getZIndex();
-	const char* getVelocidad();
+	const char* getAncho();
+	const char* getAlto();
 };
 
 #endif /* IMAGENDTO_H_ */

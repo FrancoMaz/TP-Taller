@@ -43,25 +43,6 @@ void* verificarConexion(void * arg){
     //comunicacion->termino = cliente->corroborarConexion();
 }
 
-int getCantidadDeFotogramas(string spriteAEjecutar, Handshake* handshake)
-{
-	list<SpriteDto*> listaSprites = handshake->getSprites1()->getSprites();
-	cout << "path: " << handshake->getImagen1()->getPath() << endl;
-	int cantFotogramas = 0;
-	for (list<SpriteDto*>::iterator spriteActual = listaSprites.begin();
-			spriteActual != listaSprites.end();spriteActual++)
-	{
-		SpriteDto* sprite;
-		sprite = *spriteActual;
-		cout << "id: " << sprite->getId() << endl;
-		if ((spriteAEjecutar + ".png") == string(sprite->getId()))
-		{
-			cantFotogramas = atoi(sprite->getCantidadDeFotogramas());
-		}
-	}
-	return cantFotogramas;
-}
-
 void procesarUltimosMensajes(string mensajes, Cliente* cliente)
 {   string mensajeVacio = "#noHayMensajes@";
 	//cout << "Ultimos mensajes recibidos: " << endl;
@@ -89,19 +70,21 @@ void procesarUltimosMensajes(string mensajes, Cliente* cliente)
 			texto = strtok(NULL,"|");
 			string handshakeRecibido = cliente->getHandshakeRecibido();
 			Handshake* handshakeDeserializado = cliente->deserializarHandshake(handshakeRecibido, false);
-			list<SpriteDto*> listaSprites = handshakeDeserializado->getSprites1()->getSprites();
+			vector<SetDeSpritesDto*> setsSprites = handshakeDeserializado->getSprites();
 			int cantidadDeFotogramas = 0;
-			for (list<SpriteDto*>::iterator spriteActual = listaSprites.begin();
-					spriteActual != listaSprites.end();spriteActual++)
-			{
-				SpriteDto* sprite;
-				sprite = *spriteActual;
-				if ((string(spriteAEjecutar) + ".png") == string(sprite->getId()))
+			for (int i = 0; i < setsSprites.size(); i++){
+				list<SpriteDto*> listaSprites = setsSprites.at(i)->getSprites();
+				for (list<SpriteDto*>::iterator spriteActual = listaSprites.begin();
+						spriteActual != listaSprites.end();spriteActual++)
 				{
-					cantidadDeFotogramas = atoi(sprite->getCantidadDeFotogramas());
+					SpriteDto* sprite;
+					sprite = *spriteActual;
+					if ((string(spriteAEjecutar) + ".png") == string(sprite->getId()))
+					{
+						cantidadDeFotogramas = atoi(sprite->getCantidadDeFotogramas());
+					}
 				}
 			}
-			//int cantidadDeFotogramas = getCantidadDeFotogramas(string(spriteAEjecutar), handshakeDeserializado);
 			cout<<"Mensaje de "<<remitente<<":"<<endl;
 			cout << "Posicion x: " << x << endl;
 			cout << "Posicion y: " << y << endl;

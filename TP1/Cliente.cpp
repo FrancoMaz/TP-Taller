@@ -3,6 +3,7 @@
 #include <iostream>
 #include <string.h>
 #include <unistd.h>
+#include <vector>
 
 using namespace std;
 
@@ -29,13 +30,13 @@ void Cliente::inicializarSocket(){
 //----------------------------METODOS PARA EL HANDSHAKE-------------------------------------
 ImagenDto* Cliente::deserializarImagen(char* campo){
 
-	const char *nombre, *zIndex, *velocidad;
+	const char *nombre, *ancho, *alto;
 	nombre = campo;
 	campo = strtok(NULL,",");
-	zIndex = campo;
-	campo = strtok(NULL, "|"); //va a tomar el ultimo campo no importa el delimitador porque va a ser el final.
-	velocidad = campo;
-	ImagenDto *imagenReconstruida = new ImagenDto(nombre,zIndex,velocidad);
+	ancho = campo;
+	campo = strtok(NULL, "|");
+	alto = campo;
+	ImagenDto *imagenReconstruida = new ImagenDto(nombre,ancho,alto);
 	return imagenReconstruida;
 }
 
@@ -106,65 +107,47 @@ Handshake* Cliente::deserializarHandshake(string handshake, bool primeraVez){
 	char* campo = strtok(str, "|");
 	campo = strtok(NULL, "[");
     const char *escenario,*sprites,*ventana;
-    //structHandshake handshakeReconstruido;
     escenario = "Escenario";
     sprites = "SetSprites";
     ventana = "Ventana";
-    ImagenDto* imagen1;
-    ImagenDto* imagen2;
-    SetDeSpritesDto* set1;
-    SetDeSpritesDto* set2;
-    SetDeSpritesDto* set3;
+    vector<ImagenDto*> imagenes;
+    vector<SetDeSpritesDto*> setsSprites;
     char* ancho;
     char* alto;
 	if (strcmp(campo,"Escenario") == 0){
 		//recupero la imagen1
 		campo = strtok(NULL,",");
-		//handshakeReconstruido.imagen1 = deserializarImagen(campo);
-		imagen1 = deserializarImagen(campo);
-		//this->handshake->setImagen1(deserializarImagen(campo));
+		imagenes.push_back(deserializarImagen(campo));
 		//recupero la imagen2
 		campo = strtok(NULL,",");
-		imagen2 = deserializarImagen(campo);
-		//handshakeReconstruido.imagen2 = deserializarImagen(campo);
-		//this->handshake->setImagen2(deserializarImagen(campo));
+		imagenes.push_back(deserializarImagen(campo));
 		campo = strtok(NULL, "-");
 		campo = strtok(NULL, "[");
 	}
 	if(strcmp(campo,sprites) == 0){
 		//recupero sprite1
 		campo = strtok(NULL,";");
-		set1 = deserializarSprite(campo);
-		//handshakeReconstruido.setSprite1 = deserializarSprite(campo);
-		//this->handshake->setSprites1(deserializarSprite(campo));
+		setsSprites.push_back(deserializarSprite(campo));
 		//recupero sprite2
 		campo = strtok(NULL,"-");
 		campo = strtok(NULL,";");
-		set2 = deserializarSprite(campo);
-		//handshakeReconstruido.setSprite2 = deserializarSprite(campo);
-		//this->handshake->setSprites2(deserializarSprite(campo));
+		setsSprites.push_back(deserializarSprite(campo));
 		//recupero sprite3
 		campo = strtok(NULL,"-");
 		campo = strtok(NULL,";");
-		set3 = deserializarSprite(campo);
-		//handshakeReconstruido.setSprite3 = deserializarSprite(campo);
-		//this->handshake->setSprites3(deserializarSprite(campo));
+		setsSprites.push_back(deserializarSprite(campo));
 		campo = strtok(NULL,"]");
 		campo = strtok(NULL,"[");
 	}
 	if(strcmp(campo,ventana) == 0){
 		//obtengo ancho
 		campo = strtok(NULL,",");
-		//handshakeReconstruido.ancho = campo;
 		ancho = campo;
-		//this->handshake->setAncho(campo);
 		//obtengo alto
 		campo = strtok(NULL,"]");
 		alto = campo;
-		//handshakeReconstruido.alto = campo;
-		//this->handshake->setAlto(campo);
 	}
-	handshakeAux = new Handshake(imagen1, imagen2, set1, set2, set3, ancho, alto);
+	handshakeAux = new Handshake(imagenes, setsSprites, ancho, alto);
 	if (primeraVez){
 		if(this->verificarBiblioteca(handshakeAux)){
 		cout<<"Usted tiene todas las imagenes necesarias"<<endl;
@@ -192,11 +175,14 @@ bool Cliente::verificarExistencia(string archivo){
 
 bool Cliente::verificarBiblioteca(Handshake* handshakeAux) {
 	list<string> *archivos = new list<string>();
-	archivos->push_back(handshakeAux->getImagen1()->getPath());
-	archivos->push_back(handshakeAux->getImagen2()->getPath());
-	recorrerSprites(handshakeAux->getSprites1()->getSprites(), archivos);
-	recorrerSprites(handshakeAux->getSprites2()->getSprites(), archivos);
-	recorrerSprites(handshakeAux->getSprites3()->getSprites(), archivos);
+	vector<ImagenDto*> imagenes = handshakeAux->getImagenes();
+	vector<SetDeSpritesDto*> setsSprites = handshakeAux->getSprites();
+	for (int i = 0; i < imagenes.size(); i++){
+		archivos->push_back(imagenes.at(i)->getPath());
+	}
+	for (int i = 0; i < setsSprites.size(); i++){
+		recorrerSprites(setsSprites.at(i)->getSprites(), archivos);
+	}
 	for (list<string>::iterator archivoActual = archivos->begin(); archivoActual != archivos->end();archivoActual++){
 		string nombreArchivo = *archivoActual;
 		if(!verificarExistencia(nombreArchivo)){return false;}
@@ -360,6 +346,7 @@ bool Cliente::conectar(string nombre, string contrasenia) {
 	this->addr_size = sizeof direccionServidor;
 	char* nombreYPass = strdup((nombre + ',' + contrasenia).c_str()); // convierte el string de const char* a char*
 	cout << "Intentando conectarse con el servidor. . ." << endl;
+	pthread_mutex_lock(&mutexSocket);
 	if (connect(socketCliente, (struct sockaddr *) &direccionServidor,addr_size) == 0) {
 
 		strcpy(buffer, nombreYPass);
@@ -374,7 +361,6 @@ bool Cliente::conectar(string nombre, string contrasenia) {
 		{
 			cout << "No se pudo setear el timeout del send del socket" << endl;
 		}
-		pthread_mutex_lock(&mutexSocket);
 		send(socketCliente, buffer, strlen(nombreYPass) + 1, 0);
 		this->nombre = nombre;
 		//this->clientesDisponibles.push_front("hola"); //pongo cualquier cosa para comprobar el ciclo ok.
@@ -692,23 +678,6 @@ bool Cliente::checkearInicioJuego(Vista* vista)
 		return true;
 	}
 	return false;
-}
-
-int Cliente::getCantidadDeFotogramas(string spriteAEjecutar)
-{
-	list<SpriteDto*> listaSprites = this->handshake->getSprites1()->getSprites();
-	int cantFotogramas = 0;
-	for (list<SpriteDto*>::iterator spriteActual = listaSprites.begin();
-				spriteActual != listaSprites.end();spriteActual++)
-	{
-		SpriteDto* sprite;
-		sprite = *spriteActual;
-		if ((spriteAEjecutar + ".png") == string(sprite->getId()))
-		{
-			cantFotogramas = atoi(sprite->getCantidadDeFotogramas());
-		}
-	}
-	return cantFotogramas;
 }
 
 string Cliente::getHandshakeRecibido()
