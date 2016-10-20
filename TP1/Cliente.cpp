@@ -60,7 +60,7 @@ SetDeSpritesDto* Cliente::deserializarSprite(char* campo){
 	imagen = campo;
 	campo = strtok(NULL,";");
 	zIndex = campo;
-	SpriteDto* spriteSalto = new SpriteDto(string(id),atoi(cantFotogramas),atoi(ancho),atoi(alto),imagen,zIndex);
+	SpriteDto* spriteSalto = new SpriteDto(string(id),string(cantFotogramas),string(ancho),string(alto),imagen,zIndex);
 	spritesAccion.push_back(spriteSalto);
 
 	campo = strtok(NULL,",");
@@ -75,7 +75,7 @@ SetDeSpritesDto* Cliente::deserializarSprite(char* campo){
 	imagen = campo;
 	campo = strtok(NULL,";");
 	zIndex = campo;
-	SpriteDto* spriteCaminar = new SpriteDto(string(id),atoi(cantFotogramas),atoi(ancho),atoi(alto),imagen,zIndex);
+	SpriteDto* spriteCaminar = new SpriteDto(string(id),string(cantFotogramas),string(ancho),string(alto),imagen,zIndex);
 	spritesAccion.push_back(spriteCaminar);
 
 	campo = strtok(NULL,",");
@@ -91,7 +91,7 @@ SetDeSpritesDto* Cliente::deserializarSprite(char* campo){
 	//como va a ser el ultimo va a llegar a null asi que no creo que le de bola al "|"
 	campo = strtok(NULL,";");
 	zIndex = campo;
-	SpriteDto* spriteAgacharse = new SpriteDto(string(id),atoi(cantFotogramas),atoi(ancho),atoi(alto),imagen,zIndex);
+	SpriteDto* spriteAgacharse = new SpriteDto(string(id),string(cantFotogramas),string(ancho),string(alto),imagen,zIndex);
 	spritesAccion.push_back(spriteAgacharse);
 	SetDeSpritesDto* setSpriteReconstruido = new SetDeSpritesDto(carpeta,spritesAccion);
 

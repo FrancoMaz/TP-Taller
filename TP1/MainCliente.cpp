@@ -78,9 +78,9 @@ void procesarUltimosMensajes(string mensajes, Cliente* cliente)
 				for (int i = 0; i < listaSprites.size(); i++) {
 					if ((string(spriteAEjecutar)) == listaSprites.at(i)->getId())
 					{
-						cantidadDeFotogramas = listaSprites.at(i)->getCantidadDeFotogramas();
-						ancho = listaSprites.at(i)->getAncho();
-						alto =  listaSprites.at(i)->getAlto();
+						cantidadDeFotogramas = atoi(listaSprites.at(i)->getCantidadDeFotogramas().c_str());
+						ancho = atoi(listaSprites.at(i)->getAncho().c_str());
+						alto =  atoi(listaSprites.at(i)->getAlto().c_str());
 					}
 				}
 			}

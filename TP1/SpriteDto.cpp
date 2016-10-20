@@ -7,7 +7,7 @@
 
 #include "SpriteDto.h"
 
-SpriteDto::SpriteDto(string id, int cantidadDeFotogramas, int ancho, int alto, const char* path, const char* zIndex) {
+SpriteDto::SpriteDto(string id, string cantidadDeFotogramas, string ancho, string alto, const char* path, const char* zIndex) {
 	this->id = id;
 	this->cantidadDeFotogramas = cantidadDeFotogramas;
 	this->ancho = ancho;
@@ -20,15 +20,15 @@ string SpriteDto::getId() {
 	return this->id;
 }
 
-int SpriteDto::getCantidadDeFotogramas() {
+string SpriteDto::getCantidadDeFotogramas() {
 	return this->cantidadDeFotogramas;
 }
 
-int SpriteDto::getAncho() {
+string SpriteDto::getAncho() {
 	return this->ancho;
 }
 
-int SpriteDto::getAlto() {
+string SpriteDto::getAlto() {
 	return this->alto;
 }
 
