@@ -16,15 +16,15 @@ using namespace std;
 
 class ImagenDto {
 private:
-	const char* path;
-	const char* ancho;
-	const char* alto;
+	string path;
+	string ancho;
+	string alto;
 public:
-	ImagenDto(const char* path, const char* ancho, const char* alto);
+	ImagenDto(string path, string ancho, string alto);
 	virtual ~ImagenDto();
 	string getPath();
-	int getAncho();
-	int getAlto();
+	string getAncho();
+	string getAlto();
 };
 
 #endif /* IMAGENDTO_H_ */

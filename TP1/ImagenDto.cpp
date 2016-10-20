@@ -7,22 +7,22 @@
 
 #include "ImagenDto.h"
 
-ImagenDto::ImagenDto(const char* path, const char* ancho, const char* alto) {
+ImagenDto::ImagenDto(string path, string ancho, string alto) {
 	this->path = path;
 	this->ancho = ancho;
 	this->alto = alto;
 }
 
 string ImagenDto::getPath() {
-	return string(this->path);
+	return this->path;
 }
 
-int ImagenDto::getAncho() {
-	return atoi(this->ancho);
+string ImagenDto::getAncho() {
+	return this->ancho;
 }
 
-int ImagenDto::getAlto() {
-	return atoi(this->alto);
+string ImagenDto::getAlto() {
+	return this->alto;
 }
 
 ImagenDto::~ImagenDto() {

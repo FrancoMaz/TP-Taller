@@ -75,7 +75,7 @@ string XmlParser::serializarEscenario(){
 vector<ImagenDto*> XmlParser::getEscenario() {
 	if (this->escenario.empty()) {
 		for (pugi::xml_node image = this->rootNode.child("Escenario").first_child(); image; image = image.next_sibling()) {
-			ImagenDto* imagen = new ImagenDto(image.child_value("Archivo"), image.child_value("Ancho"), image.child_value("Alto"));
+			ImagenDto* imagen = new ImagenDto(string(image.child_value("Archivo")), string(image.child_value("Ancho")), string(image.child_value("Alto")));
 			this->escenario.push_back(imagen);
 		}
 	}

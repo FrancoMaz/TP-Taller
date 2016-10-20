@@ -36,7 +36,7 @@ ImagenDto* Cliente::deserializarImagen(char* campo){
 	ancho = campo;
 	campo = strtok(NULL, "|");
 	alto = campo;
-	ImagenDto *imagenReconstruida = new ImagenDto(nombre,ancho,alto);
+	ImagenDto *imagenReconstruida = new ImagenDto(string(nombre),string(ancho),string(alto));
 	return imagenReconstruida;
 }
 

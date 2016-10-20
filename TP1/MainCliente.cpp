@@ -171,7 +171,7 @@ void* cicloConexion(void* arg) {
 		pthread_detach(threadRecibirPosicionJugadores);
 		Handshake* handshake = cliente->deserializarHandshake(cliente->getHandshakeRecibido(), false);
 		vector<ImagenDto*> imagenes = handshake->getImagenes();
-		vista->cargarEscenario(imagenes.at(0)->getAncho(), imagenes.at(0)->getAlto());
+		vista->cargarEscenario(atoi(imagenes.at(0)->getAncho().c_str()), atoi(imagenes.at(0)->getAlto().c_str()));
 
 	}
 }
