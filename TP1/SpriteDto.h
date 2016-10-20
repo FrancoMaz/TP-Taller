@@ -16,18 +16,18 @@ using namespace std;
 
 class SpriteDto {
 private:
-	const char* id;
-	const char* cantidadDeFotogramas;
-	const char* ancho;
-	const char* alto;
+	string id;
+	int cantidadDeFotogramas;
+	int ancho;
+	int alto;
 	const char* path;
 	const char* zIndex;
 public:
-	SpriteDto(const char* id, const char* cantidadDeFotogramas, const char* ancho, const char* alto, const char* path, const char* zIndex);
+	SpriteDto(string id, int cantidadDeFotogramas, int ancho, int alto, const char* path, const char* zIndex);
 	string getId();
-	const char* getCantidadDeFotogramas();
-	const char* getAncho();
-	const char* getAlto();
+	int getCantidadDeFotogramas();
+	int getAncho();
+	int getAlto();
 	const char* getPath();
 	const char* getZIndex();
 	virtual ~SpriteDto();

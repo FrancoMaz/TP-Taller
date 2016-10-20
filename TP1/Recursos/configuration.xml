@@ -3,9 +3,9 @@
 <Configuracion>
 	<Escenario>
 	  <Imagen>
-	    <Archivo>imagen1</Archivo>
-	    <Ancho>1</Ancho>
-	    <Alto>5</Alto>  
+	    <Archivo>Fondo_escenario</Archivo>
+	    <Ancho>3712</Ancho>
+	    <Alto>600</Alto>  
 	  </Imagen>
 	  <Imagen>   
 	    <Archivo>imagen2</Archivo>

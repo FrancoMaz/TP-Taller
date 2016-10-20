@@ -17,12 +17,12 @@ string ImagenDto::getPath() {
 	return string(this->path);
 }
 
-const char* ImagenDto::getAncho() {
-	return this->ancho;
+int ImagenDto::getAncho() {
+	return atoi(this->ancho);
 }
 
-const char* ImagenDto::getAlto() {
-	return this->alto;
+int ImagenDto::getAlto() {
+	return atoi(this->alto);
 }
 
 ImagenDto::~ImagenDto() {

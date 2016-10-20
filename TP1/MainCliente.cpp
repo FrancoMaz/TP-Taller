@@ -76,11 +76,11 @@ void procesarUltimosMensajes(string mensajes, Cliente* cliente)
 			for (int i = 0; i < setsSprites.size(); i++){
 				vector<SpriteDto*> listaSprites = setsSprites.at(i)->getSprites();
 				for (int i = 0; i < listaSprites.size(); i++) {
-					if ((string(spriteAEjecutar)) == string(listaSprites.at(i)->getId()))
+					if ((string(spriteAEjecutar)) == listaSprites.at(i)->getId())
 					{
-						cantidadDeFotogramas = atoi(listaSprites.at(i)->getCantidadDeFotogramas());
-						//ancho = atoi(listaSprites.at(i)->getAncho());
-						//alto =  atoi(listaSprites.at(i)->getAlto());
+						cantidadDeFotogramas = listaSprites.at(i)->getCantidadDeFotogramas();
+						ancho = listaSprites.at(i)->getAncho();
+						alto =  listaSprites.at(i)->getAlto();
 					}
 				}
 			}
@@ -90,8 +90,8 @@ void procesarUltimosMensajes(string mensajes, Cliente* cliente)
 			cout << "Sprite a ejecutar: " << spriteAEjecutar << endl;
 			cout << "Condicion: " << condicion << endl;
 			cout << "CantidadDeFotogramas: " << cantidadDeFotogramas << endl;
-			//cout << "Ancho: " << ancho << endl;
-			//cout << "Alto: " << alto << endl;
+			cout << "Ancho: " << ancho << endl;
+			cout << "Alto: " << alto << endl;
 			vista->actualizarJugador(string(remitente),atoi((string(x).c_str())),atoi(string(y).c_str()), string(spriteAEjecutar), string(condicion), cantidadDeFotogramas);
 			handshakeDeserializado -> ~Handshake();
 		}
@@ -169,7 +169,9 @@ void* cicloConexion(void* arg) {
 		pthread_detach(threadEnviarEventos);
 		pthread_create(&threadRecibirPosicionJugadores, NULL, &recibirPosicionJugadores,cliente);
 		pthread_detach(threadRecibirPosicionJugadores);
-		vista->cargarEscenario();
+		Handshake* handshake = cliente->deserializarHandshake(cliente->getHandshakeRecibido(), false);
+		vector<ImagenDto*> imagenes = handshake->getImagenes();
+		vista->cargarEscenario(imagenes.at(0)->getAncho(), imagenes.at(0)->getAlto());
 
 	}
 }

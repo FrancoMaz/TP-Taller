@@ -49,7 +49,7 @@ public:
 	void cargarPrimeraPantalla();
 	datosConexion cargarSegundaPantalla(bool aviso);
 	datosConexion cargarTerceraPantalla(bool aviso);
-	void cargarEscenario();
+	void cargarEscenario(int ancho, int alto);
 	void transicionDePantalla();
 	bool inicializar();
 	void cargarArchivos();

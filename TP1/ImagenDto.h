@@ -23,8 +23,8 @@ public:
 	ImagenDto(const char* path, const char* ancho, const char* alto);
 	virtual ~ImagenDto();
 	string getPath();
-	const char* getAncho();
-	const char* getAlto();
+	int getAncho();
+	int getAlto();
 };
 
 #endif /* IMAGENDTO_H_ */
