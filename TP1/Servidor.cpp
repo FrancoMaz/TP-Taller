@@ -49,9 +49,11 @@ void Servidor::guardarDatosDeConfiguracion() {
 }
 
 void Servidor::enviarHandshake(int socket, char* cliente){
-	list<ImagenDto>* escenario;
-	list<SetDeSpritesDto>* setDeSprites;
-	pair<const char*, const char*> ventana;
+	vector<ImagenDto*> escenario = this->parser->getEscenario();
+	vector<SetDeSpritesDto*> setDeSprites = this->parser->getSprites();
+	pair<const char*, const char*> ventana = this->parser->getTamanioVentana();
+	const char* cantidadMaximaJugadores = this->parser->getCantidadMaximaDeJugadores();
+	this->handshake = new Handshake(escenario, setDeSprites, (char*)ventana.first, (char*)ventana.second, (char*)cantidadMaximaJugadores);
 	string handshake = this->parser->serializarEscenario();
 	handshake += this->parser->serializarSetDeSprites();
 	handshake += this->parser->serializarVentana();

@@ -15,6 +15,14 @@ Handshake::Handshake(vector<ImagenDto*> imagenes, vector<SetDeSpritesDto*> sprit
 
 }
 
+Handshake::Handshake(vector<ImagenDto*> imagenes, vector<SetDeSpritesDto*> sprites, char* ancho, char* alto, char* cantidadMaxima) {
+	this->imagenes = imagenes;
+	this->sprites = sprites;
+	this->ancho = ancho;
+	this->alto = alto;
+	this->cantidadMaximaJugadores = cantidadMaxima;
+}
+
 Handshake::~Handshake() {
 	// TODO Auto-generated destructor stub
 }

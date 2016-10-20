@@ -12,19 +12,20 @@
 #include <list>
 #include <iostream>
 #include "SpriteDto.h"
+#include <vector>
 
 using namespace std;
 
 class SetDeSpritesDto {
 
 private:
-	const char* carpeta;
-	list<SpriteDto*> sprites;
+	string carpeta;
+	vector<SpriteDto*> sprites;
 
 public:
-	SetDeSpritesDto(const char* carpeta, list<SpriteDto*> sprites);
-	const char* getCarpeta();
-	list<SpriteDto*> getSprites();
+	SetDeSpritesDto(const char* carpeta, vector<SpriteDto*> sprites);
+	string getCarpeta();
+	vector<SpriteDto*> getSprites();
 	virtual ~SetDeSpritesDto();
 };
 

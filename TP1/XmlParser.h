@@ -15,6 +15,7 @@
 #include "ImagenDto.h"
 #include "SpriteDto.h"
 #include "SetDeSpritesDto.h"
+#include <vector>
 
 using namespace std;
 
@@ -26,18 +27,18 @@ private:
 	pugi::xml_node rootNode;
 	const char* cantidadMaximaDeJugadores;
 	pair<const char*, const char*> tamanioVentana;
-	list<ImagenDto>* escenario;
-	list<SetDeSpritesDto*> sprites;
+	vector<ImagenDto*> escenario;
+	vector<SetDeSpritesDto*> sprites;
 
 public:
 	XmlParser(string path);
 	const char * getCantidadMaximaDeJugadores();
 	pair<const char *, const char *> getTamanioVentana();
 	string serializarVentana();
-	list<ImagenDto>* getEscenario();
+	vector<ImagenDto*> getEscenario();
 	string serializarEscenario();
-	list<SetDeSpritesDto*> getSprites();
-	string serializarSprites(list<SpriteDto*> sprites);
+	vector<SetDeSpritesDto*> getSprites();
+	string serializarSprites(vector<SpriteDto*> sprites);
 	string serializarSetDeSprites();
 	void mostrarSprites(SpriteDto* sprite);
 	virtual ~XmlParser();

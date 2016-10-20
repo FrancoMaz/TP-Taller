@@ -20,9 +20,11 @@ private:
 	vector<SetDeSpritesDto*> sprites;
 	char* alto;
 	char* ancho;
+	char* cantidadMaximaJugadores;
 
 public:
 	Handshake(vector<ImagenDto*> imagenes, vector<SetDeSpritesDto*> sprites, char* ancho, char* alto);
+	Handshake(vector<ImagenDto*> imagenes, vector<SetDeSpritesDto*> sprites, char* ancho, char* alto, char* cantidadMaxima);
 	virtual ~Handshake();
 	vector<SetDeSpritesDto*> getSprites();
 	vector<ImagenDto*> getImagenes();

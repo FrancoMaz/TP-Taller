@@ -44,7 +44,7 @@ SetDeSpritesDto* Cliente::deserializarSprite(char* campo){
 
 	const char* id, *cantFotogramas, *ancho, *alto, *imagen, *zIndex;
 	char* carpeta;
-	list<SpriteDto*> spritesAccion; //= new list<SpriteDto*>;
+	vector<SpriteDto*> spritesAccion; //= new list<SpriteDto*>;
 	carpeta = campo;
 	//El separador entre las distintas acciones en un sprite son los ";",
 	//y el separador para los campos que estan dentro de cada accion es la ","
@@ -157,19 +157,18 @@ Handshake* Cliente::deserializarHandshake(string handshake, bool primeraVez){
    return handshakeAux;
 }
 
-void Cliente::recorrerSprites(list<SpriteDto*> sprites, list<string> *archivos){
-    SpriteDto* spriteAccion;
-	for (list<SpriteDto*>::iterator spriteActual = sprites.begin(); spriteActual != sprites.end();spriteActual++) {
-		spriteAccion = *spriteActual;
-		archivos->push_back(spriteAccion->getId());
+void Cliente::recorrerSprites(vector<SpriteDto*> sprites, list<string> *archivos){
+    for (int i = 0; i < sprites.size(); i++){
+		archivos->push_back(sprites.at(i)->getId());
 		}
 }
 
 bool Cliente::verificarExistencia(string archivo){
 
 	string recursos = "Recursos/";
-	recursos += archivo;
-	ifstream infile(recursos.c_str());
+	string extension = ".png";
+	string rutaArchivo = recursos + archivo + extension;
+	ifstream infile(rutaArchivo.c_str());
 	return infile.good();
 }
 

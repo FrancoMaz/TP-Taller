@@ -25,6 +25,8 @@
 #include "Mensaje.h"
 #include "Jugador.h"
 #include "XmlParser.h"
+#include "Handshake.h"
+#include <vector>
 #define MAX_CANT_CLIENTES 6
 #define BUFFER_MAX_SIZE 200
 const int INFO = 1;
@@ -65,6 +67,7 @@ private:
 		Servidor* servidor;
 	};
 	XmlParser* parser;
+	Handshake* handshake;
 
 public:
 	Servidor();

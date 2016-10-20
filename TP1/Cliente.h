@@ -67,7 +67,7 @@ public:
 	ImagenDto* deserializarImagen(char* campo);
 	SetDeSpritesDto* deserializarSprite(char* campo);
 	Handshake* deserializarHandshake(string handshake, bool primeraVez);
-	void recorrerSprites(list<SpriteDto*> sprites, list<string> *archivos);
+	void recorrerSprites(vector<SpriteDto*> sprites, list<string> *archivos);
 	void recibirHandshake();
 	void mostrarMenuYProcesarOpcion();
 	void elegirOpcionDelMenu(int opcion);

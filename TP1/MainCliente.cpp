@@ -49,7 +49,6 @@ void procesarUltimosMensajes(string mensajes, Cliente* cliente)
 	if(strcmp(mensajes.c_str(), mensajeVacio.c_str()) != 0){
 		//cout<<"No hay mensajes nuevos"<<endl;}
 	//else{
-		//cout << mensajes << endl;
 		mensajes[mensajes.length() - 1] = '#';
 		char str[mensajes.length()];
 		strcpy(str, mensajes.c_str());
@@ -72,38 +71,40 @@ void procesarUltimosMensajes(string mensajes, Cliente* cliente)
 			Handshake* handshakeDeserializado = cliente->deserializarHandshake(handshakeRecibido, false);
 			vector<SetDeSpritesDto*> setsSprites = handshakeDeserializado->getSprites();
 			int cantidadDeFotogramas = 0;
+			int ancho = 0;
+			int alto = 0;
 			for (int i = 0; i < setsSprites.size(); i++){
-				list<SpriteDto*> listaSprites = setsSprites.at(i)->getSprites();
-				for (list<SpriteDto*>::iterator spriteActual = listaSprites.begin();
-						spriteActual != listaSprites.end();spriteActual++)
-				{
-					SpriteDto* sprite;
-					sprite = *spriteActual;
-					if ((string(spriteAEjecutar) + ".png") == string(sprite->getId()))
+				vector<SpriteDto*> listaSprites = setsSprites.at(i)->getSprites();
+				for (int i = 0; i < listaSprites.size(); i++) {
+					if ((string(spriteAEjecutar)) == string(listaSprites.at(i)->getId()))
 					{
-						cantidadDeFotogramas = atoi(sprite->getCantidadDeFotogramas());
+						cantidadDeFotogramas = atoi(listaSprites.at(i)->getCantidadDeFotogramas());
+						//ancho = atoi(listaSprites.at(i)->getAncho());
+						//alto =  atoi(listaSprites.at(i)->getAlto());
 					}
 				}
 			}
-			cout<<"Mensaje de "<<remitente<<":"<<endl;
+			cout << "Mensaje de "<< remitente <<":"<<endl;
 			cout << "Posicion x: " << x << endl;
 			cout << "Posicion y: " << y << endl;
 			cout << "Sprite a ejecutar: " << spriteAEjecutar << endl;
 			cout << "Condicion: " << condicion << endl;
 			cout << "CantidadDeFotogramas: " << cantidadDeFotogramas << endl;
-
+			//cout << "Ancho: " << ancho << endl;
+			//cout << "Alto: " << alto << endl;
 			vista->actualizarJugador(string(remitente),atoi((string(x).c_str())),atoi(string(y).c_str()), string(spriteAEjecutar), string(condicion), cantidadDeFotogramas);
+			handshakeDeserializado -> ~Handshake();
 		}
 	}
 }
 
 void* recibirPosicionJugadores(void* arg) {
 	Cliente* cliente = (Cliente*) arg;
-	string datosRecibidos;
+	string datosRecibidos = "";
 	while(!controlador->comprobarCierreVentana()){
 		datosRecibidos = cliente->recibir();
 		procesarUltimosMensajes(datosRecibidos, cliente);
-		usleep(1/1000);
+		usleep(1000);
 	}
 }
 

@@ -23,7 +23,7 @@ XmlParser::XmlParser(string xmlPath) {
 	this->cantidadMaximaDeJugadores = "";
 	pair<const char*, const char*> dimensiones ("", "");
 	this->tamanioVentana = dimensiones;
-	this->escenario = new list<ImagenDto>();
+	//this->escenario = new list<ImagenDto>();
 	//this->sprites = new list<SetDeSpritesDto*>();
 }
 
@@ -55,14 +55,14 @@ pair<const char*, const char*> XmlParser::getTamanioVentana() {
 string XmlParser::serializarEscenario(){
 	this->getEscenario();
 	string escenarioConcatenado = "Escenario[";
-	for (list<ImagenDto>::iterator i = this->escenario->begin(); i != this->escenario->end();i++) {
-		escenarioConcatenado += (*i).getPath();
+	for (int i = 0; i < this->escenario.size(); i++) {
+		escenarioConcatenado += this->escenario.at(i)->getPath();
 		//cout << (*i).getPath() << endl;
 		escenarioConcatenado += ",";
-		escenarioConcatenado += (*i).getAncho();
+		escenarioConcatenado += this->escenario.at(i)->getAncho();
 		//cout << (*i).getZIndex() << endl;
 		escenarioConcatenado += ",";
-		escenarioConcatenado += (*i).getAlto();
+		escenarioConcatenado += this->escenario.at(i)->getAlto();
 		//cout << (*i).getVelocidad() << endl;
 		escenarioConcatenado += "|";
 	}
@@ -72,32 +72,32 @@ string XmlParser::serializarEscenario(){
 
 }
 
-list<ImagenDto>* XmlParser::getEscenario() {
-	if (this->escenario->empty()) {
+vector<ImagenDto*> XmlParser::getEscenario() {
+	if (this->escenario.empty()) {
 		for (pugi::xml_node image = this->rootNode.child("Escenario").first_child(); image; image = image.next_sibling()) {
-			ImagenDto* imagen = new ImagenDto(image.child_value("Archivo"), image.child_value("z-index"), image.child_value("Velocidad"));
-			this->escenario->push_back(*imagen);
+			ImagenDto* imagen = new ImagenDto(image.child_value("Archivo"), image.child_value("Ancho"), image.child_value("Alto"));
+			this->escenario.push_back(imagen);
 		}
 	}
 
 	return this->escenario;
 }
 
-string XmlParser::serializarSprites(list<SpriteDto*> sprites) {
+string XmlParser::serializarSprites(vector<SpriteDto*> sprites) {
 	string spriteConcatenado="";
-	for (list<SpriteDto*>::iterator j = sprites.begin(); j != sprites.end();j++) {
-		SpriteDto* sprite = *j;
-		spriteConcatenado += sprite->getId();
+	for (int i = 0; i < sprites.size(); i++)
+	{
+		spriteConcatenado += sprites.at(i)->getId();
 		spriteConcatenado += ",";
-		spriteConcatenado += sprite->getCantidadDeFotogramas();
+		spriteConcatenado += sprites.at(i)->getCantidadDeFotogramas();
 		spriteConcatenado += ",";
-		spriteConcatenado += sprite->getAncho();
+		spriteConcatenado += sprites.at(i)->getAncho();
 		spriteConcatenado += ",";
-		spriteConcatenado += sprite->getAlto();
+		spriteConcatenado += sprites.at(i)->getAlto();
 		spriteConcatenado += ",";
-		spriteConcatenado += sprite->getPath();
+		spriteConcatenado += sprites.at(i)->getPath();
 		spriteConcatenado += ",";
-		spriteConcatenado += sprite->getZIndex();
+		spriteConcatenado += sprites.at(i)->getZIndex();
 		spriteConcatenado += ";";
 	}
 	return spriteConcatenado;
@@ -105,11 +105,10 @@ string XmlParser::serializarSprites(list<SpriteDto*> sprites) {
 string XmlParser::serializarSetDeSprites(){
 	this->getSprites();
 	string setDeSpritesconcatenados = "SetSprites[";
-	for (list<SetDeSpritesDto*>::iterator i = this->sprites.begin(); i != this->sprites.end();i++) {
-		SetDeSpritesDto* setSpriteActual = (*i);
-		setDeSpritesconcatenados += setSpriteActual->getCarpeta();
+	for (int i = 0; i < this->sprites.size(); i++) {
+		setDeSpritesconcatenados += this->sprites.at(i)->getCarpeta();
 		setDeSpritesconcatenados += ";";
-		setDeSpritesconcatenados += this->serializarSprites(setSpriteActual->getSprites());
+		setDeSpritesconcatenados += this->serializarSprites(this->sprites.at(i)->getSprites());
 		//setDeSpritesconcatenados = setDeSpritesconcatenados.substr(0, setDeSpritesconcatenados.length() -1);
 		setDeSpritesconcatenados += "|-";
 	}
@@ -118,10 +117,10 @@ string XmlParser::serializarSetDeSprites(){
 	return setDeSpritesconcatenados;
 }
 
-list<SetDeSpritesDto*> XmlParser::getSprites() {
+vector<SetDeSpritesDto*> XmlParser::getSprites() {
 	if (this->sprites.empty()) {
 		for (pugi::xml_node set = this->rootNode.child("Sprites").child("SetRojo"); set; set = set.next_sibling()) {
-			list<SpriteDto*> sprites;
+			vector<SpriteDto*> sprites;
 			for (pugi::xml_node sprite = set.child("SpriteSalto"); sprite; sprite = sprite.next_sibling()) {
 				SpriteDto* spriteDto = new SpriteDto(sprite.child_value("Id"), sprite.child_value("CantFotogramas"), sprite.child_value("Ancho"), sprite.child_value("Alto"), sprite.child_value("Imagen"), sprite.child_value("z-index"));
 				sprites.push_back(spriteDto);
