@@ -210,8 +210,7 @@ void Servidor::actualizarPosicionesSalto(Mensaje mensajeAProcesar)
 				this->mensaje = "Procesando mensaje para "
 						+ listaMensajes.destinatario + "\n";
 				this->guardarLog(mensaje, DEBUG);
-			}
-		}*/
+			}*/
 		encolarMensajeProcesadoParaCadaCliente(mensajeAProcesar,mensajeJugadorPosActualizada);
 	} while (jugadorSalto);
 }
@@ -253,7 +252,7 @@ void Servidor::procesarMensajes() {
 			parametrosServidor.mensajeAProcesar = mensajeAProcesar;
 			parametrosServidor.servidor = this;
 			*/
-			this->actualizarPosicionesSalto(mensajeAProcesar);
+				this->actualizarPosicionesSalto(mensajeAProcesar);
 			/*pthread_create(&threadSalto,NULL,&actualizarPosiciones,&parametrosServidor);
 			pthread_detach(threadSalto);*/
 		}

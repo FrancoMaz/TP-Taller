@@ -24,6 +24,7 @@ Jugador::Jugador(string nombre) {
 	velocidades.second = 0;
 	saltar = false;
 	angulo = 0;
+	condicionSprite = "Normal";
 }
 Jugador::~Jugador() {
 	// TODO Auto-generated destructor stub

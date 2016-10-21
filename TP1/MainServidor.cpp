@@ -273,7 +273,7 @@ void* cicloEscuchaCliente(void* arg) {
 								 	 	 	 	 + ", Destinatario: " + string(destinatario)
 												 	 + ", Mensaje: " + string(mensaje) + string(".\n"),INFO);
 						//cout<<"mensaje recibido :"<<mensaje<<endl;
-						//cout << "Mensaje: " << mensaje << endl;
+						cout << "Mensaje: " << mensaje << endl;
 						encolarMensaje(remitente, destinatario, mensaje, servidor);
 						break;
 					}

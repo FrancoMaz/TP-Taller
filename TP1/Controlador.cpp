@@ -34,7 +34,12 @@ bool Controlador::aplicarEvento(SDL_Keycode boton, Uint32 tipo){
 	} else {
 		if(evento.type == tipo){
 			if(evento.key.keysym.sym == boton){
-				seleccionado = true;
+				if (boton == SDLK_UP)
+				{
+					if (!evento.key.repeat){ seleccionado = true; }
+					else{ seleccionado = false; }
+				}
+				else { seleccionado = true; }
 			}
 		}
 	}

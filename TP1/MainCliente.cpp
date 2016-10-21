@@ -23,6 +23,7 @@ using namespace std;
 datosConexion datosCliente;
 Vista * vista = new Vista();
 Controlador* controlador = new Controlador();
+Handshake* handshakeDeserializado;
 
 struct ComunicacionCliente{
 			Cliente* cliente;
@@ -67,8 +68,6 @@ void procesarUltimosMensajes(string mensajes, Cliente* cliente)
 			texto = strtok(NULL,"#");
 			char* condicion = texto;
 			texto = strtok(NULL,"|");
-			string handshakeRecibido = cliente->getHandshakeRecibido();
-			Handshake* handshakeDeserializado = cliente->deserializarHandshake(handshakeRecibido, false);
 			vector<SetDeSpritesDto*> setsSprites = handshakeDeserializado->getSprites();
 			int cantidadDeFotogramas = 0;
 			int ancho = 0;
@@ -93,7 +92,6 @@ void procesarUltimosMensajes(string mensajes, Cliente* cliente)
 			cout << "Ancho: " << ancho << endl;
 			cout << "Alto: " << alto << endl;
 			vista->actualizarJugador(string(remitente),atoi((string(x).c_str())),atoi(string(y).c_str()), string(spriteAEjecutar), string(condicion), cantidadDeFotogramas);
-			handshakeDeserializado -> ~Handshake();
 		}
 	}
 }
@@ -110,6 +108,7 @@ void* recibirPosicionJugadores(void* arg) {
 
 void* enviarEventos(void* arg) {
 	Cliente* cliente = (Cliente*) arg;
+	bool controlArriba = false;
 	while(!controlador->comprobarCierreVentana()){
 		while(SDL_PollEvent(&evento)){
 			usleep(100000);
@@ -119,14 +118,15 @@ void* enviarEventos(void* arg) {
 			else if(controlador->presionarBoton(SDLK_LEFT)){
 				cliente->enviar("Tecla Izquierda","Todos");
 			}
-			else if(controlador->presionarBoton(SDLK_UP)){
-				cliente->enviar("Tecla Arriba","Todos");
-			}
+
 			else if(controlador->soltarBoton(SDLK_RIGHT)){
 				cliente->enviar("Soltar Tecla Derecha","Todos");
 			}
 			else if(controlador->soltarBoton(SDLK_LEFT)){
 				cliente->enviar("Soltar Tecla Izquierda","Todos");
+			}
+			else if(controlador->presionarBoton(SDLK_UP)){
+				cliente->enviar("Tecla Arriba","Todos");
 			}
 			SDL_FlushEvent(SDL_MOUSEMOTION);
 			SDL_FlushEvent(SDL_KEYDOWN);
@@ -165,6 +165,9 @@ void* cicloConexion(void* arg) {
 			usleep(2000000);
 			inicio = cliente->checkearInicioJuego(vista);
 		}while (!inicio);
+		string handshakeRecibido = cliente->getHandshakeRecibido();
+		handshakeDeserializado = cliente->deserializarHandshake(handshakeRecibido, false);
+
 		pthread_create(&threadEnviarEventos, NULL, &enviarEventos, cliente);
 		pthread_detach(threadEnviarEventos);
 		pthread_create(&threadRecibirPosicionJugadores, NULL, &recibirPosicionJugadores,cliente);
