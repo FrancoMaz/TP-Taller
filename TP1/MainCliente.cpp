@@ -165,15 +165,12 @@ void* cicloConexion(void* arg) {
 			usleep(2000000);
 			inicio = cliente->checkearInicioJuego(vista);
 		}while (!inicio);
-		string handshakeRecibido = cliente->getHandshakeRecibido();
-		handshakeDeserializado = cliente->deserializarHandshake(handshakeRecibido, false);
-
+		handshakeDeserializado = cliente->getHandshake();
 		pthread_create(&threadEnviarEventos, NULL, &enviarEventos, cliente);
 		pthread_detach(threadEnviarEventos);
 		pthread_create(&threadRecibirPosicionJugadores, NULL, &recibirPosicionJugadores,cliente);
 		pthread_detach(threadRecibirPosicionJugadores);
-		Handshake* handshake = cliente->deserializarHandshake(cliente->getHandshakeRecibido(), false);
-		vector<ImagenDto*> imagenes = handshake->getImagenes();
+		vector<ImagenDto*> imagenes = handshakeDeserializado->getImagenes();
 		vista->cargarEscenario(atoi(imagenes.at(0)->getAncho().c_str()), atoi(imagenes.at(0)->getAlto().c_str()));
 
 	}

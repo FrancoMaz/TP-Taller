@@ -28,6 +28,7 @@ public:
 	virtual ~Handshake();
 	vector<SetDeSpritesDto*> getSprites();
 	vector<ImagenDto*> getImagenes();
+	char* getAncho();
 
 };
 

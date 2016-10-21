@@ -106,6 +106,7 @@ public:
 	bool verificarExistencia(string archivo);
 	int getCantidadDeFotogramas(string sprite);
 	string getHandshakeRecibido();
+	Handshake* getHandshake();
 };
 
 #endif /* TP1_CLIENTE_H_ */

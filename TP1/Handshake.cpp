@@ -36,3 +36,6 @@ vector<ImagenDto*> Handshake::getImagenes()
 {
 	return this->imagenes;
 }
+char* Handshake::getAncho(){
+	return this->ancho;
+}

@@ -295,7 +295,9 @@ void Vista::cargarEscenario(int ancho, int alto){
 	SDL_Rect camara = {0,0,ANCHO_VENTANA,ALTO_VENTANA};
 	this->ventana->limpiar();
 	texturaFondoEscenario->aplicarPosicionDePorcion(0,0,&camara,0,SDL_FLIP_NONE);
+	cout<<"llega al cargar escenario"<<endl;
 	for (int i = 0; i < vistaJugadores.size(); i++){
+		cout<<"no muere en el intento"<<endl;
 		VistaJugador* vistaJugador = vistaJugadores.at(i);
 		vistaJugador->texturaJugador->aplicarPosicion(vistaJugador->x,vistaJugador->y,0,SDL_FLIP_NONE);
 	}

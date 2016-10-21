@@ -57,9 +57,29 @@ void Servidor::enviarHandshake(int socket, char* cliente){
 	string handshake = this->parser->serializarEscenario();
 	handshake += this->parser->serializarSetDeSprites();
 	handshake += this->parser->serializarVentana();
-	handshake += "#";
-	Mensaje* mensajeHandShake = new Mensaje("servidor",cliente,handshake);
-	this->crearMensaje(*mensajeHandShake);
+	handshake += "#@";
+	//Mensaje* mensajeHandShake = new Mensaje("servidor",cliente,handshake);
+	int largo = strlen(handshake.c_str());
+	std::ostringstream oss;
+	oss << largo;
+	string largoString = oss.str();
+	char buffer[BUFFER_MAX_SIZE];
+	int inicio = 0;
+	int ok;
+	if (largo > BUFFER_MAX_SIZE) {
+		while (BUFFER_MAX_SIZE < (largo - inicio)) {
+			string mensajeSpliteado = handshake.substr(inicio, BUFFER_MAX_SIZE);
+			strcpy(buffer, mensajeSpliteado.c_str());
+			ok = send(socket, buffer, strlen(buffer), 0);
+			inicio += BUFFER_MAX_SIZE;
+		}
+		string mensajeSpliteado = handshake.substr(inicio, largo);
+		strcpy(buffer, mensajeSpliteado.c_str());
+	} else {
+		strcpy(buffer, handshake.c_str());
+	}
+	//pthread_mutex_lock(&servidor->mutexSocket);
+	ok = send(socket, buffer, strlen(buffer), 0);
 }
 
 void Servidor::guardarDatosDeUsuarios() {
@@ -235,7 +255,7 @@ void Servidor::procesarMensajes() {
 		Mensaje mensajeAProcesar = colaMensajesNoProcesados.front();
 		colaMensajesNoProcesados.pop();
 		pthread_mutex_unlock(&mutexColaNoProcesados);
-		if (mensajeAProcesar.getRemitente() == "servidor")
+		/*if (mensajeAProcesar.getRemitente() == "servidor")
 		{
 			for (list<MensajesProcesados>::iterator usuarioActual = listaMensajesProcesados->begin();
 					usuarioActual != listaMensajesProcesados->end();usuarioActual++) {
@@ -245,8 +265,8 @@ void Servidor::procesarMensajes() {
 						listaMensajes.mensajes->push(mensajeAProcesar);
 					}
 			}
-		}
-		else if (mensajeAProcesar.getTexto() == "Tecla Arriba")
+		}*/
+		if (mensajeAProcesar.getTexto() == "Tecla Arriba")
 		{
 			/*ParametrosServidor parametrosServidor;
 			parametrosServidor.mensajeAProcesar = mensajeAProcesar;

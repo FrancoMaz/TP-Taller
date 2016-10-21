@@ -327,8 +327,8 @@ void* cicloEscuchaCliente(void* arg) {
 						if (cliente != NULL)
 						{
 							servidor->enviarHandshake(socketCliente,cliente);
-							usleep(1000000);
-							enviarMensajesProcesadosA(cliente, servidor, socketCliente);
+							//usleep(1000000);
+							//enviarMensajesProcesadosA(cliente, servidor, socketCliente);
 						}
 					}
 				}

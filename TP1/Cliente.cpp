@@ -104,15 +104,15 @@ Handshake* Cliente::deserializarHandshake(string handshake, bool primeraVez){
 	char str[handshake.length()];
 	strcpy(str, handshake.c_str());
 	char*subcadena;
-	char* campo = strtok(str, "|");
-	campo = strtok(NULL, "[");
+	//char* campo = strtok(str, "|");
+	char* campo = strtok(str, "[");
     const char *escenario,*sprites,*ventana;
     escenario = "Escenario";
     sprites = "SetSprites";
     ventana = "Ventana";
     vector<ImagenDto*> imagenes;
     vector<SetDeSpritesDto*> setsSprites;
-    char* ancho;
+    char* ancho = "Hola";
     char* alto;
 	if (strcmp(campo,"Escenario") == 0){
 		//recupero la imagen1
@@ -214,7 +214,12 @@ void Cliente::recibirHandshake(){
        }
        //cout<<"handshake recibido: "<<datosRecibidos<<endl;
        this->handshakeRecibido = datosRecibidos;
-       this->deserializarHandshake(datosRecibidos, true);
+       this-> handshake = this->deserializarHandshake(datosRecibidos, true);
+}
+
+Handshake* Cliente::getHandshake()
+{
+	return this->handshake;
 }
 //-------------------------------ACA TERMINAN LOS METODOS PARA EL HANDSHAKE-------------------------------
 
@@ -649,6 +654,7 @@ bool Cliente::checkearInicioJuego(Vista* vista)
 	//Devuelve falso si no se inicio el juego o true si se inicio. A su vez carga la vista inicial de los jugadores en caso de que se haya iniciado.
 	this->enviarRequest("5|"); //5 es el case de request se inicio el juego.
 	string response = this->recibirResponse();
+	cout<< "checkear vista: "<<response<<endl;
 	response = response.substr(0,response.length() - 1);
 	char strResponse[response.length()];
 	strcpy(strResponse, response.c_str());
@@ -671,7 +677,9 @@ bool Cliente::checkearInicioJuego(Vista* vista)
 			strComenzo = strtok(NULL,"|#");
 			y = strComenzo;
 			strComenzo = strtok(NULL,"|#");
-
+			cout<<"nombre: "<<nombreJugador<<endl;
+			cout<<"x: "<<x<<endl;
+			cout<<"y: "<<y<<endl;
 			vista->cargarVistaInicialJugador(nombreJugador,atoi(x),atoi(y));
 		}
 		return true;
