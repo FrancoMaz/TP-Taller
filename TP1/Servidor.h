@@ -117,7 +117,7 @@ public:
 	void guardarDatosDeConfiguracion();
 	void enviarHandshake(int socket,char* cliente);
 	pthread_mutex_t mutexSocket;
-	int cantJugadoresConectadosMax = 1;
+	int cantJugadoresConectadosMax = 2;
 };
 
 #endif /* TP1_SERVIDOR_H_ */

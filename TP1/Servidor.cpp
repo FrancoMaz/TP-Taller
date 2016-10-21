@@ -255,17 +255,6 @@ void Servidor::procesarMensajes() {
 		Mensaje mensajeAProcesar = colaMensajesNoProcesados.front();
 		colaMensajesNoProcesados.pop();
 		pthread_mutex_unlock(&mutexColaNoProcesados);
-		/*if (mensajeAProcesar.getRemitente() == "servidor")
-		{
-			for (list<MensajesProcesados>::iterator usuarioActual = listaMensajesProcesados->begin();
-					usuarioActual != listaMensajesProcesados->end();usuarioActual++) {
-					MensajesProcesados listaMensajes;
-					listaMensajes = *usuarioActual;
-					if (listaMensajes.destinatario == mensajeAProcesar.getDestinatario()) {
-						listaMensajes.mensajes->push(mensajeAProcesar);
-					}
-			}
-		}*/
 		if (mensajeAProcesar.getTexto() == "Tecla Arriba")
 		{
 			/*ParametrosServidor parametrosServidor;

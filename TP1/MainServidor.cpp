@@ -309,8 +309,10 @@ void* cicloEscuchaCliente(void* arg) {
 						break;
 					}
 					case 5:{
+						cout << "Le llega un 5" << endl;
 						char comenzoJuego[BUFFER_MAX_SIZE];
 						string comenzo;
+						cout << servidor->getJugadoresConectados()->size() << endl;
 						if (servidor->getJugadoresConectados()->size() == servidor->cantJugadoresConectadosMax){
 							string jugadoresInicio = servidor->getEstadoInicialSerializado();
 							comenzo = "0|"  + jugadoresInicio + "@";
@@ -320,6 +322,7 @@ void* cicloEscuchaCliente(void* arg) {
 						}
 						strcpy(comenzoJuego,comenzo.c_str());
 						send(socketCliente,comenzoJuego,strlen(comenzoJuego),0);
+						break;
 					}
 					case 6:{//6 es enviarHandShake
 						cout << "Le llega un 6" << endl;
@@ -330,6 +333,7 @@ void* cicloEscuchaCliente(void* arg) {
 							//usleep(1000000);
 							//enviarMensajesProcesadosA(cliente, servidor, socketCliente);
 						}
+						break;
 					}
 				}
 			}

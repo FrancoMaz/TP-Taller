@@ -112,7 +112,7 @@ Handshake* Cliente::deserializarHandshake(string handshake, bool primeraVez){
     ventana = "Ventana";
     vector<ImagenDto*> imagenes;
     vector<SetDeSpritesDto*> setsSprites;
-    char* ancho = "Hola";
+    char* ancho;
     char* alto;
 	if (strcmp(campo,"Escenario") == 0){
 		//recupero la imagen1
@@ -350,7 +350,7 @@ bool Cliente::conectar(string nombre, string contrasenia) {
 	this->addr_size = sizeof direccionServidor;
 	char* nombreYPass = strdup((nombre + ',' + contrasenia).c_str()); // convierte el string de const char* a char*
 	cout << "Intentando conectarse con el servidor. . ." << endl;
-	pthread_mutex_lock(&mutexSocket);
+	//pthread_mutex_lock(&mutexSocket);
 	if (connect(socketCliente, (struct sockaddr *) &direccionServidor,addr_size) == 0) {
 
 		strcpy(buffer, nombreYPass);
@@ -369,7 +369,7 @@ bool Cliente::conectar(string nombre, string contrasenia) {
 		this->nombre = nombre;
 		//this->clientesDisponibles.push_front("hola"); //pongo cualquier cosa para comprobar el ciclo ok.
 		recv(socketCliente, datosRecibidos, BUFFER_MAX_SIZE, 0);
-		pthread_mutex_unlock(&mutexSocket);
+		//pthread_mutex_unlock(&mutexSocket);
 		string datos = datosRecibidos;
 		string desconectarse = "Desconectar";
 		if (strcmp(datos.c_str(), desconectarse.c_str()) == 0) {
@@ -381,11 +381,11 @@ bool Cliente::conectar(string nombre, string contrasenia) {
 			cout<<opcion<<endl;
 			memset(buffer, '\0', strlen(buffer));
 			strcpy(buffer,opcion.c_str());
-			pthread_mutex_lock(&mutexSocket);
+			//pthread_mutex_lock(&mutexSocket);
 			send(socketCliente,buffer,opcion.length(),0);
 			splitUsuarios(datosRecibidos);
 			this->recibirHandshake();
-			pthread_mutex_unlock(&mutexSocket);
+			//pthread_mutex_unlock(&mutexSocket);
 			return true;
 		}
 	} else {
@@ -654,7 +654,6 @@ bool Cliente::checkearInicioJuego(Vista* vista)
 	//Devuelve falso si no se inicio el juego o true si se inicio. A su vez carga la vista inicial de los jugadores en caso de que se haya iniciado.
 	this->enviarRequest("5|"); //5 es el case de request se inicio el juego.
 	string response = this->recibirResponse();
-	cout<< "checkear vista: "<<response<<endl;
 	response = response.substr(0,response.length() - 1);
 	char strResponse[response.length()];
 	strcpy(strResponse, response.c_str());
@@ -677,9 +676,6 @@ bool Cliente::checkearInicioJuego(Vista* vista)
 			strComenzo = strtok(NULL,"|#");
 			y = strComenzo;
 			strComenzo = strtok(NULL,"|#");
-			cout<<"nombre: "<<nombreJugador<<endl;
-			cout<<"x: "<<x<<endl;
-			cout<<"y: "<<y<<endl;
 			vista->cargarVistaInicialJugador(nombreJugador,atoi(x),atoi(y));
 		}
 		return true;

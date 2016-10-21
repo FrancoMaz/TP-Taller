@@ -102,7 +102,7 @@ void* recibirPosicionJugadores(void* arg) {
 	while(!controlador->comprobarCierreVentana()){
 		datosRecibidos = cliente->recibir();
 		procesarUltimosMensajes(datosRecibidos, cliente);
-		usleep(1000);
+		usleep(100000);
 	}
 }
 
