@@ -17,7 +17,7 @@
 
 #define velocidad 5
 #define PI 3.14159265
-#define VELMAX 5
+#define VELMAX 10
 
 using namespace std;
 
@@ -36,7 +36,7 @@ public:
 	Jugador(pair<int,int> posicionInicial);
 	Jugador(string nombre);
 	virtual ~Jugador();
-	void actualizarPosicion(SDL_Keycode tecla, bool sePresionoTecla);
+	void actualizarPosicion(SDL_Keycode tecla, bool sePresionoTecla, SDL_Rect camara);
 	string getStringJugador();
 	string getNombre();
 	string getSpriteAEjecutar();

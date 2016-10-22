@@ -178,7 +178,7 @@ void* Servidor::actualizarPosiciones(void* arg)
 		string mensajeJugadorPosActualizada = "";
 		pthread_mutex_lock(&servidor->mutexVectorJugadores);
 		Jugador* jugador = servidor->obtenerJugador(mensajeAProcesar.getRemitente());
-		jugador->actualizarPosicion(mensajeAProcesar.deserializar(mensajeAProcesar.getTexto()),mensajeAProcesar.sePresionoTecla());
+		jugador->actualizarPosicion(mensajeAProcesar.deserializar(mensajeAProcesar.getTexto()),mensajeAProcesar.sePresionoTecla(),servidor->camara);
 		jugadorSalto = jugador->salto();
 		mensajeJugadorPosActualizada = jugador->getStringJugador();
 		pthread_mutex_unlock(&servidor->mutexVectorJugadores);
@@ -195,7 +195,7 @@ void Servidor::actualizarPosicionesSalto(Mensaje mensajeAProcesar)
 		string mensajeJugadorPosActualizada = "";
 		pthread_mutex_lock(&mutexVectorJugadores);
 		Jugador* jugador = this->obtenerJugador(mensajeAProcesar.getRemitente());
-		jugador->actualizarPosicion(mensajeAProcesar.deserializar(mensajeAProcesar.getTexto()),mensajeAProcesar.sePresionoTecla());
+		jugador->actualizarPosicion(mensajeAProcesar.deserializar(mensajeAProcesar.getTexto()),mensajeAProcesar.sePresionoTecla(),camara);
 		jugadorSalto = jugador->salto();
 		mensajeJugadorPosActualizada = jugador->getStringJugador();
 		pthread_mutex_unlock(&mutexVectorJugadores);
@@ -239,7 +239,7 @@ void Servidor::procesarMensajes() {
 			string mensajeJugadorPosActualizada = "";
 			pthread_mutex_lock(&mutexVectorJugadores);
 			Jugador* jugador = this->obtenerJugador(mensajeAProcesar.getRemitente());
-			jugador->actualizarPosicion(mensajeAProcesar.deserializar(mensajeAProcesar.getTexto()),mensajeAProcesar.sePresionoTecla());
+			jugador->actualizarPosicion(mensajeAProcesar.deserializar(mensajeAProcesar.getTexto()),mensajeAProcesar.sePresionoTecla(), camara);
 			bool necesitaCambiarCamara = jugador->chequearCambiarCamara(this->camara);
 			if (necesitaCambiarCamara)
 			{

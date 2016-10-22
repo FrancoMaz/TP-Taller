@@ -51,15 +51,12 @@ void procesarUltimosMensajes(string mensajes, Cliente* cliente, UpdateJugador* u
 	if(strcmp(mensajes.c_str(), mensajeVacio.c_str()) != 0){
 
 		mensajes[mensajes.length() - 1] = '#';
-		cout << mensajes << endl;
 		char str[mensajes.length()];
 		strcpy(str, mensajes.c_str());
 		char* texto = strtok(str, "|");
 		while (texto != NULL) {
 			update->setRemitente(string(texto));
-			cout << update->getRemitente() << endl;
 			texto = strtok(NULL, "|");
-			cout << string(texto) << endl;
 			if (string(texto) == "0"){
 				texto = strtok(NULL, "|");
 				update->setDestinatario(string(texto));

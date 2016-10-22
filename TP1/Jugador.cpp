@@ -31,7 +31,7 @@ Jugador::~Jugador() {
 	// TODO Auto-generated destructor stub
 }
 
-void Jugador::actualizarPosicion(SDL_Keycode tecla, bool sePresionoTecla)
+void Jugador::actualizarPosicion(SDL_Keycode tecla, bool sePresionoTecla, SDL_Rect camara)
 {
 	if (velocidades.first > VELMAX)
 	{
@@ -50,7 +50,7 @@ void Jugador::actualizarPosicion(SDL_Keycode tecla, bool sePresionoTecla)
 			condicionSprite = "Normal";
 		}
 	}
-	if (tecla == SDLK_LEFT && sePresionoTecla)
+	else if (tecla == SDLK_LEFT && sePresionoTecla)
 	{
 		velocidades.first -= velocidad;
 		if (!saltar) {
@@ -58,7 +58,7 @@ void Jugador::actualizarPosicion(SDL_Keycode tecla, bool sePresionoTecla)
 			condicionSprite = "Espejado";
 		}
 	}
-	if (tecla == SDLK_UP && sePresionoTecla)
+	else if (tecla == SDLK_UP && sePresionoTecla)
 	{
 		if(angulo == 0)
 		{
@@ -66,7 +66,7 @@ void Jugador::actualizarPosicion(SDL_Keycode tecla, bool sePresionoTecla)
 			spriteAEjecutar = "Jugador_saltando";
 		}
 	}
-	if(tecla == SDLK_RIGHT && !sePresionoTecla)
+	else if(tecla == SDLK_RIGHT && !sePresionoTecla)
 	{
 		velocidades.first = 0;
 		if (!saltar) {
@@ -74,7 +74,7 @@ void Jugador::actualizarPosicion(SDL_Keycode tecla, bool sePresionoTecla)
 			condicionSprite = "Normal";
 		}
 	}
-	if(tecla == SDLK_LEFT && !sePresionoTecla)
+	else if(tecla == SDLK_LEFT && !sePresionoTecla)
 	{
 		velocidades.first = 0;
 		if (!saltar)
@@ -105,6 +105,10 @@ void Jugador::actualizarPosicion(SDL_Keycode tecla, bool sePresionoTecla)
 	posicion.first += velocidades.first;
 	posicion.second += velocidades.second;
 
+	if (posicion.first < camara.x)
+	{
+		posicion.first -= velocidades.first;
+	}
 }
 
 void Jugador::setConectado()
@@ -148,6 +152,10 @@ string Jugador::serializarInicio()
 
 bool Jugador::chequearCambiarCamara(SDL_Rect camara)
 {
+	if (camara.x < 0){
+		camara.x = 0;
+		return false;
+	}
 	if(this->posicion.first - camara.x > ANCHO_VENTANA/2)
 	{
 		return true;
