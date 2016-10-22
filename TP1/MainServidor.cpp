@@ -140,9 +140,9 @@ void* procesar(void* arg) {
 	char* usuario = parametros->usuario;
 	int socket = parametros->socketCliente;
 
-	//pthread_mutex_lock(&servidor->mutexListaProcesados);
+	pthread_mutex_lock(&servidor->mutexListaProcesados);
 	string mensajesProcesados = servidor->traerMensajesProcesados(usuario);
-	//pthread_mutex_unlock(&servidor->mutexListaProcesados);
+	pthread_mutex_unlock(&servidor->mutexListaProcesados);
 
 	int largo = strlen(mensajesProcesados.c_str());
 	std::ostringstream oss;
@@ -280,6 +280,7 @@ void* cicloEscuchaCliente(void* arg) {
 					case 2: { //2 es recibir
 						servidor->guardarLog("Request: Recibir Mensajes. " + nombre + string(".\n"),INFO);
 						char* usuarioQueSolicita = strtok(NULL, "#");
+						usleep(50000);
 						enviarMensajesProcesadosA(usuarioQueSolicita, servidor,
 								socketCliente);
 						break;
