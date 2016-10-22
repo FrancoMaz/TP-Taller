@@ -17,6 +17,7 @@
 #include "Cliente.h"
 #include "Vista.h"
 #include "Handshake.h"
+#include "UpdateJugador.h"
 
 using namespace std;
 
@@ -44,9 +45,19 @@ void* verificarConexion(void * arg){
     //comunicacion->termino = cliente->corroborarConexion();
 }
 
-void procesarUltimosMensajes(string mensajes, Cliente* cliente)
+void procesarUltimosMensajes(string mensajes, Cliente* cliente, UpdateJugador* update)
 {   string mensajeVacio = "#noHayMensajes@";
 	//cout << "Ultimos mensajes recibidos: " << endl;
+	/*char* remitente;
+	char* destinatario;
+	char* x;
+	char* y;
+	char* spriteAEjecutar;
+	char* condicion;
+	int cantidadDeFotogramas = 0;
+	int ancho = 0;
+	int alto = 0;*/
+	vector<SetDeSpritesDto*> setsSprites = handshakeDeserializado->getSprites();
 	if(strcmp(mensajes.c_str(), mensajeVacio.c_str()) != 0){
 		//cout<<"No hay mensajes nuevos"<<endl;}
 	//else{
@@ -56,52 +67,55 @@ void procesarUltimosMensajes(string mensajes, Cliente* cliente)
 		char* texto = strtok(str, "|");
 		// hacer que no imprima arroba
 		while (texto != NULL) {
-			char* remitente = texto;
+			update->setRemitente(string(texto));
 			texto = strtok(NULL,"|");
-			char* destinatario = texto;
+			update->setDestinatario(string(texto));
 			texto = strtok(NULL,"|");
-			char* x = texto;
+			update->setX(string(texto));
 			texto = strtok(NULL,"|");
-			char* y = texto;
+			update->setY(string(texto));
 			texto = strtok(NULL,"|");
-			char* spriteAEjecutar = texto;
+			char* spriteAEjecutar;
+			spriteAEjecutar = texto;
 			texto = strtok(NULL,"#");
-			char* condicion = texto;
+			update->setCondicion(string(texto));
 			texto = strtok(NULL,"|");
-			vector<SetDeSpritesDto*> setsSprites = handshakeDeserializado->getSprites();
-			int cantidadDeFotogramas = 0;
-			int ancho = 0;
-			int alto = 0;
+
 			for (int i = 0; i < setsSprites.size(); i++){
 				vector<SpriteDto*> listaSprites = setsSprites.at(i)->getSprites();
 				for (int i = 0; i < listaSprites.size(); i++) {
 					if ((string(spriteAEjecutar)) == listaSprites.at(i)->getId())
 					{
-						cantidadDeFotogramas = atoi(listaSprites.at(i)->getCantidadDeFotogramas().c_str());
+						update->setSprite(listaSprites.at(i));
+						/*cantidadDeFotogramas = atoi(listaSprites.at(i)->getCantidadDeFotogramas().c_str());
 						ancho = atoi(listaSprites.at(i)->getAncho().c_str());
-						alto =  atoi(listaSprites.at(i)->getAlto().c_str());
+						alto =  atoi(listaSprites.at(i)->getAlto().c_str());*/
 					}
 				}
 			}
-			cout << "Mensaje de "<< remitente <<":"<<endl;
-			cout << "Posicion x: " << x << endl;
-			cout << "Posicion y: " << y << endl;
-			cout << "Sprite a ejecutar: " << spriteAEjecutar << endl;
-			cout << "Condicion: " << condicion << endl;
-			cout << "CantidadDeFotogramas: " << cantidadDeFotogramas << endl;
-			cout << "Ancho: " << ancho << endl;
-			cout << "Alto: " << alto << endl;
-			vista->actualizarJugador(string(remitente),atoi((string(x).c_str())),atoi(string(y).c_str()), string(spriteAEjecutar), string(condicion), cantidadDeFotogramas);
+			cout << "Mensaje de "<< update->getRemitente() <<":"<<endl;
+			cout << "Posicion x: " << update->getX() << endl;
+			cout << "Posicion y: " << update->getY() << endl;
+			cout << "Sprite a ejecutar: " << update->getSprite()->getId() << endl;
+			cout << "Condicion: " << update->getCondicion() << endl;
+			cout << "CantidadDeFotogramas: " << update->getSprite()->getCantidadDeFotogramas() << endl;
+			cout << "Ancho: " << update->getSprite()->getAncho() << endl;
+			cout << "Alto: " << update->getSprite()->getAlto() << endl;
+			vista->actualizarJugador(update);
 		}
+	}
+	else {
+		vista->actualizarJugador(update);
 	}
 }
 
 void* recibirPosicionJugadores(void* arg) {
 	Cliente* cliente = (Cliente*) arg;
 	string datosRecibidos = "";
+	UpdateJugador* update = new UpdateJugador();
 	while(!controlador->comprobarCierreVentana()){
 		datosRecibidos = cliente->recibir();
-		procesarUltimosMensajes(datosRecibidos, cliente);
+		procesarUltimosMensajes(datosRecibidos, cliente, update);
 		usleep(100000);
 	}
 }

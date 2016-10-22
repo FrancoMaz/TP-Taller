@@ -25,6 +25,7 @@ Jugador::Jugador(string nombre) {
 	saltar = false;
 	angulo = 0;
 	condicionSprite = "Normal";
+	spriteAEjecutar = "Jugador";
 }
 Jugador::~Jugador() {
 	// TODO Auto-generated destructor stub

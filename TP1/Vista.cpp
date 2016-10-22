@@ -305,7 +305,7 @@ void Vista::cargarEscenario(int ancho, int alto){
 	}
 }
 
-void Vista::actualizarJugador(string remitente, int x, int y, string sprite, string condicion, int cantidadDeFotogramas)
+void Vista::actualizarJugador(UpdateJugador* update)
 {
 	SDL_Rect camara = {0,0,ANCHO_VENTANA,ALTO_VENTANA};
 	this->ventana->limpiar();
@@ -315,13 +315,13 @@ void Vista::actualizarJugador(string remitente, int x, int y, string sprite, str
 	for (int i = 0; i < vistaJugadores.size(); i++){
 		VistaJugador* vistaJugador = vistaJugadores.at(i);
 		texturaJugadorX = vistaJugador->texturaJugador;
-		if (vistaJugador->nombre == remitente)
+		if (vistaJugador->nombre == update->getRemitente())
 		{
-			vistaJugador->x = x;
-			vistaJugador->y = y;
-			texturaJugadorX->cargarImagen("Recursos/" + sprite + ".png");
-			texturaJugadorX->generarSprite(cantidadDeFotogramas);
-			if (condicion == "Normal")
+			vistaJugador->x = atoi(update->getX().c_str());
+			vistaJugador->y = atoi(update->getY().c_str());
+			texturaJugadorX->cargarImagen("Recursos/" + update->getSprite()->getId() + ".png");
+			texturaJugadorX->generarSprite(atoi(update->getSprite()->getCantidadDeFotogramas().c_str()));
+			if (update->getCondicion() == "Normal")
 			{
 				vistaJugador->flip = SDL_FLIP_NONE;
 			}

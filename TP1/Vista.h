@@ -15,6 +15,7 @@
 #include <vector>
 #include <string>
 #include "VistaJugador.h"
+#include "UpdateJugador.h"
 
 using namespace std;
 
@@ -55,7 +56,7 @@ public:
 	void cargarArchivos();
 	bool ventanaCerrada();
 	void cerrar();
-	void actualizarJugador(string remitente, int x, int y, string sprite, string condicion, int cantidadDeFotogramas);
+	void actualizarJugador(UpdateJugador* update);
 	void cargarVistaInicialJugador(string nombre, int x, int y);
 
 };
