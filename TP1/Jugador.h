@@ -17,7 +17,7 @@
 
 #define velocidad 5
 #define PI 3.14159265
-#define VELMAX 20
+#define VELMAX 5
 
 using namespace std;
 

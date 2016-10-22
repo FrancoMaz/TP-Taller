@@ -40,7 +40,6 @@ private:
 		int y;
 		string sprite;
 	};
-	SDL_Rect camara;
 	vector<VistaJugador*> vistaJugadores;
 
 	datosConexion cargarPantallaIngresoDatos(bool aviso, int numeroPantalla);
@@ -60,6 +59,7 @@ public:
 	void actualizarJugador(UpdateJugador* update);
 	void cargarVistaInicialJugador(string nombre, int x, int y);
 	void actualizarCamara(int x, int y);
+	SDL_Rect camara;
 
 };
 

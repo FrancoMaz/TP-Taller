@@ -51,15 +51,17 @@ void procesarUltimosMensajes(string mensajes, Cliente* cliente, UpdateJugador* u
 	if(strcmp(mensajes.c_str(), mensajeVacio.c_str()) != 0){
 
 		mensajes[mensajes.length() - 1] = '#';
+		cout << mensajes << endl;
 		char str[mensajes.length()];
 		strcpy(str, mensajes.c_str());
 		char* texto = strtok(str, "|");
-		if (texto == "0")
-		{
-			char* texto = strtok(str, "|");
-			while (texto != NULL) {
-				update->setRemitente(string(texto));
-				texto = strtok(NULL,"|");
+		while (texto != NULL) {
+			update->setRemitente(string(texto));
+			cout << update->getRemitente() << endl;
+			texto = strtok(NULL, "|");
+			cout << string(texto) << endl;
+			if (string(texto) == "0"){
+				texto = strtok(NULL, "|");
 				update->setDestinatario(string(texto));
 				texto = strtok(NULL,"|");
 				update->setX(string(texto));
@@ -70,11 +72,10 @@ void procesarUltimosMensajes(string mensajes, Cliente* cliente, UpdateJugador* u
 				spriteAEjecutar = texto;
 				texto = strtok(NULL,"#");
 				update->setCondicion(string(texto));
-				texto = strtok(NULL,"|");
-
 				for (int i = 0; i < setsSprites.size(); i++){
 					vector<SpriteDto*> listaSprites = setsSprites.at(i)->getSprites();
-					for (int i = 0; i < listaSprites.size(); i++) {
+					for (int i = 0; i < listaSprites.size(); i++)
+					{
 						if ((string(spriteAEjecutar)) == listaSprites.at(i)->getId())
 						{
 							update->setSprite(listaSprites.at(i));
@@ -82,17 +83,23 @@ void procesarUltimosMensajes(string mensajes, Cliente* cliente, UpdateJugador* u
 					}
 				}
 			}
-		}
-		else if (texto == "1")
-		{
-			texto = strtok(str, "|");
-			int x = atoi(texto);
-			texto = strtok(str,"#");
-			int y = atoi(texto);
-			vista->actualizarCamara(x,y);
+			else{
+				texto = strtok(NULL, "|");
+				int x = atoi(texto);
+				texto = strtok(NULL,"#");
+				int y = atoi(texto);
+				vista->actualizarCamara(x,y);
+				cout << vista->camara.x << endl;
+				cout << vista->camara.y << endl;
+			}
+			vista->actualizarJugador(update);
+			texto = strtok(NULL, "|");
 		}
 	}
-	vista->actualizarJugador(update);
+	else{
+		vista->actualizarJugador(update);
+	}
+
 }
 
 void* recibirPosicionJugadores(void* arg) {
