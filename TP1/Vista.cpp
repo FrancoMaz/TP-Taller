@@ -329,7 +329,7 @@ void Vista::actualizarJugador(UpdateJugador* update)
 				vistaJugador->flip = SDL_FLIP_HORIZONTAL;
 			}
 		}
-		texturaJugadorX->aplicarPosicion(vistaJugador->x,vistaJugador->y,0,vistaJugador->flip);
+		texturaJugadorX->aplicarPosicion(vistaJugador->x - camara.x,vistaJugador->y - camara.y,0,vistaJugador->flip);
 	}
 	this->ventana->actualizar();
 }

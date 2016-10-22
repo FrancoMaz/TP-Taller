@@ -89,8 +89,6 @@ void procesarUltimosMensajes(string mensajes, Cliente* cliente, UpdateJugador* u
 				texto = strtok(NULL,"#");
 				int y = atoi(texto);
 				vista->actualizarCamara(x,y);
-				cout << vista->camara.x << endl;
-				cout << vista->camara.y << endl;
 			}
 			vista->actualizarJugador(update);
 			texto = strtok(NULL, "|");
