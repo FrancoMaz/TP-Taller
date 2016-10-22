@@ -45,5 +45,7 @@ public:
 	void setConectado();
 	bool getConectado();
 	string serializarInicio();
+	bool chequearCambiarCamara(SDL_Rect camara);
+	pair<int, int> getPosicion();
 };
 #endif /* JUGADOR_H_ */

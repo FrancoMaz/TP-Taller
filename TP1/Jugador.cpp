@@ -105,7 +105,6 @@ void Jugador::actualizarPosicion(SDL_Keycode tecla, bool sePresionoTecla)
 	posicion.first += velocidades.first;
 	posicion.second += velocidades.second;
 
-
 }
 
 void Jugador::setConectado()
@@ -120,7 +119,7 @@ void Jugador::setDesconectado()
 
 string Jugador::getStringJugador()
 {
-	return (nombre + "|" + to_string(posicion.first) + "|" + to_string(posicion.second) + "|" + spriteAEjecutar + "|" + condicionSprite + "#");
+	return ("0|" + nombre + "|" + to_string(posicion.first) + "|" + to_string(posicion.second) + "|" + spriteAEjecutar + "|" + condicionSprite + "#");
 }
 
 string Jugador::getNombre()
@@ -145,4 +144,18 @@ bool Jugador::getConectado(){
 string Jugador::serializarInicio()
 {
 	return (nombre + "|" + to_string(posicion.first) + "|" + to_string(posicion.second));
+}
+
+bool Jugador::chequearCambiarCamara(SDL_Rect camara)
+{
+	if(this->posicion.first - camara.x > ANCHO_VENTANA/2)
+	{
+		return true;
+	}
+	return false;
+}
+
+pair<int,int> Jugador::getPosicion()
+{
+	return posicion;
 }

@@ -318,9 +318,9 @@ void Cliente::corroborarConexion() {
 		char* escuchando = "3|";
 		strcpy(buffer, escuchando);
 		clock_t tiempoInicio = clock();
-
-		do {
-			} while ((double)((clock()-tiempoInicio)/CLOCKS_PER_SEC) < 5);
+		usleep(5000000);
+		//do {
+			//} while ((double)((clock()-tiempoInicio)/CLOCKS_PER_SEC) < 5);
 		pthread_mutex_lock(&mutexSocket);
 		ok = send(this->socketCliente, escuchando, strlen(escuchando), 0);
 		if (ok > 0)
@@ -350,7 +350,7 @@ bool Cliente::conectar(string nombre, string contrasenia) {
 	this->addr_size = sizeof direccionServidor;
 	char* nombreYPass = strdup((nombre + ',' + contrasenia).c_str()); // convierte el string de const char* a char*
 	cout << "Intentando conectarse con el servidor. . ." << endl;
-	//pthread_mutex_lock(&mutexSocket);
+	pthread_mutex_lock(&mutexSocket);
 	if (connect(socketCliente, (struct sockaddr *) &direccionServidor,addr_size) == 0) {
 
 		strcpy(buffer, nombreYPass);
@@ -375,6 +375,7 @@ bool Cliente::conectar(string nombre, string contrasenia) {
 		if (strcmp(datos.c_str(), desconectarse.c_str()) == 0) {
 			cout << "Usuario/clave incorrectos, inténtelo de nuevo" << endl;
 			close(socketCliente);
+			pthread_mutex_unlock(&mutexSocket);
 		} else {
 			string opcion = "6|" + nombre;
 			cout << "Conectandose al puerto: " << this->puertoServidor << endl;
@@ -385,7 +386,7 @@ bool Cliente::conectar(string nombre, string contrasenia) {
 			send(socketCliente,buffer,opcion.length(),0);
 			splitUsuarios(datosRecibidos);
 			this->recibirHandshake();
-			//pthread_mutex_unlock(&mutexSocket);
+			pthread_mutex_unlock(&mutexSocket);
 			return true;
 		}
 	} else {

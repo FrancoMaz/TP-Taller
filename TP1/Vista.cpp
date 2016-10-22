@@ -292,7 +292,7 @@ void Vista::transicionDePantalla(){
 void Vista::cargarEscenario(int ancho, int alto){
 	cout << "Ancho: " << ancho << endl;
 	cout << "Alto: " << alto << endl;
-	SDL_Rect camara = {0,0,ANCHO_VENTANA,ALTO_VENTANA};
+	camara = {0,0,ANCHO_VENTANA,ALTO_VENTANA};
 	this->ventana->limpiar();
 	texturaFondoEscenario->aplicarPosicionDePorcion(0,0,&camara,0,SDL_FLIP_NONE);
 	for (int i = 0; i < vistaJugadores.size(); i++){
@@ -307,7 +307,6 @@ void Vista::cargarEscenario(int ancho, int alto){
 
 void Vista::actualizarJugador(UpdateJugador* update)
 {
-	SDL_Rect camara = {0,0,ANCHO_VENTANA,ALTO_VENTANA};
 	this->ventana->limpiar();
 	texturaFondoEscenario->aplicarPosicionDePorcion(0,0,&camara,0,SDL_FLIP_NONE);
 	SDL_RendererFlip flip = SDL_FLIP_NONE;
@@ -330,32 +329,6 @@ void Vista::actualizarJugador(UpdateJugador* update)
 				vistaJugador->flip = SDL_FLIP_HORIZONTAL;
 			}
 		}
-			/*texturaJugadorX = vistaJugador.texturaJugador;
-			texturaJugadorX->cargarImagen("Recursos/" + sprite + ".png");
-			texturaJugadorX->generarSprite(cantidadDeFotogramas);
-			if (condicion == "Normal")
-			{
-				flip = SDL_FLIP_NONE;
-			}
-			else
-			{
-				flip = SDL_FLIP_HORIZONTAL;
-			}
-			texturaJugadorX->aplicarPosicion(x,y,0,flip);
-			break;
-		}
-		else{
-			texturaJugadorX = vistaJugador.texturaJugador;
-			texturaJugadorX->cargarImagen("Recursos/" + sprite + ".png");
-			texturaJugadorX->generarSprite(cantidadDeFotogramas);
-			if (condicion == "Normal")
-				{
-					flip = SDL_FLIP_NONE;
-				}
-			else
-				{
-					flip = SDL_FLIP_HORIZONTAL;
-				}*/
 		texturaJugadorX->aplicarPosicion(vistaJugador->x,vistaJugador->y,0,vistaJugador->flip);
 	}
 	this->ventana->actualizar();
@@ -380,3 +353,8 @@ void Vista::cargarVistaInicialJugador(string nombre, int x, int y)
 	vistaJugadores.push_back(vistaJugador);
 }
 
+void Vista::actualizarCamara(int x, int y)
+{
+	camara.x = x;
+	camara.y = y;
+}

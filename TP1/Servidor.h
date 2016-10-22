@@ -112,12 +112,15 @@ public:
 	vector<Jugador*>* getJugadoresConectados();
 	void encolarMensajeProcesadoParaCadaCliente(Mensaje mensajeAProcesar, string mensajeJugadorPosActualizada);
 
+	void iniciarCamara();
+
 	//obtiene el estado inicial de los jugadores serializado para enviarlo via socket
 	string getEstadoInicialSerializado();
 	void guardarDatosDeConfiguracion();
 	void enviarHandshake(int socket,char* cliente);
 	pthread_mutex_t mutexSocket;
 	int cantJugadoresConectadosMax = 1;
+	SDL_Rect camara;
 };
 
 #endif /* TP1_SERVIDOR_H_ */

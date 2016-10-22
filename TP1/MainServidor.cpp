@@ -317,6 +317,7 @@ void* cicloEscuchaCliente(void* arg) {
 						if (servidor->getJugadoresConectados()->size() == servidor->cantJugadoresConectadosMax){
 							string jugadoresInicio = servidor->getEstadoInicialSerializado();
 							comenzo = "0|"  + jugadoresInicio + "@";
+							servidor->iniciarCamara();
 						}
 						else{
 							comenzo = "1@";

@@ -182,22 +182,6 @@ void* Servidor::actualizarPosiciones(void* arg)
 		jugadorSalto = jugador->salto();
 		mensajeJugadorPosActualizada = jugador->getStringJugador();
 		pthread_mutex_unlock(&servidor->mutexVectorJugadores);
-	/*string mensajeJugadorPosActualizada = "";
-	for (list<MensajesProcesados>::iterator usuarioActual = servidor->getListaMensajesProcesados()->begin();
-		usuarioActual != servidor->getListaMensajesProcesados()->end();usuarioActual++) {
-		MensajesProcesados listaMensajes;
-		listaMensajes = *usuarioActual;
-		if (listaMensajes.destinatario == mensajeAProcesar.getRemitente()) {
-			pthread_mutex_lock(&servidor->mutexListaProcesados);
-			listaMensajes.jugador->actualizarPosicion(mensajeAProcesar.deserializar(mensajeAProcesar.getTexto()),mensajeAProcesar.sePresionoTecla());
-			mensajeJugadorPosActualizada = listaMensajes.jugador->getStringJugador();
-			jugadorSalto = listaMensajes.jugador->salto();
-			pthread_mutex_unlock(&servidor->mutexListaProcesados);
-			this->mensaje = "Procesando mensaje para "
-					+ listaMensajes.destinatario + "\n";
-			this->guardarLog(mensaje, DEBUG)
-		}
-	}*/
 
 	servidor->encolarMensajeProcesadoParaCadaCliente(mensajeAProcesar,mensajeJugadorPosActualizada);
 	} while (jugadorSalto);
@@ -215,22 +199,6 @@ void Servidor::actualizarPosicionesSalto(Mensaje mensajeAProcesar)
 		jugadorSalto = jugador->salto();
 		mensajeJugadorPosActualizada = jugador->getStringJugador();
 		pthread_mutex_unlock(&mutexVectorJugadores);
-		/*
-		string mensajeJugadorPosActualizada = "";
-		for (list<MensajesProcesados>::iterator usuarioActual = listaMensajesProcesados->begin();
-			usuarioActual != listaMensajesProcesados->end();usuarioActual++) {
-			MensajesProcesados listaMensajes;
-			listaMensajes = *usuarioActual;
-			if (listaMensajes.destinatario == mensajeAProcesar.getRemitente()) {
-				pthread_mutex_lock(&mutexListaProcesados);
-				listaMensajes.jugador->actualizarPosicion(mensajeAProcesar.deserializar(mensajeAProcesar.getTexto()),mensajeAProcesar.sePresionoTecla());
-				mensajeJugadorPosActualizada = listaMensajes.jugador->getStringJugador();
-				jugadorSalto = listaMensajes.jugador->salto();
-				pthread_mutex_unlock(&mutexListaProcesados);
-				this->mensaje = "Procesando mensaje para "
-						+ listaMensajes.destinatario + "\n";
-				this->guardarLog(mensaje, DEBUG);
-			}*/
 		encolarMensajeProcesadoParaCadaCliente(mensajeAProcesar,mensajeJugadorPosActualizada);
 	} while (jugadorSalto);
 }
@@ -248,7 +216,8 @@ Jugador* Servidor::obtenerJugador(string nombre){
 }
 
 void Servidor::procesarMensajes() {
-
+	Mensaje* mensajeCamara;
+	string mensajeCamaraString;
 	if (!colaMensajesNoProcesados.empty()) {
 		pthread_t threadSalto;
 		pthread_mutex_lock(&mutexColaNoProcesados);
@@ -271,24 +240,20 @@ void Servidor::procesarMensajes() {
 			pthread_mutex_lock(&mutexVectorJugadores);
 			Jugador* jugador = this->obtenerJugador(mensajeAProcesar.getRemitente());
 			jugador->actualizarPosicion(mensajeAProcesar.deserializar(mensajeAProcesar.getTexto()),mensajeAProcesar.sePresionoTecla());
+			bool necesitaCambiarCamara = jugador->chequearCambiarCamara(this->camara);
+			if (necesitaCambiarCamara)
+			{
+				camara.x = jugador->getPosicion().first - ANCHO_VENTANA/2;
+				mensajeCamaraString = "1|" + to_string(camara.x) + "|" + to_string(camara.y) + "#";
+				mensajeCamara = new Mensaje(jugador->getNombre(),"Todos",mensajeCamaraString);
+			}
 			mensajeJugadorPosActualizada = jugador->getStringJugador();
 			pthread_mutex_unlock(&mutexVectorJugadores);
-		/*for (list<MensajesProcesados>::iterator usuarioActual = listaMensajesProcesados->begin();
-			usuarioActual != listaMensajesProcesados->end();usuarioActual++) {
-			MensajesProcesados listaMensajes;
-			listaMensajes = *usuarioActual;
-			if (listaMensajes.destinatario == mensajeAProcesar.getRemitente()) {
-				pthread_mutex_lock(&mutexListaProcesados);
-				listaMensajes.jugador->actualizarPosicion(mensajeAProcesar.deserializar(mensajeAProcesar.getTexto()),mensajeAProcesar.sePresionoTecla());
-				mensajeJugadorPosActualizada = listaMensajes.jugador->getStringJugador();
-				pthread_mutex_unlock(&mutexListaProcesados);
-				this->mensaje = "Procesando mensaje para "
-						+ listaMensajes.destinatario + "\n";
-				this->guardarLog(mensaje, DEBUG);
-			}
-		}
-		*/
 			encolarMensajeProcesadoParaCadaCliente(mensajeAProcesar,mensajeJugadorPosActualizada);
+			if (necesitaCambiarCamara)
+			{
+				encolarMensajeProcesadoParaCadaCliente(*mensajeCamara,mensajeCamaraString);
+			}
 		}
 	}
 }
@@ -547,3 +512,6 @@ string Servidor::getEstadoInicialSerializado()
 	return estadoInicial;
 }
 
+void Servidor::iniciarCamara(){
+	camara = {0,0,ANCHO_VENTANA,ALTO_VENTANA};
+}

@@ -47,66 +47,52 @@ void* verificarConexion(void * arg){
 
 void procesarUltimosMensajes(string mensajes, Cliente* cliente, UpdateJugador* update)
 {   string mensajeVacio = "#noHayMensajes@";
-	//cout << "Ultimos mensajes recibidos: " << endl;
-	/*char* remitente;
-	char* destinatario;
-	char* x;
-	char* y;
-	char* spriteAEjecutar;
-	char* condicion;
-	int cantidadDeFotogramas = 0;
-	int ancho = 0;
-	int alto = 0;*/
 	vector<SetDeSpritesDto*> setsSprites = handshakeDeserializado->getSprites();
 	if(strcmp(mensajes.c_str(), mensajeVacio.c_str()) != 0){
-		//cout<<"No hay mensajes nuevos"<<endl;}
-	//else{
+
 		mensajes[mensajes.length() - 1] = '#';
 		char str[mensajes.length()];
 		strcpy(str, mensajes.c_str());
 		char* texto = strtok(str, "|");
-		// hacer que no imprima arroba
-		while (texto != NULL) {
-			update->setRemitente(string(texto));
-			texto = strtok(NULL,"|");
-			update->setDestinatario(string(texto));
-			texto = strtok(NULL,"|");
-			update->setX(string(texto));
-			texto = strtok(NULL,"|");
-			update->setY(string(texto));
-			texto = strtok(NULL,"|");
-			char* spriteAEjecutar;
-			spriteAEjecutar = texto;
-			texto = strtok(NULL,"#");
-			update->setCondicion(string(texto));
-			texto = strtok(NULL,"|");
+		if (texto == "0")
+		{
+			char* texto = strtok(str, "|");
+			while (texto != NULL) {
+				update->setRemitente(string(texto));
+				texto = strtok(NULL,"|");
+				update->setDestinatario(string(texto));
+				texto = strtok(NULL,"|");
+				update->setX(string(texto));
+				texto = strtok(NULL,"|");
+				update->setY(string(texto));
+				texto = strtok(NULL,"|");
+				char* spriteAEjecutar;
+				spriteAEjecutar = texto;
+				texto = strtok(NULL,"#");
+				update->setCondicion(string(texto));
+				texto = strtok(NULL,"|");
 
-			for (int i = 0; i < setsSprites.size(); i++){
-				vector<SpriteDto*> listaSprites = setsSprites.at(i)->getSprites();
-				for (int i = 0; i < listaSprites.size(); i++) {
-					if ((string(spriteAEjecutar)) == listaSprites.at(i)->getId())
-					{
-						update->setSprite(listaSprites.at(i));
-						/*cantidadDeFotogramas = atoi(listaSprites.at(i)->getCantidadDeFotogramas().c_str());
-						ancho = atoi(listaSprites.at(i)->getAncho().c_str());
-						alto =  atoi(listaSprites.at(i)->getAlto().c_str());*/
+				for (int i = 0; i < setsSprites.size(); i++){
+					vector<SpriteDto*> listaSprites = setsSprites.at(i)->getSprites();
+					for (int i = 0; i < listaSprites.size(); i++) {
+						if ((string(spriteAEjecutar)) == listaSprites.at(i)->getId())
+						{
+							update->setSprite(listaSprites.at(i));
+						}
 					}
 				}
 			}
-			cout << "Mensaje de "<< update->getRemitente() <<":"<<endl;
-			cout << "Posicion x: " << update->getX() << endl;
-			cout << "Posicion y: " << update->getY() << endl;
-			cout << "Sprite a ejecutar: " << update->getSprite()->getId() << endl;
-			cout << "Condicion: " << update->getCondicion() << endl;
-			cout << "CantidadDeFotogramas: " << update->getSprite()->getCantidadDeFotogramas() << endl;
-			cout << "Ancho: " << update->getSprite()->getAncho() << endl;
-			cout << "Alto: " << update->getSprite()->getAlto() << endl;
-			vista->actualizarJugador(update);
+		}
+		else if (texto == "1")
+		{
+			texto = strtok(str, "|");
+			int x = atoi(texto);
+			texto = strtok(str,"#");
+			int y = atoi(texto);
+			vista->actualizarCamara(x,y);
 		}
 	}
-	else {
-		vista->actualizarJugador(update);
-	}
+	vista->actualizarJugador(update);
 }
 
 void* recibirPosicionJugadores(void* arg) {
