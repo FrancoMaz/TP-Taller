@@ -191,15 +191,28 @@ void* Servidor::actualizarPosiciones(void* arg)
 void Servidor::actualizarPosicionesSalto(Mensaje mensajeAProcesar)
 {
 	bool jugadorSalto;
+	Mensaje* mensajeCamara;
+	string mensajeCamaraString;
 	do {
 		string mensajeJugadorPosActualizada = "";
 		pthread_mutex_lock(&mutexVectorJugadores);
 		Jugador* jugador = this->obtenerJugador(mensajeAProcesar.getRemitente());
 		jugador->actualizarPosicion(mensajeAProcesar.deserializar(mensajeAProcesar.getTexto()),mensajeAProcesar.sePresionoTecla(),camara);
 		jugadorSalto = jugador->salto();
+		bool necesitaCambiarCamara = jugador->chequearCambiarCamara(this->camara);
+		if (necesitaCambiarCamara)
+		{
+			camara.x = jugador->getPosicion().first - ANCHO_VENTANA/2;
+			mensajeCamaraString = "1|" + to_string(camara.x) + "|" + to_string(camara.y) + "#";
+			mensajeCamara = new Mensaje(jugador->getNombre(),"Todos",mensajeCamaraString);
+		}
 		mensajeJugadorPosActualizada = jugador->getStringJugador();
 		pthread_mutex_unlock(&mutexVectorJugadores);
 		encolarMensajeProcesadoParaCadaCliente(mensajeAProcesar,mensajeJugadorPosActualizada);
+		if (necesitaCambiarCamara)
+		{
+			encolarMensajeProcesadoParaCadaCliente(*mensajeCamara,mensajeCamaraString);
+		}
 	} while (jugadorSalto);
 }
 
@@ -228,8 +241,8 @@ void Servidor::procesarMensajes() {
 		{
 			/*ParametrosServidor parametrosServidor;
 			parametrosServidor.mensajeAProcesar = mensajeAProcesar;
-			parametrosServidor.servidor = this;
-			*/
+			parametrosServidor.servidor = this;*/
+
 				this->actualizarPosicionesSalto(mensajeAProcesar);
 			/*pthread_create(&threadSalto,NULL,&actualizarPosiciones,&parametrosServidor);
 			pthread_detach(threadSalto);*/
