@@ -36,6 +36,8 @@ Servidor::Servidor(char* nombreArchivoDeUsuarios, int puerto, Logger* logger) {
 	this->guardarLog(mensaje, DEBUG);
 	this->guardarDatosDeUsuarios();
 	this->guardarDatosDeConfiguracion();
+	vectorEquipos = {"rojo", "verde", "amarillo"};
+	posicionVector = 0;
 }
 
 Servidor::~Servidor() {
@@ -101,11 +103,11 @@ void Servidor::guardarDatosDeUsuarios() {
 				}
 				nroItem++;
 			}
-			Jugador* jugador = new Jugador(datosCapturados.nombre);
+			//Jugador* jugador = new Jugador(datosCapturados.nombre);
 			//mensajesProcesados.jugador = jugador;
-			pthread_mutex_lock(&mutexVectorJugadores);
-			jugadores->push_back(jugador);
-			pthread_mutex_unlock(&mutexVectorJugadores);
+			//pthread_mutex_lock(&mutexVectorJugadores);
+			//jugadores->push_back(jugador);
+			//pthread_mutex_unlock(&mutexVectorJugadores);
 			queue<Mensaje>* colaMensajes = new queue<Mensaje>;
 			mensajesProcesados.mensajes = colaMensajes;
 			datosUsuarios->push_back(datosCapturados);
@@ -131,6 +133,10 @@ void Servidor::autenticar(string nombre, string contrasenia, list<string>& usuar
 				&& (strcmp(usuario.contrasenia.c_str(), contrasenia.c_str())
 						== 0)) {
 			autenticacionOK = true;
+			Jugador* jugador = new Jugador(usuario.nombre, this->vectorEquipos.at(posicionVector));
+			pthread_mutex_lock(&mutexVectorJugadores);
+			jugadores->push_back(jugador);
+			pthread_mutex_unlock(&mutexVectorJugadores);
 			MensajesProcesados mensajesProcesados;
 			mensajesProcesados.destinatario = usuario.nombre;
 			//mensajesProcesados.jugador = new Jugador(usuario.nombre);
@@ -150,6 +156,11 @@ void Servidor::autenticar(string nombre, string contrasenia, list<string>& usuar
 		cout << "Error de autenticación: usuario y/o clave incorrectos" << endl;
 		string msj = "Error de autenticación: usuario y/o clave incorrectos \n";
 		this->guardarLog(msj, INFO);
+	}
+	this->posicionVector += 1;
+	if (this->posicionVector > this->vectorEquipos.size())
+	{
+		this->posicionVector = 0;
 	}
 }
 
@@ -173,6 +184,8 @@ void* Servidor::actualizarPosiciones(void* arg)
 	ParametrosServidor parametrosServidor = *(ParametrosServidor*) arg;
 	Mensaje mensajeAProcesar = parametrosServidor.mensajeAProcesar;
 	Servidor* servidor = parametrosServidor.servidor;
+	Mensaje* mensajeCamara;
+	string mensajeCamaraString;
 	bool jugadorSalto;
 	do {
 		string mensajeJugadorPosActualizada = "";
@@ -180,10 +193,20 @@ void* Servidor::actualizarPosiciones(void* arg)
 		Jugador* jugador = servidor->obtenerJugador(mensajeAProcesar.getRemitente());
 		jugador->actualizarPosicion(mensajeAProcesar.deserializar(mensajeAProcesar.getTexto()),mensajeAProcesar.sePresionoTecla(),servidor->camara);
 		jugadorSalto = jugador->salto();
+		bool necesitaCambiarCamara = jugador->chequearCambiarCamara(servidor->camara, atoi(servidor->handshake->getAncho().c_str()));
+		if (necesitaCambiarCamara)
+		{
+			servidor->camara.x = jugador->getPosicion().first - (atoi(servidor->handshake->getAncho().c_str()))/2;
+			mensajeCamaraString = "1|" + to_string(servidor->camara.x) + "|" + to_string(servidor->camara.y) + "#";
+			mensajeCamara = new Mensaje(jugador->getNombre(),"Todos",mensajeCamaraString);
+		}
 		mensajeJugadorPosActualizada = jugador->getStringJugador();
 		pthread_mutex_unlock(&servidor->mutexVectorJugadores);
-
-	servidor->encolarMensajeProcesadoParaCadaCliente(mensajeAProcesar,mensajeJugadorPosActualizada);
+		servidor->encolarMensajeProcesadoParaCadaCliente(mensajeAProcesar,mensajeJugadorPosActualizada);
+		if (necesitaCambiarCamara)
+		{
+			servidor->encolarMensajeProcesadoParaCadaCliente(*mensajeCamara,mensajeCamaraString);
+		}
 	} while (jugadorSalto);
 }
 
@@ -199,10 +222,10 @@ void Servidor::actualizarPosicionesSalto(Mensaje mensajeAProcesar)
 		Jugador* jugador = this->obtenerJugador(mensajeAProcesar.getRemitente());
 		jugador->actualizarPosicion(mensajeAProcesar.deserializar(mensajeAProcesar.getTexto()),mensajeAProcesar.sePresionoTecla(),camara);
 		jugadorSalto = jugador->salto();
-		bool necesitaCambiarCamara = jugador->chequearCambiarCamara(this->camara);
+		bool necesitaCambiarCamara = jugador->chequearCambiarCamara(this->camara, atoi(handshake->getAncho().c_str()));
 		if (necesitaCambiarCamara)
 		{
-			camara.x = jugador->getPosicion().first - ANCHO_VENTANA/2;
+			camara.x = jugador->getPosicion().first - (atoi(handshake->getAncho().c_str()))/2;
 			mensajeCamaraString = "1|" + to_string(camara.x) + "|" + to_string(camara.y) + "#";
 			mensajeCamara = new Mensaje(jugador->getNombre(),"Todos",mensajeCamaraString);
 		}
@@ -253,10 +276,10 @@ void Servidor::procesarMensajes() {
 			pthread_mutex_lock(&mutexVectorJugadores);
 			Jugador* jugador = this->obtenerJugador(mensajeAProcesar.getRemitente());
 			jugador->actualizarPosicion(mensajeAProcesar.deserializar(mensajeAProcesar.getTexto()),mensajeAProcesar.sePresionoTecla(), camara);
-			bool necesitaCambiarCamara = jugador->chequearCambiarCamara(this->camara);
+			bool necesitaCambiarCamara = jugador->chequearCambiarCamara(this->camara, atoi(handshake->getAncho().c_str()));
 			if (necesitaCambiarCamara)
 			{
-				camara.x = jugador->getPosicion().first - ANCHO_VENTANA/2;
+				camara.x = jugador->getPosicion().first - (atoi(handshake->getAncho().c_str()))/2;
 				mensajeCamaraString = "1|" + to_string(camara.x) + "|" + to_string(camara.y) + "#";
 				mensajeCamara = new Mensaje(jugador->getNombre(),"Todos",mensajeCamaraString);
 			}

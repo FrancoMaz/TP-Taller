@@ -8,9 +8,9 @@
 	    <Alto>600</Alto>  
 	  </Imagen>
 	  <Imagen>   
-	    <Archivo>imagen2</Archivo>
-	    <Ancho>3</Ancho>
-	    <Alto>2</Alto> 
+	    <Archivo>Fondo_Escenario_capa_2</Archivo>
+	    <Ancho>1817</Ancho>
+	    <Alto>600</Alto> 
 	  </Imagen>
 	</Escenario>
 
@@ -18,7 +18,7 @@
 	  <SetRojo>
 	    <Carpeta>Rojo</Carpeta>
 	    <SpriteSalto>
-	      <Id>Jugador_saltando</Id>
+	      <Id>Jugador_saltando_rojo</Id>
 	      <CantFotogramas>9</CantFotogramas>
 	      <Ancho>738</Ancho>
 	      <Alto>137</Alto>
@@ -26,15 +26,15 @@
 	      <z-index>3</z-index>
 	    </SpriteSalto> 
 	    <SpriteCorrer>
-	      <Id>Jugador_corriendo</Id>
+	      <Id>Jugador_corriendo_rojo</Id>
 	      <CantFotogramas>9</CantFotogramas>
-	      <Ancho>810</Ancho>
-	      <Alto>105</Alto>
+	      <Ancho>875</Ancho>
+	      <Alto>113</Alto>
 	      <Imagen>Recursos/</Imagen>
 	      <z-index>3</z-index>
 	    </SpriteCorrer>
 	    <SpriteQuieto>
-	      <Id>Jugador</Id>
+	      <Id>Jugador_rojo</Id>
 	      <CantFotogramas>3</CantFotogramas>
 	      <Ancho>252</Ancho>
 	      <Alto>106</Alto>
@@ -45,56 +45,56 @@
 	  <SetVerde>
 	    <Carpeta>Verde</Carpeta>
 	    <SpriteSalto>
-	      <Id>saltoVerde</Id>
-	      <CantFotogramas>4</CantFotogramas>
-	      <Ancho>100</Ancho>
-	      <Alto>50</Alto>
+	      <Id>Jugador_saltando_verde</Id>
+	      <CantFotogramas>9</CantFotogramas>
+	      <Ancho>738</Ancho>
+	      <Alto>137</Alto>
 	      <Imagen>Recuros/</Imagen>
 	      <z-index>3</z-index>
 	    </SpriteSalto> 
-	    <SpriteCaminar>
-	      <Id>caminarVerde</Id>
-	      <CantFotogramas>4</CantFotogramas>
-	      <Ancho>100</Ancho>
-	      <Alto>50</Alto>
+	    <SpriteCorrer>
+	      <Id>Jugador_corriendo_verde</Id>
+	      <CantFotogramas>9</CantFotogramas>
+	      <Ancho>875</Ancho>
+	      <Alto>113</Alto>
 	      <Imagen>Recursos/</Imagen>
 	      <z-index>3</z-index>
-	    </SpriteCaminar>
-	    <SpriteAgacharse>
-	      <Id>agacharseVerde</Id>
-	      <CantFotogramas>4</CantFotogramas>
-	      <Ancho>100</Ancho>
-	      <Alto>50</Alto>
+	    </SpriteCorrer>
+	    <SpriteQuieto>
+	      <Id>Jugador_verde</Id>
+	      <CantFotogramas>3</CantFotogramas>
+	      <Ancho>252</Ancho>
+	      <Alto>106</Alto>
 	      <Imagen>Recursos/</Imagen>
 	      <z-index>3</z-index>
-	    </SpriteAgacharse>
+	    </SpriteQuieto>
 	  </SetVerde>
 	  <SetAmarillo>
 	    <Carpeta>Amarillo</Carpeta>
 	    <SpriteSalto>
-	      <Id>saltoAmarillo</Id>
-	      <CantFotogramas>4</CantFotogramas>
-	      <Ancho>100</Ancho>
-	      <Alto>50</Alto>
+	      <Id>Jugador_saltando_amarillo</Id>
+	      <CantFotogramas>9</CantFotogramas>
+	      <Ancho>738</Ancho>
+	      <Alto>137</Alto>
 	      <Imagen>Recursos/</Imagen>
 	      <z-index>3</z-index>
 	    </SpriteSalto> 
-	    <SpriteCaminar>
-	      <Id>caminarAmarillo</Id>
-	      <CantFotogramas>4</CantFotogramas>
-	      <Ancho>100</Ancho>
-	      <Alto>50</Alto>
+	    <SpriteCorrer>
+	      <Id>Jugador_corriendo_amarillo</Id>
+	      <CantFotogramas>9</CantFotogramas>
+	      <Ancho>875</Ancho>
+	      <Alto>113</Alto>
 	      <Imagen>Recursos/</Imagen>
 	      <z-index>3</z-index>
-	    </SpriteCaminar>
-	    <SpriteAgacharse>
-	      <Id>agacharseAmarillo</Id>
-	      <CantFotogramas>4</CantFotogramas>
-	      <Ancho>100</Ancho>
-	      <Alto>50</Alto>
+	    </SpriteCorrer>
+	    <SpriteQuieto>
+	      <Id>Jugador_amarillo</Id>
+	      <CantFotogramas>3</CantFotogramas>
+	      <Ancho>252</Ancho>
+	      <Alto>106</Alto>
 	      <Imagen>Recursos/</Imagen>
 	      <z-index>3</z-index>
-	    </SpriteAgacharse>
+	    </SpriteQuieto>
 	  </SetAmarillo>
 	</Sprites>
 

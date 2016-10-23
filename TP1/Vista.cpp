@@ -55,7 +55,7 @@ void Vista::cargarArchivos(){
 	textura.push_back(ventana->crearTexto("Recursos/msserif_bold.ttf",13));
 	textura.push_back(ventana->crearBoton("Recursos/Boton_Conectar.png"));
 	textura.push_back(ventana->crearTextura("Recursos/Fondo_escenario.png",0));
-	textura.push_back(ventana->crearTextura("Recursos/Jugador.png",3));
+	//textura.push_back(ventana->crearTextura("Recursos/Jugador.png",3));
 
 	//Defino constantes para cada textura (para evitar llamarlos por índices)
 	#define texturaMenuFondo textura[0]
@@ -75,7 +75,7 @@ void Vista::cargarArchivos(){
 	#define textoDatosNoCoinciden textura[14]
 	#define texturaBotonConectar textura[15]
 	#define texturaFondoEscenario textura[16]
-	#define texturaJugadorPrueba textura[17]
+	//#define texturaJugadorPrueba textura[17]
 }
 
 void Vista::cargarPrimeraPantalla(){
@@ -289,8 +289,8 @@ void Vista::transicionDePantalla(){
 	this->opacidad = 230;
 }
 
-void Vista::cargarEscenario(int ancho, int alto){
-	camara = {0,0,ANCHO_VENTANA,ALTO_VENTANA};
+void Vista::cargarEscenario(int anchoEscenario, int altoEscenario, int anchoVentana, int altoVentana){
+	camara = {0,0,anchoVentana,altoVentana};
 	this->ventana->limpiar();
 	texturaFondoEscenario->aplicarPosicionDePorcion(0,0,&camara,0,SDL_FLIP_NONE);
 	for (int i = 0; i < vistaJugadores.size(); i++){
@@ -340,14 +340,14 @@ void Vista::cerrar(){
 	this->ventana->cerrar();
 }
 
-void Vista::cargarVistaInicialJugador(string nombre, int x, int y)
+void Vista::cargarVistaInicialJugador(string nombre, int x, int y, string sprite)
 {
 	VistaJugador* vistaJugador;
 	/*vistaJugador.texturaJugador = ventana->crearTextura("Recursos/Jugador.png",3);
 	vistaJugador.nombre = nombre;
 	vistaJugador.x = x;
 	vistaJugador.y = y;*/
-	vistaJugador = new VistaJugador(nombre,x,y,(ventana->crearTextura("Recursos/Jugador.png",3)), SDL_FLIP_NONE);
+	vistaJugador = new VistaJugador(nombre,x,y,(ventana->crearTextura("Recursos/" + sprite + ".png",3)), SDL_FLIP_NONE);
 	vistaJugadores.push_back(vistaJugador);
 }
 

@@ -663,6 +663,7 @@ bool Cliente::checkearInicioJuego(Vista* vista)
 	char* nombreJugador;
 	char* x;
 	char* y;
+	char* sprite;
 
 	int comenzo = atoi(strComenzo);
 	if (comenzo != 0){
@@ -677,7 +678,9 @@ bool Cliente::checkearInicioJuego(Vista* vista)
 			strComenzo = strtok(NULL,"|#");
 			y = strComenzo;
 			strComenzo = strtok(NULL,"|#");
-			vista->cargarVistaInicialJugador(nombreJugador,atoi(x),atoi(y));
+			sprite = strComenzo;
+			strComenzo = strtok(NULL,"|#");
+			vista->cargarVistaInicialJugador(nombreJugador,atoi(x),atoi(y),sprite);
 		}
 		return true;
 	}

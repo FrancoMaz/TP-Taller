@@ -67,7 +67,8 @@ private:
 		Servidor* servidor;
 	};
 	XmlParser* parser;
-	Handshake* handshake;
+	vector<string> vectorEquipos;
+	int posicionVector;
 
 public:
 	Servidor();
@@ -119,8 +120,9 @@ public:
 	void guardarDatosDeConfiguracion();
 	void enviarHandshake(int socket,char* cliente);
 	pthread_mutex_t mutexSocket;
-	int cantJugadoresConectadosMax = 1;
+	int cantJugadoresConectadosMax = 2;
 	SDL_Rect camara;
+	Handshake* handshake;
 };
 
 #endif /* TP1_SERVIDOR_H_ */

@@ -26,6 +26,7 @@ private:
 	pair<int,int> posicion;
 	pair<int,int> velocidades;
 	string nombre;
+	string equipo;
 	bool saltar;
 	double angulo;
 	string spriteAEjecutar;
@@ -34,7 +35,7 @@ private:
 
 public:
 	Jugador(pair<int,int> posicionInicial);
-	Jugador(string nombre);
+	Jugador(string nombre, string equipo);
 	virtual ~Jugador();
 	void actualizarPosicion(SDL_Keycode tecla, bool sePresionoTecla, SDL_Rect camara);
 	string getStringJugador();
@@ -45,7 +46,7 @@ public:
 	void setConectado();
 	bool getConectado();
 	string serializarInicio();
-	bool chequearCambiarCamara(SDL_Rect camara);
+	bool chequearCambiarCamara(SDL_Rect camara, int anchoVentana);
 	pair<int, int> getPosicion();
 };
 #endif /* JUGADOR_H_ */

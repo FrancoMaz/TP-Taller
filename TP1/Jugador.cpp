@@ -16,8 +16,9 @@ Jugador::Jugador(pair<int,int> posicionInicial) {
 	angulo = 0;
 }
 
-Jugador::Jugador(string nombre) {
+Jugador::Jugador(string nombre, string equipo) {
 	this->nombre = nombre;
+	this->equipo = equipo;
 	posicion.first = 20;
 	posicion.second = 415;
 	velocidades.first = 0;
@@ -25,7 +26,7 @@ Jugador::Jugador(string nombre) {
 	saltar = false;
 	angulo = 0;
 	condicionSprite = "Normal";
-	spriteAEjecutar = "Jugador";
+	spriteAEjecutar = "Jugador_" + equipo;
 }
 Jugador::~Jugador() {
 	// TODO Auto-generated destructor stub
@@ -46,7 +47,7 @@ void Jugador::actualizarPosicion(SDL_Keycode tecla, bool sePresionoTecla, SDL_Re
 	{
 		velocidades.first += velocidad;
 		if (!saltar) {
-			spriteAEjecutar = "Jugador_corriendo";
+			spriteAEjecutar = "Jugador_corriendo_" + this->equipo;
 			condicionSprite = "Normal";
 		}
 	}
@@ -54,7 +55,7 @@ void Jugador::actualizarPosicion(SDL_Keycode tecla, bool sePresionoTecla, SDL_Re
 	{
 		velocidades.first -= velocidad;
 		if (!saltar) {
-			spriteAEjecutar = "Jugador_corriendo";
+			spriteAEjecutar = "Jugador_corriendo_" + this->equipo;
 			condicionSprite = "Espejado";
 		}
 	}
@@ -63,14 +64,14 @@ void Jugador::actualizarPosicion(SDL_Keycode tecla, bool sePresionoTecla, SDL_Re
 		if(angulo == 0)
 		{
 			saltar = true;
-			spriteAEjecutar = "Jugador_saltando";
+			spriteAEjecutar = "Jugador_saltando_" + this->equipo;
 		}
 	}
 	else if(tecla == SDLK_RIGHT && !sePresionoTecla)
 	{
 		velocidades.first = 0;
 		if (!saltar) {
-			spriteAEjecutar = "Jugador";
+			spriteAEjecutar = "Jugador_" + this->equipo;
 			condicionSprite = "Normal";
 		}
 	}
@@ -79,7 +80,7 @@ void Jugador::actualizarPosicion(SDL_Keycode tecla, bool sePresionoTecla, SDL_Re
 		velocidades.first = 0;
 		if (!saltar)
 		{
-			spriteAEjecutar = "Jugador";
+			spriteAEjecutar = "Jugador_" + this->equipo;
 			condicionSprite = "Espejado";
 		}
 	}
@@ -92,10 +93,10 @@ void Jugador::actualizarPosicion(SDL_Keycode tecla, bool sePresionoTecla, SDL_Re
 			angulo = 0;
 			saltar = false;
 			if (velocidades.first != 0) {
-				spriteAEjecutar = "Jugador_corriendo";
+				spriteAEjecutar = "Jugador_corriendo_" + this->equipo;
 			}
 			else {
-				spriteAEjecutar = "Jugador";
+				spriteAEjecutar = "Jugador_" + this->equipo;
 			}
 		}
 	} else{
@@ -147,16 +148,16 @@ bool Jugador::getConectado(){
 
 string Jugador::serializarInicio()
 {
-	return (nombre + "|" + to_string(posicion.first) + "|" + to_string(posicion.second));
+	return (nombre + "|" + to_string(posicion.first) + "|" + to_string(posicion.second) + "|" + this->spriteAEjecutar);
 }
 
-bool Jugador::chequearCambiarCamara(SDL_Rect camara)
+bool Jugador::chequearCambiarCamara(SDL_Rect camara, int anchoVentana)
 {
 	if (camara.x < 0){
 		camara.x = 0;
 		return false;
 	}
-	if(this->posicion.first - camara.x > ANCHO_VENTANA/2)
+	if(this->posicion.first - camara.x > anchoVentana/2)
 	{
 		return true;
 	}

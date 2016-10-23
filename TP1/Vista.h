@@ -50,14 +50,14 @@ public:
 	void cargarPrimeraPantalla();
 	datosConexion cargarSegundaPantalla(bool aviso);
 	datosConexion cargarTerceraPantalla(bool aviso);
-	void cargarEscenario(int ancho, int alto);
+	void cargarEscenario(int anchoEscenario, int altoEscenario, int anchoVentana, int altoVentana);
 	void transicionDePantalla();
 	bool inicializar();
 	void cargarArchivos();
 	bool ventanaCerrada();
 	void cerrar();
 	void actualizarJugador(UpdateJugador* update);
-	void cargarVistaInicialJugador(string nombre, int x, int y);
+	void cargarVistaInicialJugador(string nombre, int x, int y, string sprite);
 	void actualizarCamara(int x, int y);
 	SDL_Rect camara;
 
