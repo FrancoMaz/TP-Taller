@@ -16,10 +16,10 @@ Jugador::Jugador(pair<int,int> posicionInicial) {
 	angulo = 0;
 }
 
-Jugador::Jugador(string nombre, string equipo) {
+Jugador::Jugador(string nombre, string equipo, int posicionX) {
 	this->nombre = nombre;
 	this->equipo = equipo;
-	posicion.first = 20;
+	posicion.first = posicionX;
 	posicion.second = 415;
 	velocidades.first = 0;
 	velocidades.second = 0;

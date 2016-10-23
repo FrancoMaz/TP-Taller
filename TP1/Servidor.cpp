@@ -37,6 +37,7 @@ Servidor::Servidor(char* nombreArchivoDeUsuarios, int puerto, Logger* logger) {
 	this->guardarDatosDeUsuarios();
 	this->guardarDatosDeConfiguracion();
 	vectorEquipos = {"rojo", "verde", "amarillo"};
+	posicionXInicial = 20;
 	posicionVector = 0;
 }
 
@@ -133,7 +134,7 @@ void Servidor::autenticar(string nombre, string contrasenia, list<string>& usuar
 				&& (strcmp(usuario.contrasenia.c_str(), contrasenia.c_str())
 						== 0)) {
 			autenticacionOK = true;
-			Jugador* jugador = new Jugador(usuario.nombre, this->vectorEquipos.at(posicionVector));
+			Jugador* jugador = new Jugador(usuario.nombre, this->vectorEquipos.at(posicionVector), posicionXInicial);
 			pthread_mutex_lock(&mutexVectorJugadores);
 			jugadores->push_back(jugador);
 			pthread_mutex_unlock(&mutexVectorJugadores);
@@ -158,6 +159,7 @@ void Servidor::autenticar(string nombre, string contrasenia, list<string>& usuar
 		this->guardarLog(msj, INFO);
 	}
 	this->posicionVector += 1;
+	this->posicionXInicial += 84;
 	if (this->posicionVector > this->vectorEquipos.size())
 	{
 		this->posicionVector = 0;

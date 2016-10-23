@@ -35,7 +35,7 @@ private:
 
 public:
 	Jugador(pair<int,int> posicionInicial);
-	Jugador(string nombre, string equipo);
+	Jugador(string nombre, string equipo, int posicionX);
 	virtual ~Jugador();
 	void actualizarPosicion(SDL_Keycode tecla, bool sePresionoTecla, SDL_Rect camara);
 	string getStringJugador();

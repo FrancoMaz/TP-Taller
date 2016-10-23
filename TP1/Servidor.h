@@ -69,6 +69,7 @@ private:
 	XmlParser* parser;
 	vector<string> vectorEquipos;
 	int posicionVector;
+	int posicionXInicial;
 
 public:
 	Servidor();
