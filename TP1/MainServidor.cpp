@@ -273,7 +273,6 @@ void* cicloEscuchaCliente(void* arg) {
 								 	 	 	 	 + ", Destinatario: " + string(destinatario)
 												 	 + ", Mensaje: " + string(mensaje) + string(".\n"),INFO);
 						//cout<<"mensaje recibido :"<<mensaje<<endl;
-						cout << "Mensaje: " << mensaje << endl;
 						encolarMensaje(remitente, destinatario, mensaje, servidor);
 						break;
 					}
@@ -310,7 +309,6 @@ void* cicloEscuchaCliente(void* arg) {
 						break;
 					}
 					case 5:{
-						cout << "Le llega un 5" << endl;
 						char comenzoJuego[BUFFER_MAX_SIZE];
 						string comenzo;
 						cout << servidor->getJugadoresConectados()->size() << endl;
@@ -327,7 +325,6 @@ void* cicloEscuchaCliente(void* arg) {
 						break;
 					}
 					case 6:{//6 es enviarHandShake
-						cout << "Le llega un 6" << endl;
 						char* cliente = strtok(NULL, "|");
 						if (cliente != NULL)
 						{

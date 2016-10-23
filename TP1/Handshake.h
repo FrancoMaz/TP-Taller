@@ -18,17 +18,18 @@ class Handshake {
 private:
 	vector<ImagenDto*> imagenes;
 	vector<SetDeSpritesDto*> sprites;
-	char* alto;
-	char* ancho;
-	char* cantidadMaximaJugadores;
+	string alto;
+	string ancho;
+	string cantidadMaximaJugadores;
 
 public:
-	Handshake(vector<ImagenDto*> imagenes, vector<SetDeSpritesDto*> sprites, char* ancho, char* alto);
-	Handshake(vector<ImagenDto*> imagenes, vector<SetDeSpritesDto*> sprites, char* ancho, char* alto, char* cantidadMaxima);
+	Handshake(vector<ImagenDto*> imagenes, vector<SetDeSpritesDto*> sprites, string ancho, string alto);
+	Handshake(vector<ImagenDto*> imagenes, vector<SetDeSpritesDto*> sprites, string ancho, string alto, string cantidadMaxima);
 	virtual ~Handshake();
 	vector<SetDeSpritesDto*> getSprites();
 	vector<ImagenDto*> getImagenes();
-	char* getAncho();
+	string getAncho();
+	string getAlto();
 
 };
 

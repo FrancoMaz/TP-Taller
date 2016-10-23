@@ -53,7 +53,7 @@ void Servidor::enviarHandshake(int socket, char* cliente){
 	vector<SetDeSpritesDto*> setDeSprites = this->parser->getSprites();
 	pair<const char*, const char*> ventana = this->parser->getTamanioVentana();
 	const char* cantidadMaximaJugadores = this->parser->getCantidadMaximaDeJugadores();
-	this->handshake = new Handshake(escenario, setDeSprites, (char*)ventana.first, (char*)ventana.second, (char*)cantidadMaximaJugadores);
+	this->handshake = new Handshake(escenario, setDeSprites, ventana.first, ventana.second, cantidadMaximaJugadores);
 	string handshake = this->parser->serializarEscenario();
 	handshake += this->parser->serializarSetDeSprites();
 	handshake += this->parser->serializarVentana();

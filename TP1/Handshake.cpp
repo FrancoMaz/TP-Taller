@@ -7,7 +7,7 @@
 
 #include "Handshake.h"
 
-Handshake::Handshake(vector<ImagenDto*> imagenes, vector<SetDeSpritesDto*> sprites, char* ancho, char* alto) {
+Handshake::Handshake(vector<ImagenDto*> imagenes, vector<SetDeSpritesDto*> sprites, string ancho, string alto) {
 	this->imagenes = imagenes;
 	this->sprites = sprites;
 	this->ancho = ancho;
@@ -15,7 +15,7 @@ Handshake::Handshake(vector<ImagenDto*> imagenes, vector<SetDeSpritesDto*> sprit
 
 }
 
-Handshake::Handshake(vector<ImagenDto*> imagenes, vector<SetDeSpritesDto*> sprites, char* ancho, char* alto, char* cantidadMaxima) {
+Handshake::Handshake(vector<ImagenDto*> imagenes, vector<SetDeSpritesDto*> sprites, string ancho, string alto, string cantidadMaxima) {
 	this->imagenes = imagenes;
 	this->sprites = sprites;
 	this->ancho = ancho;
@@ -36,6 +36,10 @@ vector<ImagenDto*> Handshake::getImagenes()
 {
 	return this->imagenes;
 }
-char* Handshake::getAncho(){
+string Handshake::getAncho(){
 	return this->ancho;
+}
+
+string Handshake::getAlto(){
+	return this->alto;
 }

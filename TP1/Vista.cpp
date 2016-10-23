@@ -290,8 +290,6 @@ void Vista::transicionDePantalla(){
 }
 
 void Vista::cargarEscenario(int ancho, int alto){
-	cout << "Ancho: " << ancho << endl;
-	cout << "Alto: " << alto << endl;
 	camara = {0,0,ANCHO_VENTANA,ALTO_VENTANA};
 	this->ventana->limpiar();
 	texturaFondoEscenario->aplicarPosicionDePorcion(0,0,&camara,0,SDL_FLIP_NONE);

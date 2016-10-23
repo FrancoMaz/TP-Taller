@@ -122,7 +122,7 @@ vector<SetDeSpritesDto*> XmlParser::getSprites() {
 		for (pugi::xml_node set = this->rootNode.child("Sprites").child("SetRojo"); set; set = set.next_sibling()) {
 			vector<SpriteDto*> sprites;
 			for (pugi::xml_node sprite = set.child("SpriteSalto"); sprite; sprite = sprite.next_sibling()) {
-				SpriteDto* spriteDto = new SpriteDto(string(sprite.child_value("Id")),string(sprite.child_value("CantFotogramas")), string(sprite.child_value("Ancho")), string(sprite.child_value("Alto")), sprite.child_value("Imagen"), sprite.child_value("z-index"));
+				SpriteDto* spriteDto = new SpriteDto(string(sprite.child_value("Id")),string(sprite.child_value("CantFotogramas")), string(sprite.child_value("Ancho")), string(sprite.child_value("Alto")), string(sprite.child_value("Imagen")), string(sprite.child_value("z-index")));
 				sprites.push_back(spriteDto);
 			}
 			SetDeSpritesDto* setDeSprites = new SetDeSpritesDto(set.child_value("Carpeta"), sprites);

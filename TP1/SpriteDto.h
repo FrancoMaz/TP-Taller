@@ -20,16 +20,16 @@ private:
 	string cantidadDeFotogramas;
 	string ancho;
 	string alto;
-	const char* path;
-	const char* zIndex;
+	string path;
+	string zIndex;
 public:
-	SpriteDto(string id, string cantidadDeFotogramas, string ancho, string alto, const char* path, const char* zIndex);
+	SpriteDto(string id, string cantidadDeFotogramas, string ancho, string alto, string path, string zIndex);
 	string getId();
 	string getCantidadDeFotogramas();
 	string getAncho();
 	string getAlto();
-	const char* getPath();
-	const char* getZIndex();
+	string getPath();
+	string getZIndex();
 	virtual ~SpriteDto();
 };
 
