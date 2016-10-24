@@ -125,6 +125,7 @@ public:
 	SDL_Rect camara;
 	Handshake* handshake;
 	pair<int,int> obtenerPosicionesExtremos();
+	int getCantJugadoresConectadosMax();
 };
 
 #endif /* TP1_SERVIDOR_H_ */

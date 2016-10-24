@@ -30,7 +30,7 @@ public:
 	vector<ImagenDto*> getImagenes();
 	string getAncho();
 	string getAlto();
-
+	string getCantidadMaximaJugadores();
 };
 
 #endif /* HANDSHAKE_H_ */

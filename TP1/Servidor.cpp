@@ -579,3 +579,8 @@ string Servidor::getEstadoInicialSerializado()
 void Servidor::iniciarCamara(){
 	camara = {0,0,ANCHO_VENTANA,ALTO_VENTANA};
 }
+
+int Servidor::getCantJugadoresConectadosMax()
+{
+	return atoi(this->handshake->getCantidadMaximaJugadores().c_str());
+}
