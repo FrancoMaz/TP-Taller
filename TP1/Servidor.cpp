@@ -293,7 +293,7 @@ void Servidor::procesarMensajes() {
 			parametrosServidor.mensajeAProcesar = mensajeAProcesar;
 			parametrosServidor.servidor = this;*/
 
-				this->actualizarPosicionesSalto(mensajeAProcesar);
+			this->actualizarPosicionesSalto(mensajeAProcesar);
 			/*pthread_create(&threadSalto,NULL,&actualizarPosiciones,&parametrosServidor);
 			pthread_detach(threadSalto);*/
 		}
@@ -577,7 +577,7 @@ string Servidor::getEstadoInicialSerializado()
 }
 
 void Servidor::iniciarCamara(){
-	camara = {0,0,ANCHO_VENTANA,ALTO_VENTANA};
+	camara = {0,0,handshake->getAncho(),handshake->getAlto()};
 }
 
 int Servidor::getCantJugadoresConectadosMax()
