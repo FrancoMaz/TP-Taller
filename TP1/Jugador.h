@@ -18,6 +18,8 @@
 #define velocidad 5
 #define PI 3.14159265
 #define VELMAX 10
+#define MARGENIZQ 100
+#define MARGENDER ANCHO_VENTANA/2
 
 using namespace std;
 

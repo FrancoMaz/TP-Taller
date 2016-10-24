@@ -199,7 +199,7 @@ void* Servidor::actualizarPosiciones(void* arg)
 		bool necesitaCambiarCamara = jugador->chequearCambiarCamara(servidor->camara, atoi(servidor->handshake->getAncho().c_str()), posicionesExtremos);
 		if (necesitaCambiarCamara)
 		{
-			servidor->camara.x = jugador->getPosicion().first - (atoi(servidor->handshake->getAncho().c_str()))/2;
+			servidor->camara.x += VELMAX;
 			mensajeCamaraString = "1|" + to_string(servidor->camara.x) + "|" + to_string(servidor->camara.y) + "#";
 			mensajeCamara = new Mensaje(jugador->getNombre(),"Todos",mensajeCamaraString);
 		}
@@ -229,7 +229,7 @@ void Servidor::actualizarPosicionesSalto(Mensaje mensajeAProcesar)
 		bool necesitaCambiarCamara = jugador->chequearCambiarCamara(this->camara, atoi(handshake->getAncho().c_str()), posicionesExtremos);
 		if (necesitaCambiarCamara)
 		{
-			camara.x = jugador->getPosicion().first - (atoi(handshake->getAncho().c_str()))/2;
+			camara.x += VELMAX;
 			mensajeCamaraString = "1|" + to_string(camara.x) + "|" + to_string(camara.y) + "#";
 			mensajeCamara = new Mensaje(jugador->getNombre(),"Todos",mensajeCamaraString);
 		}
@@ -307,7 +307,7 @@ void Servidor::procesarMensajes() {
 			bool necesitaCambiarCamara = jugador->chequearCambiarCamara(this->camara, atoi(handshake->getAncho().c_str()), posicionesExtremos);
 			if (necesitaCambiarCamara)
 			{
-				camara.x = jugador->getPosicion().first - (atoi(handshake->getAncho().c_str()))/2;
+				camara.x += VELMAX;
 				mensajeCamaraString = "1|" + to_string(camara.x) + "|" + to_string(camara.y) + "#";
 				mensajeCamara = new Mensaje(jugador->getNombre(),"Todos",mensajeCamaraString);
 			}
