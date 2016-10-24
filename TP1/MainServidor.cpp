@@ -312,8 +312,7 @@ void* cicloEscuchaCliente(void* arg) {
 					case 5:{
 						char comenzoJuego[BUFFER_MAX_SIZE];
 						string comenzo;
-						cout << servidor->getJugadoresConectados()->size() << endl;
-						if (servidor->getJugadoresConectados()->size() == servidor->cantJugadoresConectadosMax){
+						if (servidor->getJugadoresConectados()->size() == servidor->getCantJugadoresConectadosMax()){
 							string jugadoresInicio = servidor->getEstadoInicialSerializado();
 							comenzo = "0|"  + jugadoresInicio + "@";
 							servidor->iniciarCamara();

@@ -43,3 +43,8 @@ string Handshake::getAncho(){
 string Handshake::getAlto(){
 	return this->alto;
 }
+
+string Handshake::getCantidadMaximaJugadores()
+{
+	return this->cantidadMaximaJugadores;
+}
