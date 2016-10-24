@@ -195,8 +195,8 @@ void* Servidor::actualizarPosiciones(void* arg)
 		Jugador* jugador = servidor->obtenerJugador(mensajeAProcesar.getRemitente());
 		jugador->actualizarPosicion(mensajeAProcesar.deserializar(mensajeAProcesar.getTexto()),mensajeAProcesar.sePresionoTecla(),servidor->camara);
 		jugadorSalto = jugador->salto();
-		Jugador* jugadorMasAtrasado = servidor->obtenerJugadorMasAtrasado();
-		bool necesitaCambiarCamara = jugador->chequearCambiarCamara(servidor->camara, atoi(servidor->handshake->getAncho().c_str()), jugadorMasAtrasado->getPosicion().first);
+		pair<int,int> posicionesExtremos = servidor->obtenerPosicionesExtremos();
+		bool necesitaCambiarCamara = jugador->chequearCambiarCamara(servidor->camara, atoi(servidor->handshake->getAncho().c_str()), posicionesExtremos);
 		if (necesitaCambiarCamara)
 		{
 			servidor->camara.x = jugador->getPosicion().first - (atoi(servidor->handshake->getAncho().c_str()))/2;
@@ -225,8 +225,8 @@ void Servidor::actualizarPosicionesSalto(Mensaje mensajeAProcesar)
 		Jugador* jugador = this->obtenerJugador(mensajeAProcesar.getRemitente());
 		jugador->actualizarPosicion(mensajeAProcesar.deserializar(mensajeAProcesar.getTexto()),mensajeAProcesar.sePresionoTecla(),camara);
 		jugadorSalto = jugador->salto();
-		Jugador* jugadorMasAtrasado = this->obtenerJugadorMasAtrasado();
-		bool necesitaCambiarCamara = jugador->chequearCambiarCamara(this->camara, atoi(handshake->getAncho().c_str()), jugadorMasAtrasado->getPosicion().first);
+		pair<int,int> posicionesExtremos = this->obtenerPosicionesExtremos();
+		bool necesitaCambiarCamara = jugador->chequearCambiarCamara(this->camara, atoi(handshake->getAncho().c_str()), posicionesExtremos);
 		if (necesitaCambiarCamara)
 		{
 			camara.x = jugador->getPosicion().first - (atoi(handshake->getAncho().c_str()))/2;
@@ -255,20 +255,27 @@ Jugador* Servidor::obtenerJugador(string nombre){
 	}
 }
 
-Jugador* Servidor::obtenerJugadorMasAtrasado()
+pair<int,int> Servidor::obtenerPosicionesExtremos()
 {
 	int posicionX = jugadores->at(0)->getPosicion().first;
-	Jugador* jugadorADevolver;
+	int posicionMasAdelante = posicionX;
+	int posicionMasAtras = posicionX;
 	for (int i = 0; i < jugadores->size(); i++)
 	{
 		Jugador* jugador = jugadores->at(i);
-		if (jugador->getPosicion().first <= posicionX)
+		if (jugador->getPosicion().first <= posicionMasAtras)
 		{
-			posicionX = jugadores->at(i)->getPosicion().first;
-			jugadorADevolver = jugadores->at(i);
+			posicionMasAtras = jugadores->at(i)->getPosicion().first;
+		}
+		else if (jugador->getPosicion().first >= posicionMasAdelante)
+		{
+			posicionMasAdelante = jugadores->at(i)->getPosicion().first;
 		}
 	}
-	return jugadorADevolver;
+	pair<int,int> posiciones;
+	posiciones.first = posicionMasAtras;
+	posiciones.second = posicionMasAdelante;
+	return posiciones;
 }
 
 void Servidor::procesarMensajes() {
@@ -296,8 +303,8 @@ void Servidor::procesarMensajes() {
 			pthread_mutex_lock(&mutexVectorJugadores);
 			Jugador* jugador = this->obtenerJugador(mensajeAProcesar.getRemitente());
 			jugador->actualizarPosicion(mensajeAProcesar.deserializar(mensajeAProcesar.getTexto()),mensajeAProcesar.sePresionoTecla(), camara);
-			Jugador* jugadorMasAtrasado = this->obtenerJugadorMasAtrasado();
-			bool necesitaCambiarCamara = jugador->chequearCambiarCamara(this->camara, atoi(handshake->getAncho().c_str()), jugadorMasAtrasado->getPosicion().first);
+			pair<int,int> posicionesExtremos = this->obtenerPosicionesExtremos();
+			bool necesitaCambiarCamara = jugador->chequearCambiarCamara(this->camara, atoi(handshake->getAncho().c_str()), posicionesExtremos);
 			if (necesitaCambiarCamara)
 			{
 				camara.x = jugador->getPosicion().first - (atoi(handshake->getAncho().c_str()))/2;

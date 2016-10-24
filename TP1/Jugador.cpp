@@ -106,7 +106,7 @@ void Jugador::actualizarPosicion(SDL_Keycode tecla, bool sePresionoTecla, SDL_Re
 	posicion.first += velocidades.first;
 	posicion.second += velocidades.second;
 
-	if (posicion.first < camara.x)
+	if (posicion.first < camara.x or posicion.first > camara.x + ANCHO_VENTANA - 100)
 	{
 		posicion.first -= velocidades.first;
 	}
@@ -151,8 +151,10 @@ string Jugador::serializarInicio()
 	return (nombre + "|" + to_string(posicion.first) + "|" + to_string(posicion.second) + "|" + this->spriteAEjecutar);
 }
 
-bool Jugador::chequearCambiarCamara(SDL_Rect camara, int anchoVentana, int posicionMasAtras)
+bool Jugador::chequearCambiarCamara(SDL_Rect camara, int anchoVentana, pair<int,int> posicionesExtremos)
 {
+	int posicionMasAtras = posicionesExtremos.first;
+	int posicionMasAdelante = posicionesExtremos.second;
 	if (camara.x < 0){
 		camara.x = 0;
 		return false;
@@ -162,7 +164,7 @@ bool Jugador::chequearCambiarCamara(SDL_Rect camara, int anchoVentana, int posic
 		camara.x = posicionMasAtras;
 		return false;
 	}
-	if(this->posicion.first - camara.x > anchoVentana/2)
+	if (posicionMasAdelante > anchoVentana/2 and posicionMasAtras > 100)
 	{
 		return true;
 	}

@@ -124,7 +124,7 @@ public:
 	int cantJugadoresConectadosMax = 2;
 	SDL_Rect camara;
 	Handshake* handshake;
-	Jugador* obtenerJugadorMasAtrasado();
+	pair<int,int> obtenerPosicionesExtremos();
 };
 
 #endif /* TP1_SERVIDOR_H_ */
