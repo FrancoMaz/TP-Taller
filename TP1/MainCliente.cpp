@@ -48,10 +48,10 @@ void* verificarConexion(void * arg){
 void procesarUltimosMensajes(string mensajes, Cliente* cliente, UpdateJugador* update)
 {   string mensajeVacio = "#noHayMensajes@";
 	vector<SetDeSpritesDto*> setsSprites = handshakeDeserializado->getSprites();
-	if(strcmp(mensajes.c_str(), mensajeVacio.c_str()) != 0){
+	if(strcmp(mensajes.c_str(), mensajeVacio.c_str()) != 0 && mensajes != ""){
 
 		mensajes[mensajes.length() - 1] = '#';
-		char str[mensajes.length()];
+		char str [mensajes.length()];
 		strcpy(str, mensajes.c_str());
 		char* texto = strtok(str, "|");
 		while (texto != NULL) {
@@ -94,7 +94,6 @@ void procesarUltimosMensajes(string mensajes, Cliente* cliente, UpdateJugador* u
 	else{
 		vista->actualizarJugador(update);
 	}
-
 }
 
 void* recibirPosicionJugadores(void* arg) {
@@ -104,6 +103,7 @@ void* recibirPosicionJugadores(void* arg) {
 	 //The frames per second timer
 	LTimer capTimer;
 	while(!controlador->comprobarCierreVentana()){
+		//usleep(50000);
 		 //Start cap timer
 		capTimer.start();
 		datosRecibidos = cliente->recibir();
@@ -116,7 +116,6 @@ void* recibirPosicionJugadores(void* arg) {
 			//Wait remaining time
 			SDL_Delay( SCREEN_TICKS_PER_FRAME - frameTicks );
 		}
-		//usleep(100000);
 	}
 }
 
@@ -132,6 +131,7 @@ void* enviarEventos(void* arg) {
 	fpsTimer.start();
 	while(!controlador->comprobarCierreVentana()){
 		while(SDL_PollEvent(&evento)){
+			//usleep(50000);
 			capTimer.start();
 			if(controlador->presionarBoton(SDLK_RIGHT)){
 				cliente->enviar("Tecla Derecha","Todos");
@@ -184,8 +184,8 @@ void* cicloConexion(void* arg) {
 
 	if (!vista->ventanaCerrada()) {
 		//se crea esta hilo para poder verificar la conexion con el servidor
-		pthread_create(&threadVerificarConexion, NULL,&verificarConexion,&comunicacion);
-		pthread_detach(threadVerificarConexion);
+		//pthread_create(&threadVerificarConexion, NULL,&verificarConexion,&comunicacion);
+		//pthread_detach(threadVerificarConexion);
 		bool inicio;
 		do
 		{

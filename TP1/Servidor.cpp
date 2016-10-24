@@ -499,7 +499,7 @@ string Servidor::traerMensajesProcesados(char* nombreCliente) {
 
 		MensajesProcesados mensaje;
 		mensaje = *datoActual;
-		if (mensaje.destinatario == nombreCliente) {
+		if (mensaje.destinatario == string(nombreCliente)) {
 			colaDeMensajes = mensaje.mensajes;
 		}
 	}
@@ -577,7 +577,7 @@ string Servidor::getEstadoInicialSerializado()
 }
 
 void Servidor::iniciarCamara(){
-	camara = {0,0,handshake->getAncho(),handshake->getAlto()};
+	camara = {0,0,atoi(handshake->getAncho().c_str()),atoi(handshake->getAlto().c_str())};
 }
 
 int Servidor::getCantJugadoresConectadosMax()
