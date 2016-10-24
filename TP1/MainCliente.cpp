@@ -18,7 +18,7 @@
 #include "Vista.h"
 #include "Handshake.h"
 #include "UpdateJugador.h"
-
+#include "LTimer.h"
 using namespace std;
 
 datosConexion datosCliente;
@@ -101,19 +101,38 @@ void* recibirPosicionJugadores(void* arg) {
 	Cliente* cliente = (Cliente*) arg;
 	string datosRecibidos = "";
 	UpdateJugador* update = new UpdateJugador();
+	 //The frames per second timer
+	LTimer capTimer;
 	while(!controlador->comprobarCierreVentana()){
+		 //Start cap timer
+		capTimer.start();
 		datosRecibidos = cliente->recibir();
 		procesarUltimosMensajes(datosRecibidos, cliente, update);
-		usleep(100000);
+
+		//si se procesa antes, espero lo que tengo que resta.
+		int frameTicks = capTimer.getTicks();
+		if( frameTicks < SCREEN_TICKS_PER_FRAME )
+		{
+			//Wait remaining time
+			SDL_Delay( SCREEN_TICKS_PER_FRAME - frameTicks );
+		}
+		//usleep(100000);
 	}
 }
 
 void* enviarEventos(void* arg) {
 	Cliente* cliente = (Cliente*) arg;
 	bool controlArriba = false;
+	 //The frames per second timer
+	LTimer fpsTimer;
+	//The frames per second cap timer
+	LTimer capTimer;
+	//Start counting frames per second
+	int countedFrames = 0;
+	fpsTimer.start();
 	while(!controlador->comprobarCierreVentana()){
 		while(SDL_PollEvent(&evento)){
-			usleep(100000);
+			capTimer.start();
 			if(controlador->presionarBoton(SDLK_RIGHT)){
 				cliente->enviar("Tecla Derecha","Todos");
 			}
@@ -131,7 +150,13 @@ void* enviarEventos(void* arg) {
 				cliente->enviar("Tecla Arriba","Todos");
 			}
 			SDL_FlushEvent(SDL_MOUSEMOTION);
-			SDL_FlushEvent(SDL_KEYDOWN);
+			SDL_FlushEvent(SDL_KEYDOWN);//si se procesa antes, espero lo que tengo que resta.
+			int frameTicks = capTimer.getTicks();
+			if( frameTicks < SCREEN_TICKS_PER_FRAME )
+			{
+				//Wait remaining time
+				SDL_Delay( SCREEN_TICKS_PER_FRAME - frameTicks );
+			}
 		}
 	}
 }
@@ -159,8 +184,8 @@ void* cicloConexion(void* arg) {
 
 	if (!vista->ventanaCerrada()) {
 		//se crea esta hilo para poder verificar la conexion con el servidor
-		//pthread_create(&threadVerificarConexion, NULL,&verificarConexion,&comunicacion);
-		//pthread_detach(threadVerificarConexion);
+		pthread_create(&threadVerificarConexion, NULL,&verificarConexion,&comunicacion);
+		pthread_detach(threadVerificarConexion);
 		bool inicio;
 		do
 		{
