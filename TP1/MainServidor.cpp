@@ -274,12 +274,13 @@ void* cicloEscuchaCliente(void* arg) {
 												 	 + ", Mensaje: " + string(mensaje) + string(".\n"),INFO);
 						//cout<<"mensaje recibido :"<<mensaje<<endl;
 						encolarMensaje(remitente, destinatario, mensaje, servidor);
+						usleep(50000);
 						break;
 					}
 					case 2: { //2 es recibir
 						servidor->guardarLog("Request: Recibir Mensajes. " + nombre + string(".\n"),INFO);
 						char* usuarioQueSolicita = strtok(NULL, "#");
-						usleep(50000);
+						usleep(100000);
 						enviarMensajesProcesadosA(usuarioQueSolicita, servidor,
 								socketCliente);
 						break;

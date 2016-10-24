@@ -151,10 +151,15 @@ string Jugador::serializarInicio()
 	return (nombre + "|" + to_string(posicion.first) + "|" + to_string(posicion.second) + "|" + this->spriteAEjecutar);
 }
 
-bool Jugador::chequearCambiarCamara(SDL_Rect camara, int anchoVentana)
+bool Jugador::chequearCambiarCamara(SDL_Rect camara, int anchoVentana, int posicionMasAtras)
 {
 	if (camara.x < 0){
 		camara.x = 0;
+		return false;
+	}
+	if (camara.x >= posicionMasAtras)
+	{
+		camara.x = posicionMasAtras;
 		return false;
 	}
 	if(this->posicion.first - camara.x > anchoVentana/2)

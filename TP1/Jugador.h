@@ -46,7 +46,7 @@ public:
 	void setConectado();
 	bool getConectado();
 	string serializarInicio();
-	bool chequearCambiarCamara(SDL_Rect camara, int anchoVentana);
+	bool chequearCambiarCamara(SDL_Rect camara, int anchoVentana, int posicionMasAtras);
 	pair<int, int> getPosicion();
 };
 #endif /* JUGADOR_H_ */
