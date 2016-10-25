@@ -489,7 +489,7 @@ list<string> Servidor::agregarDestinatarios(string remitente) {
 	}
 	return destinatarios;
 }
-string Servidor::traerMensajesProcesados(char* nombreCliente) {
+string Servidor::traerMensajesProcesados(string nombreCliente) {
 
 	queue<Mensaje>* colaDeMensajes;
 
