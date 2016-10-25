@@ -32,8 +32,8 @@ struct ComunicacionCliente{
 		};
 
 bool chequearSocket(string ip, int puerto) {
-	//string ipServer = "192.168.1.11";
-	string ipServer = "127.0.0.1";
+	string ipServer = "192.168.1.11";
+	//string ipServer = "127.0.0.1";
 	int puertoDeEscucha = 7891;
 
 	return (ip == ipServer && puerto == puertoDeEscucha);
@@ -161,6 +161,14 @@ void* enviarEventos(void* arg) {
 	}
 }
 
+int stringToInt(string atributo) {
+	istringstream atributoStream(atributo);
+	int atributoInt;
+	atributoStream >> atributoInt;
+
+	return atributoInt;
+}
+
 void* cicloConexion(void* arg) {
 	//Funcion que cicla para las opciones del cliente dentro del thread de comunicacion. Devuelve 1 si la opcion es desconectar, 0 si es salir.
 	Cliente* cliente = (Cliente*) arg;
@@ -198,7 +206,8 @@ void* cicloConexion(void* arg) {
 		pthread_create(&threadRecibirPosicionJugadores, NULL, &recibirPosicionJugadores,cliente);
 		pthread_detach(threadRecibirPosicionJugadores);
 		vector<ImagenDto*> imagenes = handshakeDeserializado->getImagenes();
-		vista->cargarEscenario(atoi(imagenes.at(0)->getAncho().c_str()), atoi(imagenes.at(0)->getAlto().c_str()), atoi(handshakeDeserializado->getAncho().c_str()), atoi(handshakeDeserializado->getAlto().c_str()));
+
+		vista->cargarEscenario(stringToInt(imagenes.at(0)->getAncho()), stringToInt(imagenes.at(0)->getAlto()), stringToInt(handshakeDeserializado->getAncho()), stringToInt(handshakeDeserializado->getAlto()));
 
 	}
 }
