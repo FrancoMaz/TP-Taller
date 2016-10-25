@@ -45,9 +45,9 @@ Servidor::~Servidor() {
 }
 
 void Servidor::guardarDatosDeConfiguracion() {
-   string path;
-   cout << "Ingrese el path del archivo de configuracion" << endl;
-   cin >> path;
+   string path = "Recursos/configuration.xml";
+  // cout << "Ingrese el path del archivo de configuracion" << endl;
+   //cin >> path;
    this->parser = new XmlParser(path);
 }
 
