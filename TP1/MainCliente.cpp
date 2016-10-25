@@ -85,14 +85,14 @@ void procesarUltimosMensajes(string mensajes, Cliente* cliente, UpdateJugador* u
 				int x = atoi(texto);
 				texto = strtok(NULL,"#");
 				int y = atoi(texto);
-				vista->actualizarCamara(x,y);
+				vista->actualizarCamara(x,y,atoi(handshakeDeserializado->getAncho().c_str()));
 			}
-			vista->actualizarJugador(update);
+			vista->actualizarJugador(update,atoi(handshakeDeserializado->getAncho().c_str()));
 			texto = strtok(NULL, "|");
 		}
 	}
 	else{
-		vista->actualizarJugador(update);
+		vista->actualizarJugador(update,atoi(handshakeDeserializado->getAncho().c_str()));
 	}
 }
 
@@ -102,6 +102,7 @@ void* recibirPosicionJugadores(void* arg) {
 	UpdateJugador* update = new UpdateJugador();
 	 //The frames per second timer
 	LTimer capTimer;
+	usleep(50000);
 	while(!controlador->comprobarCierreVentana()){
 		//usleep(50000);
 		 //Start cap timer
@@ -198,7 +199,7 @@ void* cicloConexion(void* arg) {
 		pthread_create(&threadRecibirPosicionJugadores, NULL, &recibirPosicionJugadores,cliente);
 		pthread_detach(threadRecibirPosicionJugadores);
 		vector<ImagenDto*> imagenes = handshakeDeserializado->getImagenes();
-		vista->cargarEscenario(atoi(imagenes.at(0)->getAncho().c_str()), atoi(imagenes.at(0)->getAlto().c_str()), atoi(handshakeDeserializado->getAncho().c_str()), atoi(handshakeDeserializado->getAlto().c_str()));
+		vista->cargarEscenario(imagenes, atoi(handshakeDeserializado->getAncho().c_str()), atoi(handshakeDeserializado->getAlto().c_str()));
 
 	}
 }

@@ -307,7 +307,7 @@ void Servidor::procesarMensajes() {
 			bool necesitaCambiarCamara = jugador->chequearCambiarCamara(this->camara, atoi(handshake->getAncho().c_str()), posicionesExtremos);
 			if (necesitaCambiarCamara)
 			{
-				camara.x += VELMAX;
+				camara.x += jugador->getPosicion().first - (atoi(handshake->getAncho().c_str()))/2;
 				mensajeCamaraString = "1|" + to_string(camara.x) + "|" + to_string(camara.y) + "#";
 				mensajeCamara = new Mensaje(jugador->getNombre(),"Todos",mensajeCamaraString);
 			}
@@ -499,7 +499,7 @@ string Servidor::traerMensajesProcesados(char* nombreCliente) {
 
 		MensajesProcesados mensaje;
 		mensaje = *datoActual;
-		if (mensaje.destinatario == string(nombreCliente)) {
+		if (strcmp(mensaje.destinatario.c_str(), nombreCliente) == 0) {
 			colaDeMensajes = mensaje.mensajes;
 		}
 	}

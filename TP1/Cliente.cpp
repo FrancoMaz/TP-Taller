@@ -122,6 +122,10 @@ Handshake* Cliente::deserializarHandshake(string handshake, bool primeraVez){
 		//recupero la imagen2
 		campo = strtok(NULL,",");
 		imagenes.push_back(deserializarImagen(campo));
+		campo = strtok(NULL,",");
+		imagenes.push_back(deserializarImagen(campo));
+		campo = strtok(NULL,",");
+		imagenes.push_back(deserializarImagen(campo));
 		campo = strtok(NULL, "-");
 		campo = strtok(NULL, "[");
 	}

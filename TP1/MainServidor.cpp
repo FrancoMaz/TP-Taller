@@ -63,7 +63,6 @@ void* encolar(void* arg) {
 	 + mensaje->getRemitente() + ". Para: " + mensaje->getDestinatario()
 	 + ". \n";
 	 servidor->guardarLog(servidor->mensaje, DEBUG);*/
-
 	pthread_mutex_lock(
 			&parametrosEncolarMensaje.servidor->mutexColaNoProcesados);
 	servidor->crearMensaje(*mensaje);

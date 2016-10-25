@@ -54,7 +54,7 @@ void Vista::cargarArchivos(){
 	textura.push_back(ventana->crearTexto("Recursos/arial.ttf",19));
 	textura.push_back(ventana->crearTexto("Recursos/msserif_bold.ttf",13));
 	textura.push_back(ventana->crearBoton("Recursos/Boton_Conectar.png"));
-	textura.push_back(ventana->crearTextura("Recursos/Fondo_escenario.png",0));
+	textura.push_back(ventana->crearTextura("Recursos/Fondo_Escenario_capa_1.png",0));
 	//textura.push_back(ventana->crearTextura("Recursos/Jugador.png",3));
 
 	//Defino constantes para cada textura (para evitar llamarlos por índices)
@@ -289,10 +289,20 @@ void Vista::transicionDePantalla(){
 	this->opacidad = 230;
 }
 
-void Vista::cargarEscenario(int anchoEscenario, int altoEscenario, int anchoVentana, int altoVentana){
+void Vista::cargarEscenario(vector<ImagenDto*> imagenes, int anchoVentana, int altoVentana){
 	camara = {0,0,anchoVentana,altoVentana};
 	this->ventana->limpiar();
 	texturaFondoEscenario->aplicarPosicionDePorcion(0,0,&camara,0,SDL_FLIP_NONE);
+	for (int i=0; i<imagenes.size(); i++)
+	{
+		SDL_Rect rectangulo = {0,0,anchoVentana,altoVentana};
+		Capa* capa = new Capa(imagenes.at(i), rectangulo, ventana->crearTextura("Recursos/" + imagenes.at(i)->getPath() + ".png",0));
+		vectorCapas.push_back(capa);
+	}
+	for (int i=vectorCapas.size()-1; i>=0; i--)
+	{
+		vectorCapas.at(i)->textura->aplicarPosicionDePorcion(0,0,&vectorCapas.at(i)->rectangulo, 0, SDL_FLIP_NONE);
+	}
 	for (int i = 0; i < vistaJugadores.size(); i++){
 		VistaJugador* vistaJugador = vistaJugadores.at(i);
 		vistaJugador->texturaJugador->aplicarPosicion(vistaJugador->x,vistaJugador->y,0,SDL_FLIP_NONE);
@@ -303,10 +313,14 @@ void Vista::cargarEscenario(int anchoEscenario, int altoEscenario, int anchoVent
 	}
 }
 
-void Vista::actualizarJugador(UpdateJugador* update)
+void Vista::actualizarJugador(UpdateJugador* update, int anchoVentana)
 {
 	this->ventana->limpiar();
-	texturaFondoEscenario->aplicarPosicionDePorcion(0,0,&camara,0,SDL_FLIP_NONE);
+	for (int i=vectorCapas.size()-1; i>=0; i--)
+	{
+		//vectorCapas.at(i)->textura->aplicarPosicionDePorcion(0,0,&vectorCapas.at(i)->rectangulo, 0, SDL_FLIP_NONE);
+		vectorCapas.at(i)->paralajeInfinito(anchoVentana);
+	}
 	SDL_RendererFlip flip = SDL_FLIP_NONE;
 	TexturaSDL* texturaJugadorX;
 	for (int i = 0; i < vistaJugadores.size(); i++){
@@ -351,8 +365,13 @@ void Vista::cargarVistaInicialJugador(string nombre, int x, int y, string sprite
 	vistaJugadores.push_back(vistaJugador);
 }
 
-void Vista::actualizarCamara(int x, int y)
+void Vista::actualizarCamara(int x, int y, int anchoVentana)
 {
 	camara.x = x;
 	camara.y = y;
+	for (int i=vectorCapas.size()-1; i>=0; i--)
+	{
+		vectorCapas.at(i)->calcularVelocidad(atoi(vectorCapas.at(vectorCapas.size()-1)->imagen->getAncho().c_str()), VELMAX, anchoVentana);
+		vectorCapas.at(i)->paralajeInfinito(anchoVentana);
+	}
 }

@@ -3,13 +3,23 @@
 <Configuracion>
 	<Escenario>
 	  <Imagen>
-	    <Archivo>Fondo_escenario</Archivo>
+	    <Archivo>Fondo_Escenario_capa_1</Archivo>
 	    <Ancho>3712</Ancho>
 	    <Alto>600</Alto>  
 	  </Imagen>
 	  <Imagen>   
 	    <Archivo>Fondo_Escenario_capa_2</Archivo>
 	    <Ancho>1817</Ancho>
+	    <Alto>600</Alto> 
+	  </Imagen>
+	   <Imagen>   
+	    <Archivo>Fondo_Escenario_capa_3</Archivo>
+	    <Ancho>1308</Ancho>
+	    <Alto>600</Alto> 
+	  </Imagen>
+	   <Imagen>   
+	    <Archivo>Fondo_Escenario_capa_4</Archivo>
+	    <Ancho>863</Ancho>
 	    <Alto>600</Alto> 
 	  </Imagen>
 	</Escenario>
@@ -103,5 +113,5 @@
 	  <Alto>600</Alto>
 	</Ventana>
 	
-	<CantMaxJugadores>2</CantMaxJugadores>
+	<CantMaxJugadores>1</CantMaxJugadores>
 </Configuracion>
