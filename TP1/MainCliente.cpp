@@ -49,7 +49,6 @@ void procesarUltimosMensajes(string mensajes, Cliente* cliente, UpdateJugador* u
 {   string mensajeVacio = "#noHayMensajes@";
 	vector<SetDeSpritesDto*> setsSprites = handshakeDeserializado->getSprites();
 	if(strcmp(mensajes.c_str(), mensajeVacio.c_str()) != 0 && mensajes != ""){
-
 		mensajes[mensajes.length() - 1] = '#';
 		char str [mensajes.length()];
 		strcpy(str, mensajes.c_str());
@@ -83,9 +82,11 @@ void procesarUltimosMensajes(string mensajes, Cliente* cliente, UpdateJugador* u
 			else{
 				texto = strtok(NULL, "|");
 				int x = atoi(texto);
-				texto = strtok(NULL,"#");
+				texto = strtok(NULL,"|");
 				int y = atoi(texto);
-				vista->actualizarCamara(x,y,atoi(handshakeDeserializado->getAncho().c_str()));
+				texto = strtok(NULL,"#");
+				int vel = atoi(texto);
+				vista->actualizarCamara(x,y,vel,atoi(handshakeDeserializado->getAncho().c_str()));
 			}
 			vista->actualizarJugador(update,atoi(handshakeDeserializado->getAncho().c_str()));
 			texto = strtok(NULL, "|");

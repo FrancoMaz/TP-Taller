@@ -175,3 +175,8 @@ pair<int,int> Jugador::getPosicion()
 {
 	return posicion;
 }
+
+int Jugador::getVelocidadX()
+{
+	return this->velocidades.first;
+}

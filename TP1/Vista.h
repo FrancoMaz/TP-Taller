@@ -61,7 +61,7 @@ public:
 	void cerrar();
 	void actualizarJugador(UpdateJugador* update, int anchoVentana);
 	void cargarVistaInicialJugador(string nombre, int x, int y, string sprite);
-	void actualizarCamara(int x, int y, int anchoVentana);
+	void actualizarCamara(int x, int y, int vel, int anchoVentana);
 	SDL_Rect camara;
 
 };

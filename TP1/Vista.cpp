@@ -292,7 +292,7 @@ void Vista::transicionDePantalla(){
 void Vista::cargarEscenario(vector<ImagenDto*> imagenes, int anchoVentana, int altoVentana){
 	camara = {0,0,anchoVentana,altoVentana};
 	this->ventana->limpiar();
-	texturaFondoEscenario->aplicarPosicionDePorcion(0,0,&camara,0,SDL_FLIP_NONE);
+	//texturaFondoEscenario->aplicarPosicionDePorcion(0,0,&camara,0,SDL_FLIP_NONE);
 	for (int i=0; i<imagenes.size(); i++)
 	{
 		SDL_Rect rectangulo = {0,0,anchoVentana,altoVentana};
@@ -301,6 +301,7 @@ void Vista::cargarEscenario(vector<ImagenDto*> imagenes, int anchoVentana, int a
 	}
 	for (int i=vectorCapas.size()-1; i>=0; i--)
 	{
+		//vectorCapas.at(i)->calcularVelocidad(atoi(vectorCapas.at(vectorCapas.size()-1)->imagen->getAncho().c_str()), VELMAX, anchoVentana);
 		vectorCapas.at(i)->textura->aplicarPosicionDePorcion(0,0,&vectorCapas.at(i)->rectangulo, 0, SDL_FLIP_NONE);
 	}
 	for (int i = 0; i < vistaJugadores.size(); i++){
@@ -318,8 +319,7 @@ void Vista::actualizarJugador(UpdateJugador* update, int anchoVentana)
 	this->ventana->limpiar();
 	for (int i=vectorCapas.size()-1; i>=0; i--)
 	{
-		//vectorCapas.at(i)->textura->aplicarPosicionDePorcion(0,0,&vectorCapas.at(i)->rectangulo, 0, SDL_FLIP_NONE);
-		vectorCapas.at(i)->paralajeInfinito(anchoVentana);
+		vectorCapas.at(i)->paralajeInfinito(anchoVentana, i);
 	}
 	SDL_RendererFlip flip = SDL_FLIP_NONE;
 	TexturaSDL* texturaJugadorX;
@@ -357,21 +357,25 @@ void Vista::cerrar(){
 void Vista::cargarVistaInicialJugador(string nombre, int x, int y, string sprite)
 {
 	VistaJugador* vistaJugador;
-	/*vistaJugador.texturaJugador = ventana->crearTextura("Recursos/Jugador.png",3);
-	vistaJugador.nombre = nombre;
-	vistaJugador.x = x;
-	vistaJugador.y = y;*/
 	vistaJugador = new VistaJugador(nombre,x,y,(ventana->crearTextura("Recursos/" + sprite + ".png",3)), SDL_FLIP_NONE);
 	vistaJugadores.push_back(vistaJugador);
 }
 
-void Vista::actualizarCamara(int x, int y, int anchoVentana)
+void Vista::actualizarCamara(int x, int y, int vel, int anchoVentana)
 {
-	camara.x = x;
-	camara.y = y;
 	for (int i=vectorCapas.size()-1; i>=0; i--)
 	{
-		vectorCapas.at(i)->calcularVelocidad(atoi(vectorCapas.at(vectorCapas.size()-1)->imagen->getAncho().c_str()), VELMAX, anchoVentana);
-		vectorCapas.at(i)->paralajeInfinito(anchoVentana);
+		if (i == 0)
+		{
+			vectorCapas.at(i)->rectangulo.x = x;
+			vectorCapas.at(i)->rectangulo.y = y;
+		}
+		else
+		{
+			vectorCapas.at(i)->modificarRectangulo(vel, anchoVentana, atoi(vectorCapas.at(0)->imagen->getAncho().c_str()));
+		}
+		vectorCapas.at(i)->paralajeInfinito(anchoVentana, i);
 	}
+	camara.x = vectorCapas.at(0)->rectangulo.x;
+	camara.y = vectorCapas.at(0)->rectangulo.y;
 }

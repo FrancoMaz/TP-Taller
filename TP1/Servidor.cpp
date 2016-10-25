@@ -199,8 +199,9 @@ void* Servidor::actualizarPosiciones(void* arg)
 		bool necesitaCambiarCamara = jugador->chequearCambiarCamara(servidor->camara, atoi(servidor->handshake->getAncho().c_str()), posicionesExtremos);
 		if (necesitaCambiarCamara)
 		{
-			servidor->camara.x += VELMAX;
-			mensajeCamaraString = "1|" + to_string(servidor->camara.x) + "|" + to_string(servidor->camara.y) + "#";
+			servidor->camara.x += jugador->getPosicion().first - (atoi(servidor->handshake->getAncho().c_str()))/2;
+			mensajeCamaraString = "1|" + to_string(jugador->getVelocidadX()) + "#";
+			//mensajeCamaraString = "1|" + to_string(camara.x) + "|" + to_string(camara.y) + "#";
 			mensajeCamara = new Mensaje(jugador->getNombre(),"Todos",mensajeCamaraString);
 		}
 		mensajeJugadorPosActualizada = jugador->getStringJugador();
@@ -229,8 +230,9 @@ void Servidor::actualizarPosicionesSalto(Mensaje mensajeAProcesar)
 		bool necesitaCambiarCamara = jugador->chequearCambiarCamara(this->camara, atoi(handshake->getAncho().c_str()), posicionesExtremos);
 		if (necesitaCambiarCamara)
 		{
-			camara.x += VELMAX;
-			mensajeCamaraString = "1|" + to_string(camara.x) + "|" + to_string(camara.y) + "#";
+			camara.x += jugador->getPosicion().first - (atoi(handshake->getAncho().c_str()))/2;
+			mensajeCamaraString = "1|" + to_string(jugador->getVelocidadX()) + "#";
+			//mensajeCamaraString = "1|" + to_string(camara.x) + "|" + to_string(camara.y) + "#";
 			mensajeCamara = new Mensaje(jugador->getNombre(),"Todos",mensajeCamaraString);
 		}
 		mensajeJugadorPosActualizada = jugador->getStringJugador();
@@ -307,8 +309,9 @@ void Servidor::procesarMensajes() {
 			bool necesitaCambiarCamara = jugador->chequearCambiarCamara(this->camara, atoi(handshake->getAncho().c_str()), posicionesExtremos);
 			if (necesitaCambiarCamara)
 			{
-				camara.x += jugador->getPosicion().first - (atoi(handshake->getAncho().c_str()))/2;
-				mensajeCamaraString = "1|" + to_string(camara.x) + "|" + to_string(camara.y) + "#";
+				camara.x = jugador->getPosicion().first - (atoi(handshake->getAncho().c_str()))/2;
+				//mensajeCamaraString = "1|" + to_string(jugador->getVelocidadX()) + "#";
+				mensajeCamaraString = "1|" + to_string(camara.x) + "|" + to_string(camara.y) + "|" + to_string(jugador->getVelocidadX()) + "#";
 				mensajeCamara = new Mensaje(jugador->getNombre(),"Todos",mensajeCamaraString);
 			}
 			mensajeJugadorPosActualizada = jugador->getStringJugador();
