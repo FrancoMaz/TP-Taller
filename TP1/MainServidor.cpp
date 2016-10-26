@@ -33,7 +33,7 @@ struct parametrosThreadEncolarMensaje {
 
 struct parametrosThreadEnviarMensajeProcesado {
 	Servidor* servidor;
-	char* usuario;
+	string usuario;
 	int socketCliente;
 };
 
@@ -54,6 +54,7 @@ bool fileExists(string fileName) {
 }
 
 void* encolar(void* arg) {
+
 	parametrosThreadEncolarMensaje parametrosEncolarMensaje =
 			*(parametrosThreadEncolarMensaje*) arg;
 	Servidor* servidor = parametrosEncolarMensaje.servidor;
@@ -64,16 +65,15 @@ void* encolar(void* arg) {
 	 + ". \n";
 	 servidor->guardarLog(servidor->mensaje, DEBUG);*/
 
-	pthread_mutex_lock(
-			&parametrosEncolarMensaje.servidor->mutexColaNoProcesados);
+	pthread_mutex_lock(&parametrosEncolarMensaje.servidor->mutexColaNoProcesados);
 	servidor->crearMensaje(*mensaje);
-	servidor->mensaje = "Encolando mensaje: " + mensaje->getTexto()
+	/*servidor->mensaje = "Encolando mensaje: " + mensaje->getTexto()
 			+ ". De: " + mensaje->getRemitente() + ". Para: "
 			+ mensaje->getDestinatario() + ". \n";
-	servidor->guardarLog(servidor->mensaje, DEBUG);
-	pthread_mutex_unlock(
-			&parametrosEncolarMensaje.servidor->mutexColaNoProcesados);
+	servidor->guardarLog(servidor->mensaje, DEBUG);*/
+	pthread_mutex_unlock(&parametrosEncolarMensaje.servidor->mutexColaNoProcesados);
 
+	mensaje->~Mensaje();
 	/*
 	if (mensaje->getDestinatario().compare("Todos") != 0) {
 		pthread_mutex_lock(
@@ -114,30 +114,27 @@ void* encolar(void* arg) {
 	return NULL;
 }
 
-void encolarMensaje(char* remitente, char* destinatario, char* mensaje,
-		Servidor* servidor) {
+void encolarMensaje(string remitente, string destinatario, string mensaje, Servidor* servidor) {
 	pthread_t threadEncolarMensaje;
 	parametrosThreadEncolarMensaje parametrosEncolarMensaje;
-	parametrosEncolarMensaje.mensajeNoProcesado = new Mensaje(remitente,
-			destinatario, mensaje);
+	parametrosEncolarMensaje.mensajeNoProcesado = new Mensaje(remitente, destinatario, mensaje);
 	parametrosEncolarMensaje.servidor = servidor;
-	int ok = pthread_create(&threadEncolarMensaje, NULL, &encolar,
-			&parametrosEncolarMensaje);
-	if (ok != 0)
+	encolar((void*)&parametrosEncolarMensaje);
+	int ok = pthread_create(&threadEncolarMensaje, NULL, &encolar,&parametrosEncolarMensaje);
+	/*if (ok != 0)
 	{
 		servidor->guardarLog("ERROR: No se pudo crear el thread de encolar mensaje.\n", DEBUG);
 	}
 	else{
 		servidor->guardarLog("Thread de encolar mensaje creado correctamente.\n",DEBUG);
-	}
+	}*/
 	pthread_detach(threadEncolarMensaje); //lo marco
 }
 
 void* procesar(void* arg) {
-	parametrosThreadEnviarMensajeProcesado* parametros =
-			(parametrosThreadEnviarMensajeProcesado*) arg;
+	parametrosThreadEnviarMensajeProcesado* parametros = (parametrosThreadEnviarMensajeProcesado*) arg;
 	Servidor* servidor = parametros->servidor;
-	char* usuario = parametros->usuario;
+	string usuario = parametros->usuario;
 	int socket = parametros->socketCliente;
 
 	pthread_mutex_lock(&servidor->mutexListaProcesados);
@@ -145,10 +142,10 @@ void* procesar(void* arg) {
 	pthread_mutex_unlock(&servidor->mutexListaProcesados);
 
 	int largo = strlen(mensajesProcesados.c_str());
-	std::ostringstream oss;
-	oss << largo;
-	string largoString = oss.str();
-	servidor->guardarLog("Tamaño del response: " + largoString + string(".\n"),DEBUG);
+	stringstream iss;
+	iss << largo;
+	string largoString = iss.str();
+	//servidor->guardarLog("Tamaño del response: " + largoString + string(".\n"),DEBUG);
 	char buffer[BUFFER_MAX_SIZE];
 	int inicio = 0;
 	int ok;
@@ -163,12 +160,12 @@ void* procesar(void* arg) {
 			//pthread_mutex_lock(&servidor->mutexSocket);
 			ok = send(socket, buffer, strlen(buffer), 0);
 			//pthread_mutex_unlock(&servidor->mutexSocket);
-			if (ok == 0){
+			/*if (ok == 0){
 				servidor->guardarLog("Se cerró la conexión con el cliente " + string(usuario) + string(".\n"),DEBUG);
 			}
 			else if (ok < 0){
 				servidor->guardarLog("ERROR: Ocurrió un problema con el socket del cliente: " + string(usuario)+ string(".\n"),DEBUG);
-			}
+			}*/
 			inicio += BUFFER_MAX_SIZE;
 		}
 		string mensajeSpliteado = mensajesProcesados.substr(inicio, largo);
@@ -179,35 +176,38 @@ void* procesar(void* arg) {
 	//pthread_mutex_lock(&servidor->mutexSocket);
 	ok = send(socket, buffer, strlen(buffer), 0);
 	//pthread_mutex_unlock(&servidor->mutexSocket);
-	if (ok == 0){
+	/*if (ok == 0){
 		servidor->guardarLog("Se cerró la conexión con el cliente " + string(usuario) + string(".\n"),DEBUG);
 	}
 	else if (ok < 0){
 		servidor->guardarLog("ERROR: Ocurrió un problema con el socket del cliente: " + string(usuario)+ string(".\n"),DEBUG);
 	}
 	servidor->guardarLog("Mensajes para el cliente:" + string(usuario) + ", Mensajes: " + mensajesProcesados + string(".\n"),INFO);
-
+	*/
 	return NULL;
 }
-void enviarMensajesProcesadosA(char* usuario, Servidor* servidor, int socket) {
+
+void enviarMensajesProcesadosA(string usuario, Servidor* servidor, int socket) {
+
 	pthread_t threadEnviarMensajesProcesados;
 	parametrosThreadEnviarMensajeProcesado parametrosMensajesProcesados;
-	parametrosMensajesProcesados.usuario = usuario;
-	parametrosMensajesProcesados.servidor = servidor;
-	parametrosMensajesProcesados.socketCliente = socket;
-	/*int ok = pthread_create(&threadEnviarMensajesProcesados, NULL, &procesar,
-			&parametrosMensajesProcesados);
-	if (ok != 0)
+	//cout << "enviar mensajes procesados a: " << usuario << endl;
+	if (usuario != "") {
+		parametrosMensajesProcesados.usuario = usuario;
+		parametrosMensajesProcesados.servidor = servidor;
+		parametrosMensajesProcesados.socketCliente = socket;
+		procesar((void*)&parametrosMensajesProcesados);
+	}
+	//int ok = pthread_create(&threadEnviarMensajesProcesados, NULL, &procesar,&parametrosMensajesProcesados);
+	/*if (ok != 0)
 	{
 		servidor->guardarLog("ERROR: No se pudo crear el thread de recibir mensajes.\n", DEBUG);
 	}
 	else{
 		servidor->guardarLog("Thread de recibir mensajes creado correctamente.\n",DEBUG);
-	}
-	pthread_join(threadEnviarMensajesProcesados, NULL);
-	servidor->guardarLog("Fin envio de mensajes a: " + string(usuario) + string(".\n"),INFO);
-	*/
-	procesar((void*)&parametrosMensajesProcesados);
+	}*/
+	//pthread_join(threadEnviarMensajesProcesados, NULL);
+	//servidor->guardarLog("Fin envio de mensajes a: " + string(usuario) + string(".\n"),INFO);
 	//pthread_detach(threadEnviarMensajesProcesados); //lo marco
 }
 
@@ -270,20 +270,26 @@ void* cicloEscuchaCliente(void* arg) {
 						char* remitente = strtok(NULL, "|");
 						char* destinatario = strtok(NULL, "|");
 						char* mensaje = strtok(NULL, "#");
-						servidor->guardarLog("Request: Enviar Mensaje, Remitente: " + string(remitente)
+						/*servidor->guardarLog("Request: Enviar Mensaje, Remitente: " + string(remitente)
 								 	 	 	 	 + ", Destinatario: " + string(destinatario)
 												 	 + ", Mensaje: " + string(mensaje) + string(".\n"),INFO);
+						*/
 						//cout<<"mensaje recibido :"<<mensaje<<endl;
-						encolarMensaje(remitente, destinatario, mensaje, servidor);
-						//usleep(50000);
+						if( remitente != NULL && destinatario != NULL && mensaje != NULL ){
+							encolarMensaje(string(remitente), string(destinatario), string(mensaje), servidor);
+						}
+							//usleep(50000);
+						//cout << "Se envia algo del cliente: " << remitente << "al cliente: " << destinatario << endl;
 						break;
 					}
 					case 2: { //2 es recibir
-						servidor->guardarLog("Request: Recibir Mensajes. " + nombre + string(".\n"),INFO);
+						//servidor->guardarLog("Request: Recibir Mensajes. " + nombre + string(".\n"),INFO);
 						char* usuarioQueSolicita = strtok(NULL, "#");
+						//cout << "En ciclo escucha gorso" << usuarioQueSolicita << endl;
 						//usleep(50000);
-						enviarMensajesProcesadosA(usuarioQueSolicita, servidor,
-								socketCliente);
+						if (usuarioQueSolicita != NULL) {
+							enviarMensajesProcesadosA(string(usuarioQueSolicita), servidor, socketCliente);
+						}
 						break;
 					}
 					case 3:{//3 es verificar conexion

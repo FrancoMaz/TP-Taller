@@ -101,7 +101,7 @@ public:
 	string mensaje;
 	list<string> agregarDestinatarios(string remitente);
 	void procesarMensaje(Mensaje mensaje);
-	string traerMensajesProcesados(char* nombreCliente);
+	string traerMensajesProcesados(string nombreCliente);
 	string concatenarMensajes(queue<Mensaje>* colaDeMensajes);
 	void procesarMensajes();
 	void restarCantidadClientesConectados();
@@ -121,7 +121,7 @@ public:
 	string getEstadoInicialSerializado();
 	void guardarDatosDeConfiguracion();
 	void enviarHandshake(int socket,char* cliente);
-	pthread_mutex_t mutexSocket;
+	pthread_mutex_t mutexSocket = PTHREAD_MUTEX_INITIALIZER;;
 	int cantJugadoresConectadosMax = 2;
 	SDL_Rect camara;
 	Handshake* handshake;

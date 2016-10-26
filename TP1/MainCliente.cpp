@@ -50,6 +50,8 @@ void procesarUltimosMensajes(string mensajes, Cliente* cliente, UpdateJugador* u
 	vector<SetDeSpritesDto*> setsSprites = handshakeDeserializado->getSprites();
 	if(strcmp(mensajes.c_str(), mensajeVacio.c_str()) != 0 && mensajes != ""){
 
+		//cout << "Procesar ultimos mensajes: " << mensajes << endl;
+
 		mensajes[mensajes.length() - 1] = '#';
 		char str [mensajes.length()];
 		strcpy(str, mensajes.c_str());
@@ -102,8 +104,8 @@ void* recibirPosicionJugadores(void* arg) {
 	UpdateJugador* update = new UpdateJugador();
 	 //The frames per second timer
 	LTimer capTimer;
+	//usleep(50000);
 	while(!controlador->comprobarCierreVentana()){
-		//usleep(50000);
 		 //Start cap timer
 		capTimer.start();
 		datosRecibidos = cliente->recibir();
@@ -132,6 +134,7 @@ void* enviarEventos(void* arg) {
 	while(!controlador->comprobarCierreVentana()){
 		while(SDL_PollEvent(&evento)){
 			//usleep(50000);
+			//cout << "Adentro de enviar eventos en mainCliente" << endl;
 			capTimer.start();
 			if(controlador->presionarBoton(SDLK_RIGHT)){
 				cliente->enviar("Tecla Derecha","Todos");
@@ -159,6 +162,14 @@ void* enviarEventos(void* arg) {
 			}
 		}
 	}
+}
+
+int stringToInt(string atributo) {
+	istringstream atributoStream(atributo);
+	int atributoInt;
+	atributoStream >> atributoInt;
+
+	return atributoInt;
 }
 
 void* cicloConexion(void* arg) {
@@ -198,7 +209,8 @@ void* cicloConexion(void* arg) {
 		pthread_create(&threadRecibirPosicionJugadores, NULL, &recibirPosicionJugadores,cliente);
 		pthread_detach(threadRecibirPosicionJugadores);
 		vector<ImagenDto*> imagenes = handshakeDeserializado->getImagenes();
-		vista->cargarEscenario(atoi(imagenes.at(0)->getAncho().c_str()), atoi(imagenes.at(0)->getAlto().c_str()), atoi(handshakeDeserializado->getAncho().c_str()), atoi(handshakeDeserializado->getAlto().c_str()));
+
+		vista->cargarEscenario(stringToInt(imagenes.at(0)->getAncho()), stringToInt(imagenes.at(0)->getAlto()), stringToInt(handshakeDeserializado->getAncho()), stringToInt(handshakeDeserializado->getAlto()));
 
 	}
 }

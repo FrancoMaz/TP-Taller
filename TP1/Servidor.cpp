@@ -46,9 +46,9 @@ Servidor::~Servidor() {
 }
 
 void Servidor::guardarDatosDeConfiguracion() {
-   string path;
-   cout << "Ingrese el path del archivo de configuracion" << endl;
-   cin >> path;
+   string path = "Recursos/configuration.xml";
+  // cout << "Ingrese el path del archivo de configuracion" << endl;
+   //cin >> path;
    this->parser = new XmlParser(path);
 }
 
@@ -543,17 +543,16 @@ list<string> Servidor::agregarDestinatarios(string remitente) {
 	}
 	return destinatarios;
 }
-string Servidor::traerMensajesProcesados(char* nombreCliente) {
+string Servidor::traerMensajesProcesados(string nombreCliente) {
 
 	queue<Mensaje>* colaDeMensajes;
 
-	for (list<Servidor::MensajesProcesados>::iterator datoActual =
-			listaMensajesProcesados->begin();
+	for (list<Servidor::MensajesProcesados>::iterator datoActual = listaMensajesProcesados->begin();
 			datoActual != listaMensajesProcesados->end(); datoActual++) {
 
 		MensajesProcesados mensaje;
 		mensaje = *datoActual;
-		if (mensaje.destinatario == string(nombreCliente)) {
+		if (mensaje.destinatario == nombreCliente) {
 			colaDeMensajes = mensaje.mensajes;
 		}
 	}
