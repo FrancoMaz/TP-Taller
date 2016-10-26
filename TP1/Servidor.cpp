@@ -318,7 +318,10 @@ void Servidor::procesarMensajes() {
 				//Acá en lugar de este bloque de if se podría invocar el método resetearDatos de Capa que permita realizar todo el reseteo
 				if (camara.x > atoi(handshake->getImagenes().at(0)->getAncho().c_str())){
 					camara.x = 0;
-					jugador->resetearPosicion(atoi(handshake->getImagenes().at(0)->getAncho().c_str()));
+					for (int i = 0; i < jugadores->size(); i++)
+					{
+						jugadores->at(i)->resetearPosicion(atoi(handshake->getImagenes().at(0)->getAncho().c_str()));
+					}
 				} else {
 					camara.x = jugador->getPosicion().first - (atoi(handshake->getAncho().c_str()))/2;
 				}
