@@ -50,5 +50,6 @@ public:
 	string serializarInicio();
 	bool chequearCambiarCamara(SDL_Rect camara, int anchoVentana, pair<int,int> posicionesExtremos);
 	pair<int, int> getPosicion();
+	void setSalto(bool salta);
 };
 #endif /* JUGADOR_H_ */

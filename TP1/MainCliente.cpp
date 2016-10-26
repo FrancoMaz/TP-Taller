@@ -189,7 +189,7 @@ void* cicloConexion(void* arg) {
 		bool inicio;
 		do
 		{
-			usleep(2000000);
+			usleep(500000);
 			inicio = cliente->checkearInicioJuego(vista);
 		}while (!inicio);
 		handshakeDeserializado = cliente->getHandshake();

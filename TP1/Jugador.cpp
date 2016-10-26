@@ -64,8 +64,8 @@ void Jugador::actualizarPosicion(SDL_Keycode tecla, bool sePresionoTecla, SDL_Re
 		if(angulo == 0)
 		{
 			saltar = true;
-			spriteAEjecutar = "Jugador_saltando_" + this->equipo;
 		}
+		spriteAEjecutar = "Jugador_saltando_" + this->equipo;
 	}
 	else if(tecla == SDLK_RIGHT && !sePresionoTecla)
 	{
@@ -85,11 +85,11 @@ void Jugador::actualizarPosicion(SDL_Keycode tecla, bool sePresionoTecla, SDL_Re
 		}
 	}
 
-	if(saltar)
+	if(saltar && tecla == SDLK_UP && sePresionoTecla)
 	{
-		velocidades.second = -7*cos(angulo);
-		angulo += PI/50;
-		if (angulo > (PI + (PI/50))){
+		velocidades.second = -12*cos(angulo);
+		angulo += PI/25;
+		if (angulo > (PI + (PI/25))){
 			angulo = 0;
 			saltar = false;
 			if (velocidades.first != 0) {
@@ -106,7 +106,7 @@ void Jugador::actualizarPosicion(SDL_Keycode tecla, bool sePresionoTecla, SDL_Re
 	posicion.first += velocidades.first;
 	posicion.second += velocidades.second;
 
-	if (posicion.first < camara.x or posicion.first > camara.x + ANCHO_VENTANA - 100)
+	if (posicion.first < camara.x or posicion.first > camara.x + ANCHO_VENTANA - MARGENIZQ)
 	{
 		posicion.first -= velocidades.first;
 	}
@@ -174,4 +174,9 @@ bool Jugador::chequearCambiarCamara(SDL_Rect camara, int anchoVentana, pair<int,
 pair<int,int> Jugador::getPosicion()
 {
 	return posicion;
+}
+
+void Jugador::setSalto(bool salta)
+{
+	saltar = salta;
 }

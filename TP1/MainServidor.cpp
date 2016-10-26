@@ -190,13 +190,12 @@ void* procesar(void* arg) {
 	return NULL;
 }
 void enviarMensajesProcesadosA(char* usuario, Servidor* servidor, int socket) {
-
 	pthread_t threadEnviarMensajesProcesados;
 	parametrosThreadEnviarMensajeProcesado parametrosMensajesProcesados;
 	parametrosMensajesProcesados.usuario = usuario;
 	parametrosMensajesProcesados.servidor = servidor;
 	parametrosMensajesProcesados.socketCliente = socket;
-	int ok = pthread_create(&threadEnviarMensajesProcesados, NULL, &procesar,
+	/*int ok = pthread_create(&threadEnviarMensajesProcesados, NULL, &procesar,
 			&parametrosMensajesProcesados);
 	if (ok != 0)
 	{
@@ -207,6 +206,8 @@ void enviarMensajesProcesadosA(char* usuario, Servidor* servidor, int socket) {
 	}
 	pthread_join(threadEnviarMensajesProcesados, NULL);
 	servidor->guardarLog("Fin envio de mensajes a: " + string(usuario) + string(".\n"),INFO);
+	*/
+	procesar((void*)&parametrosMensajesProcesados);
 	//pthread_detach(threadEnviarMensajesProcesados); //lo marco
 }
 

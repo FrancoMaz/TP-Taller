@@ -92,11 +92,12 @@ public:
 	pair<int,string> aceptarConexion();
 	int getCantConexiones();
 	string serializarLista(list<string> datos);
-	pthread_mutex_t mutexColaNoProcesados;
-	pthread_mutex_t mutexListaProcesados;
-	pthread_mutex_t mutexColasProcesadas;
-	pthread_mutex_t mutexEnviarMensajes;
-	pthread_mutex_t mutexVectorJugadores;
+	pthread_mutex_t mutexColaNoProcesados = PTHREAD_MUTEX_INITIALIZER;
+	pthread_mutex_t mutexListaProcesados = PTHREAD_MUTEX_INITIALIZER;
+	pthread_mutex_t mutexColasProcesadas = PTHREAD_MUTEX_INITIALIZER;
+	pthread_mutex_t mutexEnviarMensajes = PTHREAD_MUTEX_INITIALIZER;
+	pthread_mutex_t mutexVectorJugadores = PTHREAD_MUTEX_INITIALIZER;
+	pthread_mutex_t mutexLog = PTHREAD_MUTEX_INITIALIZER;
 	string mensaje;
 	list<string> agregarDestinatarios(string remitente);
 	void procesarMensaje(Mensaje mensaje);
