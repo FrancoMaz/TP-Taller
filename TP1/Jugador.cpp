@@ -181,10 +181,7 @@ int Jugador::getVelocidadX()
 	return this->velocidades.first;
 }
 
-void Jugador::chequearPosicion(int anchoCapaPrincipal, int anchoVentana)
+void Jugador::resetearPosicion(int anchoCapaPrincipal)
 {
-	if (this->posicion.first > anchoCapaPrincipal)
-	{
-		posicion.first = posicion.first - anchoVentana/2;
-	}
+	posicion.first = posicion.first - anchoCapaPrincipal;
 }

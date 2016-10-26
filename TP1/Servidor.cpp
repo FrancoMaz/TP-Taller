@@ -309,8 +309,13 @@ void Servidor::procesarMensajes() {
 			bool necesitaCambiarCamara = jugador->chequearCambiarCamara(this->camara, atoi(handshake->getAncho().c_str()), posicionesExtremos);
 			if (necesitaCambiarCamara)
 			{
-				jugador->chequearPosicion(atoi(handshake->getImagenes().at(0)->getAncho().c_str()), atoi(handshake->getAncho().c_str()));
-				camara.x = jugador->getPosicion().first - (atoi(handshake->getAncho().c_str()))/2;
+				//Acá en lugar de este bloque de if se podría invocar el método resetearDatos de Capa que permita realizar todo el reseteo
+				if (camara.x > atoi(handshake->getImagenes().at(0)->getAncho().c_str())){
+					camara.x = 0;
+					jugador->resetearPosicion(atoi(handshake->getImagenes().at(0)->getAncho().c_str()));
+				} else {
+					camara.x = jugador->getPosicion().first - (atoi(handshake->getAncho().c_str()))/2;
+				}
 				//mensajeCamaraString = "1|" + to_string(jugador->getVelocidadX()) + "#";
 				mensajeCamaraString = "1|" + to_string(camara.x) + "|" + to_string(camara.y) + "|" + to_string(jugador->getVelocidadX()) + "#";
 				mensajeCamara = new Mensaje(jugador->getNombre(),"Todos",mensajeCamaraString);

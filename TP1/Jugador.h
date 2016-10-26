@@ -51,6 +51,6 @@ public:
 	bool chequearCambiarCamara(SDL_Rect camara, int anchoVentana, pair<int,int> posicionesExtremos);
 	pair<int, int> getPosicion();
 	int getVelocidadX();
-	void chequearPosicion(int anchoCapaPrincipal, int anchoVentana);
+	void resetearPosicion(int anchoCapaPrincipal);
 };
 #endif /* JUGADOR_H_ */
