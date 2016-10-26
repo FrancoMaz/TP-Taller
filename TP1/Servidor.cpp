@@ -230,7 +230,13 @@ void Servidor::actualizarPosicionesSalto(Mensaje mensajeAProcesar)
 		bool necesitaCambiarCamara = jugador->chequearCambiarCamara(this->camara, atoi(handshake->getAncho().c_str()), posicionesExtremos);
 		if (necesitaCambiarCamara)
 		{
+			if (camara.x > atoi(handshake->getImagenes().at(0)->getAncho().c_str())){
+			camara.x = 0;
+			jugador->resetearPosicion(atoi(handshake->getImagenes().at(0)->getAncho().c_str()));
+		} else {
 			camara.x = jugador->getPosicion().first - (atoi(handshake->getAncho().c_str()))/2;
+		}
+			//camara.x = jugador->getPosicion().first - (atoi(handshake->getAncho().c_str()))/2;
 			//mensajeCamaraString = "1|" + to_string(jugador->getVelocidadX()) + "#";
 			mensajeCamaraString = "1|" + to_string(camara.x) + "|" + to_string(camara.y) + "|" + to_string(jugador->getVelocidadX()) + "#";
 			mensajeCamara = new Mensaje(jugador->getNombre(),"Todos",mensajeCamaraString);

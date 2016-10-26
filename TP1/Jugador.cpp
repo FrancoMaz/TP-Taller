@@ -164,10 +164,14 @@ bool Jugador::chequearCambiarCamara(SDL_Rect camara, int anchoVentana, pair<int,
 		camara.x = posicionMasAtras;
 		return false;
 	}
-	if (posicionMasAdelante > (camara.x + anchoVentana/2) and posicionMasAtras > (camara.x + MARGENIZQ))
+	/*if (posicionMasAdelante > (camara.x + anchoVentana/2) and posicionMasAtras > (camara.x + MARGENIZQ))
 	{
 		return true;
-	}
+	}*/
+ 	if(this->posicion.first - camara.x > anchoVentana/2)
+ 	{
+ 		return true;
+ 	}
 	return false;
 }
 
