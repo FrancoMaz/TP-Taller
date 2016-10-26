@@ -163,6 +163,14 @@ void* enviarEventos(void* arg) {
 	}
 }
 
+int stringToInt(string atributo) {
+	istringstream atributoStream(atributo);
+	int atributoInt;
+	atributoStream >> atributoInt;
+
+	return atributoInt;
+}
+
 void* cicloConexion(void* arg) {
 	//Funcion que cicla para las opciones del cliente dentro del thread de comunicacion. Devuelve 1 si la opcion es desconectar, 0 si es salir.
 	Cliente* cliente = (Cliente*) arg;
@@ -200,7 +208,7 @@ void* cicloConexion(void* arg) {
 		pthread_create(&threadRecibirPosicionJugadores, NULL, &recibirPosicionJugadores,cliente);
 		pthread_detach(threadRecibirPosicionJugadores);
 		vector<ImagenDto*> imagenes = handshakeDeserializado->getImagenes();
-		vista->cargarEscenario(imagenes, atoi(handshakeDeserializado->getAncho().c_str()), atoi(handshakeDeserializado->getAlto().c_str()));
+		vista->cargarEscenario(imagenes, stringToInt(handshakeDeserializado->getAncho()), stringToInt(handshakeDeserializado->getAlto()));
 
 	}
 }

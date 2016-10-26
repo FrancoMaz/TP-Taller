@@ -3,22 +3,22 @@
 <Configuracion>
 	<Escenario>
 	  <Imagen>
-	    <Archivo>Fondo_Escenario_capa_1</Archivo>
-	    <Ancho>3712</Ancho>
+	    <Archivo>Fondo_Escenario_capa_1_test</Archivo>
+	    <Ancho>7424</Ancho>
 	    <Alto>600</Alto>  
 	  </Imagen>
 	  <Imagen>   
-	    <Archivo>Fondo_Escenario_capa_2</Archivo>
-	    <Ancho>1817</Ancho>
+	    <Archivo>Fondo_Escenario_capa_2_test</Archivo>
+	    <Ancho>3634</Ancho>
 	    <Alto>600</Alto> 
 	  </Imagen>
 	   <Imagen>   
-	    <Archivo>Fondo_Escenario_capa_3</Archivo>
-	    <Ancho>1308</Ancho>
+	    <Archivo>Fondo_Escenario_capa_3_test</Archivo>
+	    <Ancho>2174</Ancho>
 	    <Alto>600</Alto> 
 	  </Imagen>
 	   <Imagen>   
-	    <Archivo>Fondo_Escenario_capa_4</Archivo>
+	    <Archivo>Fondo_Escenario_capa_4_test</Archivo>
 	    <Ancho>863</Ancho>
 	    <Alto>600</Alto> 
 	  </Imagen>

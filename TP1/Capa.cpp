@@ -11,7 +11,7 @@ Capa::Capa(ImagenDto* imagen, SDL_Rect rectangulo, TexturaSDL* textura) {
 	this->imagen = imagen;
 	this->rectangulo = rectangulo;
 	this->textura = textura;
-	this->velocidad = 0;
+	this->vel = 0;
 }
 
 Capa::~Capa() {
@@ -20,14 +20,46 @@ Capa::~Capa() {
 
 void Capa::paralajeInfinito(int anchoVentana, int indice)
 {
+	if ((this->rectangulo.x + anchoVentana) > atoi(this->imagen->getAncho().c_str()))
+	{
+		int posicionAuxiliar = 0;
+		this->rectangulo.w = atoi(this->imagen->getAncho().c_str()) - this->rectangulo.x;
+		this->textura->aplicarPosicionDePorcion(0,0,&this->rectangulo,0,SDL_FLIP_NONE);
+		posicionAuxiliar = this->rectangulo.x;
+
+		this->rectangulo.w = anchoVentana - (atoi(this->imagen->getAncho().c_str()) - this->rectangulo.x);
+		this->rectangulo.x = 0;
+		this->textura->aplicarPosicionDePorcion(anchoVentana - this->rectangulo.w,0,&this->rectangulo,0,SDL_FLIP_NONE);
+		this->rectangulo.x = posicionAuxiliar;
+
+		this->resetearDatos(anchoVentana, indice);
+	}
+	else
+	{
+		this->textura->aplicarPosicionDePorcion(0,0,&this->rectangulo,0,SDL_FLIP_NONE);
+	}
+}
+
+void Capa::resetearDatos(int anchoVentana, int indice)
+{
 	if (indice == 0)
 	{
-		this->paralajeInfinitoCapaPrincipal(anchoVentana);
+		if (this->rectangulo.w > anchoVentana){
+			//vista->camara.x = 0;
+			this->rectangulo.w = anchoVentana;
+			this->rectangulo.x = 0;
+			//jugador_X = ANCHO_VENTANA/2 - texturaJugador->getAnchoSprite()/2;
+		}
 	}
-	else {
-		this->paralajeInfinitoOtrasCapas(anchoVentana);
+	else
+	{
+		if (this->rectangulo.x > atoi(this->imagen->getAncho().c_str()))
+		{
+			this->rectangulo.x = 0;
+			this->vel = 0;
+			this->rectangulo.w = anchoVentana;
+		}
 	}
-
 }
 
 void Capa::paralajeInfinitoCapaPrincipal(int anchoVentana)
@@ -85,7 +117,7 @@ void Capa::paralajeInfinitoOtrasCapas(int anchoVentana)
 		if (this->rectangulo.x > atoi(this->imagen->getAncho().c_str()))
 		{
 			this->rectangulo.x = 0;
-			this->velocidad = 0;
+			this->vel = 0;
 			this->rectangulo.w = anchoVentana;
 		}
 	} else {
@@ -96,6 +128,6 @@ void Capa::paralajeInfinitoOtrasCapas(int anchoVentana)
 void Capa::modificarRectangulo(int vel, int anchoVentana, int anchoEscenario)
 {
 
-	this->velocidad += vel;
-	this->rectangulo.x = abs((this->velocidad)*(atoi(this->imagen->getAncho().c_str()) - anchoVentana)/(anchoEscenario - anchoVentana));
+	this->vel += vel;
+	this->rectangulo.x = abs((this->vel)*(atoi(this->imagen->getAncho().c_str()) - anchoVentana)/(anchoEscenario - anchoVentana));
 }
