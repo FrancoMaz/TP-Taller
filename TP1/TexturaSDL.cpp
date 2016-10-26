@@ -160,6 +160,9 @@ void TexturaSDL::aplicarPosicionYTamanio(float x, float y, int ancho, int alto, 
 }
 
 void TexturaSDL::generarSprite(int frames){
+	if (this->frameActual > frames){
+		this->frameActual = 0;
+	}
 	if (frames >= 2){
 		this->spriteClips.clear();
 		SDL_Rect clips[frames];

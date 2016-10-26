@@ -52,7 +52,7 @@ void Vista::cargarArchivos(){
 	textura.push_back(ventana->crearTexto("Recursos/arial.ttf",19));
 	textura.push_back(ventana->crearTexto("Recursos/msserif_bold.ttf",13));
 	textura.push_back(ventana->crearBoton("Recursos/Boton_Conectar.png"));
-	textura.push_back(ventana->crearTextura("Recursos/Jugador.png",3));
+	textura.push_back(ventana->crearTextura("Recursos/Jugador_rojo.png",3));
 	textura.push_back(ventana->crearTextura("Recursos/TP2_test/Fondo_Escenario_capa_1_test.png",0));
 	textura.push_back(ventana->crearTextura("Recursos/TP2_test/Fondo_Escenario_capa_2_test.png",0));
 	textura.push_back(ventana->crearTextura("Recursos/TP2_test/Fondo_Escenario_capa_3_test.png",0));
@@ -324,7 +324,7 @@ void Vista::cargarEscenario(){
 			if(this->controlador->presionarBoton(SDLK_RIGHT)){
 				velocidad_X += velocidad;
 				if(!saltar){
-					texturaJugador->cargarImagen("Recursos/Jugador_corriendo.png");
+					texturaJugador->cargarImagen("Recursos/Jugador_corriendo_rojo.png");
 					texturaJugador->generarSprite(9);
 				}
 				flip = SDL_FLIP_NONE;
@@ -333,7 +333,7 @@ void Vista::cargarEscenario(){
 			if(this->controlador->presionarBoton(SDLK_LEFT)){
 				velocidad_X -= velocidad;
 				if(!saltar){
-					texturaJugador->cargarImagen("Recursos/Jugador_corriendo.png");
+					texturaJugador->cargarImagen("Recursos/Jugador_corriendo_rojo.png");
 					texturaJugador->generarSprite(9);
 				}
 				flip = SDL_FLIP_HORIZONTAL;
@@ -342,7 +342,7 @@ void Vista::cargarEscenario(){
 			if(this->controlador->presionarBoton(SDLK_UP)){
 				if(angulo == 0){
 					saltar = true;
-					texturaJugador->cargarImagen("Recursos/Jugador_saltando.png");
+					texturaJugador->cargarImagen("Recursos/Jugador_saltando_rojo.png");
 					texturaJugador->generarSprite(9);
 				}
 			}
@@ -355,7 +355,7 @@ void Vista::cargarEscenario(){
 			if(this->controlador->soltarBoton(SDLK_RIGHT)){
 				velocidad_X -= velocidad;
 				if(!saltar){
-					texturaJugador->cargarImagen("Recursos/Jugador.png");
+					texturaJugador->cargarImagen("Recursos/Jugador_rojo.png");
 					texturaJugador->generarSprite(3);
 				}
 				flip = SDL_FLIP_NONE;
@@ -364,7 +364,7 @@ void Vista::cargarEscenario(){
 			if(this->controlador->soltarBoton(SDLK_LEFT)){
 				velocidad_X += velocidad;
 				if(!saltar){
-					texturaJugador->cargarImagen("Recursos/Jugador.png");
+					texturaJugador->cargarImagen("Recursos/Jugador_rojo.png");
 					texturaJugador->generarSprite(3);
 				}
 				flip = SDL_FLIP_HORIZONTAL;
@@ -381,16 +381,16 @@ void Vista::cargarEscenario(){
 
 		//Compruebo el salto
 		if(saltar){
-			velocidad_Y = -7*cos(angulo);
-			angulo += PI/50;
-			if (angulo > (PI + (PI/50))){
+			velocidad_Y = -16*cos(angulo);
+			angulo += PI/14;
+			if (angulo > (PI + (PI/14))){
 				angulo = 0;
 				saltar = false;
 				if (velocidad_X != 0){
-					texturaJugador->cargarImagen("Recursos/Jugador_corriendo.png");
+					texturaJugador->cargarImagen("Recursos/Jugador_corriendo_rojo.png");
 					texturaJugador->generarSprite(9);
 				} else {
-					texturaJugador->cargarImagen("Recursos/Jugador.png");
+					texturaJugador->cargarImagen("Recursos/Jugador_rojo.png");
 					texturaJugador->generarSprite(3);
 				}
 			}
@@ -535,48 +535,25 @@ void Vista::cargarEscenario(){
 		/* Paralaje infinito de la ciudad */
 		//Si la 1era textura comienza a salirse de pantalla
 		if((capaCiudad.x + ANCHO_VENTANA) > texturaFondoEscenarioCapaUno->getAncho()){
-			//Y si el rectángulo está renderizando entre la 1era textura y la 2da textura (reflejada)
-			if(capaCiudad.x < texturaFondoEscenarioCapaUno->getAncho()){
-				//Renderizo la porción derecha de la 1er textura y la posiciono en x=0
-				capaCiudad.w = texturaFondoEscenarioCapaUno->getAncho() - capaCiudad.x;
-				texturaFondoEscenarioCapaUno->aplicarPosicionDePorcion(0,0,&capaCiudad,0,SDL_FLIP_NONE);
+			//Creo una posición auxiliar para no perder el valor de capaCiudad.x
+			int posicionAuxiliar = 0;
 
-				//Renderizo la porción izquierda de la 2da textura (reflejada), y la posiciono a continuación de la textura renderizada arriba
-				//Tener en cuenta que reflejar una textura con SDL_FLIP_HORIZONTAL implica también reflejar las posiciones y dimensiones aplicadas sobre el mismo
-				capaCiudad.w = ANCHO_VENTANA - (texturaFondoEscenarioCapaUno->getAncho() - capaCiudad.x);
-				capaCiudad.x = (texturaFondoEscenarioCapaUno->getAncho() - capaCiudad.w);
-				texturaFondoEscenarioCapaUno->aplicarPosicionDePorcion((ANCHO_VENTANA - capaCiudad.w),0,&capaCiudad,0,SDL_FLIP_HORIZONTAL);
-			} else {
-				/* Si acá el rectángulo entró a renderizar por completo la 2da textura (reflejada), donde la 1era textura ya salió por completo de pantalla,
-				   renderizo el ancho completo de la ventana ya que estoy en la 2da textura */
+			capaCiudad.w = texturaFondoEscenarioCapaUno->getAncho() - capaCiudad.x;
+			texturaFondoEscenarioCapaUno->aplicarPosicionDePorcion(0,0,&capaCiudad,0,SDL_FLIP_NONE);
+			posicionAuxiliar = capaCiudad.x;
+
+			//Renderizo la porción izquierda de la textura entrante, y la posiciono a continuación de la textura renderizada arriba
+			capaCiudad.w = ANCHO_VENTANA - (texturaFondoEscenarioCapaUno->getAncho() - capaCiudad.x);
+			capaCiudad.x = 0;
+			texturaFondoEscenarioCapaUno->aplicarPosicionDePorcion((ANCHO_VENTANA - capaCiudad.w),0,&capaCiudad,0,SDL_FLIP_NONE);
+			//Si la textura saliente salió por completo de la pantalla, reseteo todos los valores
+			if (capaCiudad.w > ANCHO_VENTANA){
+				camara.x = 0;
 				capaCiudad.w = ANCHO_VENTANA;
-				//A medida que avanzo, capaCiudad.x va disminuyendo (en la textura reflejada disminuye de izquierda a derecha)
-				capaCiudad.x = (texturaFondoEscenarioCapaUno->getAncho() - ANCHO_VENTANA) - (capaCiudad.x - texturaFondoEscenarioCapaUno->getAncho());
-
-				// Si la 2da textura (reflejada) comienza a salirse de pantalla
-				if(capaCiudad.x < 0){
-					//Renderizo la porción derecha de la 2da textura y la posiciono en x=0
-					capaCiudad.w = ANCHO_VENTANA + capaCiudad.x;
-					capaCiudad.x = 0;
-					texturaFondoEscenarioCapaUno->aplicarPosicionDePorcion(0,0,&capaCiudad,0,SDL_FLIP_HORIZONTAL);
-
-					//Renderizo la porción izquierda de la 1era textura, y la posiciono a continuación de la 2da textura renderizada arriba
-					capaCiudad.w = ANCHO_VENTANA - (capaCiudad.w);
-					texturaFondoEscenarioCapaUno->aplicarPosicionDePorcion((ANCHO_VENTANA - capaCiudad.w),0,&capaCiudad,0,SDL_FLIP_NONE);
-
-					//Si la 2da textura salió por completo de pantalla y se renderiza por completo la 1era textura, reseteo todas las variables
-					if (capaCiudad.w > ANCHO_VENTANA){
-						camara.x = 0;
-						capaCiudad.w = ANCHO_VENTANA;
-						capaCiudad.x = 0;
-						jugador_X = ANCHO_VENTANA/2 - texturaJugador->getAnchoSprite()/2;
-					}
-				} else {
-					texturaFondoEscenarioCapaUno->aplicarPosicionDePorcion(0,0,&capaCiudad,0,SDL_FLIP_HORIZONTAL);
-				}
+				capaCiudad.x = 0;
+				jugador_X = ANCHO_VENTANA/2 - texturaJugador->getAnchoSprite()/2;
 			}
 		} else {
-			capaCiudad.w = ANCHO_VENTANA;
 			texturaFondoEscenarioCapaUno->aplicarPosicionDePorcion(0,0,&capaCiudad,0,SDL_FLIP_NONE);
 		}
 
