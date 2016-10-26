@@ -493,13 +493,12 @@ string Servidor::traerMensajesProcesados(string nombreCliente) {
 
 	queue<Mensaje>* colaDeMensajes;
 
-	for (list<Servidor::MensajesProcesados>::iterator datoActual =
-			listaMensajesProcesados->begin();
+	for (list<Servidor::MensajesProcesados>::iterator datoActual = listaMensajesProcesados->begin();
 			datoActual != listaMensajesProcesados->end(); datoActual++) {
 
 		MensajesProcesados mensaje;
 		mensaje = *datoActual;
-		if (mensaje.destinatario == string(nombreCliente)) {
+		if (mensaje.destinatario == nombreCliente) {
 			colaDeMensajes = mensaje.mensajes;
 		}
 	}

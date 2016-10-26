@@ -32,8 +32,8 @@ struct ComunicacionCliente{
 		};
 
 bool chequearSocket(string ip, int puerto) {
-	string ipServer = "192.168.1.11";
-	//string ipServer = "127.0.0.1";
+	//string ipServer = "192.168.1.11";
+	string ipServer = "127.0.0.1";
 	int puertoDeEscucha = 7891;
 
 	return (ip == ipServer && puerto == puertoDeEscucha);
@@ -49,6 +49,8 @@ void procesarUltimosMensajes(string mensajes, Cliente* cliente, UpdateJugador* u
 {   string mensajeVacio = "#noHayMensajes@";
 	vector<SetDeSpritesDto*> setsSprites = handshakeDeserializado->getSprites();
 	if(strcmp(mensajes.c_str(), mensajeVacio.c_str()) != 0 && mensajes != ""){
+
+		//cout << "Procesar ultimos mensajes: " << mensajes << endl;
 
 		mensajes[mensajes.length() - 1] = '#';
 		char str [mensajes.length()];
@@ -102,8 +104,8 @@ void* recibirPosicionJugadores(void* arg) {
 	UpdateJugador* update = new UpdateJugador();
 	 //The frames per second timer
 	LTimer capTimer;
+	//usleep(50000);
 	while(!controlador->comprobarCierreVentana()){
-		//usleep(50000);
 		 //Start cap timer
 		capTimer.start();
 		datosRecibidos = cliente->recibir();
@@ -132,6 +134,7 @@ void* enviarEventos(void* arg) {
 	while(!controlador->comprobarCierreVentana()){
 		while(SDL_PollEvent(&evento)){
 			//usleep(50000);
+			//cout << "Adentro de enviar eventos en mainCliente" << endl;
 			capTimer.start();
 			if(controlador->presionarBoton(SDLK_RIGHT)){
 				cliente->enviar("Tecla Derecha","Todos");
