@@ -49,6 +49,12 @@ void procesarUltimosMensajes(string mensajes, Cliente* cliente, UpdateJugador* u
 {   string mensajeVacio = "#noHayMensajes@";
 	vector<SetDeSpritesDto*> setsSprites = handshakeDeserializado->getSprites();
 	if(strcmp(mensajes.c_str(), mensajeVacio.c_str()) != 0 && mensajes != ""){
+<<<<<<< HEAD
+=======
+
+		//cout << "Procesar ultimos mensajes: " << mensajes << endl;
+
+>>>>>>> 41cec70e14f50b78920d709f9bfc4e6b81871206
 		mensajes[mensajes.length() - 1] = '#';
 		char str [mensajes.length()];
 		strcpy(str, mensajes.c_str());
@@ -103,9 +109,12 @@ void* recibirPosicionJugadores(void* arg) {
 	UpdateJugador* update = new UpdateJugador();
 	 //The frames per second timer
 	LTimer capTimer;
+<<<<<<< HEAD
 	usleep(50000);
+=======
+	//usleep(50000);
+>>>>>>> 41cec70e14f50b78920d709f9bfc4e6b81871206
 	while(!controlador->comprobarCierreVentana()){
-		//usleep(50000);
 		 //Start cap timer
 		capTimer.start();
 		datosRecibidos = cliente->recibir();
@@ -134,6 +143,7 @@ void* enviarEventos(void* arg) {
 	while(!controlador->comprobarCierreVentana()){
 		while(SDL_PollEvent(&evento)){
 			//usleep(50000);
+			//cout << "Adentro de enviar eventos en mainCliente" << endl;
 			capTimer.start();
 			if(controlador->presionarBoton(SDLK_RIGHT)){
 				cliente->enviar("Tecla Derecha","Todos");
@@ -199,7 +209,7 @@ void* cicloConexion(void* arg) {
 		bool inicio;
 		do
 		{
-			usleep(2000000);
+			usleep(500000);
 			inicio = cliente->checkearInicioJuego(vista);
 		}while (!inicio);
 		handshakeDeserializado = cliente->getHandshake();
@@ -208,7 +218,12 @@ void* cicloConexion(void* arg) {
 		pthread_create(&threadRecibirPosicionJugadores, NULL, &recibirPosicionJugadores,cliente);
 		pthread_detach(threadRecibirPosicionJugadores);
 		vector<ImagenDto*> imagenes = handshakeDeserializado->getImagenes();
+<<<<<<< HEAD
 		vista->cargarEscenario(imagenes, stringToInt(handshakeDeserializado->getAncho()), stringToInt(handshakeDeserializado->getAlto()));
+=======
+
+		vista->cargarEscenario(stringToInt(imagenes.at(0)->getAncho()), stringToInt(imagenes.at(0)->getAlto()), stringToInt(handshakeDeserializado->getAncho()), stringToInt(handshakeDeserializado->getAlto()));
+>>>>>>> 41cec70e14f50b78920d709f9bfc4e6b81871206
 
 	}
 }

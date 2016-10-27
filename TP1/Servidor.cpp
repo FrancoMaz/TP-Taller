@@ -8,6 +8,7 @@
 #include "Servidor.h"
 #include <string.h>
 #include <stdlib.h>
+#include "LTimer.h"
 using namespace std;
 
 Servidor::Servidor(char* nombreArchivoDeUsuarios, int puerto, Logger* logger) {
@@ -45,9 +46,9 @@ Servidor::~Servidor() {
 }
 
 void Servidor::guardarDatosDeConfiguracion() {
-   string path;
-   cout << "Ingrese el path del archivo de configuracion" << endl;
-   cin >> path;
+   string path = "Recursos/configuration.xml";
+  // cout << "Ingrese el path del archivo de configuracion" << endl;
+   //cin >> path;
    this->parser = new XmlParser(path);
 }
 
@@ -115,8 +116,8 @@ void Servidor::guardarDatosDeUsuarios() {
 		}
 
 		myfile.close();
-		mensaje = "Se leyeron los datos de los usuarios desde el archivo " + string(this->nombreArchivo) + "\n";
-		this->guardarLog(mensaje, DEBUG);
+		//mensaje = "Se leyeron los datos de los usuarios desde el archivo " + string(this->nombreArchivo) + "\n";
+		//this->guardarLog(mensaje, DEBUG);
 	}
 
 }
@@ -150,8 +151,8 @@ void Servidor::autenticar(string nombre, string contrasenia, list<string>& usuar
 	}
 	if (autenticacionOK) {
 		cout << "Autenticación OK" << endl;
-		mensaje = "Autenticación OK \n";
-		this->guardarLog(mensaje, DEBUG);
+		//mensaje = "Autenticación OK \n";
+		//this->guardarLog(mensaje, DEBUG);
 	} else {
 		usuarios.clear();
 		cout << "Error de autenticación: usuario y/o clave incorrectos" << endl;
@@ -168,7 +169,9 @@ void Servidor::autenticar(string nombre, string contrasenia, list<string>& usuar
 
 
 void Servidor::guardarLog(string mensaje, const int nivelDeLog) {
+	pthread_mutex_lock(&mutexLog);
 	this->logger->escribir(mensaje, nivelDeLog);
+	pthread_mutex_unlock(&mutexLog);
 }
 
 
@@ -188,8 +191,11 @@ void* Servidor::actualizarPosiciones(void* arg)
 	Servidor* servidor = parametrosServidor.servidor;
 	Mensaje* mensajeCamara;
 	string mensajeCamaraString;
+	LTimer timer;
 	bool jugadorSalto;
 	do {
+		timer.start();
+		int frameTicks = timer.getTicks();
 		string mensajeJugadorPosActualizada = "";
 		pthread_mutex_lock(&servidor->mutexVectorJugadores);
 		Jugador* jugador = servidor->obtenerJugador(mensajeAProcesar.getRemitente());
@@ -211,6 +217,11 @@ void* Servidor::actualizarPosiciones(void* arg)
 		{
 			servidor->encolarMensajeProcesadoParaCadaCliente(*mensajeCamara,mensajeCamaraString);
 		}
+		if( frameTicks < 25 )
+		{
+			//Wait remaining time
+			SDL_Delay( 25 - frameTicks );
+		}
 	} while (jugadorSalto);
 }
 
@@ -220,7 +231,8 @@ void Servidor::actualizarPosicionesSalto(Mensaje mensajeAProcesar)
 	bool jugadorSalto;
 	Mensaje* mensajeCamara;
 	string mensajeCamaraString;
-	do {
+	string mensajeJugadorPosActualizada = "";
+	/*do {
 		string mensajeJugadorPosActualizada = "";
 		pthread_mutex_lock(&mutexVectorJugadores);
 		Jugador* jugador = this->obtenerJugador(mensajeAProcesar.getRemitente());
@@ -248,7 +260,25 @@ void Servidor::actualizarPosicionesSalto(Mensaje mensajeAProcesar)
 		{
 			encolarMensajeProcesadoParaCadaCliente(*mensajeCamara,mensajeCamaraString);
 		}
-	} while (jugadorSalto);
+	} while (jugadorSalto);*/
+	//pthread_mutex_lock(&mutexVectorJugadores);
+	Jugador* jugador = this->obtenerJugador(mensajeAProcesar.getRemitente());
+	jugador->actualizarPosicion(mensajeAProcesar.deserializar(mensajeAProcesar.getTexto()),mensajeAProcesar.sePresionoTecla(),camara);
+	pair<int,int> posicionesExtremos = this->obtenerPosicionesExtremos();
+	bool necesitaCambiarCamara = jugador->chequearCambiarCamara(this->camara, atoi(handshake->getAncho().c_str()), posicionesExtremos);
+	if (necesitaCambiarCamara)
+	{
+		camara.x += VELMAX;
+		mensajeCamaraString = "1|" + to_string(camara.x) + "|" + to_string(camara.y) + "#";
+		mensajeCamara = new Mensaje(jugador->getNombre(),"Todos",mensajeCamaraString);
+	}
+	mensajeJugadorPosActualizada = jugador->getStringJugador();
+	//pthread_mutex_unlock(&mutexVectorJugadores);
+	encolarMensajeProcesadoParaCadaCliente(mensajeAProcesar,mensajeJugadorPosActualizada);
+	if (necesitaCambiarCamara)
+	{
+		encolarMensajeProcesadoParaCadaCliente(*mensajeCamara,mensajeCamaraString);
+	}
 }
 
 Jugador* Servidor::obtenerJugador(string nombre){
@@ -289,6 +319,7 @@ pair<int,int> Servidor::obtenerPosicionesExtremos()
 void Servidor::procesarMensajes() {
 	Mensaje* mensajeCamara;
 	string mensajeCamaraString;
+	//usleep(5000);
 	if (!colaMensajesNoProcesados.empty()) {
 		pthread_t threadSalto;
 		pthread_mutex_lock(&mutexColaNoProcesados);
@@ -297,13 +328,18 @@ void Servidor::procesarMensajes() {
 		pthread_mutex_unlock(&mutexColaNoProcesados);
 		if (mensajeAProcesar.getTexto() == "Tecla Arriba")
 		{
-			/*ParametrosServidor parametrosServidor;
+			ParametrosServidor parametrosServidor;
 			parametrosServidor.mensajeAProcesar = mensajeAProcesar;
-			parametrosServidor.servidor = this;*/
+			parametrosServidor.servidor = this;
 
-			this->actualizarPosicionesSalto(mensajeAProcesar);
-			/*pthread_create(&threadSalto,NULL,&actualizarPosiciones,&parametrosServidor);
-			pthread_detach(threadSalto);*/
+			/*pthread_mutex_lock(&mutexVectorJugadores);
+			Jugador* jugador = this->obtenerJugador(mensajeAProcesar.getRemitente());
+			jugador->setSalto(true);
+			pthread_mutex_unlock(&mutexVectorJugadores);
+*/
+			//this->actualizarPosicionesSalto(mensajeAProcesar);
+			pthread_create(&threadSalto,NULL,&actualizarPosiciones,&parametrosServidor);
+			pthread_detach(threadSalto);
 		}
 		else
 		{
@@ -338,6 +374,24 @@ void Servidor::procesarMensajes() {
 			}
 		}
 	}
+	/*
+	vector<string> jugadoresSaltando;
+	pthread_mutex_lock(&mutexVectorJugadores);
+	for (int i = 0; i < jugadores->size(); i++)
+	{
+		if (jugadores->at(i)->salto()){
+			jugadoresSaltando.push_back(jugadores->at(i)->getNombre());
+		}
+	}
+	pthread_mutex_unlock(&mutexVectorJugadores);
+	for (int i= 0; i < jugadoresSaltando.size(); i++)
+	{
+		cout << "SALTA EL JUGADOR" << jugadoresSaltando.at(i) << endl;
+		Mensaje* mensajeAProcesar = new Mensaje(jugadoresSaltando.at(i), "Todos","Tecla Arriba");
+		actualizarPosicionesSalto(*mensajeAProcesar);
+	}
+	jugadoresSaltando.clear();
+	*/
 }
 
 void Servidor::encolarMensajeProcesadoParaCadaCliente(Mensaje mensajeAProcesar, string mensajeJugadorPosActualizada){
@@ -356,9 +410,8 @@ void Servidor::encolarMensajeProcesadoParaCadaCliente(Mensaje mensajeAProcesar, 
 				pthread_mutex_lock(&mutexListaProcesados);
 				listaMensajes.mensajes->push(*mensajePosicionActualizada);
 				pthread_mutex_unlock(&mutexListaProcesados);
-				this->mensaje = "Procesando mensaje para "
-						+ listaMensajes.destinatario + "\n";
-				this->guardarLog(mensaje, DEBUG);
+				//this->mensaje = "Procesando mensaje para "+ listaMensajes.destinatario + "\n";
+				//this->guardarLog(mensaje, DEBUG);
 			}
 			pthread_mutex_unlock(&mutexVectorJugadores);
 		}
@@ -368,8 +421,8 @@ void Servidor::encolarMensajeProcesadoParaCadaCliente(Mensaje mensajeAProcesar, 
 void Servidor::comenzarEscucha() {
 //Metodo que pone al servidor a escuchar si alguien requiere algo.
 	this->escuchando = (listen(this->welcomeSocket, MAX_CANT_CLIENTES) == 0);
-	mensaje = "El servidor está escuchando... \n";
-	this->guardarLog(mensaje, DEBUG);
+	//mensaje = "El servidor está escuchando... \n";
+	//this->guardarLog(mensaje, DEBUG);
 	cout << "Escuchando conexiones entrantes.." << endl;
 }
 
@@ -392,8 +445,8 @@ pair<int,string> Servidor::aceptarConexion() {
 		return cli;
 	}
 	cout << "Datos recibidos: " << datosRecibidos << endl;
-	mensaje = "Datos recibidos: " + (string) datosRecibidos + string("\n");
-	this->guardarLog(mensaje, DEBUG);
+	//mensaje = "Datos recibidos: " + (string) datosRecibidos + string("\n");
+	//this->guardarLog(mensaje, DEBUG);
 
 	splitDatos(datosRecibidos, &nombre, &pass);
 	this->autenticar(nombre, pass, usuarios);
@@ -402,9 +455,9 @@ pair<int,string> Servidor::aceptarConexion() {
 	if (usuarios.empty()) {
 		okAutenticar = -1;
 		strcpy(buffer, "Desconectar");
-		mensaje = "Se desconecta al usuario " + nombre + " del servidor porque falló la autenticación... \n";
+		//mensaje = "Se desconecta al usuario " + nombre + " del servidor porque falló la autenticación... \n";
 		//this->cantClientesConectados -= 1;
-		this->guardarLog(mensaje, INFO);
+		//this->guardarLog(mensaje, INFO);
 		ok = send(socketCliente, buffer, BUFFER_MAX_SIZE, 0);
 		cli.first = -1;
 		cli.second = "";
@@ -414,17 +467,15 @@ pair<int,string> Servidor::aceptarConexion() {
 		this->cantClientesConectados += 1;
 		strcpy(buffer, this->serializarLista(usuarios).c_str());
 		string bufferS = buffer;
-		mensaje = "Enviándole al cliente " + nombre
-				+ " la lista de usuarios disponibles \n";
-		this->guardarLog(mensaje, DEBUG);
-		mensaje = "La lista de usuarios disponibles es: ";
-		for (list<string>::iterator i = usuarios.begin(); i != usuarios.end();
-				i++) {
+		//mensaje = "Enviándole al cliente " + nombre + " la lista de usuarios disponibles \n";
+		//this->guardarLog(mensaje, DEBUG);
+		//mensaje = "La lista de usuarios disponibles es: ";
+		for (list<string>::iterator i = usuarios.begin(); i != usuarios.end();i++) {
 			mensaje += (*i);
 			mensaje += " ";
 		}
-		mensaje += "\n";
-		this->guardarLog(mensaje, DEBUG);
+		//mensaje += "\n";
+		//this->guardarLog(mensaje, DEBUG);
 		ok = send(socketCliente, buffer, BUFFER_MAX_SIZE, 0);
 	}
 	//pthread_mutex_unlock(&mutexSocket);
@@ -511,8 +562,7 @@ string Servidor::traerMensajesProcesados(string nombreCliente) {
 
 	queue<Mensaje>* colaDeMensajes;
 
-	for (list<Servidor::MensajesProcesados>::iterator datoActual =
-			listaMensajesProcesados->begin();
+	for (list<Servidor::MensajesProcesados>::iterator datoActual = listaMensajesProcesados->begin();
 			datoActual != listaMensajesProcesados->end(); datoActual++) {
 
 		MensajesProcesados mensaje;
