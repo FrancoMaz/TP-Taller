@@ -194,3 +194,13 @@ void Jugador::setPosicion(int posicion)
 {
 	this->posicion.first = posicion;
 }
+
+void Jugador::setSprite(string sprite)
+{
+	this->spriteAEjecutar = sprite;
+}
+
+string Jugador::getStringJugadorDesconectado()
+{
+	return ("0|" + nombre + "|" + to_string(posicion.first) + "|" + to_string(posicion.second) + "|" + "Jugador_desconectado" + "|" + condicionSprite + "#");
+}

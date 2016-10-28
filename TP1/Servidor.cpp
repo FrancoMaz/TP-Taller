@@ -235,12 +235,15 @@ void Servidor::actualizarPosicionesSalto(Mensaje mensajeAProcesar)
 		if (necesitaCambiarCamara)
 		{
 			if (camara.x > atoi(handshake->getImagenes().at(0)->getAncho().c_str())){
-			camara.x = 0;
-			jugador->resetearPosicion(atoi(handshake->getImagenes().at(0)->getAncho().c_str()));
-		} else {
-			camara.x = jugador->getPosicion().first - (atoi(handshake->getAncho().c_str()))/2;
-		}
-			//camara.x = jugador->getPosicion().first - (atoi(handshake->getAncho().c_str()))/2;
+				camara.x = 0;
+				for (int i = 0; i < jugadores->size(); i++)
+				{
+					jugadores->at(i)->resetearPosicion(atoi(handshake->getImagenes().at(0)->getAncho().c_str()));
+				}
+			} else
+				{
+				camara.x = jugador->getPosicion().first - (atoi(handshake->getAncho().c_str()))/2;
+				}
 			//mensajeCamaraString = "1|" + to_string(jugador->getVelocidadX()) + "#";
 			mensajeCamaraString = "1|" + to_string(camara.x) + "|" + to_string(camara.y) + "|" + to_string(jugador->getVelocidadX()) + "#";
 			mensajeCamara = new Mensaje(jugador->getNombre(),"Todos",mensajeCamaraString);
@@ -625,6 +628,7 @@ void Servidor::verificarDesconexion(string nombre)
 				if (jugador->getPosicion().first < camara.x)
 				{
 					jugador->setPosicion(camara.x);
+					jugador->setSprite("Jugador_desconectado");
 					mensajeDesconectado = jugador->getStringJugador();
 					mensaje = new Mensaje(jugador->getNombre(),"Todos",mensajeDesconectado);
 					encolarMensajeProcesadoParaCadaCliente(*mensaje,mensajeDesconectado);

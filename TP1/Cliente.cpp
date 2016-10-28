@@ -92,8 +92,24 @@ SetDeSpritesDto* Cliente::deserializarSprite(char* campo){
 	//como va a ser el ultimo va a llegar a null asi que no creo que le de bola al "|"
 	campo = strtok(NULL,";");
 	zIndex = campo;
-	SpriteDto* spriteAgacharse = new SpriteDto(string(id),string(cantFotogramas),string(ancho),string(alto),string(imagen),string(zIndex));
-	spritesAccion.push_back(spriteAgacharse);
+	SpriteDto* spriteQuieto = new SpriteDto(string(id),string(cantFotogramas),string(ancho),string(alto),string(imagen),string(zIndex));
+	spritesAccion.push_back(spriteQuieto);
+
+	campo = strtok(NULL,",");
+	id = campo;
+	campo = strtok(NULL,",");
+	cantFotogramas = campo;
+	campo = strtok(NULL,",");
+	ancho = campo;
+	campo = strtok(NULL,",");
+	alto = campo;
+	campo = strtok(NULL,",");
+	imagen = campo;
+	//como va a ser el ultimo va a llegar a null asi que no creo que le de bola al "|"
+	campo = strtok(NULL,";");
+	zIndex = campo;
+	SpriteDto* spriteDesconectado = new SpriteDto(string(id),string(cantFotogramas),string(ancho),string(alto),string(imagen),string(zIndex));
+	spritesAccion.push_back(spriteDesconectado);
 	SetDeSpritesDto* setSpriteReconstruido = new SetDeSpritesDto(carpeta,spritesAccion);
 
 	return setSpriteReconstruido;
