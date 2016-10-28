@@ -230,7 +230,13 @@ void Servidor::actualizarPosicionesSalto(Mensaje mensajeAProcesar)
 		bool necesitaCambiarCamara = jugador->chequearCambiarCamara(this->camara, atoi(handshake->getAncho().c_str()), posicionesExtremos);
 		if (necesitaCambiarCamara)
 		{
+			if (camara.x > atoi(handshake->getImagenes().at(0)->getAncho().c_str())){
+			camara.x = 0;
+			jugador->resetearPosicion(atoi(handshake->getImagenes().at(0)->getAncho().c_str()));
+		} else {
 			camara.x = jugador->getPosicion().first - (atoi(handshake->getAncho().c_str()))/2;
+		}
+			//camara.x = jugador->getPosicion().first - (atoi(handshake->getAncho().c_str()))/2;
 			//mensajeCamaraString = "1|" + to_string(jugador->getVelocidadX()) + "#";
 			mensajeCamaraString = "1|" + to_string(camara.x) + "|" + to_string(camara.y) + "|" + to_string(jugador->getVelocidadX()) + "#";
 			mensajeCamara = new Mensaje(jugador->getNombre(),"Todos",mensajeCamaraString);
@@ -312,7 +318,10 @@ void Servidor::procesarMensajes() {
 				//Acá en lugar de este bloque de if se podría invocar el método resetearDatos de Capa que permita realizar todo el reseteo
 				if (camara.x > atoi(handshake->getImagenes().at(0)->getAncho().c_str())){
 					camara.x = 0;
-					jugador->resetearPosicion(atoi(handshake->getImagenes().at(0)->getAncho().c_str()));
+					for (int i = 0; i < jugadores->size(); i++)
+					{
+						jugadores->at(i)->resetearPosicion(atoi(handshake->getImagenes().at(0)->getAncho().c_str()));
+					}
 				} else {
 					camara.x = jugador->getPosicion().first - (atoi(handshake->getAncho().c_str()))/2;
 				}
@@ -592,4 +601,16 @@ void Servidor::iniciarCamara(){
 int Servidor::getCantJugadoresConectadosMax()
 {
 	return atoi(this->handshake->getCantidadMaximaJugadores().c_str());
+}
+
+void Servidor::verificarDesconexion(string nombre)
+{
+	for (int i = 0; i < jugadores->size(); i++)
+	{
+		Jugador* jugador = jugadores->at(i);
+		if (jugador->getNombre() == nombre)
+		{
+			jugador->setDesconectado();
+		}
+	}
 }

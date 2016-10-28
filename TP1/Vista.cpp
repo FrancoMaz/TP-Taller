@@ -55,6 +55,7 @@ void Vista::cargarArchivos(){
 	textura.push_back(ventana->crearTexto("Recursos/msserif_bold.ttf",13));
 	textura.push_back(ventana->crearBoton("Recursos/Boton_Conectar.png"));
 	textura.push_back(ventana->crearTextura("Recursos/Fondo_Escenario_capa_1.png",0));
+	textura.push_back(ventana->crearBoton("Recursos/Boton_Salir.png"));
 	//textura.push_back(ventana->crearTextura("Recursos/Jugador.png",3));
 
 	//Defino constantes para cada textura (para evitar llamarlos por índices)
@@ -75,6 +76,7 @@ void Vista::cargarArchivos(){
 	#define textoDatosNoCoinciden textura[14]
 	#define texturaBotonConectar textura[15]
 	#define texturaFondoEscenario textura[16]
+	#define texturaBotonDesconectar textura[17]
 	//#define texturaJugadorPrueba textura[17]
 }
 
@@ -308,10 +310,11 @@ void Vista::cargarEscenario(vector<ImagenDto*> imagenes, int anchoVentana, int a
 		VistaJugador* vistaJugador = vistaJugadores.at(i);
 		vistaJugador->texturaJugador->aplicarPosicion(vistaJugador->x,vistaJugador->y,0,SDL_FLIP_NONE);
 	}
-	this->ventana->actualizar();
+
 	while(!this->controlador->comprobarCierreVentana()){
 
 	}
+	this->ventana->actualizar();
 }
 
 void Vista::actualizarJugador(UpdateJugador* update, int anchoVentana)
@@ -342,6 +345,10 @@ void Vista::actualizarJugador(UpdateJugador* update, int anchoVentana)
 			}
 		}
 		texturaJugadorX->aplicarPosicion(vistaJugador->x - camara.x,vistaJugador->y - camara.y,0,vistaJugador->flip);
+	}
+	if (texturaBotonDesconectar->aplicarPosicionDeBoton(10,10,&evento))
+	{
+		controlador->setCerrarVentana();
 	}
 	this->ventana->actualizar();
 }
