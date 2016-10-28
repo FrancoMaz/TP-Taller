@@ -39,6 +39,8 @@ Servidor::Servidor(char* nombreArchivoDeUsuarios, int puerto, Logger* logger) {
 	vectorEquipos = {"rojo", "verde", "amarillo"};
 	posicionXInicial = 20;
 	posicionVector = 0;
+	camara.x = 0;
+	camara.y = 0;
 }
 
 Servidor::~Servidor() {
@@ -121,6 +123,20 @@ void Servidor::guardarDatosDeUsuarios() {
 
 }
 
+bool Servidor::contieneJugador(string nombre)
+{
+	bool estaContenido = false;
+	for (int i=0; i <jugadores->size(); i++)
+	{
+		if (jugadores->at(i)->getNombre() == nombre)
+		{
+			estaContenido = true;
+			break;
+		}
+	}
+	return estaContenido;
+}
+
 void Servidor::autenticar(string nombre, string contrasenia, list<string>& usuarios) {
 
 	bool autenticacionOK = false;
@@ -134,17 +150,26 @@ void Servidor::autenticar(string nombre, string contrasenia, list<string>& usuar
 				&& (strcmp(usuario.contrasenia.c_str(), contrasenia.c_str())
 						== 0)) {
 			autenticacionOK = true;
-			Jugador* jugador = new Jugador(usuario.nombre, this->vectorEquipos.at(posicionVector), posicionXInicial);
-			jugador->setConectado();
-			pthread_mutex_lock(&mutexVectorJugadores);
-			jugadores->push_back(jugador);
-			pthread_mutex_unlock(&mutexVectorJugadores);
-			MensajesProcesados mensajesProcesados;
-			mensajesProcesados.destinatario = usuario.nombre;
-			//mensajesProcesados.jugador = new Jugador(usuario.nombre);
-			queue<Mensaje>* colaMensajes = new queue<Mensaje>;
-			mensajesProcesados.mensajes = colaMensajes;
-			listaMensajesProcesados->push_back(mensajesProcesados);
+			if (jugadores->empty() || !this->contieneJugador(usuario.nombre))
+			{
+				Jugador* jugador = new Jugador(usuario.nombre, this->vectorEquipos.at(posicionVector), posicionXInicial);
+				jugador->setConectado();
+				pthread_mutex_lock(&mutexVectorJugadores);
+				jugadores->push_back(jugador);
+				pthread_mutex_unlock(&mutexVectorJugadores);
+				MensajesProcesados mensajesProcesados;
+				mensajesProcesados.destinatario = usuario.nombre;
+				//mensajesProcesados.jugador = new Jugador(usuario.nombre);
+				queue<Mensaje>* colaMensajes = new queue<Mensaje>;
+				mensajesProcesados.mensajes = colaMensajes;
+				listaMensajesProcesados->push_back(mensajesProcesados);
+			}
+			else
+			{
+				Jugador* jugador = this->obtenerJugador(usuario.nombre);
+				jugador->setConectado();
+				jugador->setSprite("Jugador_" + jugador->getEquipo());
+			}
 		} else {
 			usuarios.push_back(usuario.nombre);
 		}
@@ -605,7 +630,7 @@ string Servidor::getEstadoInicialSerializado()
 }
 
 void Servidor::iniciarCamara(){
-	camara = {0,0,atoi(handshake->getAncho().c_str()),atoi(handshake->getAlto().c_str())};
+	camara = {camara.x,camara.y,atoi(handshake->getAncho().c_str()),atoi(handshake->getAlto().c_str())};
 }
 
 int Servidor::getCantJugadoresConectadosMax()

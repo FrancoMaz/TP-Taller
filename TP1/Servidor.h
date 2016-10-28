@@ -127,6 +127,7 @@ public:
 	pair<int,int> obtenerPosicionesExtremos();
 	int getCantJugadoresConectadosMax();
 	void verificarDesconexion(string nombre);
+	bool contieneJugador(string nombre);
 };
 
 #endif /* TP1_SERVIDOR_H_ */

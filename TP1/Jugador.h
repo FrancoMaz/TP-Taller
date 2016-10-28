@@ -55,5 +55,6 @@ public:
 	void setPosicion(int posicion);
 	void setSprite(string sprite);
 	string getStringJugadorDesconectado();
+	string getEquipo();
 };
 #endif /* JUGADOR_H_ */
