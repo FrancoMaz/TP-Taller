@@ -247,8 +247,9 @@ int main() {
 				pthread_join(cliente->getThreadComunicacion(),(void**) &resultado); //espero que termine el thread de comunicacion que fue invocado..
 
 				//if (accion == 1) { //si es 1, es desconectar y vuelve a ingresar al loop que ofrece conectar y desconectar
-					cout << "Desconectado del servidor.." << endl;
-					cliente->vaciarClientesDisponibles();
+				cliente->desconectar();
+				cout << "Desconectado del servidor.." << endl;
+				cliente->vaciarClientesDisponibles();
 				//}
 			}
 

@@ -602,3 +602,15 @@ int Servidor::getCantJugadoresConectadosMax()
 {
 	return atoi(this->handshake->getCantidadMaximaJugadores().c_str());
 }
+
+void Servidor::verificarDesconexion(string nombre)
+{
+	for (int i = 0; i < jugadores->size(); i++)
+	{
+		Jugador* jugador = jugadores->at(i);
+		if (jugador->getNombre() == nombre)
+		{
+			jugador->setDesconectado();
+		}
+	}
+}

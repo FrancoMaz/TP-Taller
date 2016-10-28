@@ -382,6 +382,7 @@ bool Cliente::conectar(string nombre, string contrasenia) {
 			close(socketCliente);
 			pthread_mutex_unlock(&mutexSocket);
 		} else {
+			this->nombre = nombre;
 			string opcion = "6|" + nombre;
 			cout << "Conectandose al puerto: " << this->puertoServidor << endl;
 			cout<<opcion<<endl;

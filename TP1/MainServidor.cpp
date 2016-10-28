@@ -63,16 +63,19 @@ void* encolar(void* arg) {
 	 + mensaje->getRemitente() + ". Para: " + mensaje->getDestinatario()
 	 + ". \n";
 	 servidor->guardarLog(servidor->mensaje, DEBUG);*/
-	pthread_mutex_lock(
-			&parametrosEncolarMensaje.servidor->mutexColaNoProcesados);
-	servidor->crearMensaje(*mensaje);
-	/*servidor->mensaje = "Encolando mensaje: " + mensaje->getTexto()
-			+ ". De: " + mensaje->getRemitente() + ". Para: "
-			+ mensaje->getDestinatario() + ". \n";
-	servidor->guardarLog(servidor->mensaje, DEBUG);*/
-	pthread_mutex_unlock(
-			&parametrosEncolarMensaje.servidor->mutexColaNoProcesados);
-	mensaje->~Mensaje();
+	if (mensaje != NULL)
+	{
+		pthread_mutex_lock(
+				&parametrosEncolarMensaje.servidor->mutexColaNoProcesados);
+		servidor->crearMensaje(*mensaje);
+		/*servidor->mensaje = "Encolando mensaje: " + mensaje->getTexto()
+				+ ". De: " + mensaje->getRemitente() + ". Para: "
+				+ mensaje->getDestinatario() + ". \n";
+		servidor->guardarLog(servidor->mensaje, DEBUG);*/
+		pthread_mutex_unlock(
+				&parametrosEncolarMensaje.servidor->mutexColaNoProcesados);
+		mensaje->~Mensaje();
+	}
 
 	/*
 	if (mensaje->getDestinatario().compare("Todos") != 0) {
@@ -282,7 +285,7 @@ void* cicloEscuchaCliente(void* arg) {
 						break;
 					}
 					case 2: { //2 es recibir
-						servidor->guardarLog("Request: Recibir Mensajes. " + nombre + string(".\n"),INFO);
+						//servidor->guardarLog("Request: Recibir Mensajes. " + nombre + string(".\n"),INFO);
 						char* usuarioQueSolicita = strtok(NULL, "#");
 						//usleep(50000);
 						if (usuarioQueSolicita != NULL) {
@@ -305,12 +308,13 @@ void* cicloEscuchaCliente(void* arg) {
 						break;
 					}
 					case 4:{//4 es se desconecto el cliente, es un mensaje de log diferente al si se corta la conexion
+						servidor->verificarDesconexion(nombre);
 						servidor->restarCantidadClientesConectados();
-						servidor->guardarLog("El cliente " + nombre + " cerró la conexión.\n", INFO);
+						//servidor->guardarLog("El cliente " + nombre + " cerró la conexión.\n", INFO);
 						std::ostringstream oss;
 						oss << servidor->getCantConexiones();
 						string conectados = oss.str();
-						servidor->guardarLog("Cantidad de clientes conectados: " + conectados + string("\n"),INFO);
+						//servidor->guardarLog("Cantidad de clientes conectados: " + conectados + string("\n"),INFO);
 						pthread_exit(NULL);
 						break;
 					}
