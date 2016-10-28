@@ -189,3 +189,8 @@ void Jugador::resetearPosicion(int anchoCapaPrincipal)
 {
 	posicion.first = posicion.first - anchoCapaPrincipal;
 }
+
+void Jugador::setPosicion(int posicion)
+{
+	this->posicion.first = posicion;
+}

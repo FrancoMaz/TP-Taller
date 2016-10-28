@@ -135,6 +135,7 @@ void Servidor::autenticar(string nombre, string contrasenia, list<string>& usuar
 						== 0)) {
 			autenticacionOK = true;
 			Jugador* jugador = new Jugador(usuario.nombre, this->vectorEquipos.at(posicionVector), posicionXInicial);
+			jugador->setConectado();
 			pthread_mutex_lock(&mutexVectorJugadores);
 			jugadores->push_back(jugador);
 			pthread_mutex_unlock(&mutexVectorJugadores);
@@ -224,7 +225,10 @@ void Servidor::actualizarPosicionesSalto(Mensaje mensajeAProcesar)
 		string mensajeJugadorPosActualizada = "";
 		pthread_mutex_lock(&mutexVectorJugadores);
 		Jugador* jugador = this->obtenerJugador(mensajeAProcesar.getRemitente());
-		jugador->actualizarPosicion(mensajeAProcesar.deserializar(mensajeAProcesar.getTexto()),mensajeAProcesar.sePresionoTecla(),camara);
+		if (jugador->getConectado())
+		{
+			jugador->actualizarPosicion(mensajeAProcesar.deserializar(mensajeAProcesar.getTexto()),mensajeAProcesar.sePresionoTecla(),camara);
+		}
 		jugadorSalto = jugador->salto();
 		pair<int,int> posicionesExtremos = this->obtenerPosicionesExtremos();
 		bool necesitaCambiarCamara = jugador->chequearCambiarCamara(this->camara, atoi(handshake->getAncho().c_str()), posicionesExtremos);
@@ -266,16 +270,16 @@ Jugador* Servidor::obtenerJugador(string nombre){
 pair<int,int> Servidor::obtenerPosicionesExtremos()
 {
 	int posicionX = jugadores->at(0)->getPosicion().first;
-	int posicionMasAdelante = posicionX;
-	int posicionMasAtras = posicionX;
+	int posicionMasAdelante = camara.x;
+	int posicionMasAtras = camara.x + atoi(handshake->getAncho().c_str());
 	for (int i = 0; i < jugadores->size(); i++)
 	{
 		Jugador* jugador = jugadores->at(i);
-		if (jugador->getPosicion().first <= posicionMasAtras)
+		if (jugador->getPosicion().first <= posicionMasAtras && jugador->getConectado())
 		{
 			posicionMasAtras = jugadores->at(i)->getPosicion().first;
 		}
-		else if (jugador->getPosicion().first >= posicionMasAdelante)
+		else if (jugador->getPosicion().first >= posicionMasAdelante && jugador->getConectado())
 		{
 			posicionMasAdelante = jugadores->at(i)->getPosicion().first;
 		}
@@ -310,21 +314,24 @@ void Servidor::procesarMensajes() {
 			string mensajeJugadorPosActualizada = "";
 			pthread_mutex_lock(&mutexVectorJugadores);
 			Jugador* jugador = this->obtenerJugador(mensajeAProcesar.getRemitente());
-			jugador->actualizarPosicion(mensajeAProcesar.deserializar(mensajeAProcesar.getTexto()),mensajeAProcesar.sePresionoTecla(), camara);
+			if (jugador->getConectado())
+			{
+				jugador->actualizarPosicion(mensajeAProcesar.deserializar(mensajeAProcesar.getTexto()),mensajeAProcesar.sePresionoTecla(), camara);
+			}
 			pair<int,int> posicionesExtremos = this->obtenerPosicionesExtremos();
 			bool necesitaCambiarCamara = jugador->chequearCambiarCamara(this->camara, atoi(handshake->getAncho().c_str()), posicionesExtremos);
 			if (necesitaCambiarCamara)
 			{
-				//Acá en lugar de este bloque de if se podría invocar el método resetearDatos de Capa que permita realizar todo el reseteo
 				if (camara.x > atoi(handshake->getImagenes().at(0)->getAncho().c_str())){
 					camara.x = 0;
 					for (int i = 0; i < jugadores->size(); i++)
 					{
 						jugadores->at(i)->resetearPosicion(atoi(handshake->getImagenes().at(0)->getAncho().c_str()));
 					}
-				} else {
+				} else
+					{
 					camara.x = jugador->getPosicion().first - (atoi(handshake->getAncho().c_str()))/2;
-				}
+					}
 				//mensajeCamaraString = "1|" + to_string(jugador->getVelocidadX()) + "#";
 				mensajeCamaraString = "1|" + to_string(camara.x) + "|" + to_string(camara.y) + "|" + to_string(jugador->getVelocidadX()) + "#";
 				mensajeCamara = new Mensaje(jugador->getNombre(),"Todos",mensajeCamaraString);
@@ -611,6 +618,18 @@ void Servidor::verificarDesconexion(string nombre)
 		if (jugador->getNombre() == nombre)
 		{
 			jugador->setDesconectado();
+			Mensaje* mensaje;
+			string mensajeDesconectado = "";
+			while (this->escuchando && !jugador->getConectado())
+			{
+				if (jugador->getPosicion().first < camara.x)
+				{
+					jugador->setPosicion(camara.x);
+					mensajeDesconectado = jugador->getStringJugador();
+					mensaje = new Mensaje(jugador->getNombre(),"Todos",mensajeDesconectado);
+					encolarMensajeProcesadoParaCadaCliente(*mensaje,mensajeDesconectado);
+				}
+			}
 		}
 	}
 }

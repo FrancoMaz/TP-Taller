@@ -52,5 +52,6 @@ public:
 	pair<int, int> getPosicion();
 	int getVelocidadX();
 	void resetearPosicion(int anchoCapaPrincipal);
+	void setPosicion(int posicion);
 };
 #endif /* JUGADOR_H_ */
