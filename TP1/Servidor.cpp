@@ -621,14 +621,17 @@ void Servidor::verificarDesconexion(string nombre)
 		if (jugador->getNombre() == nombre)
 		{
 			jugador->setDesconectado();
+			jugador->setSprite("Jugador_desconectado");
 			Mensaje* mensaje;
 			string mensajeDesconectado = "";
+			mensajeDesconectado = jugador->getStringJugador();
+			mensaje = new Mensaje(jugador->getNombre(),"Todos",mensajeDesconectado);
+			encolarMensajeProcesadoParaCadaCliente(*mensaje,mensajeDesconectado);
 			while (this->escuchando && !jugador->getConectado())
 			{
 				if (jugador->getPosicion().first < camara.x)
 				{
 					jugador->setPosicion(camara.x);
-					jugador->setSprite("Jugador_desconectado");
 					mensajeDesconectado = jugador->getStringJugador();
 					mensaje = new Mensaje(jugador->getNombre(),"Todos",mensajeDesconectado);
 					encolarMensajeProcesadoParaCadaCliente(*mensaje,mensajeDesconectado);
