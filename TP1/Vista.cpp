@@ -294,16 +294,10 @@ void Vista::transicionDePantalla(){
 	this->opacidad = 230;
 }
 
-void Vista::cargarEscenario(vector<ImagenDto*> imagenes, int anchoVentana, int altoVentana){
+void Vista::cargarEscenario(int anchoVentana, int altoVentana){
 	//camara = {0,0,anchoVentana,altoVentana};
 	this->ventana->limpiar();
 	//texturaFondoEscenario->aplicarPosicionDePorcion(0,0,&camara,0,SDL_FLIP_NONE);
-	for (int i=0; i<imagenes.size(); i++)
-	{
-		SDL_Rect rectangulo = {0,0,anchoVentana,altoVentana};
-		Capa* capa = new Capa(imagenes.at(i), rectangulo, ventana->crearTextura("Recursos/" + imagenes.at(i)->getPath() + ".png",0));
-		vectorCapas.push_back(capa);
-	}
 	for (int i=vectorCapas.size()-1; i>=0; i--)
 	{
 		//vectorCapas.at(i)->calcularVelocidad(atoi(vectorCapas.at(vectorCapas.size()-1)->imagen->getAncho().c_str()), VELMAX, anchoVentana);
@@ -390,7 +384,24 @@ void Vista::actualizarCamara(int x, int y, int vel, int anchoVentana)
 	camara.y = vectorCapas.at(0)->rectangulo.y;
 }
 
-void Vista::inicializarCamara(int camaraX, int camaraY, int anchoVentana, int altoVentana)
+void Vista::inicializarCamara(int camaraX, int camaraY, int anchoVentana, int altoVentana,vector<ImagenDto*> imagenes,vector<int> abscisaDeCapas)
 {
 	camara = {camaraX,camaraY,anchoVentana,altoVentana};
+	for (int i=0; i<imagenes.size(); i++)
+		{
+			SDL_Rect rectangulo = {abscisaDeCapas.at(i),0,anchoVentana,altoVentana};
+			Capa* capa = new Capa(imagenes.at(i), rectangulo, ventana->crearTextura("Recursos/" + imagenes.at(i)->getPath() + ".png",0));
+			vectorCapas.push_back(capa);
+		}
+}
+
+string Vista::getCapas(){
+
+	string capas = "";
+	for ( int i = 0; i < this->vectorCapas.size(); i++){
+		capas += to_string(this->vectorCapas.at(i)->rectangulo.x);
+		capas += "|";
+	}
+	capas += "#";
+	return capas;
 }

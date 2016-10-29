@@ -53,7 +53,7 @@ public:
 	void cargarPrimeraPantalla();
 	datosConexion cargarSegundaPantalla(bool aviso);
 	datosConexion cargarTerceraPantalla(bool aviso);
-	void cargarEscenario(vector<ImagenDto*> imagenes, int anchoVentana, int altoVentana);
+	void cargarEscenario(int anchoVentana, int altoVentana);
 	void transicionDePantalla();
 	bool inicializar();
 	void cargarArchivos();
@@ -63,8 +63,8 @@ public:
 	void cargarVistaInicialJugador(string nombre, int x, int y, string sprite);
 	void actualizarCamara(int x, int y, int vel, int anchoVentana);
 	SDL_Rect camara;
-	void inicializarCamara(int camaraX, int camaraY, int anchoVentana, int altoVentana);
-
+	void inicializarCamara(int camaraX, int camaraY, int anchoVentana, int altoVentana, vector<ImagenDto*> imagenes,vector<int> abscisaDeCapas);
+	string getCapas();
 };
 
 #endif /* TP2_VISTA_H_ */

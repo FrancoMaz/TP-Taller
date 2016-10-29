@@ -41,6 +41,8 @@ Servidor::Servidor(char* nombreArchivoDeUsuarios, int puerto, Logger* logger) {
 	posicionVector = 0;
 	camara.x = 0;
 	camara.y = 0;
+	this->empezoElJuego = false;
+
 }
 
 Servidor::~Servidor() {
@@ -66,12 +68,21 @@ bool Servidor::existeArchivo(string fileName) {
 	return infile.good();
 }
 
+void Servidor::inicializarAbscisasCapas(int cantidad) {
+	cout << "Cantidad: " << cantidad << endl;
+	abscisasCapas.clear();
+	for (int i = 0; i < cantidad; i++) {
+		abscisasCapas.push_back(0);
+	}
+}
+
 void Servidor::enviarHandshake(int socket, char* cliente){
 	vector<ImagenDto*> escenario = this->parser->getEscenario();
 	vector<SetDeSpritesDto*> setDeSprites = this->parser->getSprites();
 	pair<const char*, const char*> ventana = this->parser->getTamanioVentana();
 	const char* cantidadMaximaJugadores = this->parser->getCantidadMaximaDeJugadores();
 	this->handshake = new Handshake(escenario, setDeSprites, ventana.first, ventana.second, cantidadMaximaJugadores);
+	this->inicializarAbscisasCapas(handshake->getImagenes().size());
 	string handshake = this->parser->serializarEscenario();
 	handshake += this->parser->serializarSetDeSprites();
 	handshake += this->parser->serializarVentana();
@@ -163,6 +174,7 @@ void Servidor::autenticar(string nombre, string contrasenia, list<string>& usuar
 				&& (strcmp(usuario.contrasenia.c_str(), contrasenia.c_str())
 						== 0)) {
 			autenticacionOK = true;
+
 			if (jugadores->empty() || !this->contieneJugador(usuario.nombre))
 			{
 				Jugador* jugador = new Jugador(usuario.nombre, this->vectorEquipos.at(posicionVector), posicionXInicial);
@@ -660,15 +672,18 @@ vector<Jugador*>* Servidor::getJugadoresConectados()
 	return jugadoresConectados;
 }
 
-string Servidor::getEstadoInicialSerializado()
-{
+string Servidor::getEstadoInicialSerializado() {
 	string estadoInicial = "";
 	vector<Jugador*>* jugadoresConectados = getJugadoresConectados();
-	for (int i = 0; i < jugadoresConectados->size(); i++)
-	{
+	for (int i = 0; i < jugadoresConectados->size(); i++) {
 		estadoInicial += jugadoresConectados->at(i)->serializarInicio() + "#";
 	}
-	estadoInicial = estadoInicial + "camara|" + to_string(camara.x) + "|" + to_string(camara.y) + "#";
+	estadoInicial = estadoInicial + "camara|" + to_string(camara.x) + "|" + to_string(camara.y) + "#" + "capas|";
+	for (int i = 0; i < abscisasCapas.size(); i++) {
+		estadoInicial += to_string(abscisasCapas.at(i));
+		estadoInicial += "|";
+	}
+
 	return estadoInicial;
 }
 
@@ -706,5 +721,15 @@ void Servidor::verificarDesconexion(string nombre)
 				}
 			}
 		}
+	}
+}
+void Servidor::recuperarCapas(char* capas) {
+
+	char* capaActual = strtok(capas,"|");
+	int i = 0;
+	while (capaActual != NULL){
+		this->abscisasCapas.at(i) = atoi(capaActual);
+		capaActual = strtok(NULL,"|#");
+		i++;
 	}
 }

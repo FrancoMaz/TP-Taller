@@ -70,11 +70,14 @@ private:
 	vector<string> vectorEquipos;
 	int posicionVector;
 	int posicionXInicial;
+	vector<int> abscisasCapas;
 
 public:
 	Servidor();
 	Servidor(char* nombreArchivoDeUsuarios, int puerto, Logger* logger);
 	virtual ~Servidor();
+	bool empezoElJuego;
+	void inicializarAbscisasCapas(int cantidad);
 	void guardarDatosDeUsuarios();
 	bool existeArchivo(string fileName);
 	bool escuchando = false; //representa si el servidor esta disponible para escuchar pedidos
@@ -129,6 +132,7 @@ public:
 	void verificarDesconexion(string nombre);
 	bool contieneJugador(string nombre);
 	int getAnchoSprite(string sprite);
+	void recuperarCapas(char* capas);
 };
 
 #endif /* TP1_SERVIDOR_H_ */

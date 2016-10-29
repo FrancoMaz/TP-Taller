@@ -109,6 +109,7 @@ public:
 	int getCantidadDeFotogramas(string sprite);
 	string getHandshakeRecibido();
 	Handshake* getHandshake();
+	void enviarCapas(string capas);
 };
 
 #endif /* TP1_CLIENTE_H_ */

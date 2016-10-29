@@ -232,6 +232,7 @@ void* cicloEscuchaCliente(void* arg) {
 	servidor->guardarLog("Escuchando al cliente: " + nombre + string(".\n"),
 			INFO);
 	char bufferRecibido[BUFFER_MAX_SIZE];
+	memset(bufferRecibido,'/0',strlen(bufferRecibido));
 	bool conectado = true;
 	servidor->setJugadorConectado(nombre);
 	while (conectado and servidor->escuchando) {
@@ -311,6 +312,9 @@ void* cicloEscuchaCliente(void* arg) {
 						servidor->restarCantidadClientesConectados();
 						//pthread_exit(NULL);
 						servidor->verificarDesconexion(nombre);
+						/*if (servidor->getJugadoresConectados()->empty() ){
+							servidor->hayJugadoresConectados = false;
+						}*/
 						//servidor->guardarLog("El cliente " + nombre + " cerró la conexión.\n", INFO);
 						//std::ostringstream oss;
 						//oss << servidor->getCantConexiones();
@@ -319,12 +323,15 @@ void* cicloEscuchaCliente(void* arg) {
 						break;
 					}
 					case 5:{
+						string comenzo = "";
 						char comenzoJuego[BUFFER_MAX_SIZE];
-						string comenzo;
+						memset(comenzoJuego,'/0',strlen(comenzoJuego));
 						if (servidor->getJugadoresConectados()->size() == servidor->getCantJugadoresConectadosMax()){
+							servidor->empezoElJuego = true;
 							string jugadoresInicio = servidor->getEstadoInicialSerializado();
 							comenzo = "0|"  + jugadoresInicio + "@";
 							servidor->iniciarCamara();
+
 						}
 						else{
 							comenzo = "1@";
@@ -342,6 +349,10 @@ void* cicloEscuchaCliente(void* arg) {
 							//enviarMensajesProcesadosA(cliente, servidor, socketCliente);
 						}
 						break;
+					}
+					case 7:{//7 enviar jochitas
+						char* capas = strtok(NULL, "#");
+						servidor->recuperarCapas(capas);
 					}
 				}
 			}

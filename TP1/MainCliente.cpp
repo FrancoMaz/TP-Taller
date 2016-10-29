@@ -87,6 +87,9 @@ void procesarUltimosMensajes(string mensajes, Cliente* cliente, UpdateJugador* u
 				texto = strtok(NULL,"#");
 				int vel = atoi(texto);
 				vista->actualizarCamara(x,y,vel,atoi(handshakeDeserializado->getAncho().c_str()));
+				string capas = "7|";
+				capas += vista->getCapas();
+				cliente->enviarCapas(capas);
 			}
 			vista->actualizarJugador(update,atoi(handshakeDeserializado->getAncho().c_str()));
 			texto = strtok(NULL, "|");
@@ -207,8 +210,7 @@ void* cicloConexion(void* arg) {
 		pthread_detach(threadEnviarEventos);
 		pthread_create(&threadRecibirPosicionJugadores, NULL, &recibirPosicionJugadores,cliente);
 		pthread_detach(threadRecibirPosicionJugadores);
-		vector<ImagenDto*> imagenes = handshakeDeserializado->getImagenes();
-		vista->cargarEscenario(imagenes, stringToInt(handshakeDeserializado->getAncho()), stringToInt(handshakeDeserializado->getAlto()));
+		vista->cargarEscenario(stringToInt(handshakeDeserializado->getAncho()), stringToInt(handshakeDeserializado->getAlto()));
 		cliente->desconectar();
 	}
 }

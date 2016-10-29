@@ -688,6 +688,9 @@ bool Cliente::checkearInicioJuego(Vista* vista)
 	char* sprite;
 	char* camaraX;
 	char* camaraY;
+	char* capaX;
+	vector<int> abscisasCapas;
+	vector<ImagenDto*> imagenes = this->handshake->getImagenes();
 
 	int comenzo = atoi(strComenzo);
 	if (comenzo != 0){
@@ -712,8 +715,15 @@ bool Cliente::checkearInicioJuego(Vista* vista)
 				strComenzo = strtok(NULL,"|#");
 				camaraY = strComenzo;
 				strComenzo = strtok(NULL,"|#");
-				vista->inicializarCamara(atoi(camaraX),atoi(camaraY),atoi(handshake->getAncho().c_str()), atoi(handshake->getAlto().c_str()));
 			}
+			if((strcmp(strComenzo, "capas") == 0)){
+				for ( int i = 0; i < imagenes.size(); i++) {
+					strComenzo = strtok(NULL,"|#");
+					capaX = strComenzo;
+					abscisasCapas.at(i) = atoi(capaX);
+				}
+			}
+			vista->inicializarCamara(atoi(camaraX),atoi(camaraY),atoi(handshake->getAncho().c_str()), atoi(handshake->getAlto().c_str()), imagenes, abscisasCapas);
 		}
 		return true;
 	}
@@ -723,4 +733,11 @@ bool Cliente::checkearInicioJuego(Vista* vista)
 string Cliente::getHandshakeRecibido()
 {
 	return this->handshakeRecibido;
+}
+
+void Cliente::enviarCapas(string capas){
+	char buffer[BUFFER_MAX_SIZE];
+	memset(buffer,'/0',strlen(buffer));
+	strcpy(buffer,capas.c_str());
+	send(this->socketCliente,buffer,strlen(buffer),0);
 }
