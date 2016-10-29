@@ -705,7 +705,6 @@ bool Cliente::checkearInicioJuego(Vista* vista)
 			sprite = strComenzo;
 			strComenzo = strtok(NULL,"|#");
 			vista->cargarVistaInicialJugador(nombreJugador,atoi(x),atoi(y),sprite);
-			cout << "campo: " << strComenzo << endl;
 			if (strcmp(strComenzo, "camara") == 0)
 			{
 				strComenzo = strtok(NULL,"|#");
@@ -713,8 +712,6 @@ bool Cliente::checkearInicioJuego(Vista* vista)
 				strComenzo = strtok(NULL,"|#");
 				camaraY = strComenzo;
 				strComenzo = strtok(NULL,"|#");
-				cout << "Camara x: " << camaraX << endl;
-				cout << "Camara Y: " << camaraY << endl;
 				vista->inicializarCamara(atoi(camaraX),atoi(camaraY),atoi(handshake->getAncho().c_str()), atoi(handshake->getAlto().c_str()));
 			}
 		}

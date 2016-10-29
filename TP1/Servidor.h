@@ -76,7 +76,7 @@ public:
 	Servidor(char* nombreArchivoDeUsuarios, int puerto, Logger* logger);
 	virtual ~Servidor();
 	void guardarDatosDeUsuarios();
-	bool fileExists(string fileName);
+	bool existeArchivo(string fileName);
 	bool escuchando = false; //representa si el servidor esta disponible para escuchar pedidos
 	void autenticar(string nombre, string contrasenia, list<string>& usuarios);
 	list<Cliente> obtenerClientes();
@@ -128,6 +128,7 @@ public:
 	int getCantJugadoresConectadosMax();
 	void verificarDesconexion(string nombre);
 	bool contieneJugador(string nombre);
+	int getAnchoSprite(string sprite);
 };
 
 #endif /* TP1_SERVIDOR_H_ */
