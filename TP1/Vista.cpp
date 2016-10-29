@@ -373,6 +373,9 @@ void Vista::cargarVistaInicialJugador(string nombre, int x, int y, string sprite
 
 void Vista::actualizarCamara(int x, int y, int vel, int anchoVentana)
 {
+	cout << to_string(x) << endl;
+	cout << to_string(y) << endl;
+	cout << to_string(vel) << endl;
 	for (int i=vectorCapas.size()-1; i>=0; i--)
 	{
 		if (i == 0)

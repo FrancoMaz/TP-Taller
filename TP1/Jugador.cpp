@@ -87,9 +87,9 @@ void Jugador::actualizarPosicion(SDL_Keycode tecla, bool sePresionoTecla, SDL_Re
 
 	if(saltar)
 	{
-		velocidades.second = -7*cos(angulo);
-		angulo += PI/50;
-		if (angulo > (PI + (PI/50))){
+		velocidades.second = -12*cos(angulo);
+		angulo += PI/25;
+		if (angulo > (PI + (PI/25))){
 			angulo = 0;
 			saltar = false;
 			if (velocidades.first != 0) {

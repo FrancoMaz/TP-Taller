@@ -8,6 +8,7 @@
 #include "Servidor.h"
 #include <string.h>
 #include <stdlib.h>
+#include "LTimer.h"
 using namespace std;
 
 Servidor::Servidor(char* nombreArchivoDeUsuarios, int puerto, Logger* logger) {
@@ -220,37 +221,30 @@ list<Servidor::MensajesProcesados>* Servidor::getListaMensajesProcesados()
 	return listaMensajesProcesados;
 }
 
-/*void* Servidor::actualizarPosiciones(void* arg)
+void* Servidor::actualizarPosiciones(void* arg)
 {
 	ParametrosServidor parametrosServidor = *(ParametrosServidor*) arg;
 	Mensaje mensajeAProcesar = parametrosServidor.mensajeAProcesar;
 	Servidor* servidor = parametrosServidor.servidor;
 	Mensaje* mensajeCamara;
 	string mensajeCamaraString;
+	LTimer timer;
 	bool jugadorSalto;
 	do {
+		timer.start();
+		int frameTicks = timer.getTicks();
 		string mensajeJugadorPosActualizada = "";
 		pthread_mutex_lock(&servidor->mutexVectorJugadores);
 		Jugador* jugador = servidor->obtenerJugador(mensajeAProcesar.getRemitente());
 		jugador->actualizarPosicion(mensajeAProcesar.deserializar(mensajeAProcesar.getTexto()),mensajeAProcesar.sePresionoTecla(),servidor->camara);
 		jugadorSalto = jugador->salto();
+		int anchoSprite = servidor->getAnchoSprite(jugador->getSpriteAEjecutar());
 		pair<int,int> posicionesExtremos = servidor->obtenerPosicionesExtremos();
-		int anchoSprite = this->getAnchoSprite(jugador->getSpriteAEjecutar());
-		bool necesitaCambiarCamara = jugador->chequearCambiarCamara(this->camara, atoi(handshake->getAncho().c_str()), posicionesExtremos, anchoSprite);
+		bool necesitaCambiarCamara = jugador->chequearCambiarCamara(servidor->camara, atoi(servidor->handshake->getAncho().c_str()), posicionesExtremos, anchoSprite);
 		if (necesitaCambiarCamara)
 		{
-			if (camara.x > atoi(handshake->getImagenes().at(0)->getAncho().c_str())){
-				camara.x = 0;
-				for (int i = 0; i < jugadores->size(); i++)
-				{
-					jugadores->at(i)->resetearPosicion(atoi(handshake->getImagenes().at(0)->getAncho().c_str()));
-				}
-			} else
-				{
-				camara.x = (jugador->getPosicion().first + anchoSprite/2) - (atoi(handshake->getAncho().c_str()))/2;
-				}
-			//mensajeCamaraString = "1|" + to_string(jugador->getVelocidadX()) + "#";
-			mensajeCamaraString = "1|" + to_string(camara.x) + "|" + to_string(camara.y) + "|" + to_string(jugador->getVelocidadX()) + "#";
+			servidor->camara.x += VELMAX;
+			mensajeCamaraString = "1|" + to_string(servidor->camara.x) + "|" + to_string(servidor->camara.y) + "|" + to_string(jugador->getVelocidadX()) + "#";
 			mensajeCamara = new Mensaje(jugador->getNombre(),"Todos",mensajeCamaraString);
 		}
 		mensajeJugadorPosActualizada = jugador->getStringJugador();
@@ -260,8 +254,13 @@ list<Servidor::MensajesProcesados>* Servidor::getListaMensajesProcesados()
 		{
 			servidor->encolarMensajeProcesadoParaCadaCliente(*mensajeCamara,mensajeCamaraString);
 		}
+		if( frameTicks < 25 )
+		{
+			//Wait remaining time
+			SDL_Delay( 25 - frameTicks );
+		}
 	} while (jugadorSalto);
-}*/
+}
 
 
 void Servidor::actualizarPosicionesSalto(Mensaje mensajeAProcesar)
@@ -370,13 +369,13 @@ void Servidor::procesarMensajes() {
 		pthread_mutex_unlock(&mutexColaNoProcesados);
 		if (mensajeAProcesar.getTexto() == "Tecla Arriba")
 		{
-			/*ParametrosServidor parametrosServidor;
+			ParametrosServidor parametrosServidor;
 			parametrosServidor.mensajeAProcesar = mensajeAProcesar;
-			parametrosServidor.servidor = this;*/
+			parametrosServidor.servidor = this;
 
-			this->actualizarPosicionesSalto(mensajeAProcesar);
-			/*pthread_create(&threadSalto,NULL,&actualizarPosiciones,&parametrosServidor);
-			pthread_detach(threadSalto);*/
+			//this->actualizarPosicionesSalto(mensajeAProcesar);
+			pthread_create(&threadSalto,NULL,&actualizarPosiciones,&parametrosServidor);
+			pthread_detach(threadSalto);
 		}
 		else
 		{

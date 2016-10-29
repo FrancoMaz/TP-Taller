@@ -31,6 +31,15 @@ struct ComunicacionCliente{
 			bool termino;
 		};
 
+
+int stringToInt(string atributo) {
+	istringstream atributoStream(atributo);
+	int atributoInt;
+	atributoStream >> atributoInt;
+
+	return atributoInt;
+}
+
 bool chequearSocket(string ip, int puerto) {
 	//string ipServer = "192.168.1.11";
 	string ipServer = "127.0.0.1";
@@ -81,11 +90,11 @@ void procesarUltimosMensajes(string mensajes, Cliente* cliente, UpdateJugador* u
 			}
 			else{
 				texto = strtok(NULL, "|");
-				int x = atoi(texto);
+				int x = stringToInt(string(texto));
 				texto = strtok(NULL,"|");
-				int y = atoi(texto);
+				int y = stringToInt(string(texto));
 				texto = strtok(NULL,"#");
-				int vel = atoi(texto);
+				int vel = stringToInt(string(texto));
 				vista->actualizarCamara(x,y,vel,atoi(handshakeDeserializado->getAncho().c_str()));
 			}
 			vista->actualizarJugador(update,atoi(handshakeDeserializado->getAncho().c_str()));
@@ -161,14 +170,6 @@ void* enviarEventos(void* arg) {
 			}
 		}
 	}
-}
-
-int stringToInt(string atributo) {
-	istringstream atributoStream(atributo);
-	int atributoInt;
-	atributoStream >> atributoInt;
-
-	return atributoInt;
 }
 
 void* cicloConexion(void* arg) {
