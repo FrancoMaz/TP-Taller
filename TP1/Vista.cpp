@@ -292,7 +292,7 @@ void Vista::transicionDePantalla(){
 }
 
 void Vista::cargarEscenario(vector<ImagenDto*> imagenes, int anchoVentana, int altoVentana){
-	camara = {0,0,anchoVentana,altoVentana};
+	//camara = {0,0,anchoVentana,altoVentana};
 	this->ventana->limpiar();
 	//texturaFondoEscenario->aplicarPosicionDePorcion(0,0,&camara,0,SDL_FLIP_NONE);
 	for (int i=0; i<imagenes.size(); i++)
@@ -385,4 +385,9 @@ void Vista::actualizarCamara(int x, int y, int vel, int anchoVentana)
 	}
 	camara.x = vectorCapas.at(0)->rectangulo.x;
 	camara.y = vectorCapas.at(0)->rectangulo.y;
+}
+
+void Vista::inicializarCamara(int camaraX, int camaraY, int anchoVentana, int altoVentana)
+{
+	camara = {camaraX,camaraY,anchoVentana,altoVentana};
 }

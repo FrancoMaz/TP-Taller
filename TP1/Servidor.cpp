@@ -626,6 +626,7 @@ string Servidor::getEstadoInicialSerializado()
 	{
 		estadoInicial += jugadoresConectados->at(i)->serializarInicio() + "#";
 	}
+	estadoInicial = estadoInicial + "camara|" + to_string(camara.x) + "|" + to_string(camara.y) + "#";
 	return estadoInicial;
 }
 
