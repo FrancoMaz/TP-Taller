@@ -152,15 +152,18 @@ datosConexion Vista::cargarPantallaIngresoDatos(bool aviso, int numeroPantalla){
 
 	switch(numeroPantalla){
 		case 2:
-			campoUno = this->datos.puerto;
-			campoDos = this->datos.ip;
+			//campoUno = this->datos.puerto;
+			campoUno = "7891";
+			//campoDos = this->datos.ip;
+			campoDos = "127.0.0.1";
 			textoIngresePuerto->actualizarTexto("Ingrese el puerto:",colorTexto);
 			textoIngreseIP->actualizarTexto("Ingrese la IP del servidor:",colorTexto);
 			textoDatosNoCoinciden->actualizarTexto("La dirección de ip o el puerto no permiten esta conexión",colorTextoAmarillo);
 			break;
 		case 3:
 			campoUno = this->datos.nombre;
-			campoDos = this->datos.contrasenia;
+			//campoDos = this->datos.contrasenia;
+			campoDos = "123456";
 			textoIngresePuerto->actualizarTexto("Ingrese el nombre:",colorTexto);
 			textoIngreseIP->actualizarTexto("Ingrese la contraseña:",colorTexto);
 			textoDatosNoCoinciden->actualizarTexto("Usuario/contraseña incorrectos, inténtelo de nuevo",colorTextoAmarillo);
@@ -354,10 +357,11 @@ void Vista::cerrar(){
 	this->ventana->cerrar();
 }
 
-void Vista::cargarVistaInicialJugador(string nombre, int x, int y, string sprite)
+void Vista::cargarVistaInicialJugador(string nombre, int x, int y, SpriteDto* sprite)
 {
+	string fotogramas = sprite->getCantidadDeFotogramas();
 	VistaJugador* vistaJugador;
-	vistaJugador = new VistaJugador(nombre,x,y,(ventana->crearTextura("Recursos/" + sprite + ".png",3)), SDL_FLIP_NONE);
+	vistaJugador = new VistaJugador(nombre,x,y,(ventana->crearTextura("Recursos/" + sprite->getId() + ".png", atoi(fotogramas.c_str()))), SDL_FLIP_NONE);
 	vistaJugadores.push_back(vistaJugador);
 }
 

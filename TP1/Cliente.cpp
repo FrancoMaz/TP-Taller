@@ -180,7 +180,7 @@ bool Cliente::verificarExistencia(string archivo){
 bool Cliente::verificarBiblioteca(Handshake* handshakeAux) {
 	list<string> *archivos = new list<string>();
 	vector<ImagenDto*> imagenes = handshakeAux->getImagenes();
-	vector<SetDeSpritesDto*> setsSprites = handshakeAux->getSprites();
+	vector<SetDeSpritesDto*> setsSprites = handshakeAux->getSetSprites();
 	for (int i = 0; i < imagenes.size(); i++){
 		archivos->push_back(imagenes.at(i)->getPath());
 	}
@@ -228,92 +228,6 @@ Handshake* Cliente::getHandshake()
 }
 //-------------------------------ACA TERMINAN LOS METODOS PARA EL HANDSHAKE-------------------------------
 
-void Cliente::mostrarMenuYProcesarOpcion() {
-	bool esValido = false;
-		cout << "1) Enviar Mensaje" << endl;
-		cout << "2) Recibir Mensajes" << endl;
-		cout << "3) Lorem Ipsum" << endl;
-		cout << "4) Desconectar" << endl;
-		cout << "5) Salir" << endl;
-	do {
-		cout << "Elija la accion que desea realizar: " << endl;
-		cin >> opcionMenu;
-		if (cin.good() && (opcionMenu >= 1 && opcionMenu <= 5)) {esValido = true;}
-			else {
-				cin.clear();
-				cin.ignore();
-				cout << "Error: la opcion ingresada no es valida" << endl;
-				}
-		}
-		while (!esValido);
-		//this->elegirOpcionDelMenu(opcionMenu);
-}
-
-void Cliente::elegirOpcionDelMenu(int opcion) {
-
-		switch (opcion) {
-		case 1: {
-			bool esValido = false;
-			int numeroDestinatario;
-			string mensajeAEnviar;
-			if(!(this->terminoComunicacion)){//verifica si hay conexion a la hora de mandar un mensaje
-				this -> mostrarClientesDisponibles();
-				int cantidadClientesDisponibles = this->clientesDisponibles.size();
-				do {
-					cout << "Escriba el numero asociado al nombre del destinatario del mensaje: ";
-					cin >> numeroDestinatario;
-					if (cin.good() && (numeroDestinatario >= 1 && numeroDestinatario <= (cantidadClientesDisponibles + 1)))
-					{esValido = true;}
-					else {
-						cin.clear();
-						cin.ignore();
-						cout << "Error: la opcion ingresada no es valida" << endl;
-					}
-				} while (!esValido);
-				cin.ignore();
-				if (!(this->terminoComunicacion)) {
-					cout << "Escriba su mensaje: " << endl;
-					getline(cin,mensajeAEnviar);
-					if (numeroDestinatario != (this->clientesDisponibles.size()) + 1){
-						string nombreDestinatario = this->devolverNombre(numeroDestinatario - 1);
-						this->enviar(mensajeAEnviar, nombreDestinatario);
-					} else {this -> enviar(mensajeAEnviar, "Todos");}
-				}
-			}
-			break;
-		}
-		case 2: {
-			if(!(this->terminoComunicacion)){this->recibir();}//verifica si hay conexion a la hora de recibir mensajes
-			break;
-		}
-		case 3: {
-			double frecuenciaDeEnvios;
-			double cantidadMaximaDeEnvios;
-			if(!(this->terminoComunicacion)){//verifica si hay conexion a la hora de mandar un mensaje
-				cout << "Escriba la frecuencia de envios: " << endl;
-				cin >> frecuenciaDeEnvios;
-				if (!(this->terminoComunicacion)) {
-					cout << "Escriba la cantidad maxima de envios: " << endl;
-					cin >> cantidadMaximaDeEnvios;
-					if (!this->terminoComunicacion) {
-						this->loremIpsum(frecuenciaDeEnvios, cantidadMaximaDeEnvios);
-						}
-					}
-				}
-			break;
-		}
-		case 4: {
-			this->desconectar();
-			break;
-		}
-		case 5: {
-			this->salir();
-			break;
-		}
-		default:
-			break;
-		}
-}
 
 void Cliente::corroborarConexion() {
  	int ok = 1;
@@ -455,20 +369,14 @@ void Cliente::enviar(string mensaje, string destinatario) {
 	//free(stringDatosMensaje);
 }
 
-void Cliente::enviarMensajeATodos(string mensaje) {
-	for (list<string>::iterator i = this->clientesDisponibles.begin(); i != this->clientesDisponibles.end(); i++) {
-			this -> enviar(mensaje,*i);
-	}
-}
-
 string Cliente::recibir() {
 	//Se reciben todos los mensajes en la secuencia en la que fueron enviados
 	char colaMensajes[BUFFER_MAX_SIZE];
 	memset(colaMensajes, '\0', BUFFER_MAX_SIZE);
-	string metodo = "2|" + this->nombre + "#";
-	char* recibir = strdup(metodo.c_str()); //2 es recibir
+	//string metodo = "2|" + this->nombre + "#";
+	//char* recibir = strdup(metodo.c_str()); //2 es recibir
 	pthread_mutex_lock(&mutexSocket);
-	send(this->socketCliente, recibir, strlen(recibir), 0);
+	//send(this->socketCliente, recibir, strlen(recibir), 0);
 	string datosRecibidos = "";
 	int largoRequest;
 	do {
@@ -502,80 +410,6 @@ bool Cliente::stringTerminaCon(std::string const &fullString, std::string const 
 	} else {
 		return false;
 	}
-}
-
-void Cliente::mostrarUltimosMensajes(string colaMensajes)
-{   string mensajeVacio = "#noHayMensajes@";
-	cout << "Ultimos mensajes recibidos: " << endl;
-	if(strcmp(colaMensajes.c_str(), mensajeVacio.c_str()) == 0){
-		cout<<"No hay mensajes nuevos"<<endl;}
-	else{
-		colaMensajes[colaMensajes.length() - 1] = '#';
-		char str[colaMensajes.length()];
-		strcpy(str, colaMensajes.c_str());
-		char* texto = strtok(str, "|");
-		// hacer que no imprima arroba
-		while (texto != NULL) {
-			cout<<"Mensaje de "<<texto<<":"<<endl;
-			texto = strtok(NULL,"#");
-			cout << texto << endl;
-			cout<<endl;
-			texto = strtok(NULL, "|");
-		}
-	}
-}
-
-void Cliente::loremIpsum(double frecuenciaDeEnvios, double cantidadMaximaDeEnvios) {
-	//Toma el texto de un archivo y se envian mensajes en forma ciclica. El tamanio de mensajes y el destinatario son aleatorios
-	//Cuando todo el texto fue transmitido, se empieza otra vez desde el inicio
-	FILE* archivo;
-	int tamanioMensaje;
-	int numeroDeClienteAEnviar;
-	string clienteAleatorioAEnviar;
-	archivo = fopen("LoremIpsum.txt","r");
-	srand(time(NULL));
-	//El tamanio de los mensajes este entre 0 y 200
-	tamanioMensaje = (int) (rand() % 200);
-	//Se elige aleatoriamente el destinatario de la secuencia de mensajes
-	numeroDeClienteAEnviar = (int) (rand()% this->clientesDisponibles.size());
-	list<string>::iterator iterador = this->clientesDisponibles.begin();
-	advance(iterador, numeroDeClienteAEnviar);
-	clienteAleatorioAEnviar = *iterador;
-	//tiempoPorMensaje indica cada cuanto tiempo se manda un mensaje (en segundos)
-	//Se mandan frecuenciaDeEnvios mensajes en 1 segundo, entonces un mensaje se manda en 1/frecuenciaDeEnvios segundos
-	double tiempoPorMensaje = (1000000/frecuenciaDeEnvios);
-	cout<<"tiempo por mensaje: "<<tiempoPorMensaje<<endl;
-	//Indico el tiempo de inicio
-	clock_t tiempoInicio = clock();
-	for (int i = 0; i < cantidadMaximaDeEnvios; i++) {
-		if (!this->terminoComunicacion) {
-			string cadena;
-			//No tiene que ocurrir nada hasta que el tiempo transcurrido sea igual al tiempo estipulado de envio para cada mensaje
-			usleep(tiempoPorMensaje);
-			//Una vez que se transcurren tiempoPorMensaje segundos se empieza a leer caracteres del archivo
-			for (int j=0; j < tamanioMensaje; j++) {
-					char c = fgetc(archivo);
-					//Si no hay salto de linea o fin de archivo se guarda el caracter leido
-					if (c != '\n' && c != EOF) {
-						cadena = cadena + c;}
-					//Si viene un salto de linea se guarda un espacio (si no hacia esto se imprimia un caracter random)
-					if (c == '\n') {
-						cadena = cadena + ' ';
-					}
-					//Si viene un fin de archivo se guarda un espacio y se vuelven a leer caracteres del archivo desde el comienzo
-					if (c == EOF) {
-						cadena = cadena + ' ';
-						fclose(archivo);
-						archivo = fopen("LoremIpsum.txt","r"); }
-					}
-				//Una vez que se tiene un mensaje completo se envia al cliente elegido aleatoriamente de la lista
-			this->enviar(cadena, clienteAleatorioAEnviar);
-				//Al enviar un mensaje el tiempo de referencia es el actual
-				//tiempoInicio = clock();
-		}
-		else {cout << "Se cerro la conexion con el servidor" << endl;}
-	}
-	fclose(archivo);
 }
 
 string Cliente::getNombre() {
@@ -626,6 +460,9 @@ bool Cliente::getTermino()
 	return this->terminoComunicacion;
 }
 
+
+//-------------------------------PARA GENERAR EL INICIO DEL JUEGO---------------------------------------------
+
 void Cliente::enviarRequest(string request){
 	char buffer[BUFFER_MAX_SIZE];
 	const char* req = request.c_str();
@@ -653,6 +490,21 @@ string Cliente::recibirResponse(){
 	}while (largoRecibido >= BUFFER_MAX_SIZE and !stringTerminaCon(datosRecibidos, "@")); //mientras el largoRequest sea del tamaño del max size, sigo pidiendo
 	pthread_mutex_unlock(&mutexSocket);
 	return datosRecibidos;
+}
+SpriteDto* Cliente::buscarSprite(string ID){
+
+	vector<SetDeSpritesDto*> setsSprites = this->handshake->getSetSprites();
+	for (int i = 0; i < setsSprites.size(); i++){
+		vector<SpriteDto*> listaSprites = setsSprites.at(i)->getSprites();
+		for (int i = 0; i < listaSprites.size(); i++)
+		{
+			if ( ID == listaSprites.at(i)->getId())
+			{
+				return listaSprites.at(i);
+			}
+		}
+					}
+ return NULL;
 }
 
 bool Cliente::checkearInicioJuego(Vista* vista)
@@ -685,12 +537,14 @@ bool Cliente::checkearInicioJuego(Vista* vista)
 			strComenzo = strtok(NULL,"|#");
 			sprite = strComenzo;
 			strComenzo = strtok(NULL,"|#");
-			vista->cargarVistaInicialJugador(nombreJugador,atoi(x),atoi(y),sprite);
+
+			vista->cargarVistaInicialJugador(nombreJugador,atoi(x),atoi(y),buscarSprite(sprite));
 		}
 		return true;
 	}
 	return false;
 }
+//--------------------------------------------------------------------------------------------------------
 
 string Cliente::getHandshakeRecibido()
 {

@@ -26,7 +26,7 @@ public:
 	Handshake(vector<ImagenDto*> imagenes, vector<SetDeSpritesDto*> sprites, string ancho, string alto);
 	Handshake(vector<ImagenDto*> imagenes, vector<SetDeSpritesDto*> sprites, string ancho, string alto, string cantidadMaxima);
 	virtual ~Handshake();
-	vector<SetDeSpritesDto*> getSprites();
+	vector<SetDeSpritesDto*> getSetSprites();
 	vector<ImagenDto*> getImagenes();
 	string getAncho();
 	string getAlto();

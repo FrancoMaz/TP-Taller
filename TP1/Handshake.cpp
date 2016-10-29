@@ -27,7 +27,7 @@ Handshake::~Handshake() {
 	// TODO Auto-generated destructor stub
 }
 
-vector<SetDeSpritesDto*> Handshake::getSprites()
+vector<SetDeSpritesDto*> Handshake::getSetSprites()
 {
 	return this->sprites;
 }

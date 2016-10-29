@@ -123,7 +123,7 @@ void Jugador::setDesconectado()
 }
 
 string Jugador::getStringJugador()
-{
+{	//el "0" me dice que es un mensaje para actualizar posicion de jugador
 	return ("0|" + nombre + "|" + to_string(posicion.first) + "|" + to_string(posicion.second) + "|" + spriteAEjecutar + "|" + condicionSprite + "#");
 }
 

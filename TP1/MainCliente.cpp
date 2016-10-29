@@ -44,11 +44,13 @@ void* verificarConexion(void * arg){
 	cliente->corroborarConexion();
     //comunicacion->termino = cliente->corroborarConexion();
 }
-
+//Deserealiza los mensajes que le llegan del servidor y se los pasa a la vista para actualizarla
 void procesarUltimosMensajes(string mensajes, Cliente* cliente, UpdateJugador* update)
-{   string mensajeVacio = "#noHayMensajes@";
-	vector<SetDeSpritesDto*> setsSprites = handshakeDeserializado->getSprites();
-	if(strcmp(mensajes.c_str(), mensajeVacio.c_str()) != 0 && mensajes != ""){
+{   //string mensajeVacio = "#noHayMensajes@";
+	vector<SetDeSpritesDto*> setsSprites = handshakeDeserializado->getSetSprites();
+	//if(strcmp(mensajes.c_str(), mensajeVacio.c_str()) != 0 && mensajes != ""){
+	if(mensajes != ""){
+		cout<<"datos recibidos: "<< mensajes<< endl;
 		mensajes[mensajes.length() - 1] = '#';
 		char str [mensajes.length()];
 		strcpy(str, mensajes.c_str());
@@ -96,28 +98,28 @@ void procesarUltimosMensajes(string mensajes, Cliente* cliente, UpdateJugador* u
 		vista->actualizarJugador(update,atoi(handshakeDeserializado->getAncho().c_str()));
 	}
 }
-
+//Cada cierto tiempo recibe mensajes del servidor, llama al recibir viejo
 void* recibirPosicionJugadores(void* arg) {
 	Cliente* cliente = (Cliente*) arg;
-	string datosRecibidos = "";
+	string datosRecibidos;
 	UpdateJugador* update = new UpdateJugador();
 	 //The frames per second timer
-	LTimer capTimer;
+	//LTimer capTimer;
 	usleep(50000);
 	while(!controlador->comprobarCierreVentana()){
 		//usleep(50000);
 		 //Start cap timer
-		capTimer.start();
+		//capTimer.start();
+		datosRecibidos = "";
 		datosRecibidos = cliente->recibir();
 		procesarUltimosMensajes(datosRecibidos, cliente, update);
-
 		//si se procesa antes, espero lo que tengo que resta.
-		int frameTicks = capTimer.getTicks();
+		/*int frameTicks = capTimer.getTicks();
 		if( frameTicks < SCREEN_TICKS_PER_FRAME )
 		{
 			//Wait remaining time
 			SDL_Delay( SCREEN_TICKS_PER_FRAME - frameTicks );
-		}
+		}*/
 	}
 }
 
@@ -125,16 +127,16 @@ void* enviarEventos(void* arg) {
 	Cliente* cliente = (Cliente*) arg;
 	bool controlArriba = false;
 	 //The frames per second timer
-	LTimer fpsTimer;
+	//LTimer fpsTimer;
 	//The frames per second cap timer
-	LTimer capTimer;
+	//LTimer capTimer;
 	//Start counting frames per second
-	int countedFrames = 0;
-	fpsTimer.start();
+	//int countedFrames = 0;
+	//fpsTimer.start();
 	while(!controlador->comprobarCierreVentana()){
 		while(SDL_PollEvent(&evento)){
 			//usleep(50000);
-			capTimer.start();
+			//capTimer.start();
 			if(controlador->presionarBoton(SDLK_RIGHT)){
 				cliente->enviar("Tecla Derecha","Todos");
 			}
@@ -153,12 +155,12 @@ void* enviarEventos(void* arg) {
 			}
 			SDL_FlushEvent(SDL_MOUSEMOTION);
 			SDL_FlushEvent(SDL_KEYDOWN);//si se procesa antes, espero lo que tengo que resta.
-			int frameTicks = capTimer.getTicks();
-			if( frameTicks < SCREEN_TICKS_PER_FRAME )
+			//int frameTicks = capTimer.getTicks();
+			/*if( frameTicks < SCREEN_TICKS_PER_FRAME )
 			{
 				//Wait remaining time
 				SDL_Delay( SCREEN_TICKS_PER_FRAME - frameTicks );
-			}
+			}*/
 		}
 	}
 }
