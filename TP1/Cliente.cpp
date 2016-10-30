@@ -31,7 +31,7 @@ void Cliente::inicializarSocket(){
 //----------------------------METODOS PARA EL HANDSHAKE-------------------------------------
 ImagenDto* Cliente::deserializarImagen(string campo){
 
-	string nombre, ancho, alto;
+	string nombre, ancho, alto, zIndex;
 	string s = campo;
 	string delimitador = ",";
 	size_t pos = s.find(delimitador);
@@ -40,8 +40,11 @@ ImagenDto* Cliente::deserializarImagen(string campo){
 	pos = s.find(delimitador);
 	ancho = s.substr(0,pos);
 	s.erase(0,pos + delimitador.length());
-	alto = s;
-	ImagenDto* imagenReconstruida = new ImagenDto(nombre,ancho,alto);
+	pos = s.find(delimitador);
+	alto = s.substr(0,pos);
+	s.erase(0,pos + delimitador.length());
+	zIndex = s;
+	ImagenDto* imagenReconstruida = new ImagenDto(nombre,ancho,alto,zIndex);
 	return imagenReconstruida;
 }
 

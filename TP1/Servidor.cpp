@@ -120,11 +120,6 @@ void Servidor::guardarDatosDeUsuarios() {
 				}
 				nroItem++;
 			}
-			//Jugador* jugador = new Jugador(datosCapturados.nombre);
-			//mensajesProcesados.jugador = jugador;
-			//pthread_mutex_lock(&mutexVectorJugadores);
-			//jugadores->push_back(jugador);
-			//pthread_mutex_unlock(&mutexVectorJugadores);
 			queue<Mensaje>* colaMensajes = new queue<Mensaje>;
 			mensajesProcesados.mensajes = colaMensajes;
 			datosUsuarios->push_back(datosCapturados);

@@ -5,22 +5,26 @@
 	  <Imagen>
 	    <Archivo>Fondo_Escenario_capa_1_test</Archivo>
 	    <Ancho>7424</Ancho>
-	    <Alto>600</Alto>  
+	    <Alto>600</Alto>
+	    <z-index>1</z-index>  
 	  </Imagen>
 	  <Imagen>   
 	    <Archivo>Fondo_Escenario_capa_2_test</Archivo>
 	    <Ancho>3634</Ancho>
-	    <Alto>600</Alto> 
+	    <Alto>600</Alto>
+	    <z-index>2</z-index> 
 	  </Imagen>
 	   <Imagen>   
 	    <Archivo>Fondo_Escenario_capa_3_test</Archivo>
 	    <Ancho>2174</Ancho>
-	    <Alto>600</Alto> 
+	    <Alto>600</Alto>
+	    <z-index>3</z-index> 
 	  </Imagen>
 	   <Imagen>   
 	    <Archivo>Fondo_Escenario_capa_4_test</Archivo>
 	    <Ancho>863</Ancho>
-	    <Alto>600</Alto> 
+	    <Alto>600</Alto>
+	    <z-index>4</z-index> 
 	  </Imagen>
 	</Escenario>
 
@@ -33,7 +37,7 @@
 	      <Ancho>738</Ancho>
 	      <Alto>137</Alto>
 	      <Imagen>Jugador_saltando_rojo</Imagen>
-	      <z-index>3</z-index>
+	      <z-index>1</z-index>
 	    </SpriteSalto> 
 	    <SpriteCorrer>
 	      <Id>Jugador_corriendo_rojo</Id>
@@ -41,7 +45,7 @@
 	      <Ancho>875</Ancho>
 	      <Alto>113</Alto>
 	      <Imagen>Jugador_corriendo_rojo</Imagen>
-	      <z-index>3</z-index>
+	      <z-index>1</z-index>
 	    </SpriteCorrer>
 	    <SpriteQuieto>
 	      <Id>Jugador_rojo</Id>
@@ -49,7 +53,7 @@
 	      <Ancho>252</Ancho>
 	      <Alto>106</Alto>
 	      <Imagen>Jugador_rojo</Imagen>
-	      <z-index>3</z-index>
+	      <z-index>1</z-index>
 	    </SpriteQuieto>
 	    <SpriteDesconectado>
 	      <Id>Jugador_desconectado</Id>
@@ -57,7 +61,7 @@
 	      <Ancho>84</Ancho>
 	      <Alto>106</Alto>
 	      <Imagen>Jugador_desconectado</Imagen>
-	      <z-index>3</z-index>
+	      <z-index>1</z-index>
 	    </SpriteDesconectado>
 	  </SetRojo>
 	  <SetVerde>
@@ -68,7 +72,7 @@
 	      <Ancho>738</Ancho>
 	      <Alto>137</Alto>
 	      <Imagen>Jugador_saltando_verde</Imagen>
-	      <z-index>3</z-index>
+	      <z-index>1</z-index>
 	    </SpriteSalto> 
 	    <SpriteCorrer>
 	      <Id>Jugador_corriendo_verde</Id>
@@ -76,7 +80,7 @@
 	      <Ancho>875</Ancho>
 	      <Alto>113</Alto>
 	      <Imagen>Jugador_corriendo_verde</Imagen>
-	      <z-index>3</z-index>
+	      <z-index>1</z-index>
 	    </SpriteCorrer>
 	    <SpriteQuieto>
 	      <Id>Jugador_verde</Id>
@@ -84,7 +88,7 @@
 	      <Ancho>252</Ancho>
 	      <Alto>106</Alto>
 	      <Imagen>Jugador_verde</Imagen>
-	      <z-index>3</z-index>
+	      <z-index>1</z-index>
 	    </SpriteQuieto>
 	    <SpriteDesconectado>
 	      <Id>Jugador_desconectado</Id>
@@ -92,7 +96,7 @@
 	      <Ancho>84</Ancho>
 	      <Alto>106</Alto>
 	      <Imagen>Jugador_desconectado</Imagen>
-	      <z-index>3</z-index>
+	      <z-index>1</z-index>
 	    </SpriteDesconectado>
 	  </SetVerde>
 	  <SetAmarillo>
@@ -103,7 +107,7 @@
 	      <Ancho>738</Ancho>
 	      <Alto>137</Alto>
 	      <Imagen>Jugador_saltando_amarillo</Imagen>
-	      <z-index>3</z-index>
+	      <z-index>1</z-index>
 	    </SpriteSalto> 
 	    <SpriteCorrer>
 	      <Id>Jugador_corriendo_amarillo</Id>
@@ -111,7 +115,7 @@
 	      <Ancho>875</Ancho>
 	      <Alto>113</Alto>
 	      <Imagen>Jugador_corriendo_amarillo</Imagen>
-	      <z-index>3</z-index>
+	      <z-index>1</z-index>
 	    </SpriteCorrer>
 	    <SpriteQuieto>
 	      <Id>Jugador_amarillo</Id>
@@ -119,7 +123,7 @@
 	      <Ancho>252</Ancho>
 	      <Alto>106</Alto>
 	      <Imagen>Jugador_amarillo</Imagen>
-	      <z-index>3</z-index>
+	      <z-index>1</z-index>
 	    </SpriteQuieto>
 	    <SpriteDesconectado>
 	      <Id>Jugador_desconectado</Id>
@@ -127,7 +131,7 @@
 	      <Ancho>84</Ancho>
 	      <Alto>106</Alto>
 	      <Imagen>Jugador_desconectado</Imagen>
-	      <z-index>3</z-index>
+	      <z-index>1</z-index>
 	    </SpriteDesconectado>
 	  </SetAmarillo>
 	</Sprites>

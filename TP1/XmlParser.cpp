@@ -64,6 +64,8 @@ string XmlParser::serializarEscenario(){
 		escenarioConcatenado += ",";
 		escenarioConcatenado += this->escenario.at(i)->getAlto();
 		//cout << (*i).getVelocidad() << endl;
+		escenarioConcatenado += ",";
+		escenarioConcatenado += this->escenario.at(i)->getZIndex();
 		escenarioConcatenado += "|";
 	}
 	//string escenarioC = escenarioConcatenado.substr(0, escenarioConcatenado.length() -1);
@@ -75,7 +77,7 @@ string XmlParser::serializarEscenario(){
 vector<ImagenDto*> XmlParser::getEscenario() {
 	if (this->escenario.empty()) {
 		for (pugi::xml_node image = this->rootNode.child("Escenario").first_child(); image; image = image.next_sibling()) {
-			ImagenDto* imagen = new ImagenDto(string(image.child_value("Archivo")), string(image.child_value("Ancho")), string(image.child_value("Alto")));
+			ImagenDto* imagen = new ImagenDto(string(image.child_value("Archivo")), string(image.child_value("Ancho")), string(image.child_value("Alto")), string(image.child_value("z-index")));
 			this->escenario.push_back(imagen);
 		}
 	}
