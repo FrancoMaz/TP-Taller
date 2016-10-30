@@ -8,13 +8,13 @@
 #include "ImagenDto.h"
 
 ImagenDto::ImagenDto(string path, string ancho, string alto) {
-	this->ID = path;
+	this->path = path;
 	this->ancho = ancho;
 	this->alto = alto;
 }
 
-string ImagenDto::getID() {
-	return this->ID;
+string ImagenDto::getPath() {
+	return this->path;
 }
 
 string ImagenDto::getAncho() {
@@ -30,9 +30,9 @@ string ImagenDto::getZIndex()
 	return this->zIndex;
 }
 
-void ImagenDto::setID(string ID)
+void ImagenDto::setPath(string path)
 {
-	this->ID = ID;
+	this->path = path;
 }
 
 void ImagenDto::setAncho(string ancho)

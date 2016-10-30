@@ -16,18 +16,18 @@ using namespace std;
 
 class ImagenDto {
 private:
-	string ID;
+	string path;
 	string ancho;
 	string alto;
 	string zIndex;
 public:
 	ImagenDto(string path, string ancho, string alto);
 	virtual ~ImagenDto();
-	string getID();
+	string getPath();
 	string getAncho();
 	string getAlto();
 	string getZIndex();
-	void setID(string ID);
+	void setPath(string path);
 	void setAncho(string ancho);
 	void setAlto(string alto);
 	void setZIndex(string zIndex);

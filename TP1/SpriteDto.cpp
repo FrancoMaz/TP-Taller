@@ -65,6 +65,11 @@ void SpriteDto::setCantFotogramas(string cantFotogramas)
 	this->cantidadDeFotogramas = cantFotogramas;
 }
 
+void SpriteDto::setPath(string path)
+{
+	this->path = path;
+}
+
 SpriteDto::~SpriteDto() {
 	// TODO Auto-generated destructor stub
 }

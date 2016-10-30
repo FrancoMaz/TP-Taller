@@ -48,16 +48,16 @@ void Jugador::actualizarPosicion(SDL_Keycode tecla, bool sePresionoTecla, SDL_Re
 		velocidades.first += velocidad;
 		if (!saltar) {
 			spriteAEjecutar = "Jugador_corriendo_" + this->equipo;
-			condicionSprite = "Normal";
 		}
+		condicionSprite = "Normal";
 	}
 	else if (tecla == SDLK_LEFT && sePresionoTecla)
 	{
 		velocidades.first -= velocidad;
 		if (!saltar) {
 			spriteAEjecutar = "Jugador_corriendo_" + this->equipo;
-			condicionSprite = "Espejado";
 		}
+		condicionSprite = "Espejado";
 	}
 	else if (tecla == SDLK_UP && sePresionoTecla)
 	{
@@ -72,8 +72,8 @@ void Jugador::actualizarPosicion(SDL_Keycode tecla, bool sePresionoTecla, SDL_Re
 		velocidades.first = 0;
 		if (!saltar) {
 			spriteAEjecutar = "Jugador_" + this->equipo;
-			condicionSprite = "Normal";
 		}
+		condicionSprite = "Normal";
 	}
 	else if(tecla == SDLK_LEFT && !sePresionoTecla)
 	{
@@ -81,8 +81,8 @@ void Jugador::actualizarPosicion(SDL_Keycode tecla, bool sePresionoTecla, SDL_Re
 		if (!saltar)
 		{
 			spriteAEjecutar = "Jugador_" + this->equipo;
-			condicionSprite = "Espejado";
 		}
+		condicionSprite = "Espejado";
 	}
 
 	if(saltar)

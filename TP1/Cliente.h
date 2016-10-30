@@ -66,8 +66,8 @@ public:
 	Cliente();
 	Cliente(string ip, int puerto);
 	virtual ~Cliente();
-	ImagenDto* deserializarImagen(char* campo);
-	SetDeSpritesDto* deserializarSprite(char* campo);
+	ImagenDto* deserializarImagen(string campo);
+	SetDeSpritesDto* deserializarSprite(string campo);
 	Handshake* deserializarHandshake(string handshake, bool primeraVez);
 	void recorrerSprites(vector<SpriteDto*> sprites, vector<void*> &archivos);
 	void recibirHandshake();

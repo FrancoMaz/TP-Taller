@@ -35,6 +35,7 @@ public:
 	void setAlto(string alto);
 	void setZIndex(string zIndex);
 	void setCantFotogramas(string cantFotogramas);
+	void setPath(string path);
 	virtual ~SpriteDto();
 };
 

@@ -29,87 +29,59 @@ void Cliente::inicializarSocket(){
 }
 
 //----------------------------METODOS PARA EL HANDSHAKE-------------------------------------
-ImagenDto* Cliente::deserializarImagen(char* campo){
+ImagenDto* Cliente::deserializarImagen(string campo){
 
-	const char *nombre, *ancho, *alto;
-	nombre = campo;
-	campo = strtok(NULL,",");
-	ancho = campo;
-	campo = strtok(NULL, "|");
-	alto = campo;
-	ImagenDto *imagenReconstruida = new ImagenDto(string(nombre),string(ancho),string(alto));
+	string nombre, ancho, alto;
+	string s = campo;
+	string delimitador = ",";
+	size_t pos = s.find(delimitador);
+	nombre = s.substr(0,pos);
+	s.erase(0,pos + delimitador.length());
+	pos = s.find(delimitador);
+	ancho = s.substr(0,pos);
+	s.erase(0,pos + delimitador.length());
+	alto = s;
+	ImagenDto* imagenReconstruida = new ImagenDto(nombre,ancho,alto);
 	return imagenReconstruida;
 }
 
-SetDeSpritesDto* Cliente::deserializarSprite(char* campo){
+SetDeSpritesDto* Cliente::deserializarSprite(string campo){
 
-	const char* id, *cantFotogramas, *ancho, *alto, *imagen, *zIndex;
-	char* carpeta;
-	vector<SpriteDto*> spritesAccion; //= new list<SpriteDto*>;
-	carpeta = campo;
-	//El separador entre las distintas acciones en un sprite son los ";",
-	//y el separador para los campos que estan dentro de cada accion es la ","
-	campo = strtok(NULL,",");
-	id = campo;
-	campo = strtok(NULL,",");
-	cantFotogramas = campo;
-	campo = strtok(NULL,",");
-	ancho = campo;
-	campo = strtok(NULL,",");
-	alto = campo;
-	campo = strtok(NULL,",");
-	imagen = campo;
-	campo = strtok(NULL,";");
-	zIndex = campo;
-	SpriteDto* spriteSalto = new SpriteDto(string(id),string(cantFotogramas),string(ancho),string(alto),string(imagen),string(zIndex));
-	spritesAccion.push_back(spriteSalto);
 
-	campo = strtok(NULL,",");
-	id = campo;
-	campo = strtok(NULL,",");
-	cantFotogramas = campo;
-	campo = strtok(NULL,",");
-	ancho = campo;
-	campo = strtok(NULL,",");
-	alto = campo;
-	campo = strtok(NULL,",");
-	imagen = campo;
-	campo = strtok(NULL,";");
-	zIndex = campo;
-	SpriteDto* spriteCaminar = new SpriteDto(string(id),string(cantFotogramas),string(ancho),string(alto),string(imagen),string(zIndex));
-	spritesAccion.push_back(spriteCaminar);
+	string id, cantFotogramas, ancho, alto, imagen, zIndex;
+	string carpeta;
+	vector<SpriteDto*> spritesAccion;
+	string s = campo;
+	string delimitador = ";";
+	string delimitadorSprite = ",";
+	size_t pos = s.find(delimitador);
+	size_t posSprite;
+	string campoSprite;
+	carpeta = s.substr(0,pos);
+	s.erase(0,pos + delimitador.length());
+	while ((pos = s.find(delimitador)) != string::npos)
+	{
+		campoSprite = s.substr(0,pos);
+		posSprite = campoSprite.find(delimitadorSprite);
+		id = campoSprite.substr(0,posSprite);
+		campoSprite.erase(0,posSprite + delimitadorSprite.length());
+		posSprite = campoSprite.find(delimitadorSprite);
+		cantFotogramas = campoSprite.substr(0,posSprite);
+		campoSprite.erase(0,posSprite + delimitadorSprite.length());
+		posSprite = campoSprite.find(delimitadorSprite);
+		ancho = campoSprite.substr(0,posSprite);
+		campoSprite.erase(0,posSprite + delimitadorSprite.length());
+		posSprite = campoSprite.find(delimitadorSprite);
+		alto = campoSprite.substr(0,posSprite);
+		campoSprite.erase(0,posSprite + delimitadorSprite.length());
+		posSprite = campoSprite.find(delimitadorSprite);
+		imagen = campoSprite.substr(0,posSprite);
+		campoSprite.erase(0,posSprite + delimitadorSprite.length());
+		zIndex = campoSprite;
+		spritesAccion.push_back(new SpriteDto(id,cantFotogramas,ancho,alto,imagen,zIndex));
+		s.erase(0,pos + delimitador.length());
+	}
 
-	campo = strtok(NULL,",");
-	id = campo;
-	campo = strtok(NULL,",");
-	cantFotogramas = campo;
-	campo = strtok(NULL,",");
-	ancho = campo;
-	campo = strtok(NULL,",");
-	alto = campo;
-	campo = strtok(NULL,",");
-	imagen = campo;
-	//como va a ser el ultimo va a llegar a null asi que no creo que le de bola al "|"
-	campo = strtok(NULL,";");
-	zIndex = campo;
-	SpriteDto* spriteQuieto = new SpriteDto(string(id),string(cantFotogramas),string(ancho),string(alto),string(imagen),string(zIndex));
-	spritesAccion.push_back(spriteQuieto);
-
-	campo = strtok(NULL,",");
-	id = campo;
-	campo = strtok(NULL,",");
-	cantFotogramas = campo;
-	campo = strtok(NULL,",");
-	ancho = campo;
-	campo = strtok(NULL,",");
-	alto = campo;
-	campo = strtok(NULL,",");
-	imagen = campo;
-	//como va a ser el ultimo va a llegar a null asi que no creo que le de bola al "|"
-	campo = strtok(NULL,";");
-	zIndex = campo;
-	SpriteDto* spriteDesconectado = new SpriteDto(string(id),string(cantFotogramas),string(ancho),string(alto),string(imagen),string(zIndex));
-	spritesAccion.push_back(spriteDesconectado);
 	SetDeSpritesDto* setSpriteReconstruido = new SetDeSpritesDto(carpeta,spritesAccion);
 
 	return setSpriteReconstruido;
@@ -118,64 +90,68 @@ SetDeSpritesDto* Cliente::deserializarSprite(char* campo){
 Handshake* Cliente::deserializarHandshake(string handshake, bool primeraVez){
 
 	Handshake* handshakeAux;
-	char str[handshake.length()];
-	strcpy(str, handshake.c_str());
-	char*subcadena;
-	//char* campo = strtok(str, "|");
-	char* campo = strtok(str, "[");
-    const char *escenario,*sprites,*ventana;
-    escenario = "Escenario";
-    sprites = "SetSprites";
-    ventana = "Ventana";
+	string s = handshake;
+	string delimitador = "[";
+	string campo;
+	size_t pos = s.find(delimitador);
+	campo = s.substr(0, pos);
     vector<ImagenDto*> imagenes;
     vector<SetDeSpritesDto*> setsSprites;
-    char* ancho;
-    char* alto;
-	if (strcmp(campo,"Escenario") == 0){
-		//recupero la imagen1
-		campo = strtok(NULL,",");
-		imagenes.push_back(deserializarImagen(campo));
-		//recupero la imagen2
-		campo = strtok(NULL,",");
-		imagenes.push_back(deserializarImagen(campo));
-		campo = strtok(NULL,",");
-		imagenes.push_back(deserializarImagen(campo));
-		campo = strtok(NULL,",");
-		imagenes.push_back(deserializarImagen(campo));
-		campo = strtok(NULL, "-");
-		campo = strtok(NULL, "[");
+    string ancho;
+    string alto;
+    string delimitadorCampo = "";
+	if (campo == "Escenario"){
+		string campoImagen;
+		s.erase(0, pos + delimitador.length());
+		delimitador = "]-";
+		pos = s.find(delimitador);
+		campo = s.substr(0,pos);
+		delimitadorCampo = "|";
+		while ((pos = campo.find(delimitadorCampo)) != string::npos)
+		{
+			campoImagen = campo.substr(0,pos);
+			imagenes.push_back(deserializarImagen(campoImagen));
+			campo.erase(0, pos + delimitadorCampo.length());
+		}
+		pos = s.find(delimitador);
+		s.erase(0,pos + delimitador.length());
+		delimitador = "[";
+		pos = s.find(delimitador);
+		campo = s.substr(0,pos);
 	}
-	if(strcmp(campo,sprites) == 0){
-		//recupero sprite1
-		campo = strtok(NULL,";");
-		setsSprites.push_back(deserializarSprite(campo));
-		//recupero sprite2
-		campo = strtok(NULL,"-");
-		campo = strtok(NULL,";");
-		setsSprites.push_back(deserializarSprite(campo));
-		//recupero sprite3
-		campo = strtok(NULL,"-");
-		campo = strtok(NULL,";");
-		setsSprites.push_back(deserializarSprite(campo));
-		campo = strtok(NULL,"]");
-		campo = strtok(NULL,"[");
+	if(campo == "SetSprites"){
+		string campoSprite;
+		s.erase(0, pos + delimitador.length());
+		delimitador = "]";
+		pos = s.find(delimitador);
+		campo = s.substr(0,pos);
+		delimitadorCampo = "|-";
+		while ((pos = campo.find(delimitadorCampo)) != string::npos)
+		{
+			campoSprite = campo.substr(0,pos);
+			setsSprites.push_back(deserializarSprite(campoSprite));
+			campo.erase(0, pos + delimitadorCampo.length());
+		}
+		pos = s.find(delimitador);
+		s.erase(0,pos + delimitador.length());
+		delimitador = "[";
+		pos = s.find(delimitador);
+		campo = s.substr(0,pos);
 	}
-	if(strcmp(campo,ventana) == 0){
-		//obtengo ancho
-		campo = strtok(NULL,",");
+	if(campo == "Ventana"){
+		s.erase(0, pos + delimitador.length());
+		delimitador = ",";
+		pos = s.find(delimitador);
+		campo = s.substr(0,pos);
 		ancho = campo;
-		//obtengo alto
-		campo = strtok(NULL,"]");
+		s.erase(0, pos + delimitador.length());
+		delimitador = "]";
+		pos = s.find(delimitador);
+		campo = s.substr(0,pos);
 		alto = campo;
 	}
-	handshakeAux = new Handshake(imagenes, setsSprites, string(ancho), string(alto));
+	handshakeAux = new Handshake(imagenes, setsSprites, ancho, alto);
 	this->verificarBiblioteca(handshakeAux);
-	/*if (primeraVez){
-		if(this->verificarBiblioteca(handshakeAux)){
-		cout<<"Usted tiene todas las imagenes necesarias"<<endl;
-		}
-		else{cout<< "se cargan las imagenes por defecto"<<endl;}
-	}*/
    return handshakeAux;
 }
 
@@ -187,14 +163,14 @@ void Cliente::recorrerSprites(vector<SpriteDto*> sprites, vector<void*> &archivo
 
 void Cliente::cargarImagenPorDefecto(ImagenDto* imagen)
 {
-	imagen->setID("ImagenNoEncontrada");
+	imagen->setPath("ImagenNoEncontrada");
 	imagen->setAncho(to_string(226));
 	imagen->setAlto(to_string(55));
 }
 
 void Cliente::cargarImagenPorDefecto(SpriteDto* sprite)
 {
-	sprite->setID("ImagenNoEncontrada");
+	sprite->setPath("ImagenNoEncontrada");
 	sprite->setAncho(to_string(226));
 	sprite->setAlto(to_string(55));
 	sprite->setCantFotogramas(to_string(0));
@@ -213,7 +189,7 @@ void Cliente::verificarBiblioteca(Handshake* handshakeAux) {
 	vector<ImagenDto*> imagenes = handshakeAux->getImagenes();
 	vector<SetDeSpritesDto*> setsSprites = handshakeAux->getSprites();
 	for (int i = 0; i < imagenes.size(); i++){
-		if(!verificarExistencia(imagenes.at(i)->getID())){this->cargarImagenPorDefecto(imagenes.at(i));}
+		if(!verificarExistencia(imagenes.at(i)->getPath())){this->cargarImagenPorDefecto(imagenes.at(i));}
 	}
 	for (int i = 0; i < setsSprites.size(); i++){
 		vector<SpriteDto*> sprites = setsSprites.at(i)->getSprites();

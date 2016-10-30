@@ -301,7 +301,7 @@ void Vista::cargarEscenario(vector<ImagenDto*> imagenes, int anchoVentana, int a
 	for (int i=0; i<imagenes.size(); i++)
 	{
 		SDL_Rect rectangulo = {0,0,anchoVentana,altoVentana};
-		Capa* capa = new Capa(imagenes.at(i), rectangulo, ventana->crearTextura("Recursos/" + imagenes.at(i)->getID() + ".png",0));
+		Capa* capa = new Capa(imagenes.at(i), rectangulo, ventana->crearTextura("Recursos/" + imagenes.at(i)->getPath() + ".png",0));
 		vectorCapas.push_back(capa);
 	}
 	for (int i=vectorCapas.size()-1; i>=0; i--)
@@ -336,7 +336,7 @@ void Vista::actualizarJugador(UpdateJugador* update, int anchoVentana)
 		{
 			vistaJugador->x = atoi(update->getX().c_str());
 			vistaJugador->y = atoi(update->getY().c_str());
-			texturaJugadorX->cargarImagen("Recursos/" + update->getSprite()->getID() + ".png");
+			texturaJugadorX->cargarImagen("Recursos/" + update->getSprite()->getPath() + ".png");
 			texturaJugadorX->generarSprite(atoi(update->getSprite()->getCantidadDeFotogramas().c_str()));
 			if (update->getCondicion() == "Normal")
 			{
@@ -368,7 +368,7 @@ void Vista::cargarVistaInicialJugador(string nombre, int x, int y, SpriteDto* sp
 {
 	string fotogramas = sprite->getCantidadDeFotogramas();
 	VistaJugador* vistaJugador;
-	vistaJugador = new VistaJugador(nombre,x,y,(ventana->crearTextura("Recursos/" + sprite->getID() + ".png", atoi(fotogramas.c_str()))), SDL_FLIP_NONE);
+	vistaJugador = new VistaJugador(nombre,x,y,(ventana->crearTextura("Recursos/" + sprite->getPath() + ".png", atoi(fotogramas.c_str()))), SDL_FLIP_NONE);
 	vistaJugadores.push_back(vistaJugador);
 }
 

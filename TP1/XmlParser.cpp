@@ -56,7 +56,7 @@ string XmlParser::serializarEscenario(){
 	this->getEscenario();
 	string escenarioConcatenado = "Escenario[";
 	for (int i = 0; i < this->escenario.size(); i++) {
-		escenarioConcatenado += this->escenario.at(i)->getID();
+		escenarioConcatenado += this->escenario.at(i)->getPath();
 		//cout << (*i).getPath() << endl;
 		escenarioConcatenado += ",";
 		escenarioConcatenado += this->escenario.at(i)->getAncho();
