@@ -57,26 +57,41 @@ void* verificarConexion(void * arg){
 void procesarUltimosMensajes(string mensajes, Cliente* cliente, UpdateJugador* update)
 {   string mensajeVacio = "#noHayMensajes@";
 	vector<SetDeSpritesDto*> setsSprites = handshakeDeserializado->getSprites();
-	if(strcmp(mensajes.c_str(), mensajeVacio.c_str()) != 0 && mensajes != ""){
+	if(mensajes != mensajeVacio && mensajes != ""){
 		mensajes[mensajes.length() - 1] = '#';
-		char str [mensajes.length()];
-		strcpy(str, mensajes.c_str());
-		char* texto = strtok(str, "|");
-		while (texto != NULL) {
-			update->setRemitente(string(texto));
-			texto = strtok(NULL, "|");
-			if (string(texto) == "0"){
-				texto = strtok(NULL, "|");
-				update->setDestinatario(string(texto));
-				texto = strtok(NULL,"|");
-				update->setX(string(texto));
-				texto = strtok(NULL,"|");
-				update->setY(string(texto));
-				texto = strtok(NULL,"|");
-				char* spriteAEjecutar;
+		string s = mensajes;
+		string delimitador = "|";
+		string delimitadorFinal = "#";
+		string texto;
+		size_t pos = s.find(delimitador);
+		texto = s.substr(0, pos);
+		while (texto != "") {
+			update->setRemitente(texto);
+			s.erase(0, pos + delimitador.length());
+			pos = s.find(delimitador);
+			texto = s.substr(0,pos);
+			if (texto == "0"){
+				s.erase(0, pos + delimitador.length());
+				pos = s.find(delimitador);
+				texto = s.substr(0,pos);
+				update->setDestinatario(texto);
+				s.erase(0, pos + delimitador.length());
+				pos = s.find(delimitador);
+				texto = s.substr(0,pos);
+				update->setX(texto);
+				s.erase(0, pos + delimitador.length());
+				pos = s.find(delimitador);
+				texto = s.substr(0,pos);
+				update->setY(texto);
+				s.erase(0, pos + delimitador.length());
+				pos = s.find(delimitador);
+				texto = s.substr(0,pos);
+				string spriteAEjecutar;
 				spriteAEjecutar = texto;
-				texto = strtok(NULL,"#");
-				update->setCondicion(string(texto));
+				s.erase(0, pos + delimitador.length());
+				pos = s.find(delimitadorFinal);
+				texto = s.substr(0,pos);
+				update->setCondicion(texto);
 				for (int i = 0; i < setsSprites.size(); i++){
 					vector<SpriteDto*> listaSprites = setsSprites.at(i)->getSprites();
 					for (int i = 0; i < listaSprites.size(); i++)
@@ -89,20 +104,28 @@ void procesarUltimosMensajes(string mensajes, Cliente* cliente, UpdateJugador* u
 				}
 			}
 			else{
-				texto = strtok(NULL, "|");
-				int x = stringToInt(string(texto));
-				texto = strtok(NULL,"|");
-				int y = stringToInt(string(texto));
-				texto = strtok(NULL,"#");
-				int vel = stringToInt(string(texto));
-				vista->actualizarCamara(x,y,vel,atoi(handshakeDeserializado->getAncho().c_str()));
+				s.erase(0, pos + delimitador.length());
+				pos = s.find(delimitador);
+				texto = s.substr(0,pos);
+				int x = stringToInt(texto);
+				s.erase(0, pos + delimitador.length());
+				pos = s.find(delimitador);
+				texto = s.substr(0,pos);
+				int y = stringToInt(texto);
+				s.erase(0, pos + delimitador.length());
+				pos = s.find(delimitadorFinal);
+				texto = s.substr(0,pos);
+				int vel = stringToInt(texto);
+				vista->actualizarCamara(x,y,vel,stringToInt(handshakeDeserializado->getAncho()));
 			}
-			vista->actualizarJugador(update,atoi(handshakeDeserializado->getAncho().c_str()));
-			texto = strtok(NULL, "|");
+			vista->actualizarJugador(update,stringToInt(handshakeDeserializado->getAncho()));
+			s.erase(0, pos + delimitador.length());
+			pos = s.find(delimitador);
+			texto = s.substr(0,pos);
 		}
 	}
 	else{
-		vista->actualizarJugador(update,atoi(handshakeDeserializado->getAncho().c_str()));
+		vista->actualizarJugador(update,stringToInt(handshakeDeserializado->getAncho()));
 	}
 }
 
