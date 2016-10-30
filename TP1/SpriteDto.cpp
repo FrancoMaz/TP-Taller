@@ -16,7 +16,7 @@ SpriteDto::SpriteDto(string id, string cantidadDeFotogramas, string ancho, strin
 	this->zIndex = zIndex;
 }
 
-string SpriteDto::getId() {
+string SpriteDto::getID() {
 	return this->id;
 }
 
@@ -40,7 +40,31 @@ string SpriteDto::getZIndex() {
 	return this->zIndex;
 }
 
+void SpriteDto::setID(string ID)
+{
+	this->id = ID;
+}
+
+void SpriteDto::setAncho(string ancho)
+{
+	this->ancho = ancho;
+}
+
+void SpriteDto::setAlto(string alto)
+{
+	this->alto = alto;
+}
+
+void SpriteDto::setZIndex(string zIndex)
+{
+	this->zIndex = zIndex;
+}
+
+void SpriteDto::setCantFotogramas(string cantFotogramas)
+{
+	this->cantidadDeFotogramas = cantFotogramas;
+}
+
 SpriteDto::~SpriteDto() {
 	// TODO Auto-generated destructor stub
 }
-

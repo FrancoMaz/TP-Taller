@@ -169,19 +169,35 @@ Handshake* Cliente::deserializarHandshake(string handshake, bool primeraVez){
 		alto = campo;
 	}
 	handshakeAux = new Handshake(imagenes, setsSprites, string(ancho), string(alto));
-	if (primeraVez){
+	this->verificarBiblioteca(handshakeAux);
+	/*if (primeraVez){
 		if(this->verificarBiblioteca(handshakeAux)){
 		cout<<"Usted tiene todas las imagenes necesarias"<<endl;
 		}
 		else{cout<< "se cargan las imagenes por defecto"<<endl;}
-	}
+	}*/
    return handshakeAux;
 }
 
-void Cliente::recorrerSprites(vector<SpriteDto*> sprites, list<string> *archivos){
+void Cliente::recorrerSprites(vector<SpriteDto*> sprites, vector<void*> &archivos){
     for (int i = 0; i < sprites.size(); i++){
-		archivos->push_back(sprites.at(i)->getId());
+		archivos.push_back((void*)sprites.at(i));
 		}
+}
+
+void Cliente::cargarImagenPorDefecto(ImagenDto* imagen)
+{
+	imagen->setID("ImagenNoEncontrada");
+	imagen->setAncho(to_string(226));
+	imagen->setAlto(to_string(55));
+}
+
+void Cliente::cargarImagenPorDefecto(SpriteDto* sprite)
+{
+	sprite->setID("ImagenNoEncontrada");
+	sprite->setAncho(to_string(226));
+	sprite->setAlto(to_string(55));
+	sprite->setCantFotogramas(to_string(0));
 }
 
 bool Cliente::verificarExistencia(string archivo){
@@ -193,21 +209,18 @@ bool Cliente::verificarExistencia(string archivo){
 	return infile.good();
 }
 
-bool Cliente::verificarBiblioteca(Handshake* handshakeAux) {
-	list<string> *archivos = new list<string>();
+void Cliente::verificarBiblioteca(Handshake* handshakeAux) {
 	vector<ImagenDto*> imagenes = handshakeAux->getImagenes();
 	vector<SetDeSpritesDto*> setsSprites = handshakeAux->getSprites();
 	for (int i = 0; i < imagenes.size(); i++){
-		archivos->push_back(imagenes.at(i)->getPath());
+		if(!verificarExistencia(imagenes.at(i)->getID())){this->cargarImagenPorDefecto(imagenes.at(i));}
 	}
 	for (int i = 0; i < setsSprites.size(); i++){
-		recorrerSprites(setsSprites.at(i)->getSprites(), archivos);
+		vector<SpriteDto*> sprites = setsSprites.at(i)->getSprites();
+		for (int j = 0; i < sprites.size(); i++){
+			if(!verificarExistencia(sprites.at(j)->getID())){this->cargarImagenPorDefecto(sprites.at(i));}
+		}
 	}
-	for (list<string>::iterator archivoActual = archivos->begin(); archivoActual != archivos->end();archivoActual++){
-		string nombreArchivo = *archivoActual;
-		if(!verificarExistencia(nombreArchivo)){return false;}
-	}
-	return true;
 
 }
 
@@ -672,6 +685,22 @@ string Cliente::recibirResponse(){
 	return datosRecibidos;
 }
 
+SpriteDto* Cliente::buscarSprite(string ID){
+
+	vector<SetDeSpritesDto*> setsSprites = this->handshake->getSprites();
+	for (int i = 0; i < setsSprites.size(); i++){
+		vector<SpriteDto*> listaSprites = setsSprites.at(i)->getSprites();
+		for (int i = 0; i < listaSprites.size(); i++)
+		{
+			if ( ID == listaSprites.at(i)->getID())
+			{
+				return listaSprites.at(i);
+			}
+		}
+					}
+ return NULL;
+}
+
 bool Cliente::checkearInicioJuego(Vista* vista)
 {
 	//Devuelve falso si no se inicio el juego o true si se inicio. A su vez carga la vista inicial de los jugadores en caso de que se haya iniciado.
@@ -704,7 +733,7 @@ bool Cliente::checkearInicioJuego(Vista* vista)
 			strComenzo = strtok(NULL,"|#");
 			sprite = strComenzo;
 			strComenzo = strtok(NULL,"|#");
-			vista->cargarVistaInicialJugador(nombreJugador,atoi(x),atoi(y),sprite);
+			vista->cargarVistaInicialJugador(nombreJugador,atoi(x),atoi(y),buscarSprite(sprite));
 			if (strcmp(strComenzo, "camara") == 0)
 			{
 				strComenzo = strtok(NULL,"|#");

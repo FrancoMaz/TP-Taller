@@ -81,7 +81,7 @@ void procesarUltimosMensajes(string mensajes, Cliente* cliente, UpdateJugador* u
 					vector<SpriteDto*> listaSprites = setsSprites.at(i)->getSprites();
 					for (int i = 0; i < listaSprites.size(); i++)
 					{
-						if ((string(spriteAEjecutar)) == listaSprites.at(i)->getId())
+						if ((string(spriteAEjecutar)) == listaSprites.at(i)->getID())
 						{
 							update->setSprite(listaSprites.at(i));
 						}

@@ -56,7 +56,7 @@ string XmlParser::serializarEscenario(){
 	this->getEscenario();
 	string escenarioConcatenado = "Escenario[";
 	for (int i = 0; i < this->escenario.size(); i++) {
-		escenarioConcatenado += this->escenario.at(i)->getPath();
+		escenarioConcatenado += this->escenario.at(i)->getID();
 		//cout << (*i).getPath() << endl;
 		escenarioConcatenado += ",";
 		escenarioConcatenado += this->escenario.at(i)->getAncho();
@@ -87,7 +87,7 @@ string XmlParser::serializarSprites(vector<SpriteDto*> sprites) {
 	string spriteConcatenado="";
 	for (int i = 0; i < sprites.size(); i++)
 	{
-		spriteConcatenado += sprites.at(i)->getId();
+		spriteConcatenado += sprites.at(i)->getID();
 		spriteConcatenado += ",";
 		spriteConcatenado += sprites.at(i)->getCantidadDeFotogramas();
 		spriteConcatenado += ",";
@@ -134,7 +134,7 @@ vector<SetDeSpritesDto*> XmlParser::getSprites() {
 }
 void XmlParser::mostrarSprites(SpriteDto* sprite){
 
-	cout<<"Id: "<<sprite->getId()<<endl;
+	cout<<"Id: "<<sprite->getID()<<endl;
 	cout<<"cantFotogramas: "<<sprite->getCantidadDeFotogramas()<<endl;
 	cout<<"Ancho: "<<sprite->getAncho()<<endl;
 	cout<<"Alto: "<<sprite->getAlto()<<endl;

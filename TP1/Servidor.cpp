@@ -243,7 +243,17 @@ void* Servidor::actualizarPosiciones(void* arg)
 		bool necesitaCambiarCamara = jugador->chequearCambiarCamara(servidor->camara, atoi(servidor->handshake->getAncho().c_str()), posicionesExtremos, anchoSprite);
 		if (necesitaCambiarCamara)
 		{
-			servidor->camara.x += VELMAX;
+			if (servidor->camara.x > atoi(servidor->handshake->getImagenes().at(0)->getAncho().c_str())){
+				servidor->camara.x = 0;
+				for (int i = 0; i < servidor->jugadores->size(); i++)
+				{
+					servidor->jugadores->at(i)->resetearPosicion(atoi(servidor->handshake->getImagenes().at(0)->getAncho().c_str()));
+				}
+			} else
+				{
+				servidor->camara.x = (jugador->getPosicion().first) - (atoi(servidor->handshake->getAncho().c_str()))/2;
+				}
+			//mensajeCamaraString = "1|" + to_string(jugador->getVelocidadX()) + "#";
 			mensajeCamaraString = "1|" + to_string(servidor->camara.x) + "|" + to_string(servidor->camara.y) + "|" + to_string(jugador->getVelocidadX()) + "#";
 			mensajeCamara = new Mensaje(jugador->getNombre(),"Todos",mensajeCamaraString);
 		}
@@ -349,7 +359,7 @@ int Servidor::getAnchoSprite(string sprite)
 		vector<SpriteDto*> listaSprites = setsSprites.at(i)->getSprites();
 		for (int i = 0; i < listaSprites.size(); i++)
 		{
-			if (sprite == listaSprites.at(i)->getId())
+			if (sprite == listaSprites.at(i)->getID())
 			{
 				ancho = atoi(listaSprites.at(i)->getAncho().c_str());
 			}

@@ -60,7 +60,6 @@ private:
 		queue<Mensaje>* mensajes;
 	};
 	list<Datos>* datosUsuarios;
-	vector<Jugador*>* jugadores;
 	list<MensajesProcesados>* listaMensajesProcesados;
 	struct ParametrosServidor {
 		Mensaje mensajeAProcesar;
@@ -129,6 +128,7 @@ public:
 	void verificarDesconexion(string nombre);
 	bool contieneJugador(string nombre);
 	int getAnchoSprite(string sprite);
+	vector<Jugador*>* jugadores;
 };
 
 #endif /* TP1_SERVIDOR_H_ */

@@ -153,6 +153,7 @@ void* procesar(void* arg) {
 	string largoString = iss.str();
 	servidor->guardarLog("Tamaño del response: " + largoString + string(".\n"),DEBUG);
 	char buffer[BUFFER_MAX_SIZE];
+	memset(buffer,'\0',strlen(buffer));
 	int inicio = 0;
 	int ok;
 	if (largo > BUFFER_MAX_SIZE) {
