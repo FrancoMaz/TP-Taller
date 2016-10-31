@@ -22,8 +22,8 @@ Servidor::Servidor(char* nombreArchivoDeUsuarios, int puerto, Logger* logger) {
 	/* Set port number, using htons function to use proper byte order */
 	this->serverAddr.sin_port = htons(puerto);
 	/* Set IP address to localhost */
-	//this->serverAddr.sin_addr.s_addr = inet_addr("192.168.1.11");
-	this->serverAddr.sin_addr.s_addr = inet_addr("127.0.0.1");
+	this->serverAddr.sin_addr.s_addr = inet_addr("192.168.1.11");
+	//this->serverAddr.sin_addr.s_addr = inet_addr("127.0.0.1");
 	/* Set all bits of the padding field to 0 */
 	memset(serverAddr.sin_zero, '\0', sizeof serverAddr.sin_zero);
 	/*---- Bind the address struct to the socket ----*/
@@ -264,7 +264,8 @@ void* Servidor::actualizarPosiciones(void* arg)
 				}
 			} else
 				{
-				servidor->camara.x = (jugador->getPosicion().first) - (atoi(servidor->handshake->getAncho().c_str()))/2;
+				servidor->camara.x += jugador->getVelocidadX();
+				//servidor->camara.x = (jugador->getPosicion().first) - (atoi(servidor->handshake->getAncho().c_str()))/2;
 				for (int i = 0; i < servidor->abscisasCapas.size(); i++)
 				{
 					if (i == 0)
@@ -490,7 +491,8 @@ void Servidor::procesarMensajes() {
 					}
 				} else
 					{
-						camara.x = (jugador->getPosicion().first) - (atoi(handshake->getAncho().c_str()))/2;
+						camara.x += jugador->getVelocidadX();
+						//camara.x = (jugador->getPosicion().first) - (atoi(handshake->getAncho().c_str()))/2;
 						for (int i = 0; i < abscisasCapas.size(); i++)
 						{
 							if (i == 0)
