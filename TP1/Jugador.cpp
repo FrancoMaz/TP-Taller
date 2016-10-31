@@ -106,10 +106,11 @@ void Jugador::actualizarPosicion(SDL_Keycode tecla, bool sePresionoTecla, SDL_Re
 	posicion.first += velocidades.first;
 	posicion.second += velocidades.second;
 
-	if (posicion.first < camara.x or posicion.first > camara.x + ANCHO_VENTANA - MARGENIZQ)
+	if (posicion.first + 84 < camara.x or posicion.first + 84 > camara.x + ANCHO_VENTANA - MARGENIZQ)
 	{
 		posicion.first -= velocidades.first;
 	}
+
 }
 
 void Jugador::setConectado()
