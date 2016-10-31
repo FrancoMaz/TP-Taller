@@ -63,18 +63,16 @@ void* encolar(void* arg) {
 	 + mensaje->getRemitente() + ". Para: " + mensaje->getDestinatario()
 	 + ". \n";
 	 servidor->guardarLog(servidor->mensaje, DEBUG);*/
-	if (mensaje != NULL)
-	{
-		pthread_mutex_lock(
-				&parametrosEncolarMensaje.servidor->mutexColaNoProcesados);
+	if (mensaje != NULL) {
+		pthread_mutex_lock(&parametrosEncolarMensaje.servidor->mutexColaNoProcesados);
 		servidor->crearMensaje(*mensaje);
 		/*servidor->mensaje = "Encolando mensaje: " + mensaje->getTexto()
 				+ ". De: " + mensaje->getRemitente() + ". Para: "
 				+ mensaje->getDestinatario() + ". \n";
 		servidor->guardarLog(servidor->mensaje, DEBUG);*/
-		pthread_mutex_unlock(
-				&parametrosEncolarMensaje.servidor->mutexColaNoProcesados);
 		mensaje->~Mensaje();
+		pthread_mutex_unlock(&parametrosEncolarMensaje.servidor->mutexColaNoProcesados);
+
 	}
 
 	/*
@@ -121,11 +119,9 @@ void encolarMensaje(string remitente, string destinatario, string mensaje,
 		Servidor* servidor) {
 	pthread_t threadEncolarMensaje;
 	parametrosThreadEncolarMensaje parametrosEncolarMensaje;
-	parametrosEncolarMensaje.mensajeNoProcesado = new Mensaje(remitente,
-			destinatario, mensaje);
+	parametrosEncolarMensaje.mensajeNoProcesado = new Mensaje(remitente,destinatario, mensaje);
 	parametrosEncolarMensaje.servidor = servidor;
-	int ok = pthread_create(&threadEncolarMensaje, NULL, &encolar,
-			&parametrosEncolarMensaje);
+	int ok = pthread_create(&threadEncolarMensaje, NULL, &encolar, &parametrosEncolarMensaje);
 	/*if (ok != 0)
 	{
 		servidor->guardarLog("ERROR: No se pudo crear el thread de encolar mensaje.\n", DEBUG);
@@ -137,8 +133,7 @@ void encolarMensaje(string remitente, string destinatario, string mensaje,
 }
 
 void* procesar(void* arg) {
-	parametrosThreadEnviarMensajeProcesado* parametros =
-			(parametrosThreadEnviarMensajeProcesado*) arg;
+	parametrosThreadEnviarMensajeProcesado* parametros = (parametrosThreadEnviarMensajeProcesado*) arg;
 	Servidor* servidor = parametros->servidor;
 	string usuario = parametros->usuario;
 	int socket = parametros->socketCliente;
@@ -355,6 +350,7 @@ void* cicloEscuchaCliente(void* arg) {
 						servidor->recuperarCapas(capas);
 					}
 				}
+				free(datos);
 			}
 		} else {
 			string mensaje ="";

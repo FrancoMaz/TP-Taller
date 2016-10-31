@@ -82,7 +82,9 @@ void Servidor::enviarHandshake(int socket, char* cliente){
 	pair<const char*, const char*> ventana = this->parser->getTamanioVentana();
 	const char* cantidadMaximaJugadores = this->parser->getCantidadMaximaDeJugadores();
 	this->handshake = new Handshake(escenario, setDeSprites, ventana.first, ventana.second, cantidadMaximaJugadores);
+	if (!empezoElJuego) {
 	this->inicializarAbscisasCapas(handshake->getImagenes().size());
+	}
 	string handshake = this->parser->serializarEscenario();
 	handshake += this->parser->serializarSetDeSprites();
 	handshake += this->parser->serializarVentana();
@@ -402,6 +404,9 @@ void Servidor::procesarMensajes() {
 			pair<int,int> posicionesExtremos = this->obtenerPosicionesExtremos();
 			int anchoSprite = this->getAnchoSprite(jugador->getSpriteAEjecutar());
 			bool necesitaCambiarCamara = jugador->chequearCambiarCamara(this->camara, atoi(handshake->getAncho().c_str()), posicionesExtremos, anchoSprite);
+			mensajeJugadorPosActualizada = jugador->getStringJugador();
+			pthread_mutex_unlock(&mutexVectorJugadores);
+			encolarMensajeProcesadoParaCadaCliente(mensajeAProcesar,mensajeJugadorPosActualizada);
 			if (necesitaCambiarCamara)
 			{
 				if (camara.x > atoi(handshake->getImagenes().at(0)->getAncho().c_str())){
@@ -417,14 +422,14 @@ void Servidor::procesarMensajes() {
 				//mensajeCamaraString = "1|" + to_string(jugador->getVelocidadX()) + "#";
 				mensajeCamaraString = "1|" + to_string(camara.x) + "|" + to_string(camara.y) + "|" + to_string(jugador->getVelocidadX()) + "#";
 				mensajeCamara = new Mensaje(jugador->getNombre(),"Todos",mensajeCamaraString);
+				encolarMensajeProcesadoParaCadaCliente(*mensajeCamara,mensajeCamaraString);
+				mensajeCamara->~Mensaje();
 			}
-			mensajeJugadorPosActualizada = jugador->getStringJugador();
-			pthread_mutex_unlock(&mutexVectorJugadores);
-			encolarMensajeProcesadoParaCadaCliente(mensajeAProcesar,mensajeJugadorPosActualizada);
-			if (necesitaCambiarCamara)
+
+			/*if (necesitaCambiarCamara)
 			{
 				encolarMensajeProcesadoParaCadaCliente(*mensajeCamara,mensajeCamaraString);
-			}
+			}*/
 		}
 	}
 }
@@ -444,6 +449,7 @@ void Servidor::encolarMensajeProcesadoParaCadaCliente(Mensaje mensajeAProcesar, 
 				mensajePosicionActualizada = new Mensaje(mensajeAProcesar.getRemitente(),listaMensajes.destinatario,mensajeJugadorPosActualizada);
 				pthread_mutex_lock(&mutexListaProcesados);
 				listaMensajes.mensajes->push(*mensajePosicionActualizada);
+				mensajePosicionActualizada->~Mensaje();
 				pthread_mutex_unlock(&mutexListaProcesados);
 				this->mensaje = "Procesando mensaje para "
 						+ listaMensajes.destinatario + "\n";

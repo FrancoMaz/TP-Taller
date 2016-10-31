@@ -678,6 +678,7 @@ bool Cliente::checkearInicioJuego(Vista* vista)
 	this->enviarRequest("5|"); //5 es el case de request se inicio el juego.
 	string response = this->recibirResponse();
 	response = response.substr(0,response.length() - 1);
+	cout << "response: " << response <<endl;
 	char strResponse[response.length()];
 	strcpy(strResponse, response.c_str());
 	char* strComenzo = strtok(strResponse,"|#");
@@ -717,14 +718,15 @@ bool Cliente::checkearInicioJuego(Vista* vista)
 				strComenzo = strtok(NULL,"|#");
 			}
 			if((strcmp(strComenzo, "capas") == 0)){
+				strComenzo = strtok(NULL,"|#");
 				for ( int i = 0; i < imagenes.size(); i++) {
-					strComenzo = strtok(NULL,"|#");
 					capaX = strComenzo;
-					abscisasCapas.at(i) = atoi(capaX);
+					abscisasCapas.push_back(atoi(capaX));
+					strComenzo = strtok(NULL,"|#");
 				}
 			}
-			vista->inicializarCamara(atoi(camaraX),atoi(camaraY),atoi(handshake->getAncho().c_str()), atoi(handshake->getAlto().c_str()), imagenes, abscisasCapas);
 		}
+		vista->inicializarCamara(atoi(camaraX),atoi(camaraY),atoi(handshake->getAncho().c_str()), atoi(handshake->getAlto().c_str()), imagenes, abscisasCapas);
 		return true;
 	}
 	return false;
