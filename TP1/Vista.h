@@ -18,6 +18,7 @@
 #include "UpdateJugador.h"
 #include "Capa.h"
 #include "Jugador.h"
+#include <unistd.h>
 
 using namespace std;
 

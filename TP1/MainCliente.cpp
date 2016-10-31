@@ -87,9 +87,9 @@ void procesarUltimosMensajes(string mensajes, Cliente* cliente, UpdateJugador* u
 				texto = strtok(NULL,"#");
 				int vel = atoi(texto);
 				vista->actualizarCamara(x,y,vel,atoi(handshakeDeserializado->getAncho().c_str()));
-				string capas = "7|";
-				capas += vista->getCapas();
-				cliente->enviarCapas(capas);
+				//string capas = "7|";
+				//capas += vista->getCapas();
+				//cliente->enviarCapas(capas);
 			}
 			vista->actualizarJugador(update,atoi(handshakeDeserializado->getAncho().c_str()));
 			texto = strtok(NULL, "|");
@@ -108,7 +108,7 @@ void* recibirPosicionJugadores(void* arg) {
 	LTimer capTimer;
 	usleep(50000);
 	while(!controlador->comprobarCierreVentana()){
-		//usleep(50000);
+		usleep(3000);
 		 //Start cap timer
 		capTimer.start();
 		datosRecibidos = cliente->recibir();
@@ -135,9 +135,10 @@ void* enviarEventos(void* arg) {
 	int countedFrames = 0;
 	fpsTimer.start();
 	while(!controlador->comprobarCierreVentana()){
+		usleep(4000);
 		while(SDL_PollEvent(&evento)){
 			//usleep(50000);
-			capTimer.start();
+			//capTimer.start();
 			if(controlador->presionarBoton(SDLK_RIGHT)){
 				cliente->enviar("Tecla Derecha","Todos");
 			}
@@ -210,6 +211,7 @@ void* cicloConexion(void* arg) {
 		pthread_detach(threadEnviarEventos);
 		pthread_create(&threadRecibirPosicionJugadores, NULL, &recibirPosicionJugadores,cliente);
 		pthread_detach(threadRecibirPosicionJugadores);
+
 		vista->cargarEscenario(stringToInt(handshakeDeserializado->getAncho()), stringToInt(handshakeDeserializado->getAlto()));
 		cliente->desconectar();
 	}

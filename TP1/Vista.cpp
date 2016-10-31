@@ -309,7 +309,7 @@ void Vista::cargarEscenario(int anchoVentana, int altoVentana){
 	}
 
 	while(!this->controlador->comprobarCierreVentana()){
-
+		usleep(100);
 	}
 	this->ventana->actualizar();
 }

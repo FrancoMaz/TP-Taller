@@ -213,6 +213,7 @@ void enviarMensajesProcesadosA(string usuario, Servidor* servidor, int socket) {
 void* cicloProcesarMensajes(void* arg) {
 	Servidor* servidor = (Servidor*) arg;
 	while (servidor->escuchando) {
+		usleep(100);
 		servidor->procesarMensajes();
 	}
 }
@@ -224,14 +225,14 @@ void* cicloEscuchaCliente(void* arg) {
 	Servidor* servidor = parametros->serv;
 	string nombre = parametros->nombre;
 	int socketCliente = parametros->socketCli;
-	servidor->guardarLog("Escuchando al cliente: " + nombre + string(".\n"),
-			INFO);
+	//servidor->guardarLog("Escuchando al cliente: " + nombre + string(".\n"),INFO);
 	char bufferRecibido[BUFFER_MAX_SIZE];
 	memset(bufferRecibido,'/0',strlen(bufferRecibido));
 	bool conectado = true;
 	servidor->setJugadorConectado(nombre);
 	while (conectado and servidor->escuchando) {
 		//en este loop se van a gestionar los send y receive del cliente. aca se va a distinguir que es lo que quiere hacer y actuar segun lo que quiera el cliente.
+		//usleep(100);
 		string datosRecibidos;
 		//pthread_mutex_lock(&servidor->mutexSocket);
 		int largoRequest = recv(socketCliente, bufferRecibido, BUFFER_MAX_SIZE,0); //recibo por primera vez
