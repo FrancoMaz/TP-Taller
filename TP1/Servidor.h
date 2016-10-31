@@ -27,6 +27,7 @@
 #include "XmlParser.h"
 #include "Handshake.h"
 #include <vector>
+#include "Capa.h"
 #define MAX_CANT_CLIENTES 6
 #define BUFFER_MAX_SIZE 200
 const int INFO = 1;
@@ -60,7 +61,6 @@ private:
 		queue<Mensaje>* mensajes;
 	};
 	list<Datos>* datosUsuarios;
-	vector<Jugador*>* jugadores;
 	list<MensajesProcesados>* listaMensajesProcesados;
 	struct ParametrosServidor {
 		Mensaje mensajeAProcesar;
@@ -76,7 +76,7 @@ public:
 	Servidor(char* nombreArchivoDeUsuarios, int puerto, Logger* logger);
 	virtual ~Servidor();
 	void guardarDatosDeUsuarios();
-	bool fileExists(string fileName);
+	bool existeArchivo(string fileName);
 	bool escuchando = false; //representa si el servidor esta disponible para escuchar pedidos
 	void autenticar(string nombre, string contrasenia, list<string>& usuarios);
 	list<Cliente> obtenerClientes();
@@ -114,9 +114,7 @@ public:
 	Jugador* obtenerJugador(string nombre);
 	vector<Jugador*>* getJugadoresConectados();
 	void encolarMensajeProcesadoParaCadaCliente(Mensaje mensajeAProcesar, string mensajeJugadorPosActualizada);
-
 	void iniciarCamara();
-
 	//obtiene el estado inicial de los jugadores serializado para enviarlo via socket
 	string getEstadoInicialSerializado();
 	void guardarDatosDeConfiguracion();
@@ -127,6 +125,12 @@ public:
 	Handshake* handshake;
 	pair<int,int> obtenerPosicionesExtremos();
 	int getCantJugadoresConectadosMax();
+	void verificarDesconexion(string nombre);
+	bool contieneJugador(string nombre);
+	int getAnchoSprite(string sprite);
+	vector<Jugador*>* jugadores;
+	vector<pair<int,int>> abscisasCapas;
+	string serializarCapas();
 };
 
 #endif /* TP1_SERVIDOR_H_ */

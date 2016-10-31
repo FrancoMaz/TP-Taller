@@ -66,10 +66,10 @@ public:
 	Cliente();
 	Cliente(string ip, int puerto);
 	virtual ~Cliente();
-	ImagenDto* deserializarImagen(char* campo);
-	SetDeSpritesDto* deserializarSprite(char* campo);
+	ImagenDto* deserializarImagen(string campo);
+	SetDeSpritesDto* deserializarSprite(string campo);
 	Handshake* deserializarHandshake(string handshake, bool primeraVez);
-	void recorrerSprites(vector<SpriteDto*> sprites, list<string> *archivos);
+	void recorrerSprites(vector<SpriteDto*> sprites, vector<void*> &archivos);
 	void recibirHandshake();
 	void mostrarMenuYProcesarOpcion();
 	void elegirOpcionDelMenu(int opcion);
@@ -104,11 +104,14 @@ public:
 
 	//Comprueba si se inicio el juego
 	bool checkearInicioJuego(Vista* vista);
-	bool verificarBiblioteca(Handshake* handshake);
+	void verificarBiblioteca(Handshake* handshake);
 	bool verificarExistencia(string archivo);
 	int getCantidadDeFotogramas(string sprite);
 	string getHandshakeRecibido();
 	Handshake* getHandshake();
+	void cargarImagenPorDefecto(ImagenDto* imagen);
+	void cargarImagenPorDefecto(SpriteDto* imagen);
+	SpriteDto* buscarSprite(string ID);
 };
 
 #endif /* TP1_CLIENTE_H_ */

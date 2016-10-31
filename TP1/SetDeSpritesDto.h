@@ -23,7 +23,7 @@ private:
 	vector<SpriteDto*> sprites;
 
 public:
-	SetDeSpritesDto(const char* carpeta, vector<SpriteDto*> sprites);
+	SetDeSpritesDto(string carpeta, vector<SpriteDto*> sprites);
 	string getCarpeta();
 	vector<SpriteDto*> getSprites();
 	virtual ~SetDeSpritesDto();

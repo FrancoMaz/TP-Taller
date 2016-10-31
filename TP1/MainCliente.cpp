@@ -31,6 +31,15 @@ struct ComunicacionCliente{
 			bool termino;
 		};
 
+
+int stringToInt(string atributo) {
+	istringstream atributoStream(atributo);
+	int atributoInt;
+	atributoStream >> atributoInt;
+
+	return atributoInt;
+}
+
 bool chequearSocket(string ip, int puerto) {
 	//string ipServer = "192.168.1.11";
 	string ipServer = "127.0.0.1";
@@ -45,40 +54,53 @@ void* verificarConexion(void * arg){
     //comunicacion->termino = cliente->corroborarConexion();
 }
 
-void procesarUltimosMensajes(string mensajes, Cliente* cliente, UpdateJugador* update)
+void procesarUltimosMensajes(string mensajes, Cliente* cliente, UpdateJugador* update, bool primeraVez)
 {   string mensajeVacio = "#noHayMensajes@";
 	vector<SetDeSpritesDto*> setsSprites = handshakeDeserializado->getSprites();
-	if(strcmp(mensajes.c_str(), mensajeVacio.c_str()) != 0 && mensajes != ""){
-<<<<<<< HEAD
-=======
-
-		//cout << "Procesar ultimos mensajes: " << mensajes << endl;
-
->>>>>>> 41cec70e14f50b78920d709f9bfc4e6b81871206
+	if(mensajes != mensajeVacio && mensajes != ""){
+		primeraVez = false;
 		mensajes[mensajes.length() - 1] = '#';
-		char str [mensajes.length()];
-		strcpy(str, mensajes.c_str());
-		char* texto = strtok(str, "|");
-		while (texto != NULL) {
-			update->setRemitente(string(texto));
-			texto = strtok(NULL, "|");
-			if (string(texto) == "0"){
-				texto = strtok(NULL, "|");
-				update->setDestinatario(string(texto));
-				texto = strtok(NULL,"|");
-				update->setX(string(texto));
-				texto = strtok(NULL,"|");
-				update->setY(string(texto));
-				texto = strtok(NULL,"|");
-				char* spriteAEjecutar;
+		string s = mensajes;
+		string delimitador = "|";
+		string delimitadorFinal = "#";
+		string delimitadorCapas = ",";
+		string texto;
+		string capas;
+		size_t posCapas;
+		size_t pos = s.find(delimitador);
+		texto = s.substr(0, pos);
+		while (texto != "") {
+			update->setRemitente(texto);
+			s.erase(0, pos + delimitador.length());
+			pos = s.find(delimitador);
+			texto = s.substr(0,pos);
+			if (texto == "0"){
+				s.erase(0, pos + delimitador.length());
+				pos = s.find(delimitador);
+				texto = s.substr(0,pos);
+				update->setDestinatario(texto);
+				s.erase(0, pos + delimitador.length());
+				pos = s.find(delimitador);
+				texto = s.substr(0,pos);
+				update->setX(texto);
+				s.erase(0, pos + delimitador.length());
+				pos = s.find(delimitador);
+				texto = s.substr(0,pos);
+				update->setY(texto);
+				s.erase(0, pos + delimitador.length());
+				pos = s.find(delimitador);
+				texto = s.substr(0,pos);
+				string spriteAEjecutar;
 				spriteAEjecutar = texto;
-				texto = strtok(NULL,"#");
-				update->setCondicion(string(texto));
+				s.erase(0, pos + delimitador.length());
+				pos = s.find(delimitadorFinal);
+				texto = s.substr(0,pos);
+				update->setCondicion(texto);
 				for (int i = 0; i < setsSprites.size(); i++){
 					vector<SpriteDto*> listaSprites = setsSprites.at(i)->getSprites();
 					for (int i = 0; i < listaSprites.size(); i++)
 					{
-						if ((string(spriteAEjecutar)) == listaSprites.at(i)->getId())
+						if ((string(spriteAEjecutar)) == listaSprites.at(i)->getID())
 						{
 							update->setSprite(listaSprites.at(i));
 						}
@@ -86,20 +108,41 @@ void procesarUltimosMensajes(string mensajes, Cliente* cliente, UpdateJugador* u
 				}
 			}
 			else{
-				texto = strtok(NULL, "|");
-				int x = atoi(texto);
-				texto = strtok(NULL,"|");
-				int y = atoi(texto);
-				texto = strtok(NULL,"#");
-				int vel = atoi(texto);
-				vista->actualizarCamara(x,y,vel,atoi(handshakeDeserializado->getAncho().c_str()));
+				s.erase(0, pos + delimitador.length());
+				pos = s.find(delimitador);
+				texto = s.substr(0,pos);
+				int x = stringToInt(texto);
+				s.erase(0, pos + delimitador.length());
+				pos = s.find(delimitador);
+				texto = s.substr(0,pos);
+				int y = stringToInt(texto);
+				s.erase(0, pos + delimitador.length());
+				pos = s.find(delimitadorFinal);
+				texto = s.substr(0,pos);
+				vector<pair<int,int>> abscisasCapas;
+				while ((posCapas = texto.find(delimitador)) != string::npos)
+				{
+					pair<int,int> abscisas;
+					posCapas = texto.find(delimitadorFinal);
+					capas = texto.substr(0,posCapas);
+					abscisas.first = stringToInt(capas);
+					texto.erase(0,posCapas+delimitadorCapas.length());
+					posCapas = texto.find(delimitador);
+					capas = texto.substr(0,posCapas);
+					abscisas.second = stringToInt(capas);
+					abscisasCapas.push_back(abscisas);
+					texto.erase(0,posCapas+delimitador.length());
+				}
+				vista->actualizarCamara(x,y,abscisasCapas,stringToInt(handshakeDeserializado->getAncho()));
 			}
-			vista->actualizarJugador(update,atoi(handshakeDeserializado->getAncho().c_str()));
-			texto = strtok(NULL, "|");
+			vista->actualizarJugador(update,stringToInt(handshakeDeserializado->getAncho()),stringToInt(handshakeDeserializado->getImagenes().at(0)->getAncho()));
+			s.erase(0, pos + delimitador.length());
+			pos = s.find(delimitador);
+			texto = s.substr(0,pos);
 		}
 	}
 	else{
-		vista->actualizarJugador(update,atoi(handshakeDeserializado->getAncho().c_str()));
+		vista->actualizarJugador(update,stringToInt(handshakeDeserializado->getAncho()), stringToInt(handshakeDeserializado->getImagenes().at(0)->getAncho()));
 	}
 }
 
@@ -107,18 +150,16 @@ void* recibirPosicionJugadores(void* arg) {
 	Cliente* cliente = (Cliente*) arg;
 	string datosRecibidos = "";
 	UpdateJugador* update = new UpdateJugador();
+	bool primeraVez = true;
 	 //The frames per second timer
 	LTimer capTimer;
-<<<<<<< HEAD
 	usleep(50000);
-=======
-	//usleep(50000);
->>>>>>> 41cec70e14f50b78920d709f9bfc4e6b81871206
 	while(!controlador->comprobarCierreVentana()){
+		usleep(3000);
 		 //Start cap timer
 		capTimer.start();
 		datosRecibidos = cliente->recibir();
-		procesarUltimosMensajes(datosRecibidos, cliente, update);
+		procesarUltimosMensajes(datosRecibidos, cliente, update, &primeraVez);
 
 		//si se procesa antes, espero lo que tengo que resta.
 		int frameTicks = capTimer.getTicks();
@@ -141,6 +182,7 @@ void* enviarEventos(void* arg) {
 	int countedFrames = 0;
 	fpsTimer.start();
 	while(!controlador->comprobarCierreVentana()){
+		usleep(3000);
 		while(SDL_PollEvent(&evento)){
 			//usleep(50000);
 			//cout << "Adentro de enviar eventos en mainCliente" << endl;
@@ -171,14 +213,6 @@ void* enviarEventos(void* arg) {
 			}
 		}
 	}
-}
-
-int stringToInt(string atributo) {
-	istringstream atributoStream(atributo);
-	int atributoInt;
-	atributoStream >> atributoInt;
-
-	return atributoInt;
 }
 
 void* cicloConexion(void* arg) {
@@ -218,13 +252,8 @@ void* cicloConexion(void* arg) {
 		pthread_create(&threadRecibirPosicionJugadores, NULL, &recibirPosicionJugadores,cliente);
 		pthread_detach(threadRecibirPosicionJugadores);
 		vector<ImagenDto*> imagenes = handshakeDeserializado->getImagenes();
-<<<<<<< HEAD
 		vista->cargarEscenario(imagenes, stringToInt(handshakeDeserializado->getAncho()), stringToInt(handshakeDeserializado->getAlto()));
-=======
-
-		vista->cargarEscenario(stringToInt(imagenes.at(0)->getAncho()), stringToInt(imagenes.at(0)->getAlto()), stringToInt(handshakeDeserializado->getAncho()), stringToInt(handshakeDeserializado->getAlto()));
->>>>>>> 41cec70e14f50b78920d709f9bfc4e6b81871206
-
+		cliente->desconectar();
 	}
 }
 
@@ -262,8 +291,8 @@ int main() {
 				pthread_join(cliente->getThreadComunicacion(),(void**) &resultado); //espero que termine el thread de comunicacion que fue invocado..
 
 				//if (accion == 1) { //si es 1, es desconectar y vuelve a ingresar al loop que ofrece conectar y desconectar
-					cout << "Desconectado del servidor.." << endl;
-					cliente->vaciarClientesDisponibles();
+				cout << "Desconectado del servidor.." << endl;
+				cliente->vaciarClientesDisponibles();
 				//}
 			}
 

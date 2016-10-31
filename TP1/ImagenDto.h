@@ -19,12 +19,18 @@ private:
 	string path;
 	string ancho;
 	string alto;
+	string zIndex;
 public:
-	ImagenDto(string path, string ancho, string alto);
+	ImagenDto(string path, string ancho, string alto, string zIndex);
 	virtual ~ImagenDto();
 	string getPath();
 	string getAncho();
 	string getAlto();
+	string getZIndex();
+	void setPath(string path);
+	void setAncho(string ancho);
+	void setAlto(string alto);
+	void setZIndex(string zIndex);
 };
 
 #endif /* IMAGENDTO_H_ */

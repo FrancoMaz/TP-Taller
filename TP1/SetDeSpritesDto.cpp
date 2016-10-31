@@ -7,13 +7,13 @@
 
 #include "SetDeSpritesDto.h"
 
-SetDeSpritesDto::SetDeSpritesDto(const char* carpeta, vector<SpriteDto*> sprites) {
+SetDeSpritesDto::SetDeSpritesDto(string carpeta, vector<SpriteDto*> sprites) {
 	this->carpeta = carpeta;
 	this->sprites = sprites;
 }
 
 string SetDeSpritesDto::getCarpeta() {
-	return string(this->carpeta);
+	return this->carpeta;
 }
 
 vector<SpriteDto*> SetDeSpritesDto::getSprites() {

@@ -64,16 +64,18 @@ void* encolar(void* arg) {
 	 + mensaje->getRemitente() + ". Para: " + mensaje->getDestinatario()
 	 + ". \n";
 	 servidor->guardarLog(servidor->mensaje, DEBUG);*/
-
-	if (mensaje != NULL) {
-		pthread_mutex_lock(&parametrosEncolarMensaje.servidor->mutexColaNoProcesados);
-		servidor->crearMensaje(*mensaje);
-		/*servidor->mensaje = "Encolando mensaje: " + mensaje->getTexto()
-				+ ". De: " + mensaje->getRemitente() + ". Para: "
-				+ mensaje->getDestinatario() + ". \n";
-		servidor->guardarLog(servidor->mensaje, DEBUG);*/
-		pthread_mutex_unlock(&parametrosEncolarMensaje.servidor->mutexColaNoProcesados);
-		mensaje->~Mensaje();
+	if (mensaje != NULL)
+	{
+			pthread_mutex_lock(
+					&parametrosEncolarMensaje.servidor->mutexColaNoProcesados);
+			servidor->crearMensaje(*mensaje);
+			/*servidor->mensaje = "Encolando mensaje: " + mensaje->getTexto()
+					+ ". De: " + mensaje->getRemitente() + ". Para: "
+					+ mensaje->getDestinatario() + ". \n";
+			servidor->guardarLog(servidor->mensaje, DEBUG);*/
+			pthread_mutex_unlock(
+					&parametrosEncolarMensaje.servidor->mutexColaNoProcesados);
+			mensaje->~Mensaje();
 	}
 	/*
 	if (mensaje->getDestinatario().compare("Todos") != 0) {
@@ -150,6 +152,7 @@ void* procesar(void* arg) {
 	string largoString = iss.str();
 	//servidor->guardarLog("Tamaño del response: " + largoString + string(".\n"),DEBUG);
 	char buffer[BUFFER_MAX_SIZE];
+	memset(buffer,'\0',strlen(buffer));
 	int inicio = 0;
 	int ok;
 	if (largo > BUFFER_MAX_SIZE) {
@@ -201,8 +204,7 @@ void enviarMensajesProcesadosA(string usuario, Servidor* servidor, int socket) {
 		parametrosMensajesProcesados.servidor = servidor;
 		parametrosMensajesProcesados.socketCliente = socket;
 	}
-	//int ok = pthread_create(&threadEnviarMensajesProcesados, NULL, &procesar,
-			&parametrosMensajesProcesados);
+	//int ok = pthread_create(&threadEnviarMensajesProcesados, NULL, &procesar,&parametrosMensajesProcesados);
 	procesar((void*)&parametrosMensajesProcesados);
 	//int ok = pthread_create(&threadEnviarMensajesProcesados, NULL, &procesar,&parametrosMensajesProcesados);
 	/*if (ok != 0)
@@ -225,6 +227,7 @@ void enviarMensajesProcesadosA(string usuario, Servidor* servidor, int socket) {
 void* cicloProcesarMensajes(void* arg) {
 	Servidor* servidor = (Servidor*) arg;
 	while (servidor->escuchando) {
+		usleep(100);
 		servidor->procesarMensajes();
 	}
 }
@@ -318,12 +321,13 @@ void* cicloEscuchaCliente(void* arg) {
 					}
 					case 4:{//4 es se desconecto el cliente, es un mensaje de log diferente al si se corta la conexion
 						servidor->restarCantidadClientesConectados();
-						servidor->guardarLog("El cliente " + nombre + " cerró la conexión.\n", INFO);
-						std::ostringstream oss;
-						oss << servidor->getCantConexiones();
-						string conectados = oss.str();
-						servidor->guardarLog("Cantidad de clientes conectados: " + conectados + string("\n"),INFO);
-						pthread_exit(NULL);
+						//pthread_exit(NULL);
+						servidor->verificarDesconexion(nombre);
+						//servidor->guardarLog("El cliente " + nombre + " cerró la conexión.\n", INFO);
+						//std::ostringstream oss;
+						//oss << servidor->getCantConexiones();
+						//string conectados = oss.str();
+						//servidor->guardarLog("Cantidad de clientes conectados: " + conectados + string("\n"),INFO);
 						break;
 					}
 					case 5:{

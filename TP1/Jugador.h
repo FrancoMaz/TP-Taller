@@ -48,10 +48,13 @@ public:
 	void setConectado();
 	bool getConectado();
 	string serializarInicio();
-	bool chequearCambiarCamara(SDL_Rect camara, int anchoVentana, pair<int,int> posicionesExtremos);
+	bool chequearCambiarCamara(SDL_Rect camara, int anchoVentana, pair<int,int> posicionesExtremos, int anchoSprite);
 	pair<int, int> getPosicion();
 	int getVelocidadX();
 	void resetearPosicion(int anchoCapaPrincipal);
-	void setSalto(bool salta);
+	void setPosicion(int posicion);
+	void setSprite(string sprite);
+	string getStringJugadorDesconectado();
+	string getEquipo();
 };
 #endif /* JUGADOR_H_ */

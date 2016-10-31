@@ -48,16 +48,16 @@ void Jugador::actualizarPosicion(SDL_Keycode tecla, bool sePresionoTecla, SDL_Re
 		velocidades.first += velocidad;
 		if (!saltar) {
 			spriteAEjecutar = "Jugador_corriendo_" + this->equipo;
-			condicionSprite = "Normal";
 		}
+		condicionSprite = "Normal";
 	}
 	else if (tecla == SDLK_LEFT && sePresionoTecla)
 	{
 		velocidades.first -= velocidad;
 		if (!saltar) {
 			spriteAEjecutar = "Jugador_corriendo_" + this->equipo;
-			condicionSprite = "Espejado";
 		}
+		condicionSprite = "Espejado";
 	}
 	else if (tecla == SDLK_UP && sePresionoTecla)
 	{
@@ -72,8 +72,8 @@ void Jugador::actualizarPosicion(SDL_Keycode tecla, bool sePresionoTecla, SDL_Re
 		velocidades.first = 0;
 		if (!saltar) {
 			spriteAEjecutar = "Jugador_" + this->equipo;
-			condicionSprite = "Normal";
 		}
+		condicionSprite = "Normal";
 	}
 	else if(tecla == SDLK_LEFT && !sePresionoTecla)
 	{
@@ -81,8 +81,8 @@ void Jugador::actualizarPosicion(SDL_Keycode tecla, bool sePresionoTecla, SDL_Re
 		if (!saltar)
 		{
 			spriteAEjecutar = "Jugador_" + this->equipo;
-			condicionSprite = "Espejado";
 		}
+		condicionSprite = "Espejado";
 	}
 
 	if(saltar && tecla == SDLK_UP && sePresionoTecla)
@@ -151,7 +151,7 @@ string Jugador::serializarInicio()
 	return (nombre + "|" + to_string(posicion.first) + "|" + to_string(posicion.second) + "|" + this->spriteAEjecutar);
 }
 
-bool Jugador::chequearCambiarCamara(SDL_Rect camara, int anchoVentana, pair<int,int> posicionesExtremos)
+bool Jugador::chequearCambiarCamara(SDL_Rect camara, int anchoVentana, pair<int,int> posicionesExtremos, int anchoSprite)
 {
 	int posicionMasAtras = posicionesExtremos.first;
 	int posicionMasAdelante = posicionesExtremos.second;
@@ -190,7 +190,22 @@ void Jugador::resetearPosicion(int anchoCapaPrincipal)
 	posicion.first = posicion.first - anchoCapaPrincipal;
 }
 
-void Jugador::setSalto(bool salta)
+void Jugador::setPosicion(int posicion)
 {
-	saltar = salta;
+	this->posicion.first = posicion;
+}
+
+void Jugador::setSprite(string sprite)
+{
+	this->spriteAEjecutar = sprite;
+}
+
+string Jugador::getStringJugadorDesconectado()
+{
+	return ("0|" + nombre + "|" + to_string(posicion.first) + "|" + to_string(posicion.second) + "|" + "Jugador_desconectado" + "|" + condicionSprite + "#");
+}
+
+string Jugador::getEquipo()
+{
+	return this->equipo;
 }

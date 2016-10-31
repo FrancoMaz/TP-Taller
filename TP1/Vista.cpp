@@ -15,7 +15,7 @@
 #include <stdio.h>
 #include <string>
 #include <vector>
-
+#include <unistd.h>
 #include <iostream>
 
 #define PI 3.14159265
@@ -55,6 +55,7 @@ void Vista::cargarArchivos(){
 	textura.push_back(ventana->crearTexto("Recursos/msserif_bold.ttf",13));
 	textura.push_back(ventana->crearBoton("Recursos/Boton_Conectar.png"));
 	textura.push_back(ventana->crearTextura("Recursos/Fondo_Escenario_capa_1.png",0));
+	textura.push_back(ventana->crearBoton("Recursos/Boton_Salir.png"));
 	//textura.push_back(ventana->crearTextura("Recursos/Jugador.png",3));
 
 	//Defino constantes para cada textura (para evitar llamarlos por índices)
@@ -75,6 +76,7 @@ void Vista::cargarArchivos(){
 	#define textoDatosNoCoinciden textura[14]
 	#define texturaBotonConectar textura[15]
 	#define texturaFondoEscenario textura[16]
+	#define texturaBotonDesconectar textura[17]
 	//#define texturaJugadorPrueba textura[17]
 }
 
@@ -153,7 +155,7 @@ datosConexion Vista::cargarPantallaIngresoDatos(bool aviso, int numeroPantalla){
 	switch(numeroPantalla){
 		case 2:
 			//campoUno = this->datos.puerto;
-			campoUno = "7891" ;
+			campoUno = "7891";
 			//campoDos = this->datos.ip;
 			campoDos = "127.0.0.1";
 			textoIngresePuerto->actualizarTexto("Ingrese el puerto:",colorTexto);
@@ -293,31 +295,29 @@ void Vista::transicionDePantalla(){
 }
 
 void Vista::cargarEscenario(vector<ImagenDto*> imagenes, int anchoVentana, int altoVentana){
-	camara = {0,0,anchoVentana,altoVentana};
 	this->ventana->limpiar();
-	//texturaFondoEscenario->aplicarPosicionDePorcion(0,0,&camara,0,SDL_FLIP_NONE);
-	for (int i=0; i<imagenes.size(); i++)
+	/*for (int i=0; i<imagenes.size(); i++)
 	{
 		SDL_Rect rectangulo = {0,0,anchoVentana,altoVentana};
 		Capa* capa = new Capa(imagenes.at(i), rectangulo, ventana->crearTextura("Recursos/" + imagenes.at(i)->getPath() + ".png",0));
 		vectorCapas.push_back(capa);
-	}
+	}*/
 	for (int i=vectorCapas.size()-1; i>=0; i--)
 	{
-		//vectorCapas.at(i)->calcularVelocidad(atoi(vectorCapas.at(vectorCapas.size()-1)->imagen->getAncho().c_str()), VELMAX, anchoVentana);
 		vectorCapas.at(i)->textura->aplicarPosicionDePorcion(0,0,&vectorCapas.at(i)->rectangulo, 0, SDL_FLIP_NONE);
 	}
 	for (int i = 0; i < vistaJugadores.size(); i++){
 		VistaJugador* vistaJugador = vistaJugadores.at(i);
 		vistaJugador->texturaJugador->aplicarPosicion(vistaJugador->x,vistaJugador->y,0,SDL_FLIP_NONE);
 	}
-	this->ventana->actualizar();
-	while(!this->controlador->comprobarCierreVentana()){
 
+	while(!this->controlador->comprobarCierreVentana()){
+		usleep(100);
 	}
+	this->ventana->actualizar();
 }
 
-void Vista::actualizarJugador(UpdateJugador* update, int anchoVentana)
+void Vista::actualizarJugador(UpdateJugador* update, int anchoVentana, int anchoCapaPrincipal)
 {
 	this->ventana->limpiar();
 	for (int i=vectorCapas.size()-1; i>=0; i--)
@@ -333,7 +333,7 @@ void Vista::actualizarJugador(UpdateJugador* update, int anchoVentana)
 		{
 			vistaJugador->x = atoi(update->getX().c_str());
 			vistaJugador->y = atoi(update->getY().c_str());
-			texturaJugadorX->cargarImagen("Recursos/" + update->getSprite()->getId() + ".png");
+			texturaJugadorX->cargarImagen("Recursos/" + update->getSprite()->getPath() + ".png");
 			texturaJugadorX->generarSprite(atoi(update->getSprite()->getCantidadDeFotogramas().c_str()));
 			if (update->getCondicion() == "Normal")
 			{
@@ -344,7 +344,15 @@ void Vista::actualizarJugador(UpdateJugador* update, int anchoVentana)
 				vistaJugador->flip = SDL_FLIP_HORIZONTAL;
 			}
 		}
+		if (vistaJugador->x > anchoCapaPrincipal && camara.x == 0)
+		{
+			vistaJugador->x = vistaJugador->x - anchoCapaPrincipal;
+		}
 		texturaJugadorX->aplicarPosicion(vistaJugador->x - camara.x,vistaJugador->y - camara.y,0,vistaJugador->flip);
+	}
+	if (texturaBotonDesconectar->aplicarPosicionDeBoton(10,10,&evento))
+	{
+		controlador->setCerrarVentana();
 	}
 	this->ventana->actualizar();
 }
@@ -357,28 +365,43 @@ void Vista::cerrar(){
 	this->ventana->cerrar();
 }
 
-void Vista::cargarVistaInicialJugador(string nombre, int x, int y, string sprite)
+void Vista::cargarVistaInicialJugador(string nombre, int x, int y, SpriteDto* sprite)
 {
+	string fotogramas = sprite->getCantidadDeFotogramas();
 	VistaJugador* vistaJugador;
-	vistaJugador = new VistaJugador(nombre,x,y,(ventana->crearTextura("Recursos/" + sprite + ".png",3)), SDL_FLIP_NONE);
+	vistaJugador = new VistaJugador(nombre,x,y,(ventana->crearTextura("Recursos/" + sprite->getPath() + ".png", atoi(fotogramas.c_str()))), SDL_FLIP_NONE);
 	vistaJugadores.push_back(vistaJugador);
 }
 
-void Vista::actualizarCamara(int x, int y, int vel, int anchoVentana)
+void Vista::actualizarCamara(int x, int y, vector<pair<int,int>> abscisasCapas, int anchoVentana)
 {
 	for (int i=vectorCapas.size()-1; i>=0; i--)
 	{
-		if (i == 0)
-		{
-			vectorCapas.at(i)->rectangulo.x = x;
-			vectorCapas.at(i)->rectangulo.y = y;
-		}
-		else
-		{
-			vectorCapas.at(i)->modificarRectangulo(vel, anchoVentana, atoi(vectorCapas.at(0)->imagen->getAncho().c_str()));
-		}
+		vectorCapas.at(i)->rectangulo.x = abscisasCapas.at(i).first;
+		vectorCapas.at(i)->vel = abscisasCapas.at(i).second;
 		vectorCapas.at(i)->paralajeInfinito(anchoVentana, i);
 	}
 	camara.x = vectorCapas.at(0)->rectangulo.x;
 	camara.y = vectorCapas.at(0)->rectangulo.y;
+}
+
+void Vista::inicializarCamara(int camaraX, int camaraY, int anchoVentana, int altoVentana, vector<pair<int,int>> abscisasCapas, vector<ImagenDto*> imagenes)
+{
+	camara = {camaraX,camaraY,anchoVentana,altoVentana};
+	for (int i=0; i<abscisasCapas.size(); i++)
+	{
+		SDL_Rect rectangulo = {abscisasCapas.at(i).first,0,anchoVentana,altoVentana};
+		Capa* capa = new Capa(imagenes.at(i), rectangulo, ventana->crearTextura("Recursos/" + imagenes.at(i)->getPath() + ".png",0));
+		vectorCapas.push_back(capa);
+	}
+}
+
+void Vista::resetearVistas(int anchoCapaPrincipal)
+{
+	for (int i = 0; i < vistaJugadores.size(); i++)
+	{
+		VistaJugador* vistaJugador = vistaJugadores.at(i);
+		vistaJugador->x = vistaJugador->x - anchoCapaPrincipal;
+		vistaJugador->texturaJugador->aplicarPosicion(vistaJugador->x - camara.x,vistaJugador->y - camara.y,0,vistaJugador->flip);
+	}
 }

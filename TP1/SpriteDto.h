@@ -24,12 +24,18 @@ private:
 	string zIndex;
 public:
 	SpriteDto(string id, string cantidadDeFotogramas, string ancho, string alto, string path, string zIndex);
-	string getId();
+	string getID();
 	string getCantidadDeFotogramas();
 	string getAncho();
 	string getAlto();
 	string getPath();
 	string getZIndex();
+	void setID(string ID);
+	void setAncho(string ancho);
+	void setAlto(string alto);
+	void setZIndex(string zIndex);
+	void setCantFotogramas(string cantFotogramas);
+	void setPath(string path);
 	virtual ~SpriteDto();
 };
 
