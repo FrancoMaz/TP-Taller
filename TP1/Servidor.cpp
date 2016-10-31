@@ -272,6 +272,11 @@ void* Servidor::actualizarPosiciones(void* arg)
 					else
 					{	servidor->abscisasCapas.at(i).second += jugador->getVelocidadX();
 						servidor->abscisasCapas.at(i).first = abs((servidor->abscisasCapas.at(i).second)*(atoi(servidor->handshake->getImagenes().at(i)->getAncho().c_str()) - atoi(servidor->handshake->getAncho().c_str()))/(atoi(servidor->handshake->getImagenes().at(0)->getAncho().c_str()) - atoi(servidor->handshake->getAncho().c_str())));
+						if (servidor->abscisasCapas.at(i).first > atoi(servidor->handshake->getImagenes().at(i)->getAncho().c_str()))
+						{
+							servidor->abscisasCapas.at(i).first = 0;
+							servidor->abscisasCapas.at(i).second = 0;
+						}
 					}
 				}
 				}
@@ -473,6 +478,11 @@ void Servidor::procesarMensajes() {
 							else
 							{	abscisasCapas.at(i).second += jugador->getVelocidadX();
 								abscisasCapas.at(i).first = abs((abscisasCapas.at(i).second)*(atoi(handshake->getImagenes().at(i)->getAncho().c_str()) - atoi(handshake->getAncho().c_str()))/(atoi(handshake->getImagenes().at(0)->getAncho().c_str()) - atoi(handshake->getAncho().c_str())));
+								if (abscisasCapas.at(i).first > atoi(handshake->getImagenes().at(i)->getAncho().c_str()))
+								{
+									abscisasCapas.at(i).first = 0;
+									abscisasCapas.at(i).second = 0;
+								}
 							}
 						}
 					}
