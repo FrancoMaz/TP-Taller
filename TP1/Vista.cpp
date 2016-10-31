@@ -295,18 +295,15 @@ void Vista::transicionDePantalla(){
 }
 
 void Vista::cargarEscenario(vector<ImagenDto*> imagenes, int anchoVentana, int altoVentana){
-	//camara = {0,0,anchoVentana,altoVentana};
 	this->ventana->limpiar();
-	//texturaFondoEscenario->aplicarPosicionDePorcion(0,0,&camara,0,SDL_FLIP_NONE);
-	for (int i=0; i<imagenes.size(); i++)
+	/*for (int i=0; i<imagenes.size(); i++)
 	{
 		SDL_Rect rectangulo = {0,0,anchoVentana,altoVentana};
 		Capa* capa = new Capa(imagenes.at(i), rectangulo, ventana->crearTextura("Recursos/" + imagenes.at(i)->getPath() + ".png",0));
 		vectorCapas.push_back(capa);
-	}
+	}*/
 	for (int i=vectorCapas.size()-1; i>=0; i--)
 	{
-		//vectorCapas.at(i)->calcularVelocidad(atoi(vectorCapas.at(vectorCapas.size()-1)->imagen->getAncho().c_str()), VELMAX, anchoVentana);
 		vectorCapas.at(i)->textura->aplicarPosicionDePorcion(0,0,&vectorCapas.at(i)->rectangulo, 0, SDL_FLIP_NONE);
 	}
 	for (int i = 0; i < vistaJugadores.size(); i++){
@@ -376,28 +373,27 @@ void Vista::cargarVistaInicialJugador(string nombre, int x, int y, SpriteDto* sp
 	vistaJugadores.push_back(vistaJugador);
 }
 
-void Vista::actualizarCamara(int x, int y, int vel, int anchoVentana)
+void Vista::actualizarCamara(int x, int y, vector<pair<int,int>> abscisasCapas, int anchoVentana)
 {
 	for (int i=vectorCapas.size()-1; i>=0; i--)
 	{
-		if (i == 0)
-		{
-			vectorCapas.at(i)->rectangulo.x = x;
-			vectorCapas.at(i)->rectangulo.y = y;
-		}
-		else
-		{
-			vectorCapas.at(i)->modificarRectangulo(vel, anchoVentana, atoi(vectorCapas.at(0)->imagen->getAncho().c_str()));
-		}
+		vectorCapas.at(i)->rectangulo.x = abscisasCapas.at(i).first;
+		vectorCapas.at(i)->vel = abscisasCapas.at(i).second;
 		vectorCapas.at(i)->paralajeInfinito(anchoVentana, i);
 	}
 	camara.x = vectorCapas.at(0)->rectangulo.x;
 	camara.y = vectorCapas.at(0)->rectangulo.y;
 }
 
-void Vista::inicializarCamara(int camaraX, int camaraY, int anchoVentana, int altoVentana)
+void Vista::inicializarCamara(int camaraX, int camaraY, int anchoVentana, int altoVentana, vector<pair<int,int>> abscisasCapas, vector<ImagenDto*> imagenes)
 {
 	camara = {camaraX,camaraY,anchoVentana,altoVentana};
+	for (int i=0; i<abscisasCapas.size(); i++)
+	{
+		SDL_Rect rectangulo = {abscisasCapas.at(i).first,0,anchoVentana,altoVentana};
+		Capa* capa = new Capa(imagenes.at(i), rectangulo, ventana->crearTextura("Recursos/" + imagenes.at(i)->getPath() + ".png",0));
+		vectorCapas.push_back(capa);
+	}
 }
 
 void Vista::resetearVistas(int anchoCapaPrincipal)

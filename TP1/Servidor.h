@@ -27,6 +27,7 @@
 #include "XmlParser.h"
 #include "Handshake.h"
 #include <vector>
+#include "Capa.h"
 #define MAX_CANT_CLIENTES 6
 #define BUFFER_MAX_SIZE 200
 const int INFO = 1;
@@ -112,9 +113,7 @@ public:
 	Jugador* obtenerJugador(string nombre);
 	vector<Jugador*>* getJugadoresConectados();
 	void encolarMensajeProcesadoParaCadaCliente(Mensaje mensajeAProcesar, string mensajeJugadorPosActualizada);
-
 	void iniciarCamara();
-
 	//obtiene el estado inicial de los jugadores serializado para enviarlo via socket
 	string getEstadoInicialSerializado();
 	void guardarDatosDeConfiguracion();
@@ -129,6 +128,8 @@ public:
 	bool contieneJugador(string nombre);
 	int getAnchoSprite(string sprite);
 	vector<Jugador*>* jugadores;
+	vector<pair<int,int>> abscisasCapas;
+	string serializarCapas();
 };
 
 #endif /* TP1_SERVIDOR_H_ */

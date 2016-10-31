@@ -642,11 +642,11 @@ void Cliente::enviarRequest(string request){
 	strcpy(buffer, request.c_str());
 	int largoEnviado = 0;
 	int largoTotal = strlen(req);
-	pthread_mutex_lock(&mutexSocket);
+	//pthread_mutex_lock(&mutexSocket);
 	do{
 		largoEnviado += send(socketCliente,buffer,strlen(req),0);
 	} while (largoEnviado < largoTotal);
-	pthread_mutex_unlock(&mutexSocket);
+	//pthread_mutex_unlock(&mutexSocket);
 }
 
 string Cliente::recibirResponse(){
@@ -654,14 +654,14 @@ string Cliente::recibirResponse(){
 	memset(colaMensajes, '\0', BUFFER_MAX_SIZE);
 	int largoRecibido = 0;
 	string datosRecibidos = "";
-	pthread_mutex_lock(&mutexSocket);
+	//pthread_mutex_lock(&mutexSocket);
 	do
 	{
 		largoRecibido += recv(socketCliente,colaMensajes,BUFFER_MAX_SIZE,0);
 		datosRecibidos += string(colaMensajes);
 		memset(colaMensajes, '\0', strlen(colaMensajes));
 	}while (largoRecibido >= BUFFER_MAX_SIZE and !stringTerminaCon(datosRecibidos, "@")); //mientras el largoRequest sea del tamaño del max size, sigo pidiendo
-	pthread_mutex_unlock(&mutexSocket);
+	//pthread_mutex_unlock(&mutexSocket);
 	return datosRecibidos;
 }
 
@@ -687,46 +687,74 @@ bool Cliente::checkearInicioJuego(Vista* vista)
 	this->enviarRequest("5|"); //5 es el case de request se inicio el juego.
 	string response = this->recibirResponse();
 	response = response.substr(0,response.length() - 1);
-	char strResponse[response.length()];
-	strcpy(strResponse, response.c_str());
-	char* strComenzo = strtok(strResponse,"|#");
+	string s = response;
+	string delimitador = "|";
+	string delimitadorFinal = "#";
+	string delimitadorCapas = ",";
+	string texto;
+	string strAux;
+	size_t pos = s.find(delimitador);
+	size_t posAux;
+	texto = s.substr(0,pos);
 
-	char* nombreJugador;
-	char* x;
-	char* y;
-	char* sprite;
-	char* camaraX;
-	char* camaraY;
+	string nombreJugador;
+	string x;
+	string y;
+	string sprite;
+	string camaraX;
+	string camaraY;
 
-	int comenzo = atoi(strComenzo);
-	if (comenzo != 0){
+	string comenzo = texto;
+	if (comenzo != "0"){
 		return false;
 	}
-	else{
-		strComenzo = strtok(NULL,"|#");
-		while (strComenzo != NULL){
-			nombreJugador = strComenzo;
-			strComenzo = strtok(NULL,"|#");
-			x = strComenzo;
-			strComenzo = strtok(NULL,"|#");
-			y = strComenzo;
-			strComenzo = strtok(NULL,"|#");
-			sprite = strComenzo;
-			strComenzo = strtok(NULL,"|#");
-			vista->cargarVistaInicialJugador(nombreJugador,atoi(x),atoi(y),buscarSprite(sprite));
-			if (strcmp(strComenzo, "camara") == 0)
-			{
-				strComenzo = strtok(NULL,"|#");
-				camaraX = strComenzo;
-				strComenzo = strtok(NULL,"|#");
-				camaraY = strComenzo;
-				strComenzo = strtok(NULL,"|#");
-				vista->inicializarCamara(atoi(camaraX),atoi(camaraY),atoi(handshake->getAncho().c_str()), atoi(handshake->getAlto().c_str()));
-			}
+	else
+	{
+		s.erase(0, pos + delimitador.length());
+		string del = "camara|";
+		pos = s.find(del);
+		texto = s.substr(0,pos);
+		while ((posAux = texto.find(delimitadorFinal)) != string::npos)
+		{
+			posAux = texto.find(delimitador);
+			nombreJugador = texto.substr(0,posAux);
+			texto.erase(0,posAux+delimitador.length());
+			posAux = texto.find(delimitador);
+			x = texto.substr(0,posAux);
+			texto.erase(0,posAux+delimitador.length());
+			posAux = texto.find(delimitador);
+			y = texto.substr(0,posAux);
+			texto.erase(0,posAux+delimitador.length());
+			posAux = texto.find(delimitadorFinal);
+			sprite = texto.substr(0,posAux);
+			texto.erase(0,posAux+delimitadorFinal.length());
+			vista->cargarVistaInicialJugador(nombreJugador,atoi(x.c_str()),atoi(y.c_str()),buscarSprite(sprite));
 		}
-		return true;
+		s.erase(0,pos+del.length());
+		pos = s.find(delimitador);
+		camaraX = s.substr(0,pos);
+		s.erase(0,pos+delimitador.length());
+		pos = s.find(delimitador);
+		camaraY = s.substr(0,pos);
+		s.erase(0,pos+delimitador.length());
+		pos = s.find(delimitadorFinal);
+		texto = s.substr(0,pos);
+		vector<pair<int,int>> abscisasCapas;
+		while ((posAux = texto.find(delimitador)) != string::npos)
+		{
+			pair<int,int> abscisas;
+			posAux = texto.find(delimitadorCapas);
+			abscisas.first = atoi(texto.substr(0,posAux).c_str());
+			texto.erase(0,posAux+delimitadorCapas.length());
+			posAux = texto.find(delimitador);
+			abscisas.second = atoi(texto.substr(0,posAux).c_str());
+			abscisasCapas.push_back(abscisas);
+			texto.erase(0,posAux+delimitador.length());
+		}
+		s.erase(0,pos+delimitadorFinal.length());
+		vista->inicializarCamara(atoi(camaraX.c_str()),atoi(camaraY.c_str()),atoi(handshake->getAncho().c_str()), atoi(handshake->getAlto().c_str()), abscisasCapas, handshake->getImagenes());
 	}
-	return false;
+	return true;
 }
 
 string Cliente::getHandshakeRecibido()

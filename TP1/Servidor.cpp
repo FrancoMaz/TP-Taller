@@ -42,24 +42,36 @@ Servidor::Servidor(char* nombreArchivoDeUsuarios, int puerto, Logger* logger) {
 	posicionVector = 0;
 	camara.x = 0;
 	camara.y = 0;
+	for (int i = 0; i < handshake->getImagenes().size(); i++)
+	{
+		pair<int,int> abscisas;
+		abscisas.first = 0;
+		abscisas.second = 0;
+		abscisasCapas.push_back(abscisas);
+	}
 }
 
 Servidor::~Servidor() {
 }
 
 void Servidor::guardarDatosDeConfiguracion() {
-   string path;
-   cout << "Ingrese el path del archivo de configuracion" << endl;
-   cin >> path;
-   if (this->existeArchivo(path))
-   {
+	string path;
+	cout << "Ingrese el path del archivo de configuracion" << endl;
+	cin >> path;
+	if (this->existeArchivo(path))
+	{
 	   this->parser = new XmlParser(path);
-   }
-   else
-   {
+	}
+	else
+	{
 	   cout << "No existe el archivo ingresado. Se cargara el xml por defecto" << endl;
 	   this->parser = new XmlParser("Recursos/configuration.xml");
-   }
+	}
+	vector<ImagenDto*> escenario = this->parser->getEscenario();
+	vector<SetDeSpritesDto*> setDeSprites = this->parser->getSprites();
+	pair<const char*, const char*> ventana = this->parser->getTamanioVentana();
+	const char* cantidadMaximaJugadores = this->parser->getCantidadMaximaDeJugadores();
+	this->handshake = new Handshake(escenario, setDeSprites, ventana.first, ventana.second, cantidadMaximaJugadores);
 }
 
 bool Servidor::existeArchivo(string fileName) {
@@ -68,11 +80,11 @@ bool Servidor::existeArchivo(string fileName) {
 }
 
 void Servidor::enviarHandshake(int socket, char* cliente){
-	vector<ImagenDto*> escenario = this->parser->getEscenario();
+	/*vector<ImagenDto*> escenario = this->parser->getEscenario();
 	vector<SetDeSpritesDto*> setDeSprites = this->parser->getSprites();
 	pair<const char*, const char*> ventana = this->parser->getTamanioVentana();
 	const char* cantidadMaximaJugadores = this->parser->getCantidadMaximaDeJugadores();
-	this->handshake = new Handshake(escenario, setDeSprites, ventana.first, ventana.second, cantidadMaximaJugadores);
+	this->handshake = new Handshake(escenario, setDeSprites, ventana.first, ventana.second, cantidadMaximaJugadores);*/
 	string handshake = this->parser->serializarEscenario();
 	handshake += this->parser->serializarSetDeSprites();
 	handshake += this->parser->serializarVentana();
@@ -240,6 +252,10 @@ void* Servidor::actualizarPosiciones(void* arg)
 		{
 			if (servidor->camara.x > atoi(servidor->handshake->getImagenes().at(0)->getAncho().c_str())){
 				servidor->camara.x = 0;
+				for (int i = 0; i < servidor->abscisasCapas.size(); i++)
+				{
+					servidor->abscisasCapas.at(i).first = 0;
+				}
 				for (int i = 0; i < servidor->jugadores->size(); i++)
 				{
 					servidor->jugadores->at(i)->resetearPosicion(atoi(servidor->handshake->getImagenes().at(0)->getAncho().c_str()));
@@ -247,9 +263,20 @@ void* Servidor::actualizarPosiciones(void* arg)
 			} else
 				{
 				servidor->camara.x = (jugador->getPosicion().first) - (atoi(servidor->handshake->getAncho().c_str()))/2;
+				for (int i = 0; i < servidor->abscisasCapas.size(); i++)
+				{
+					if (i == 0)
+					{
+						servidor->abscisasCapas.at(i).first = servidor->camara.x;
+					}
+					else
+					{	servidor->abscisasCapas.at(i).second += jugador->getVelocidadX();
+						servidor->abscisasCapas.at(i).first = abs((servidor->abscisasCapas.at(i).second)*(atoi(servidor->handshake->getImagenes().at(i)->getAncho().c_str()) - atoi(servidor->handshake->getAncho().c_str()))/(atoi(servidor->handshake->getImagenes().at(0)->getAncho().c_str()) - atoi(servidor->handshake->getAncho().c_str())));
+					}
+				}
 				}
 			//mensajeCamaraString = "1|" + to_string(jugador->getVelocidadX()) + "#";
-			mensajeCamaraString = "1|" + to_string(servidor->camara.x) + "|" + to_string(servidor->camara.y) + "|" + to_string(jugador->getVelocidadX()) + "#";
+			mensajeCamaraString = "1|" + to_string(servidor->camara.x) + "|" + to_string(servidor->camara.y) + "|" + servidor->serializarCapas() + "#";
 			mensajeCamara = new Mensaje(jugador->getNombre(),"Todos",mensajeCamaraString);
 		}
 		mensajeJugadorPosActualizada = jugador->getStringJugador();
@@ -289,6 +316,10 @@ void Servidor::actualizarPosicionesSalto(Mensaje mensajeAProcesar)
 		{
 			if (camara.x > atoi(handshake->getImagenes().at(0)->getAncho().c_str())){
 				camara.x = 0;
+				for (int i = 0; i < abscisasCapas.size(); i++)
+				{
+					abscisasCapas.at(i).first = 0;
+				}
 				for (int i = 0; i < jugadores->size(); i++)
 				{
 					jugadores->at(i)->resetearPosicion(atoi(handshake->getImagenes().at(0)->getAncho().c_str()));
@@ -296,7 +327,18 @@ void Servidor::actualizarPosicionesSalto(Mensaje mensajeAProcesar)
 			} else
 				{
 				camara.x = jugador->getPosicion().first - (atoi(handshake->getAncho().c_str()))/2;
+				for (int i = 0; i < abscisasCapas.size(); i++)
+				{
+					if (i == 0)
+					{
+						abscisasCapas.at(i).first = camara.x;
+					}
+					else
+					{	abscisasCapas.at(i).second += jugador->getVelocidadX();
+						abscisasCapas.at(i).first = abs((abscisasCapas.at(i).second)*(atoi(handshake->getImagenes().at(i)->getAncho().c_str()) - atoi(handshake->getAncho().c_str()))/(atoi(handshake->getImagenes().at(0)->getAncho().c_str()) - atoi(handshake->getAncho().c_str())));
+					}
 				}
+			}
 			//mensajeCamaraString = "1|" + to_string(jugador->getVelocidadX()) + "#";
 			mensajeCamaraString = "1|" + to_string(camara.x) + "|" + to_string(camara.y) + "|" + to_string(jugador->getVelocidadX()) + "#";
 			mensajeCamara = new Mensaje(jugador->getNombre(),"Todos",mensajeCamaraString);
@@ -363,6 +405,19 @@ int Servidor::getAnchoSprite(string sprite)
 	return ancho;
 }
 
+string Servidor::serializarCapas()
+{
+	string capas = "";
+	for (int i = 0; i < abscisasCapas.size(); i++)
+	{
+		capas += to_string(abscisasCapas.at(i).first);
+		capas += ",";
+		capas += to_string(abscisasCapas.at(i).second);
+		capas += "|";
+	}
+	return capas;
+}
+
 void Servidor::procesarMensajes() {
 	Mensaje* mensajeCamara;
 	string mensajeCamaraString;
@@ -398,16 +453,30 @@ void Servidor::procesarMensajes() {
 			{
 				if (camara.x > atoi(handshake->getImagenes().at(0)->getAncho().c_str())){
 					camara.x = 0;
+					for (int i = 0; i < abscisasCapas.size(); i++)
+					{
+						abscisasCapas.at(i).first = 0;
+					}
 					for (int i = 0; i < jugadores->size(); i++)
 					{
 						jugadores->at(i)->resetearPosicion(atoi(handshake->getImagenes().at(0)->getAncho().c_str()));
 					}
 				} else
 					{
-					camara.x = (jugador->getPosicion().first) - (atoi(handshake->getAncho().c_str()))/2;
+						camara.x = (jugador->getPosicion().first) - (atoi(handshake->getAncho().c_str()))/2;
+						for (int i = 0; i < abscisasCapas.size(); i++)
+						{
+							if (i == 0)
+							{
+								abscisasCapas.at(i).first = camara.x;
+							}
+							else
+							{	abscisasCapas.at(i).second += jugador->getVelocidadX();
+								abscisasCapas.at(i).first = abs((abscisasCapas.at(i).second)*(atoi(handshake->getImagenes().at(i)->getAncho().c_str()) - atoi(handshake->getAncho().c_str()))/(atoi(handshake->getImagenes().at(0)->getAncho().c_str()) - atoi(handshake->getAncho().c_str())));
+							}
+						}
 					}
-				//mensajeCamaraString = "1|" + to_string(jugador->getVelocidadX()) + "#";
-				mensajeCamaraString = "1|" + to_string(camara.x) + "|" + to_string(camara.y) + "|" + to_string(jugador->getVelocidadX()) + "#";
+				mensajeCamaraString = "1|" + to_string(camara.x) + "|" + to_string(camara.y) + "|" + this->serializarCapas() + "#";
 				mensajeCamara = new Mensaje(jugador->getNombre(),"Todos",mensajeCamaraString);
 			}
 			mensajeJugadorPosActualizada = jugador->getStringJugador();
@@ -672,7 +741,7 @@ string Servidor::getEstadoInicialSerializado()
 	{
 		estadoInicial += jugadoresConectados->at(i)->serializarInicio() + "#";
 	}
-	estadoInicial = estadoInicial + "camara|" + to_string(camara.x) + "|" + to_string(camara.y) + "#";
+	estadoInicial = estadoInicial + "camara|" + to_string(camara.x) + "|" + to_string(camara.y) + "|" + this->serializarCapas() + "#";
 	return estadoInicial;
 }
 

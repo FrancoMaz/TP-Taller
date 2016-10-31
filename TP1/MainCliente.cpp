@@ -63,7 +63,10 @@ void procesarUltimosMensajes(string mensajes, Cliente* cliente, UpdateJugador* u
 		string s = mensajes;
 		string delimitador = "|";
 		string delimitadorFinal = "#";
+		string delimitadorCapas = ",";
 		string texto;
+		string capas;
+		size_t posCapas;
 		size_t pos = s.find(delimitador);
 		texto = s.substr(0, pos);
 		while (texto != "") {
@@ -116,8 +119,21 @@ void procesarUltimosMensajes(string mensajes, Cliente* cliente, UpdateJugador* u
 				s.erase(0, pos + delimitador.length());
 				pos = s.find(delimitadorFinal);
 				texto = s.substr(0,pos);
-				int vel = stringToInt(texto);
-				vista->actualizarCamara(x,y,vel,stringToInt(handshakeDeserializado->getAncho()));
+				vector<pair<int,int>> abscisasCapas;
+				while ((posCapas = texto.find(delimitador)) != string::npos)
+				{
+					pair<int,int> abscisas;
+					posCapas = texto.find(delimitadorFinal);
+					capas = texto.substr(0,posCapas);
+					abscisas.first = stringToInt(capas);
+					texto.erase(0,posCapas+delimitadorCapas.length());
+					posCapas = texto.find(delimitador);
+					capas = texto.substr(0,posCapas);
+					abscisas.second = stringToInt(capas);
+					abscisasCapas.push_back(abscisas);
+					texto.erase(0,posCapas+delimitador.length());
+				}
+				vista->actualizarCamara(x,y,abscisasCapas,stringToInt(handshakeDeserializado->getAncho()));
 			}
 			vista->actualizarJugador(update,stringToInt(handshakeDeserializado->getAncho()),stringToInt(handshakeDeserializado->getImagenes().at(0)->getAncho()));
 			s.erase(0, pos + delimitador.length());

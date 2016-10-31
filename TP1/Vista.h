@@ -61,9 +61,9 @@ public:
 	void cerrar();
 	void actualizarJugador(UpdateJugador* update, int anchoVentana, int anchoCapaPrincipal);
 	void cargarVistaInicialJugador(string nombre, int x, int y, SpriteDto* sprite);
-	void actualizarCamara(int x, int y, int vel, int anchoVentana);
+	void actualizarCamara(int x, int y, vector<pair<int,int>> abscisasCapas, int anchoVentana);
 	SDL_Rect camara;
-	void inicializarCamara(int camaraX, int camaraY, int anchoVentana, int altoVentana);
+	void inicializarCamara(int camaraX, int camaraY, int anchoVentana, int altoVentana, vector<pair<int,int>> abscisasCapas, vector<ImagenDto*> imagenes);
 	void resetearVistas(int anchoCapaPrincipal);
 };
 
