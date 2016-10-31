@@ -363,7 +363,7 @@ bool Cliente::conectar(string nombre, string contrasenia) {
 	this->addr_size = sizeof direccionServidor;
 	char* nombreYPass = strdup((nombre + ',' + contrasenia).c_str()); // convierte el string de const char* a char*
 	cout << "Intentando conectarse con el servidor. . ." << endl;
-	pthread_mutex_lock(&mutexSocket);
+	//pthread_mutex_lock(&mutexSocket);
 	if (connect(socketCliente, (struct sockaddr *) &direccionServidor,addr_size) == 0) {
 
 		strcpy(buffer, nombreYPass);
@@ -388,7 +388,7 @@ bool Cliente::conectar(string nombre, string contrasenia) {
 		if (strcmp(datos.c_str(), desconectarse.c_str()) == 0) {
 			cout << "Usuario/clave incorrectos, inténtelo de nuevo" << endl;
 			close(socketCliente);
-			pthread_mutex_unlock(&mutexSocket);
+			//pthread_mutex_unlock(&mutexSocket);
 		} else {
 			this->nombre = nombre;
 			string opcion = "6|" + nombre;
@@ -400,9 +400,10 @@ bool Cliente::conectar(string nombre, string contrasenia) {
 			send(socketCliente,buffer,opcion.length(),0);
 			splitUsuarios(datosRecibidos);
 			this->recibirHandshake();
-			pthread_mutex_unlock(&mutexSocket);
+			//pthread_mutex_unlock(&mutexSocket);
 			return true;
 		}
+		//pthread_mutex_unlock(&mutexSocket);
 	} else {
 		cout << "Error conectandose al puerto" << endl;
 	}

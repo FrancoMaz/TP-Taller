@@ -320,7 +320,7 @@ void Vista::cargarEscenario(vector<ImagenDto*> imagenes, int anchoVentana, int a
 	this->ventana->actualizar();
 }
 
-void Vista::actualizarJugador(UpdateJugador* update, int anchoVentana)
+void Vista::actualizarJugador(UpdateJugador* update, int anchoVentana, int anchoCapaPrincipal)
 {
 	this->ventana->limpiar();
 	for (int i=vectorCapas.size()-1; i>=0; i--)
@@ -346,6 +346,10 @@ void Vista::actualizarJugador(UpdateJugador* update, int anchoVentana)
 			{
 				vistaJugador->flip = SDL_FLIP_HORIZONTAL;
 			}
+		}
+		if (vistaJugador->x > anchoCapaPrincipal && camara.x == 0)
+		{
+			vistaJugador->x = vistaJugador->x - anchoCapaPrincipal;
 		}
 		texturaJugadorX->aplicarPosicion(vistaJugador->x - camara.x,vistaJugador->y - camara.y,0,vistaJugador->flip);
 	}
@@ -394,4 +398,14 @@ void Vista::actualizarCamara(int x, int y, int vel, int anchoVentana)
 void Vista::inicializarCamara(int camaraX, int camaraY, int anchoVentana, int altoVentana)
 {
 	camara = {camaraX,camaraY,anchoVentana,altoVentana};
+}
+
+void Vista::resetearVistas(int anchoCapaPrincipal)
+{
+	for (int i = 0; i < vistaJugadores.size(); i++)
+	{
+		VistaJugador* vistaJugador = vistaJugadores.at(i);
+		vistaJugador->x = vistaJugador->x - anchoCapaPrincipal;
+		vistaJugador->texturaJugador->aplicarPosicion(vistaJugador->x - camara.x,vistaJugador->y - camara.y,0,vistaJugador->flip);
+	}
 }

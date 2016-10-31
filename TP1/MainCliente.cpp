@@ -54,10 +54,11 @@ void* verificarConexion(void * arg){
     //comunicacion->termino = cliente->corroborarConexion();
 }
 
-void procesarUltimosMensajes(string mensajes, Cliente* cliente, UpdateJugador* update)
+void procesarUltimosMensajes(string mensajes, Cliente* cliente, UpdateJugador* update, bool primeraVez)
 {   string mensajeVacio = "#noHayMensajes@";
 	vector<SetDeSpritesDto*> setsSprites = handshakeDeserializado->getSprites();
 	if(mensajes != mensajeVacio && mensajes != ""){
+		primeraVez = false;
 		mensajes[mensajes.length() - 1] = '#';
 		string s = mensajes;
 		string delimitador = "|";
@@ -118,14 +119,14 @@ void procesarUltimosMensajes(string mensajes, Cliente* cliente, UpdateJugador* u
 				int vel = stringToInt(texto);
 				vista->actualizarCamara(x,y,vel,stringToInt(handshakeDeserializado->getAncho()));
 			}
-			vista->actualizarJugador(update,stringToInt(handshakeDeserializado->getAncho()));
+			vista->actualizarJugador(update,stringToInt(handshakeDeserializado->getAncho()),stringToInt(handshakeDeserializado->getImagenes().at(0)->getAncho()));
 			s.erase(0, pos + delimitador.length());
 			pos = s.find(delimitador);
 			texto = s.substr(0,pos);
 		}
 	}
 	else{
-		vista->actualizarJugador(update,stringToInt(handshakeDeserializado->getAncho()));
+		vista->actualizarJugador(update,stringToInt(handshakeDeserializado->getAncho()), stringToInt(handshakeDeserializado->getImagenes().at(0)->getAncho()));
 	}
 }
 
@@ -133,6 +134,7 @@ void* recibirPosicionJugadores(void* arg) {
 	Cliente* cliente = (Cliente*) arg;
 	string datosRecibidos = "";
 	UpdateJugador* update = new UpdateJugador();
+	bool primeraVez = true;
 	 //The frames per second timer
 	LTimer capTimer;
 	usleep(50000);
@@ -141,7 +143,7 @@ void* recibirPosicionJugadores(void* arg) {
 		 //Start cap timer
 		capTimer.start();
 		datosRecibidos = cliente->recibir();
-		procesarUltimosMensajes(datosRecibidos, cliente, update);
+		procesarUltimosMensajes(datosRecibidos, cliente, update, &primeraVez);
 
 		//si se procesa antes, espero lo que tengo que resta.
 		int frameTicks = capTimer.getTicks();
