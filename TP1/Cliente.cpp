@@ -449,12 +449,14 @@ void Cliente::enviar(string mensaje, string destinatario) {
 		Mensaje *mensajeAEnviar = new Mensaje(this->nombre, destinatario, mensaje);
 		char* stringDatosMensaje = strdup(("1|" + mensajeAEnviar->getStringDatos()).c_str()); //1 significa enviar.
 		int largo = strlen(stringDatosMensaje);
-		int largoRequest;
+		int largoRequest = 0;
 		//cout<<"Mensaje enviado: "<<mensaje<<endl;
 		pthread_mutex_lock(&mutexSocket);
 		while (largo > 0)
 		{
+			cout << "Largo antes del send: " << largoRequest << endl;
 			largoRequest = send(this->socketCliente, stringDatosMensaje, largo, 0);
+			cout << "Largo despues del send: " << largoRequest << endl;
 			largo -= largoRequest;
 		}
 		pthread_mutex_unlock(&mutexSocket);

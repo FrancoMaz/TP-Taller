@@ -48,7 +48,7 @@ private:
 	pthread_t threadProcesador;
 	pthread_t threadChecker;
 	list<string> clientesDisponibles;
-	pthread_mutex_t mutexSocket;
+	pthread_mutex_t mutexSocket = PTHREAD_MUTEX_INITIALIZER;;
 	bool terminoComunicacion;
 	struct structHandshake{
 			ImagenDto* imagen1;

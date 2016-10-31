@@ -182,24 +182,36 @@ void* enviarEventos(void* arg) {
 	int countedFrames = 0;
 	fpsTimer.start();
 	while(!controlador->comprobarCierreVentana()){
+		const Uint8 *keys = SDL_GetKeyboardState(NULL);
 		while(SDL_PollEvent(&evento)){
 			//usleep(50000);
 			capTimer.start();
-			if(controlador->presionarBoton(SDLK_RIGHT)){
+			if (evento.type == SDL_QUIT){
+				controlador->setCerrarVentana();
+			}
+			/*if(controlador->presionarBoton(SDLK_RIGHT)){
 				cliente->enviar("Tecla Derecha","Todos");
 			}
 			else if(controlador->presionarBoton(SDLK_LEFT)){
 				cliente->enviar("Tecla Izquierda","Todos");
 			}
-
-			else if(controlador->soltarBoton(SDLK_RIGHT)){
-				cliente->enviar("Soltar Tecla Derecha","Todos");
-			}
-			else if(controlador->soltarBoton(SDLK_LEFT)){
-				cliente->enviar("Soltar Tecla Izquierda","Todos");
-			}
 			else if(controlador->presionarBoton(SDLK_UP)){
 				cliente->enviar("Tecla Arriba","Todos");
+			}*/
+			if(controlador->soltarBoton(SDLK_RIGHT)){
+				cliente->enviar("Soltar Tecla Derecha","Todos");
+			}
+			if(controlador->soltarBoton(SDLK_LEFT)){
+				cliente->enviar("Soltar Tecla Izquierda","Todos");
+			}
+			if (keys[SDL_SCANCODE_UP]){
+				cliente->enviar("Tecla Arriba","Todos");
+			}
+			if (keys[SDL_SCANCODE_RIGHT]){
+				cliente->enviar("Tecla Derecha","Todos");
+			}
+			if (keys[SDL_SCANCODE_LEFT]){
+				cliente->enviar("Tecla Izquierda","Todos");
 			}
 			SDL_FlushEvent(SDL_MOUSEMOTION);
 			SDL_FlushEvent(SDL_KEYDOWN);//si se procesa antes, espero lo que tengo que resta.
