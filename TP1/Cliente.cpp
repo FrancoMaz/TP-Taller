@@ -197,7 +197,7 @@ void Cliente::verificarBiblioteca(Handshake* handshakeAux) {
 	for (int i = 0; i < setsSprites.size(); i++){
 		vector<SpriteDto*> sprites = setsSprites.at(i)->getSprites();
 		for (int j = 0; j < sprites.size(); j++){
-			if(!verificarExistencia(sprites.at(j)->getID())){this->cargarImagenPorDefecto(sprites.at(j));}
+			if(!verificarExistencia(sprites.at(j)->getPath())){this->cargarImagenPorDefecto(sprites.at(j));}
 		}
 	}
 
