@@ -134,6 +134,41 @@
 	      <z-index>1</z-index>
 	    </SpriteDesconectado>
 	  </SetAmarillo>
+	   <SetAzul>
+	    <Carpeta>Azul</Carpeta>
+	    <SpriteSalto>
+	      <Id>Jugador_saltando_azul</Id>
+	      <CantFotogramas>9</CantFotogramas>
+	      <Ancho>738</Ancho>
+	      <Alto>137</Alto>
+	      <Imagen>Jugador_saltando_azul</Imagen>
+	      <z-index>1</z-index>
+	    </SpriteSalto> 
+	    <SpriteCorrer>
+	      <Id>Jugador_corriendo_azul</Id>
+	      <CantFotogramas>9</CantFotogramas>
+	      <Ancho>875</Ancho>
+	      <Alto>113</Alto>
+	      <Imagen>Jugador_corriendo_azul</Imagen>
+	      <z-index>1</z-index>
+	    </SpriteCorrer>
+	    <SpriteQuieto>
+	      <Id>Jugador_azul</Id>
+	      <CantFotogramas>3</CantFotogramas>
+	      <Ancho>252</Ancho>
+	      <Alto>106</Alto>
+	      <Imagen>Jugador_azul</Imagen>
+	      <z-index>1</z-index>
+	    </SpriteQuieto>
+	    <SpriteDesconectado>
+	      <Id>Jugador_desconectado</Id>
+	      <CantFotogramas>0</CantFotogramas>
+	      <Ancho>84</Ancho>
+	      <Alto>106</Alto>
+	      <Imagen>Jugador_desconectado</Imagen>
+	      <z-index>1</z-index>
+	    </SpriteDesconectado>
+	  </SetAzul>
 	</Sprites>
 
 	<Ventana>
@@ -141,5 +176,5 @@
 	  <Alto>600</Alto>
 	</Ventana>
 	
-	<CantMaxJugadores>2</CantMaxJugadores>
+	<CantMaxJugadores>4</CantMaxJugadores>
 </Configuracion>

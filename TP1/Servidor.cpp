@@ -37,7 +37,7 @@ Servidor::Servidor(char* nombreArchivoDeUsuarios, int puerto, Logger* logger) {
 	this->guardarLog(mensaje, DEBUG);
 	this->guardarDatosDeUsuarios();
 	this->guardarDatosDeConfiguracion();
-	vectorEquipos = {"rojo", "verde", "amarillo"};
+	vectorEquipos = {"rojo", "verde", "amarillo", "azul"};
 	posicionXInicial = 20;
 	posicionVector = 0;
 	camara.x = 0;
