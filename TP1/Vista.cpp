@@ -15,7 +15,7 @@
 #include <stdio.h>
 #include <string>
 #include <vector>
-
+#include <unistd.h>
 #include <iostream>
 
 #define PI 3.14159265
@@ -164,8 +164,8 @@ datosConexion Vista::cargarPantallaIngresoDatos(bool aviso, int numeroPantalla){
 			break;
 		case 3:
 			campoUno = this->datos.nombre;
-			//campoDos = this->datos.contrasenia;
 			campoDos = "123456";
+			//campoDos = this->datos.contrasenia;
 			textoIngresePuerto->actualizarTexto("Ingrese el nombre:",colorTexto);
 			textoIngreseIP->actualizarTexto("Ingrese la contraseña:",colorTexto);
 			textoDatosNoCoinciden->actualizarTexto("Usuario/contraseña incorrectos, inténtelo de nuevo",colorTextoAmarillo);
@@ -312,7 +312,7 @@ void Vista::cargarEscenario(vector<ImagenDto*> imagenes, int anchoVentana, int a
 	}
 
 	while(!this->controlador->comprobarCierreVentana()){
-
+		usleep(100);
 	}
 	this->ventana->actualizar();
 }

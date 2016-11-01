@@ -196,8 +196,8 @@ void Cliente::verificarBiblioteca(Handshake* handshakeAux) {
 	}
 	for (int i = 0; i < setsSprites.size(); i++){
 		vector<SpriteDto*> sprites = setsSprites.at(i)->getSprites();
-		for (int j = 0; i < sprites.size(); i++){
-			if(!verificarExistencia(sprites.at(j)->getID())){this->cargarImagenPorDefecto(sprites.at(i));}
+		for (int j = 0; j < sprites.size(); j++){
+			if(!verificarExistencia(sprites.at(j)->getID())){this->cargarImagenPorDefecto(sprites.at(j));}
 		}
 	}
 
@@ -454,9 +454,7 @@ void Cliente::enviar(string mensaje, string destinatario) {
 		pthread_mutex_lock(&mutexSocket);
 		while (largo > 0)
 		{
-			cout << "Largo antes del send: " << largoRequest << endl;
 			largoRequest = send(this->socketCliente, stringDatosMensaje, largo, 0);
-			cout << "Largo despues del send: " << largoRequest << endl;
 			largo -= largoRequest;
 		}
 		pthread_mutex_unlock(&mutexSocket);

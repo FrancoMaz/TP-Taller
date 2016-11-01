@@ -155,7 +155,7 @@ void* recibirPosicionJugadores(void* arg) {
 	LTimer capTimer;
 	usleep(50000);
 	while(!controlador->comprobarCierreVentana()){
-		//usleep(50000);
+		usleep(3000);
 		 //Start cap timer
 		capTimer.start();
 		datosRecibidos = cliente->recibir();
@@ -183,13 +183,15 @@ void* enviarEventos(void* arg) {
 	fpsTimer.start();
 	while(!controlador->comprobarCierreVentana()){
 		const Uint8 *keys = SDL_GetKeyboardState(NULL);
+		usleep(3000);
 		while(SDL_PollEvent(&evento)){
 			//usleep(50000);
+			//cout << "Adentro de enviar eventos en mainCliente" << endl;
 			capTimer.start();
 			if (evento.type == SDL_QUIT){
 				controlador->setCerrarVentana();
 			}
-			/*if(controlador->presionarBoton(SDLK_RIGHT)){
+			if(controlador->presionarBoton(SDLK_RIGHT)){
 				cliente->enviar("Tecla Derecha","Todos");
 			}
 			else if(controlador->presionarBoton(SDLK_LEFT)){
@@ -197,14 +199,14 @@ void* enviarEventos(void* arg) {
 			}
 			else if(controlador->presionarBoton(SDLK_UP)){
 				cliente->enviar("Tecla Arriba","Todos");
-			}*/
+			}
 			if(controlador->soltarBoton(SDLK_RIGHT)){
 				cliente->enviar("Soltar Tecla Derecha","Todos");
 			}
 			if(controlador->soltarBoton(SDLK_LEFT)){
 				cliente->enviar("Soltar Tecla Izquierda","Todos");
 			}
-			if (keys[SDL_SCANCODE_UP]){
+			/*if (keys[SDL_SCANCODE_UP]){
 				cliente->enviar("Tecla Arriba","Todos");
 			}
 			if (keys[SDL_SCANCODE_RIGHT]){
@@ -212,7 +214,7 @@ void* enviarEventos(void* arg) {
 			}
 			if (keys[SDL_SCANCODE_LEFT]){
 				cliente->enviar("Tecla Izquierda","Todos");
-			}
+			}*/
 			SDL_FlushEvent(SDL_MOUSEMOTION);
 			SDL_FlushEvent(SDL_KEYDOWN);//si se procesa antes, espero lo que tengo que resta.
 			int frameTicks = capTimer.getTicks();
@@ -253,7 +255,7 @@ void* cicloConexion(void* arg) {
 		bool inicio;
 		do
 		{
-			usleep(2000000);
+			usleep(500000);
 			inicio = cliente->checkearInicioJuego(vista);
 		}while (!inicio);
 		handshakeDeserializado = cliente->getHandshake();
