@@ -36,6 +36,10 @@ void Capa::paralajeInfinito(int anchoVentana, int indice)
 	}
 	else
 	{
+		if (this->rectangulo.x == 0)
+		{
+			this->rectangulo.w = anchoVentana;
+		}
 		this->textura->aplicarPosicionDePorcion(0,0,&this->rectangulo,0,SDL_FLIP_NONE);
 	}
 }
