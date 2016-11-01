@@ -42,24 +42,36 @@ Servidor::Servidor(char* nombreArchivoDeUsuarios, int puerto, Logger* logger) {
 	posicionVector = 0;
 	camara.x = 0;
 	camara.y = 0;
+	for (int i = 0; i < handshake->getImagenes().size(); i++)
+	{
+		pair<int,int> abscisas;
+		abscisas.first = 0;
+		abscisas.second = 0;
+		abscisasCapas.push_back(abscisas);
+	}
 }
 
 Servidor::~Servidor() {
 }
 
 void Servidor::guardarDatosDeConfiguracion() {
-   string path;
-   cout << "Ingrese el path del archivo de configuracion" << endl;
-   cin >> path;
-   if (this->existeArchivo(path))
-   {
+	string path;
+	cout << "Ingrese el path del archivo de configuracion" << endl;
+	cin >> path;
+	if (this->existeArchivo(path))
+	{
 	   this->parser = new XmlParser(path);
-   }
-   else
-   {
+	}
+	else
+	{
 	   cout << "No existe el archivo ingresado. Se cargara el xml por defecto" << endl;
 	   this->parser = new XmlParser("Recursos/configuration.xml");
-   }
+	}
+	vector<ImagenDto*> escenario = this->parser->getEscenario();
+	vector<SetDeSpritesDto*> setDeSprites = this->parser->getSprites();
+	pair<const char*, const char*> ventana = this->parser->getTamanioVentana();
+	const char* cantidadMaximaJugadores = this->parser->getCantidadMaximaDeJugadores();
+	this->handshake = new Handshake(escenario, setDeSprites, ventana.first, ventana.second, cantidadMaximaJugadores);
 }
 
 bool Servidor::existeArchivo(string fileName) {
@@ -68,11 +80,11 @@ bool Servidor::existeArchivo(string fileName) {
 }
 
 void Servidor::enviarHandshake(int socket, char* cliente){
-	vector<ImagenDto*> escenario = this->parser->getEscenario();
+	/*vector<ImagenDto*> escenario = this->parser->getEscenario();
 	vector<SetDeSpritesDto*> setDeSprites = this->parser->getSprites();
 	pair<const char*, const char*> ventana = this->parser->getTamanioVentana();
 	const char* cantidadMaximaJugadores = this->parser->getCantidadMaximaDeJugadores();
-	this->handshake = new Handshake(escenario, setDeSprites, ventana.first, ventana.second, cantidadMaximaJugadores);
+	this->handshake = new Handshake(escenario, setDeSprites, ventana.first, ventana.second, cantidadMaximaJugadores);*/
 	string handshake = this->parser->serializarEscenario();
 	handshake += this->parser->serializarSetDeSprites();
 	handshake += this->parser->serializarVentana();
@@ -120,19 +132,14 @@ void Servidor::guardarDatosDeUsuarios() {
 				}
 				nroItem++;
 			}
-			//Jugador* jugador = new Jugador(datosCapturados.nombre);
-			//mensajesProcesados.jugador = jugador;
-			//pthread_mutex_lock(&mutexVectorJugadores);
-			//jugadores->push_back(jugador);
-			//pthread_mutex_unlock(&mutexVectorJugadores);
 			queue<Mensaje>* colaMensajes = new queue<Mensaje>;
 			mensajesProcesados.mensajes = colaMensajes;
 			datosUsuarios->push_back(datosCapturados);
 		}
 
 		myfile.close();
-		mensaje = "Se leyeron los datos de los usuarios desde el archivo " + string(this->nombreArchivo) + "\n";
-		this->guardarLog(mensaje, DEBUG);
+		//mensaje = "Se leyeron los datos de los usuarios desde el archivo " + string(this->nombreArchivo) + "\n";
+		//this->guardarLog(mensaje, DEBUG);
 	}
 
 }
@@ -190,8 +197,8 @@ void Servidor::autenticar(string nombre, string contrasenia, list<string>& usuar
 	}
 	if (autenticacionOK) {
 		cout << "Autenticación OK" << endl;
-		mensaje = "Autenticación OK \n";
-		this->guardarLog(mensaje, DEBUG);
+		//mensaje = "Autenticación OK \n";
+		//this->guardarLog(mensaje, DEBUG);
 	} else {
 		usuarios.clear();
 		cout << "Error de autenticación: usuario y/o clave incorrectos" << endl;
@@ -208,7 +215,9 @@ void Servidor::autenticar(string nombre, string contrasenia, list<string>& usuar
 
 
 void Servidor::guardarLog(string mensaje, const int nivelDeLog) {
+	pthread_mutex_lock(&mutexLog);
 	this->logger->escribir(mensaje, nivelDeLog);
+	pthread_mutex_unlock(&mutexLog);
 }
 
 
@@ -243,8 +252,39 @@ void* Servidor::actualizarPosiciones(void* arg)
 		bool necesitaCambiarCamara = jugador->chequearCambiarCamara(servidor->camara, atoi(servidor->handshake->getAncho().c_str()), posicionesExtremos, anchoSprite);
 		if (necesitaCambiarCamara)
 		{
-			servidor->camara.x += VELMAX;
-			mensajeCamaraString = "1|" + to_string(servidor->camara.x) + "|" + to_string(servidor->camara.y) + "|" + to_string(jugador->getVelocidadX()) + "#";
+			if (servidor->camara.x > atoi(servidor->handshake->getImagenes().at(0)->getAncho().c_str())){
+				servidor->camara.x = 0;
+				for (int i = 0; i < servidor->abscisasCapas.size(); i++)
+				{
+					servidor->abscisasCapas.at(i).first = 0;
+				}
+				for (int i = 0; i < servidor->jugadores->size(); i++)
+				{
+					servidor->jugadores->at(i)->resetearPosicion(atoi(servidor->handshake->getImagenes().at(0)->getAncho().c_str()));
+				}
+			} else
+				{
+				servidor->camara.x += jugador->getVelocidadX();
+				//servidor->camara.x = (jugador->getPosicion().first) - (atoi(servidor->handshake->getAncho().c_str()))/2;
+				for (int i = 0; i < servidor->abscisasCapas.size(); i++)
+				{
+					if (i == 0)
+					{
+						servidor->abscisasCapas.at(i).first = servidor->camara.x;
+					}
+					else
+					{	servidor->abscisasCapas.at(i).second += jugador->getVelocidadX();
+						servidor->abscisasCapas.at(i).first = abs((servidor->abscisasCapas.at(i).second)*(atoi(servidor->handshake->getImagenes().at(i)->getAncho().c_str()) - atoi(servidor->handshake->getAncho().c_str()))/(atoi(servidor->handshake->getImagenes().at(0)->getAncho().c_str()) - atoi(servidor->handshake->getAncho().c_str())));
+						if (servidor->abscisasCapas.at(i).first > atoi(servidor->handshake->getImagenes().at(i)->getAncho().c_str()))
+						{
+							servidor->abscisasCapas.at(i).first = 0;
+							servidor->abscisasCapas.at(i).second = 0;
+						}
+					}
+				}
+				}
+			//mensajeCamaraString = "1|" + to_string(jugador->getVelocidadX()) + "#";
+			mensajeCamaraString = "1|" + to_string(servidor->camara.x) + "|" + to_string(servidor->camara.y) + "|" + servidor->serializarCapas() + "#";
 			mensajeCamara = new Mensaje(jugador->getNombre(),"Todos",mensajeCamaraString);
 		}
 		mensajeJugadorPosActualizada = jugador->getStringJugador();
@@ -263,12 +303,13 @@ void* Servidor::actualizarPosiciones(void* arg)
 }
 
 
-void Servidor::actualizarPosicionesSalto(Mensaje mensajeAProcesar)
+/*void Servidor::actualizarPosicionesSalto(Mensaje mensajeAProcesar)
 {
 	bool jugadorSalto;
 	Mensaje* mensajeCamara;
 	string mensajeCamaraString;
-	do {
+	string mensajeJugadorPosActualizada = "";
+	/*do {
 		string mensajeJugadorPosActualizada = "";
 		pthread_mutex_lock(&mutexVectorJugadores);
 		Jugador* jugador = this->obtenerJugador(mensajeAProcesar.getRemitente());
@@ -284,6 +325,10 @@ void Servidor::actualizarPosicionesSalto(Mensaje mensajeAProcesar)
 		{
 			if (camara.x > atoi(handshake->getImagenes().at(0)->getAncho().c_str())){
 				camara.x = 0;
+				for (int i = 0; i < abscisasCapas.size(); i++)
+				{
+					abscisasCapas.at(i).first = 0;
+				}
 				for (int i = 0; i < jugadores->size(); i++)
 				{
 					jugadores->at(i)->resetearPosicion(atoi(handshake->getImagenes().at(0)->getAncho().c_str()));
@@ -291,7 +336,18 @@ void Servidor::actualizarPosicionesSalto(Mensaje mensajeAProcesar)
 			} else
 				{
 				camara.x = jugador->getPosicion().first - (atoi(handshake->getAncho().c_str()))/2;
+				for (int i = 0; i < abscisasCapas.size(); i++)
+				{
+					if (i == 0)
+					{
+						abscisasCapas.at(i).first = camara.x;
+					}
+					else
+					{	abscisasCapas.at(i).second += jugador->getVelocidadX();
+						abscisasCapas.at(i).first = abs((abscisasCapas.at(i).second)*(atoi(handshake->getImagenes().at(i)->getAncho().c_str()) - atoi(handshake->getAncho().c_str()))/(atoi(handshake->getImagenes().at(0)->getAncho().c_str()) - atoi(handshake->getAncho().c_str())));
+					}
 				}
+			}
 			//mensajeCamaraString = "1|" + to_string(jugador->getVelocidadX()) + "#";
 			mensajeCamaraString = "1|" + to_string(camara.x) + "|" + to_string(camara.y) + "|" + to_string(jugador->getVelocidadX()) + "#";
 			mensajeCamara = new Mensaje(jugador->getNombre(),"Todos",mensajeCamaraString);
@@ -304,7 +360,25 @@ void Servidor::actualizarPosicionesSalto(Mensaje mensajeAProcesar)
 			encolarMensajeProcesadoParaCadaCliente(*mensajeCamara,mensajeCamaraString);
 		}
 	} while (jugadorSalto);
-}
+	//pthread_mutex_lock(&mutexVectorJugadores);
+	Jugador* jugador = this->obtenerJugador(mensajeAProcesar.getRemitente());
+	jugador->actualizarPosicion(mensajeAProcesar.deserializar(mensajeAProcesar.getTexto()),mensajeAProcesar.sePresionoTecla(),camara);
+	pair<int,int> posicionesExtremos = this->obtenerPosicionesExtremos();
+	bool necesitaCambiarCamara = jugador->chequearCambiarCamara(this->camara, atoi(handshake->getAncho().c_str()), posicionesExtremos, anchoSprite);
+	if (necesitaCambiarCamara)
+	{
+		camara.x += VELMAX;
+		mensajeCamaraString = "1|" + to_string(camara.x) + "|" + to_string(camara.y) + "#";
+		mensajeCamara = new Mensaje(jugador->getNombre(),"Todos",mensajeCamaraString);
+	}
+	mensajeJugadorPosActualizada = jugador->getStringJugador();
+	//pthread_mutex_unlock(&mutexVectorJugadores);
+	encolarMensajeProcesadoParaCadaCliente(mensajeAProcesar,mensajeJugadorPosActualizada);
+	if (necesitaCambiarCamara)
+	{
+		encolarMensajeProcesadoParaCadaCliente(*mensajeCamara,mensajeCamaraString);
+	}
+}*/
 
 Jugador* Servidor::obtenerJugador(string nombre){
 	for (int i = 0; i < jugadores->size(); i++)
@@ -349,7 +423,7 @@ int Servidor::getAnchoSprite(string sprite)
 		vector<SpriteDto*> listaSprites = setsSprites.at(i)->getSprites();
 		for (int i = 0; i < listaSprites.size(); i++)
 		{
-			if (sprite == listaSprites.at(i)->getId())
+			if (sprite == listaSprites.at(i)->getID())
 			{
 				ancho = atoi(listaSprites.at(i)->getAncho().c_str());
 			}
@@ -358,9 +432,23 @@ int Servidor::getAnchoSprite(string sprite)
 	return ancho;
 }
 
+string Servidor::serializarCapas()
+{
+	string capas = "";
+	for (int i = 0; i < abscisasCapas.size(); i++)
+	{
+		capas += to_string(abscisasCapas.at(i).first);
+		capas += ",";
+		capas += to_string(abscisasCapas.at(i).second);
+		capas += "|";
+	}
+	return capas;
+}
+
 void Servidor::procesarMensajes() {
 	Mensaje* mensajeCamara;
 	string mensajeCamaraString;
+	//usleep(5000);
 	if (!colaMensajesNoProcesados.empty()) {
 		pthread_t threadSalto;
 		pthread_mutex_lock(&mutexColaNoProcesados);
@@ -381,18 +469,25 @@ void Servidor::procesarMensajes() {
 			string mensajeJugadorPosActualizada = "";
 			camara.x = 0;
 			camara.y = 0;
-			mensajeCamaraString = "1|0|0|0#";
-			mensajeCamara = new Mensaje(mensajeAProcesar.getRemitente(),"Todos",mensajeCamaraString);
-			encolarMensajeProcesadoParaCadaCliente(*mensajeCamara,mensajeCamaraString);
+			for (int i = 0; i < abscisasCapas.size(); i++)
+			{
+				abscisasCapas.at(i).first = 0;
+				abscisasCapas.at(i).second = 0;
+			}
+			int xInicial = 20;
 			for (int i=0; i < jugadores->size(); i++)
 			{
-				int xInicial = 20;
 				Jugador* jugador = jugadores->at(i);
+				mensajeAProcesar.setRemitente(jugador->getNombre());
 				jugador->setPosicion(xInicial);
 				xInicial += 84;
 				jugador->setSprite("Jugador",true,"Normal");
+				mensajeJugadorPosActualizada = jugador->getStringJugador();
 				encolarMensajeProcesadoParaCadaCliente(mensajeAProcesar,mensajeJugadorPosActualizada);
 			}
+			mensajeCamaraString = "1|" + to_string(camara.x) + "|" + to_string(camara.y) + "|" + this->serializarCapas() + "#";
+			mensajeCamara = new Mensaje(mensajeAProcesar.getRemitente(),"Todos",mensajeCamaraString);
+			encolarMensajeProcesadoParaCadaCliente(*mensajeCamara,mensajeCamaraString);
 		}
 		else
 		{
@@ -410,16 +505,36 @@ void Servidor::procesarMensajes() {
 			{
 				if (camara.x > atoi(handshake->getImagenes().at(0)->getAncho().c_str())){
 					camara.x = 0;
+					for (int i = 0; i < abscisasCapas.size(); i++)
+					{
+						abscisasCapas.at(i).first = 0;
+					}
 					for (int i = 0; i < jugadores->size(); i++)
 					{
 						jugadores->at(i)->resetearPosicion(atoi(handshake->getImagenes().at(0)->getAncho().c_str()));
 					}
 				} else
 					{
-					camara.x = (jugador->getPosicion().first) - (atoi(handshake->getAncho().c_str()))/2;
+						camara.x += jugador->getVelocidadX();
+						//camara.x = (jugador->getPosicion().first) - (atoi(handshake->getAncho().c_str()))/2;
+						for (int i = 0; i < abscisasCapas.size(); i++)
+						{
+							if (i == 0)
+							{
+								abscisasCapas.at(i).first = camara.x;
+							}
+							else
+							{	abscisasCapas.at(i).second += jugador->getVelocidadX();
+								abscisasCapas.at(i).first = abs((abscisasCapas.at(i).second)*(atoi(handshake->getImagenes().at(i)->getAncho().c_str()) - atoi(handshake->getAncho().c_str()))/(atoi(handshake->getImagenes().at(0)->getAncho().c_str()) - atoi(handshake->getAncho().c_str())));
+								if (abscisasCapas.at(i).first > atoi(handshake->getImagenes().at(i)->getAncho().c_str()))
+								{
+									abscisasCapas.at(i).first = 0;
+									abscisasCapas.at(i).second = 0;
+								}
+							}
+						}
 					}
-				//mensajeCamaraString = "1|" + to_string(jugador->getVelocidadX()) + "#";
-				mensajeCamaraString = "1|" + to_string(camara.x) + "|" + to_string(camara.y) + "|" + to_string(jugador->getVelocidadX()) + "#";
+				mensajeCamaraString = "1|" + to_string(camara.x) + "|" + to_string(camara.y) + "|" + this->serializarCapas() + "#";
 				mensajeCamara = new Mensaje(jugador->getNombre(),"Todos",mensajeCamaraString);
 			}
 			mensajeJugadorPosActualizada = jugador->getStringJugador();
@@ -431,6 +546,24 @@ void Servidor::procesarMensajes() {
 			}
 		}
 	}
+	/*
+	vector<string> jugadoresSaltando;
+	pthread_mutex_lock(&mutexVectorJugadores);
+	for (int i = 0; i < jugadores->size(); i++)
+	{
+		if (jugadores->at(i)->salto()){
+			jugadoresSaltando.push_back(jugadores->at(i)->getNombre());
+		}
+	}
+	pthread_mutex_unlock(&mutexVectorJugadores);
+	for (int i= 0; i < jugadoresSaltando.size(); i++)
+	{
+		cout << "SALTA EL JUGADOR" << jugadoresSaltando.at(i) << endl;
+		Mensaje* mensajeAProcesar = new Mensaje(jugadoresSaltando.at(i), "Todos","Tecla Arriba");
+		actualizarPosicionesSalto(*mensajeAProcesar);
+	}
+	jugadoresSaltando.clear();
+	*/
 }
 
 void Servidor::encolarMensajeProcesadoParaCadaCliente(Mensaje mensajeAProcesar, string mensajeJugadorPosActualizada){
@@ -449,9 +582,8 @@ void Servidor::encolarMensajeProcesadoParaCadaCliente(Mensaje mensajeAProcesar, 
 				pthread_mutex_lock(&mutexListaProcesados);
 				listaMensajes.mensajes->push(*mensajePosicionActualizada);
 				pthread_mutex_unlock(&mutexListaProcesados);
-				this->mensaje = "Procesando mensaje para "
-						+ listaMensajes.destinatario + "\n";
-				this->guardarLog(mensaje, DEBUG);
+				//this->mensaje = "Procesando mensaje para "+ listaMensajes.destinatario + "\n";
+				//this->guardarLog(mensaje, DEBUG);
 			}
 			pthread_mutex_unlock(&mutexVectorJugadores);
 		}
@@ -461,8 +593,8 @@ void Servidor::encolarMensajeProcesadoParaCadaCliente(Mensaje mensajeAProcesar, 
 void Servidor::comenzarEscucha() {
 //Metodo que pone al servidor a escuchar si alguien requiere algo.
 	this->escuchando = (listen(this->welcomeSocket, MAX_CANT_CLIENTES) == 0);
-	mensaje = "El servidor está escuchando... \n";
-	this->guardarLog(mensaje, DEBUG);
+	//mensaje = "El servidor está escuchando... \n";
+	//this->guardarLog(mensaje, DEBUG);
 	cout << "Escuchando conexiones entrantes.." << endl;
 }
 
@@ -485,8 +617,8 @@ pair<int,string> Servidor::aceptarConexion() {
 		return cli;
 	}
 	cout << "Datos recibidos: " << datosRecibidos << endl;
-	mensaje = "Datos recibidos: " + (string) datosRecibidos + string("\n");
-	this->guardarLog(mensaje, DEBUG);
+	//mensaje = "Datos recibidos: " + (string) datosRecibidos + string("\n");
+	//this->guardarLog(mensaje, DEBUG);
 
 	splitDatos(datosRecibidos, &nombre, &pass);
 	this->autenticar(nombre, pass, usuarios);
@@ -495,9 +627,9 @@ pair<int,string> Servidor::aceptarConexion() {
 	if (usuarios.empty()) {
 		okAutenticar = -1;
 		strcpy(buffer, "Desconectar");
-		mensaje = "Se desconecta al usuario " + nombre + " del servidor porque falló la autenticación... \n";
+		//mensaje = "Se desconecta al usuario " + nombre + " del servidor porque falló la autenticación... \n";
 		//this->cantClientesConectados -= 1;
-		this->guardarLog(mensaje, INFO);
+		//this->guardarLog(mensaje, INFO);
 		ok = send(socketCliente, buffer, BUFFER_MAX_SIZE, 0);
 		cli.first = -1;
 		cli.second = "";
@@ -507,17 +639,15 @@ pair<int,string> Servidor::aceptarConexion() {
 		this->cantClientesConectados += 1;
 		strcpy(buffer, this->serializarLista(usuarios).c_str());
 		string bufferS = buffer;
-		mensaje = "Enviándole al cliente " + nombre
-				+ " la lista de usuarios disponibles \n";
-		this->guardarLog(mensaje, DEBUG);
-		mensaje = "La lista de usuarios disponibles es: ";
-		for (list<string>::iterator i = usuarios.begin(); i != usuarios.end();
-				i++) {
+		//mensaje = "Enviándole al cliente " + nombre + " la lista de usuarios disponibles \n";
+		//this->guardarLog(mensaje, DEBUG);
+		//mensaje = "La lista de usuarios disponibles es: ";
+		for (list<string>::iterator i = usuarios.begin(); i != usuarios.end();i++) {
 			mensaje += (*i);
 			mensaje += " ";
 		}
-		mensaje += "\n";
-		this->guardarLog(mensaje, DEBUG);
+		//mensaje += "\n";
+		//this->guardarLog(mensaje, DEBUG);
 		ok = send(socketCliente, buffer, BUFFER_MAX_SIZE, 0);
 	}
 	//pthread_mutex_unlock(&mutexSocket);
@@ -604,8 +734,7 @@ string Servidor::traerMensajesProcesados(string nombreCliente) {
 
 	queue<Mensaje>* colaDeMensajes;
 
-	for (list<Servidor::MensajesProcesados>::iterator datoActual =
-			listaMensajesProcesados->begin();
+	for (list<Servidor::MensajesProcesados>::iterator datoActual = listaMensajesProcesados->begin();
 			datoActual != listaMensajesProcesados->end(); datoActual++) {
 
 		MensajesProcesados mensaje;
@@ -684,7 +813,7 @@ string Servidor::getEstadoInicialSerializado()
 	{
 		estadoInicial += jugadoresConectados->at(i)->serializarInicio() + "#";
 	}
-	estadoInicial = estadoInicial + "camara|" + to_string(camara.x) + "|" + to_string(camara.y) + "#";
+	estadoInicial = estadoInicial + "camara|" + to_string(camara.x) + "|" + to_string(camara.y) + "|" + this->serializarCapas() + "#";
 	return estadoInicial;
 }
 

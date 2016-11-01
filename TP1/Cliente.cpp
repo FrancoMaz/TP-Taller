@@ -29,87 +29,62 @@ void Cliente::inicializarSocket(){
 }
 
 //----------------------------METODOS PARA EL HANDSHAKE-------------------------------------
-ImagenDto* Cliente::deserializarImagen(char* campo){
+ImagenDto* Cliente::deserializarImagen(string campo){
 
-	const char *nombre, *ancho, *alto;
-	nombre = campo;
-	campo = strtok(NULL,",");
-	ancho = campo;
-	campo = strtok(NULL, "|");
-	alto = campo;
-	ImagenDto *imagenReconstruida = new ImagenDto(string(nombre),string(ancho),string(alto));
+	string nombre, ancho, alto, zIndex;
+	string s = campo;
+	string delimitador = ",";
+	size_t pos = s.find(delimitador);
+	nombre = s.substr(0,pos);
+	s.erase(0,pos + delimitador.length());
+	pos = s.find(delimitador);
+	ancho = s.substr(0,pos);
+	s.erase(0,pos + delimitador.length());
+	pos = s.find(delimitador);
+	alto = s.substr(0,pos);
+	s.erase(0,pos + delimitador.length());
+	zIndex = s;
+	ImagenDto* imagenReconstruida = new ImagenDto(nombre,ancho,alto,zIndex);
 	return imagenReconstruida;
 }
 
-SetDeSpritesDto* Cliente::deserializarSprite(char* campo){
+SetDeSpritesDto* Cliente::deserializarSprite(string campo){
 
-	const char* id, *cantFotogramas, *ancho, *alto, *imagen, *zIndex;
-	char* carpeta;
-	vector<SpriteDto*> spritesAccion; //= new list<SpriteDto*>;
-	carpeta = campo;
-	//El separador entre las distintas acciones en un sprite son los ";",
-	//y el separador para los campos que estan dentro de cada accion es la ","
-	campo = strtok(NULL,",");
-	id = campo;
-	campo = strtok(NULL,",");
-	cantFotogramas = campo;
-	campo = strtok(NULL,",");
-	ancho = campo;
-	campo = strtok(NULL,",");
-	alto = campo;
-	campo = strtok(NULL,",");
-	imagen = campo;
-	campo = strtok(NULL,";");
-	zIndex = campo;
-	SpriteDto* spriteSalto = new SpriteDto(string(id),string(cantFotogramas),string(ancho),string(alto),string(imagen),string(zIndex));
-	spritesAccion.push_back(spriteSalto);
 
-	campo = strtok(NULL,",");
-	id = campo;
-	campo = strtok(NULL,",");
-	cantFotogramas = campo;
-	campo = strtok(NULL,",");
-	ancho = campo;
-	campo = strtok(NULL,",");
-	alto = campo;
-	campo = strtok(NULL,",");
-	imagen = campo;
-	campo = strtok(NULL,";");
-	zIndex = campo;
-	SpriteDto* spriteCaminar = new SpriteDto(string(id),string(cantFotogramas),string(ancho),string(alto),string(imagen),string(zIndex));
-	spritesAccion.push_back(spriteCaminar);
+	string id, cantFotogramas, ancho, alto, imagen, zIndex;
+	string carpeta;
+	vector<SpriteDto*> spritesAccion;
+	string s = campo;
+	string delimitador = ";";
+	string delimitadorSprite = ",";
+	size_t pos = s.find(delimitador);
+	size_t posSprite;
+	string campoSprite;
+	carpeta = s.substr(0,pos);
+	s.erase(0,pos + delimitador.length());
+	while ((pos = s.find(delimitador)) != string::npos)
+	{
+		campoSprite = s.substr(0,pos);
+		posSprite = campoSprite.find(delimitadorSprite);
+		id = campoSprite.substr(0,posSprite);
+		campoSprite.erase(0,posSprite + delimitadorSprite.length());
+		posSprite = campoSprite.find(delimitadorSprite);
+		cantFotogramas = campoSprite.substr(0,posSprite);
+		campoSprite.erase(0,posSprite + delimitadorSprite.length());
+		posSprite = campoSprite.find(delimitadorSprite);
+		ancho = campoSprite.substr(0,posSprite);
+		campoSprite.erase(0,posSprite + delimitadorSprite.length());
+		posSprite = campoSprite.find(delimitadorSprite);
+		alto = campoSprite.substr(0,posSprite);
+		campoSprite.erase(0,posSprite + delimitadorSprite.length());
+		posSprite = campoSprite.find(delimitadorSprite);
+		imagen = campoSprite.substr(0,posSprite);
+		campoSprite.erase(0,posSprite + delimitadorSprite.length());
+		zIndex = campoSprite;
+		spritesAccion.push_back(new SpriteDto(id,cantFotogramas,ancho,alto,imagen,zIndex));
+		s.erase(0,pos + delimitador.length());
+	}
 
-	campo = strtok(NULL,",");
-	id = campo;
-	campo = strtok(NULL,",");
-	cantFotogramas = campo;
-	campo = strtok(NULL,",");
-	ancho = campo;
-	campo = strtok(NULL,",");
-	alto = campo;
-	campo = strtok(NULL,",");
-	imagen = campo;
-	//como va a ser el ultimo va a llegar a null asi que no creo que le de bola al "|"
-	campo = strtok(NULL,";");
-	zIndex = campo;
-	SpriteDto* spriteQuieto = new SpriteDto(string(id),string(cantFotogramas),string(ancho),string(alto),string(imagen),string(zIndex));
-	spritesAccion.push_back(spriteQuieto);
-
-	campo = strtok(NULL,",");
-	id = campo;
-	campo = strtok(NULL,",");
-	cantFotogramas = campo;
-	campo = strtok(NULL,",");
-	ancho = campo;
-	campo = strtok(NULL,",");
-	alto = campo;
-	campo = strtok(NULL,",");
-	imagen = campo;
-	//como va a ser el ultimo va a llegar a null asi que no creo que le de bola al "|"
-	campo = strtok(NULL,";");
-	zIndex = campo;
-	SpriteDto* spriteDesconectado = new SpriteDto(string(id),string(cantFotogramas),string(ancho),string(alto),string(imagen),string(zIndex));
-	spritesAccion.push_back(spriteDesconectado);
 	SetDeSpritesDto* setSpriteReconstruido = new SetDeSpritesDto(carpeta,spritesAccion);
 
 	return setSpriteReconstruido;
@@ -118,70 +93,90 @@ SetDeSpritesDto* Cliente::deserializarSprite(char* campo){
 Handshake* Cliente::deserializarHandshake(string handshake, bool primeraVez){
 
 	Handshake* handshakeAux;
-	char str[handshake.length()];
-	strcpy(str, handshake.c_str());
-	char*subcadena;
-	//char* campo = strtok(str, "|");
-	char* campo = strtok(str, "[");
-    const char *escenario,*sprites,*ventana;
-    escenario = "Escenario";
-    sprites = "SetSprites";
-    ventana = "Ventana";
+	string s = handshake;
+	string delimitador = "[";
+	string campo;
+	size_t pos = s.find(delimitador);
+	campo = s.substr(0, pos);
     vector<ImagenDto*> imagenes;
     vector<SetDeSpritesDto*> setsSprites;
-    char* ancho;
-    char* alto;
-	if (strcmp(campo,"Escenario") == 0){
-		//recupero la imagen1
-		campo = strtok(NULL,",");
-		imagenes.push_back(deserializarImagen(campo));
-		//recupero la imagen2
-		campo = strtok(NULL,",");
-		imagenes.push_back(deserializarImagen(campo));
-		campo = strtok(NULL,",");
-		imagenes.push_back(deserializarImagen(campo));
-		campo = strtok(NULL,",");
-		imagenes.push_back(deserializarImagen(campo));
-		campo = strtok(NULL, "-");
-		campo = strtok(NULL, "[");
+    string ancho;
+    string alto;
+    string delimitadorCampo = "";
+	if (campo == "Escenario"){
+		string campoImagen;
+		s.erase(0, pos + delimitador.length());
+		delimitador = "]-";
+		pos = s.find(delimitador);
+		campo = s.substr(0,pos);
+		delimitadorCampo = "|";
+		while ((pos = campo.find(delimitadorCampo)) != string::npos)
+		{
+			campoImagen = campo.substr(0,pos);
+			imagenes.push_back(deserializarImagen(campoImagen));
+			campo.erase(0, pos + delimitadorCampo.length());
+		}
+		pos = s.find(delimitador);
+		s.erase(0,pos + delimitador.length());
+		delimitador = "[";
+		pos = s.find(delimitador);
+		campo = s.substr(0,pos);
 	}
-	if(strcmp(campo,sprites) == 0){
-		//recupero sprite1
-		campo = strtok(NULL,";");
-		setsSprites.push_back(deserializarSprite(campo));
-		//recupero sprite2
-		campo = strtok(NULL,"-");
-		campo = strtok(NULL,";");
-		setsSprites.push_back(deserializarSprite(campo));
-		//recupero sprite3
-		campo = strtok(NULL,"-");
-		campo = strtok(NULL,";");
-		setsSprites.push_back(deserializarSprite(campo));
-		campo = strtok(NULL,"]");
-		campo = strtok(NULL,"[");
+	if(campo == "SetSprites"){
+		string campoSprite;
+		s.erase(0, pos + delimitador.length());
+		delimitador = "]";
+		pos = s.find(delimitador);
+		campo = s.substr(0,pos);
+		delimitadorCampo = "|-";
+		while ((pos = campo.find(delimitadorCampo)) != string::npos)
+		{
+			campoSprite = campo.substr(0,pos);
+			setsSprites.push_back(deserializarSprite(campoSprite));
+			campo.erase(0, pos + delimitadorCampo.length());
+		}
+		pos = s.find(delimitador);
+		s.erase(0,pos + delimitador.length());
+		delimitador = "[";
+		pos = s.find(delimitador);
+		campo = s.substr(0,pos);
 	}
-	if(strcmp(campo,ventana) == 0){
-		//obtengo ancho
-		campo = strtok(NULL,",");
+	if(campo == "Ventana"){
+		s.erase(0, pos + delimitador.length());
+		delimitador = ",";
+		pos = s.find(delimitador);
+		campo = s.substr(0,pos);
 		ancho = campo;
-		//obtengo alto
-		campo = strtok(NULL,"]");
+		s.erase(0, pos + delimitador.length());
+		delimitador = "]";
+		pos = s.find(delimitador);
+		campo = s.substr(0,pos);
 		alto = campo;
 	}
-	handshakeAux = new Handshake(imagenes, setsSprites, string(ancho), string(alto));
-	if (primeraVez){
-		if(this->verificarBiblioteca(handshakeAux)){
-		cout<<"Usted tiene todas las imagenes necesarias"<<endl;
-		}
-		else{cout<< "se cargan las imagenes por defecto"<<endl;}
-	}
+	handshakeAux = new Handshake(imagenes, setsSprites, ancho, alto);
+	this->verificarBiblioteca(handshakeAux);
    return handshakeAux;
 }
 
-void Cliente::recorrerSprites(vector<SpriteDto*> sprites, list<string> *archivos){
+void Cliente::recorrerSprites(vector<SpriteDto*> sprites, vector<void*> &archivos){
     for (int i = 0; i < sprites.size(); i++){
-		archivos->push_back(sprites.at(i)->getId());
+		archivos.push_back((void*)sprites.at(i));
 		}
+}
+
+void Cliente::cargarImagenPorDefecto(ImagenDto* imagen)
+{
+	imagen->setPath("ImagenNoEncontrada");
+	imagen->setAncho(to_string(226));
+	imagen->setAlto(to_string(55));
+}
+
+void Cliente::cargarImagenPorDefecto(SpriteDto* sprite)
+{
+	sprite->setPath("ImagenNoEncontrada");
+	sprite->setAncho(to_string(226));
+	sprite->setAlto(to_string(55));
+	sprite->setCantFotogramas(to_string(0));
 }
 
 bool Cliente::verificarExistencia(string archivo){
@@ -193,21 +188,18 @@ bool Cliente::verificarExistencia(string archivo){
 	return infile.good();
 }
 
-bool Cliente::verificarBiblioteca(Handshake* handshakeAux) {
-	list<string> *archivos = new list<string>();
+void Cliente::verificarBiblioteca(Handshake* handshakeAux) {
 	vector<ImagenDto*> imagenes = handshakeAux->getImagenes();
 	vector<SetDeSpritesDto*> setsSprites = handshakeAux->getSprites();
 	for (int i = 0; i < imagenes.size(); i++){
-		archivos->push_back(imagenes.at(i)->getPath());
+		if(!verificarExistencia(imagenes.at(i)->getPath())){this->cargarImagenPorDefecto(imagenes.at(i));}
 	}
 	for (int i = 0; i < setsSprites.size(); i++){
-		recorrerSprites(setsSprites.at(i)->getSprites(), archivos);
+		vector<SpriteDto*> sprites = setsSprites.at(i)->getSprites();
+		for (int j = 0; j < sprites.size(); j++){
+			if(!verificarExistencia(sprites.at(j)->getID())){this->cargarImagenPorDefecto(sprites.at(j));}
+		}
 	}
-	for (list<string>::iterator archivoActual = archivos->begin(); archivoActual != archivos->end();archivoActual++){
-		string nombreArchivo = *archivoActual;
-		if(!verificarExistencia(nombreArchivo)){return false;}
-	}
-	return true;
 
 }
 
@@ -371,7 +363,7 @@ bool Cliente::conectar(string nombre, string contrasenia) {
 	this->addr_size = sizeof direccionServidor;
 	char* nombreYPass = strdup((nombre + ',' + contrasenia).c_str()); // convierte el string de const char* a char*
 	cout << "Intentando conectarse con el servidor. . ." << endl;
-	pthread_mutex_lock(&mutexSocket);
+	//pthread_mutex_lock(&mutexSocket);
 	if (connect(socketCliente, (struct sockaddr *) &direccionServidor,addr_size) == 0) {
 
 		strcpy(buffer, nombreYPass);
@@ -396,7 +388,7 @@ bool Cliente::conectar(string nombre, string contrasenia) {
 		if (strcmp(datos.c_str(), desconectarse.c_str()) == 0) {
 			cout << "Usuario/clave incorrectos, inténtelo de nuevo" << endl;
 			close(socketCliente);
-			pthread_mutex_unlock(&mutexSocket);
+			//pthread_mutex_unlock(&mutexSocket);
 		} else {
 			this->nombre = nombre;
 			string opcion = "6|" + nombre;
@@ -408,9 +400,10 @@ bool Cliente::conectar(string nombre, string contrasenia) {
 			send(socketCliente,buffer,opcion.length(),0);
 			splitUsuarios(datosRecibidos);
 			this->recibirHandshake();
-			pthread_mutex_unlock(&mutexSocket);
+			//pthread_mutex_unlock(&mutexSocket);
 			return true;
 		}
+		//pthread_mutex_unlock(&mutexSocket);
 	} else {
 		cout << "Error conectandose al puerto" << endl;
 	}
@@ -456,7 +449,7 @@ void Cliente::enviar(string mensaje, string destinatario) {
 		Mensaje *mensajeAEnviar = new Mensaje(this->nombre, destinatario, mensaje);
 		char* stringDatosMensaje = strdup(("1|" + mensajeAEnviar->getStringDatos()).c_str()); //1 significa enviar.
 		int largo = strlen(stringDatosMensaje);
-		int largoRequest;
+		int largoRequest = 0;
 		//cout<<"Mensaje enviado: "<<mensaje<<endl;
 		pthread_mutex_lock(&mutexSocket);
 		while (largo > 0)
@@ -649,11 +642,11 @@ void Cliente::enviarRequest(string request){
 	strcpy(buffer, request.c_str());
 	int largoEnviado = 0;
 	int largoTotal = strlen(req);
-	pthread_mutex_lock(&mutexSocket);
+	//pthread_mutex_lock(&mutexSocket);
 	do{
 		largoEnviado += send(socketCliente,buffer,strlen(req),0);
 	} while (largoEnviado < largoTotal);
-	pthread_mutex_unlock(&mutexSocket);
+	//pthread_mutex_unlock(&mutexSocket);
 }
 
 string Cliente::recibirResponse(){
@@ -661,15 +654,31 @@ string Cliente::recibirResponse(){
 	memset(colaMensajes, '\0', BUFFER_MAX_SIZE);
 	int largoRecibido = 0;
 	string datosRecibidos = "";
-	pthread_mutex_lock(&mutexSocket);
+	//pthread_mutex_lock(&mutexSocket);
 	do
 	{
 		largoRecibido += recv(socketCliente,colaMensajes,BUFFER_MAX_SIZE,0);
 		datosRecibidos += string(colaMensajes);
 		memset(colaMensajes, '\0', strlen(colaMensajes));
 	}while (largoRecibido >= BUFFER_MAX_SIZE and !stringTerminaCon(datosRecibidos, "@")); //mientras el largoRequest sea del tamaño del max size, sigo pidiendo
-	pthread_mutex_unlock(&mutexSocket);
+	//pthread_mutex_unlock(&mutexSocket);
 	return datosRecibidos;
+}
+
+SpriteDto* Cliente::buscarSprite(string ID){
+
+	vector<SetDeSpritesDto*> setsSprites = this->handshake->getSprites();
+	for (int i = 0; i < setsSprites.size(); i++){
+		vector<SpriteDto*> listaSprites = setsSprites.at(i)->getSprites();
+		for (int i = 0; i < listaSprites.size(); i++)
+		{
+			if ( ID == listaSprites.at(i)->getID())
+			{
+				return listaSprites.at(i);
+			}
+		}
+					}
+ return NULL;
 }
 
 bool Cliente::checkearInicioJuego(Vista* vista)
@@ -678,46 +687,74 @@ bool Cliente::checkearInicioJuego(Vista* vista)
 	this->enviarRequest("5|"); //5 es el case de request se inicio el juego.
 	string response = this->recibirResponse();
 	response = response.substr(0,response.length() - 1);
-	char strResponse[response.length()];
-	strcpy(strResponse, response.c_str());
-	char* strComenzo = strtok(strResponse,"|#");
+	string s = response;
+	string delimitador = "|";
+	string delimitadorFinal = "#";
+	string delimitadorCapas = ",";
+	string texto;
+	string strAux;
+	size_t pos = s.find(delimitador);
+	size_t posAux;
+	texto = s.substr(0,pos);
 
-	char* nombreJugador;
-	char* x;
-	char* y;
-	char* sprite;
-	char* camaraX;
-	char* camaraY;
+	string nombreJugador;
+	string x;
+	string y;
+	string sprite;
+	string camaraX;
+	string camaraY;
 
-	int comenzo = atoi(strComenzo);
-	if (comenzo != 0){
+	string comenzo = texto;
+	if (comenzo != "0"){
 		return false;
 	}
-	else{
-		strComenzo = strtok(NULL,"|#");
-		while (strComenzo != NULL){
-			nombreJugador = strComenzo;
-			strComenzo = strtok(NULL,"|#");
-			x = strComenzo;
-			strComenzo = strtok(NULL,"|#");
-			y = strComenzo;
-			strComenzo = strtok(NULL,"|#");
-			sprite = strComenzo;
-			strComenzo = strtok(NULL,"|#");
-			vista->cargarVistaInicialJugador(nombreJugador,atoi(x),atoi(y),sprite);
-			if (strcmp(strComenzo, "camara") == 0)
-			{
-				strComenzo = strtok(NULL,"|#");
-				camaraX = strComenzo;
-				strComenzo = strtok(NULL,"|#");
-				camaraY = strComenzo;
-				strComenzo = strtok(NULL,"|#");
-				vista->inicializarCamara(atoi(camaraX),atoi(camaraY),atoi(handshake->getAncho().c_str()), atoi(handshake->getAlto().c_str()));
-			}
+	else
+	{
+		s.erase(0, pos + delimitador.length());
+		string del = "camara|";
+		pos = s.find(del);
+		texto = s.substr(0,pos);
+		while ((posAux = texto.find(delimitadorFinal)) != string::npos)
+		{
+			posAux = texto.find(delimitador);
+			nombreJugador = texto.substr(0,posAux);
+			texto.erase(0,posAux+delimitador.length());
+			posAux = texto.find(delimitador);
+			x = texto.substr(0,posAux);
+			texto.erase(0,posAux+delimitador.length());
+			posAux = texto.find(delimitador);
+			y = texto.substr(0,posAux);
+			texto.erase(0,posAux+delimitador.length());
+			posAux = texto.find(delimitadorFinal);
+			sprite = texto.substr(0,posAux);
+			texto.erase(0,posAux+delimitadorFinal.length());
+			vista->cargarVistaInicialJugador(nombreJugador,atoi(x.c_str()),atoi(y.c_str()),buscarSprite(sprite));
 		}
-		return true;
+		s.erase(0,pos+del.length());
+		pos = s.find(delimitador);
+		camaraX = s.substr(0,pos);
+		s.erase(0,pos+delimitador.length());
+		pos = s.find(delimitador);
+		camaraY = s.substr(0,pos);
+		s.erase(0,pos+delimitador.length());
+		pos = s.find(delimitadorFinal);
+		texto = s.substr(0,pos);
+		vector<pair<int,int>> abscisasCapas;
+		while ((posAux = texto.find(delimitador)) != string::npos)
+		{
+			pair<int,int> abscisas;
+			posAux = texto.find(delimitadorCapas);
+			abscisas.first = atoi(texto.substr(0,posAux).c_str());
+			texto.erase(0,posAux+delimitadorCapas.length());
+			posAux = texto.find(delimitador);
+			abscisas.second = atoi(texto.substr(0,posAux).c_str());
+			abscisasCapas.push_back(abscisas);
+			texto.erase(0,posAux+delimitador.length());
+		}
+		s.erase(0,pos+delimitadorFinal.length());
+		vista->inicializarCamara(atoi(camaraX.c_str()),atoi(camaraY.c_str()),atoi(handshake->getAncho().c_str()), atoi(handshake->getAlto().c_str()), abscisasCapas, handshake->getImagenes());
 	}
-	return false;
+	return true;
 }
 
 string Cliente::getHandshakeRecibido()

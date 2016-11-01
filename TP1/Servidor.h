@@ -27,6 +27,7 @@
 #include "XmlParser.h"
 #include "Handshake.h"
 #include <vector>
+#include "Capa.h"
 #define MAX_CANT_CLIENTES 6
 #define BUFFER_MAX_SIZE 200
 const int INFO = 1;
@@ -60,7 +61,6 @@ private:
 		queue<Mensaje>* mensajes;
 	};
 	list<Datos>* datosUsuarios;
-	vector<Jugador*>* jugadores;
 	list<MensajesProcesados>* listaMensajesProcesados;
 	struct ParametrosServidor {
 		Mensaje mensajeAProcesar;
@@ -92,11 +92,12 @@ public:
 	pair<int,string> aceptarConexion();
 	int getCantConexiones();
 	string serializarLista(list<string> datos);
-	pthread_mutex_t mutexColaNoProcesados = PTHREAD_MUTEX_INITIALIZER;;
-	pthread_mutex_t mutexListaProcesados = PTHREAD_MUTEX_INITIALIZER;;
-	pthread_mutex_t mutexColasProcesadas = PTHREAD_MUTEX_INITIALIZER;;
-	pthread_mutex_t mutexEnviarMensajes = PTHREAD_MUTEX_INITIALIZER;;
-	pthread_mutex_t mutexVectorJugadores = PTHREAD_MUTEX_INITIALIZER;;
+	pthread_mutex_t mutexColaNoProcesados = PTHREAD_MUTEX_INITIALIZER;
+	pthread_mutex_t mutexListaProcesados = PTHREAD_MUTEX_INITIALIZER;
+	pthread_mutex_t mutexColasProcesadas = PTHREAD_MUTEX_INITIALIZER;
+	pthread_mutex_t mutexEnviarMensajes = PTHREAD_MUTEX_INITIALIZER;
+	pthread_mutex_t mutexVectorJugadores = PTHREAD_MUTEX_INITIALIZER;
+	pthread_mutex_t mutexLog = PTHREAD_MUTEX_INITIALIZER;
 	string mensaje;
 	list<string> agregarDestinatarios(string remitente);
 	void procesarMensaje(Mensaje mensaje);
@@ -113,9 +114,7 @@ public:
 	Jugador* obtenerJugador(string nombre);
 	vector<Jugador*>* getJugadoresConectados();
 	void encolarMensajeProcesadoParaCadaCliente(Mensaje mensajeAProcesar, string mensajeJugadorPosActualizada);
-
 	void iniciarCamara();
-
 	//obtiene el estado inicial de los jugadores serializado para enviarlo via socket
 	string getEstadoInicialSerializado();
 	void guardarDatosDeConfiguracion();
@@ -129,6 +128,9 @@ public:
 	void verificarDesconexion(string nombre);
 	bool contieneJugador(string nombre);
 	int getAnchoSprite(string sprite);
+	vector<Jugador*>* jugadores;
+	vector<pair<int,int>> abscisasCapas;
+	string serializarCapas();
 };
 
 #endif /* TP1_SERVIDOR_H_ */

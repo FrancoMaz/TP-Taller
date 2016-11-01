@@ -31,6 +31,11 @@ string Mensaje::getStringDatos(){
 	return (this->clienteRemitente + '|' + this->clienteDestinatario + '|' + this->textoMensaje);
 }
 
+void Mensaje::setRemitente(string remitente)
+{
+	this->clienteRemitente = remitente;
+}
+
 void Mensaje::setearDatos(char* datosMensaje){
 	int pos = 0;
 	bool remitenteCompleto = false;

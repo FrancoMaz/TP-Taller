@@ -48,32 +48,32 @@ void Jugador::actualizarPosicion(SDL_Keycode tecla, bool sePresionoTecla, SDL_Re
 		velocidades.first += velocidad;
 		if (!saltar) {
 			spriteAEjecutar = "Jugador_corriendo_" + this->equipo;
-			condicionSprite = "Normal";
 		}
+		condicionSprite = "Normal";
 	}
 	else if (tecla == SDLK_LEFT && sePresionoTecla)
 	{
 		velocidades.first -= velocidad;
 		if (!saltar) {
 			spriteAEjecutar = "Jugador_corriendo_" + this->equipo;
-			condicionSprite = "Espejado";
 		}
+		condicionSprite = "Espejado";
 	}
 	else if (tecla == SDLK_UP && sePresionoTecla)
 	{
 		if(angulo == 0)
 		{
 			saltar = true;
-			spriteAEjecutar = "Jugador_saltando_" + this->equipo;
 		}
+		spriteAEjecutar = "Jugador_saltando_" + this->equipo;
 	}
 	else if(tecla == SDLK_RIGHT && !sePresionoTecla)
 	{
 		velocidades.first = 0;
 		if (!saltar) {
 			spriteAEjecutar = "Jugador_" + this->equipo;
-			condicionSprite = "Normal";
 		}
+		condicionSprite = "Normal";
 	}
 	else if(tecla == SDLK_LEFT && !sePresionoTecla)
 	{
@@ -81,11 +81,11 @@ void Jugador::actualizarPosicion(SDL_Keycode tecla, bool sePresionoTecla, SDL_Re
 		if (!saltar)
 		{
 			spriteAEjecutar = "Jugador_" + this->equipo;
-			condicionSprite = "Espejado";
 		}
+		condicionSprite = "Espejado";
 	}
 
-	if(saltar)
+	if(saltar && tecla == SDLK_UP && sePresionoTecla)
 	{
 		velocidades.second = -12*cos(angulo);
 		angulo += PI/25;
@@ -106,10 +106,11 @@ void Jugador::actualizarPosicion(SDL_Keycode tecla, bool sePresionoTecla, SDL_Re
 	posicion.first += velocidades.first;
 	posicion.second += velocidades.second;
 
-	if (posicion.first < camara.x or posicion.first > camara.x + ANCHO_VENTANA - 100)
+	if (posicion.first < camara.x or posicion.first + 84 > camara.x + ANCHO_VENTANA - MARGENIZQ)
 	{
 		posicion.first -= velocidades.first;
 	}
+
 }
 
 void Jugador::setPosicion(int x, int y)
@@ -159,6 +160,7 @@ string Jugador::serializarInicio()
 
 bool Jugador::chequearCambiarCamara(SDL_Rect camara, int anchoVentana, pair<int,int> posicionesExtremos, int anchoSprite)
 {
+
 	int posicionMasAtras = posicionesExtremos.first;
 	int posicionMasAdelante = posicionesExtremos.second;
 	if (camara.x < 0){
@@ -170,11 +172,16 @@ bool Jugador::chequearCambiarCamara(SDL_Rect camara, int anchoVentana, pair<int,
 		camara.x = posicionMasAtras;
 		return false;
 	}
+
+	if (this->velocidades.first <= 0)
+	{
+		return false;
+	}
 	/*if (posicionMasAdelante > (camara.x + anchoVentana/2) and posicionMasAtras > (camara.x + MARGENIZQ))
 	{
 		return true;
 	}*/
- 	if(this->posicion.first - camara.x > anchoVentana/2)
+ 	if(this->posicion.first - camara.x > anchoVentana/2 && posicionMasAtras >= (camara.x + MARGENIZQ))
  	{
  		return true;
  	}
