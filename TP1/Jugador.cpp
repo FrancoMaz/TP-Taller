@@ -112,6 +112,12 @@ void Jugador::actualizarPosicion(SDL_Keycode tecla, bool sePresionoTecla, SDL_Re
 	}
 }
 
+void Jugador::setPosicion(int x, int y)
+{
+	posicion.first = x;
+	posicion.second = y;
+}
+
 void Jugador::setConectado()
 {
 	this->conectado = true;
@@ -195,9 +201,14 @@ void Jugador::setPosicion(int posicion)
 	this->posicion.first = posicion;
 }
 
-void Jugador::setSprite(string sprite)
+void Jugador::setSprite(string sprite, bool equipo, string condicion)
 {
-	this->spriteAEjecutar = sprite;
+	spriteAEjecutar = sprite;
+	if (equipo && condicion != "")
+	{
+		spriteAEjecutar = sprite + "_" + this->equipo;
+		condicionSprite = condicion;
+	}
 }
 
 string Jugador::getStringJugadorDesconectado()

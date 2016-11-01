@@ -160,6 +160,9 @@ void* enviarEventos(void* arg) {
 			else if(controlador->presionarBoton(SDLK_UP)){
 				cliente->enviar("Tecla Arriba","Todos");
 			}
+			else if(controlador->presionarBoton(SDLK_r)){
+				cliente->enviar("R","Todos");
+			}
 			SDL_FlushEvent(SDL_MOUSEMOTION);
 			SDL_FlushEvent(SDL_KEYDOWN);//si se procesa antes, espero lo que tengo que resta.
 			int frameTicks = capTimer.getTicks();

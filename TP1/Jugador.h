@@ -53,8 +53,9 @@ public:
 	int getVelocidadX();
 	void resetearPosicion(int anchoCapaPrincipal);
 	void setPosicion(int posicion);
-	void setSprite(string sprite);
+	void setSprite(string sprite, bool equipo=false,string condicion = "");
 	string getStringJugadorDesconectado();
 	string getEquipo();
+	void setPosicion(int x, int y);
 };
 #endif /* JUGADOR_H_ */

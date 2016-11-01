@@ -377,6 +377,23 @@ void Servidor::procesarMensajes() {
 			pthread_create(&threadSalto,NULL,&actualizarPosiciones,&parametrosServidor);
 			pthread_detach(threadSalto);
 		}
+		else if (mensajeAProcesar.getTexto() == "R"){
+			string mensajeJugadorPosActualizada = "";
+			camara.x = 0;
+			camara.y = 0;
+			mensajeCamaraString = "1|0|0|0#";
+			mensajeCamara = new Mensaje(mensajeAProcesar.getRemitente(),"Todos",mensajeCamaraString);
+			encolarMensajeProcesadoParaCadaCliente(*mensajeCamara,mensajeCamaraString);
+			for (int i=0; i < jugadores->size(); i++)
+			{
+				int xInicial = 20;
+				Jugador* jugador = jugadores->at(i);
+				jugador->setPosicion(xInicial);
+				xInicial += 84;
+				jugador->setSprite("Jugador",true,"Normal");
+				encolarMensajeProcesadoParaCadaCliente(mensajeAProcesar,mensajeJugadorPosActualizada);
+			}
+		}
 		else
 		{
 			string mensajeJugadorPosActualizada = "";
