@@ -850,6 +850,10 @@ void Servidor::verificarDesconexion(string nombre)
 					encolarMensajeProcesadoParaCadaCliente(*mensaje,mensajeDesconectado);
 				}
 			}
+			jugador->setSprite("Jugador_" + jugador->getEquipo());
+			mensajeDesconectado = jugador->getStringJugador();
+			mensaje = new Mensaje(jugador->getNombre(),"Todos",mensajeDesconectado);
+			encolarMensajeProcesadoParaCadaCliente(*mensaje,mensajeDesconectado);
 		}
 	}
 }
