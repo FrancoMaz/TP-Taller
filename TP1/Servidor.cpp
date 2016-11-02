@@ -295,10 +295,10 @@ void* Servidor::actualizarPosiciones(void* arg)
 		}
 		int frameTicks = timer.getTicks();
 		//cout << frameTicks << endl;
-		if( frameTicks < 25 )
+		if( frameTicks < 50 )
 		{
 			//Wait remaining time
-			SDL_Delay( 25 - frameTicks );
+			SDL_Delay( 50 - frameTicks );
 		}
 	} while (jugadorSalto);
 }
@@ -744,9 +744,8 @@ string Servidor::traerMensajesProcesados(string nombreCliente) {
 			colaDeMensajes = mensaje.mensajes;
 		}
 	}
-
+	LTimer timer;
 	string mensajesConcatenados = concatenarMensajes(colaDeMensajes);
-
 	return mensajesConcatenados;
 
 }

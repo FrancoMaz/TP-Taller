@@ -4,7 +4,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <vector>
-
+#include "LTimer.h"
 
 using namespace std;
 
@@ -368,8 +368,8 @@ bool Cliente::conectar(string nombre, string contrasenia) {
 
 		strcpy(buffer, nombreYPass);
 		struct timeval timeout;
-		timeout.tv_sec = 0;
-		timeout.tv_usec = 50000;
+		timeout.tv_sec = 1;
+		timeout.tv_usec = 0;
 		if (setsockopt (socketCliente, SOL_SOCKET, SO_RCVTIMEO, (char *)&timeout, sizeof(timeout)) < 0)
 		{
 			cout << "No se pudo setear el timeout del recv del socket" << endl;
@@ -473,6 +473,7 @@ void Cliente::enviarMensajeATodos(string mensaje) {
 
 string Cliente::recibir() {
 	//Se reciben todos los mensajes en la secuencia en la que fueron enviados
+	LTimer timer;
 	char colaMensajes[BUFFER_MAX_SIZE];
 	memset(colaMensajes, '\0', BUFFER_MAX_SIZE);
 	string metodo = "2|" + this->nombre + "#";

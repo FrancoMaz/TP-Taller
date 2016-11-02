@@ -59,21 +59,53 @@ void procesarUltimosMensajes(string mensajes, Cliente* cliente, UpdateJugador* u
 	int xCamaraFinal = 0;
 	int yCamaraFinal = 0;
 	vector<SetDeSpritesDto*> setsSprites = handshakeDeserializado->getSprites();
+	LTimer timer;
 	if(mensajes != mensajeVacio && mensajes != ""){
+
 		primeraVez = false;
 		mensajes[mensajes.length() - 1] = '#';
-		string s = mensajes;
-		string delimitador = "|";
-		string delimitadorFinal = "#";
-		string delimitadorCapas = ",";
-		string texto;
+		char str [mensajes.length()];
+		strcpy(str, mensajes.c_str());
+		const char* delim = "|#,";
+		char* texto = strtok(str,delim);
+		//string s = mensajes;
+		//string delimitador = "|";
+		//string delimitadorFinal = "#";
+		//string delimitadorCapas = ",";
+		//string texto;
 		string capas;
 		size_t posCapas;
-		size_t pos = s.find(delimitador);
-		texto = s.substr(0, pos);
-		while (texto != "") {
-			update->setRemitente(texto);
-			s.erase(0, pos + delimitador.length());
+		timer.start();
+		//size_t pos = s.find(delimitador);
+		//texto = s.substr(0, pos);
+		while (texto != NULL) {
+			update->setRemitente(string(texto));
+			texto = strtok(NULL,delim);
+			if (string(texto) == "0")
+			{
+				texto = strtok(NULL,delim);
+				update->setDestinatario(string(texto));
+				texto = strtok(NULL,delim);
+				update->setX(string(texto));
+				texto = strtok(NULL,delim);
+				update->setY(string(texto));
+				texto = strtok(NULL,delim);
+				string spriteAEjecutar = string(texto);
+				texto = strtok(NULL,delim);
+				update->setCondicion(string(texto));
+				int timerSprites = timer.getTicks();
+				for (int i = 0; i < setsSprites.size(); i++){
+					vector<SpriteDto*> listaSprites = setsSprites.at(i)->getSprites();
+					for (int j = 0; j < listaSprites.size(); j++)
+					{
+						if ((string(spriteAEjecutar)) == listaSprites.at(j)->getID())
+						{
+							update->setSprite(listaSprites.at(j));
+						}
+					}
+				}
+			}
+			/*s.erase(0, pos + delimitador.length());
 			pos = s.find(delimitador);
 			texto = s.substr(0,pos);
 			if (texto == "0"){
@@ -97,7 +129,9 @@ void procesarUltimosMensajes(string mensajes, Cliente* cliente, UpdateJugador* u
 				s.erase(0, pos + delimitador.length());
 				pos = s.find(delimitadorFinal);
 				texto = s.substr(0,pos);
+
 				update->setCondicion(texto);
+				int timerSprites = timer.getTicks();
 				for (int i = 0; i < setsSprites.size(); i++){
 					vector<SpriteDto*> listaSprites = setsSprites.at(i)->getSprites();
 					for (int i = 0; i < listaSprites.size(); i++)
@@ -108,8 +142,27 @@ void procesarUltimosMensajes(string mensajes, Cliente* cliente, UpdateJugador* u
 						}
 					}
 				}
-			}
+
+			}*/
 			else{
+				texto = strtok(NULL,delim);
+				int x = stringToInt(string(texto));
+				texto = strtok(NULL,delim);
+				int y = stringToInt(string(texto));
+				vector<pair<int,int>> abscisasCapas;
+				int timerAbs = timer.getTicks();
+				for (int i = 0; i < handshakeDeserializado->getImagenes().size(); i++)
+				{
+					pair<int,int> abscisas;
+					texto = strtok(NULL,delim);
+					abscisas.first = stringToInt(string(texto));
+					texto = strtok(NULL,delim);
+					abscisas.second = stringToInt(string(texto));
+					abscisasCapas.push_back(abscisas);
+				}
+				vista->actualizarCamara(x,y,abscisasCapas,stringToInt(handshakeDeserializado->getAncho()));
+
+				/*
 				s.erase(0, pos + delimitador.length());
 				pos = s.find(delimitador);
 				texto = s.substr(0,pos);
@@ -122,6 +175,8 @@ void procesarUltimosMensajes(string mensajes, Cliente* cliente, UpdateJugador* u
 				pos = s.find(delimitadorFinal);
 				texto = s.substr(0,pos);
 				vector<pair<int,int>> abscisasCapas;
+				int timerAbs = timer.getTicks();
+				cout << "DURACION STR SUBSTRING Y ESO: " << timerAbs << endl;
 				while ((posCapas = texto.find(delimitador)) != string::npos)
 				{
 					pair<int,int> abscisas;
@@ -135,13 +190,16 @@ void procesarUltimosMensajes(string mensajes, Cliente* cliente, UpdateJugador* u
 					abscisasCapas.push_back(abscisas);
 					texto.erase(0,posCapas+delimitador.length());
 				}
+				cout << "DURACION SETEA ABSCISAS: " << timer.getTicks() - timerAbs << endl;
 				vista->actualizarCamara(x,y,abscisasCapas,stringToInt(handshakeDeserializado->getAncho()));
+				*/
 			}
 			vista->actualizarPosJugador(update,stringToInt(handshakeDeserializado->getAncho()),stringToInt(handshakeDeserializado->getImagenes().at(0)->getAncho()));
+			texto = strtok(NULL,delim);
 			//vista->actualizarJugador(update,stringToInt(handshakeDeserializado->getAncho()),stringToInt(handshakeDeserializado->getImagenes().at(0)->getAncho()));
-			s.erase(0, pos + delimitador.length());
+			/*s.erase(0, pos + delimitador.length());
 			pos = s.find(delimitador);
-			texto = s.substr(0,pos);
+			texto = s.substr(0,pos);*/
 		}
 	}
 	//vista->actualizarJugador(update,stringToInt(handshakeDeserializado->getAncho()), stringToInt(handshakeDeserializado->getImagenes().at(0)->getAncho()));
@@ -162,9 +220,8 @@ void* recibirPosicionJugadores(void* arg) {
 		capTimer.start();
 		datosRecibidos = cliente->recibir();
 		int ticksRecibir = capTimer.getTicks();
-		//cout << "TICKS DURACION RECIBIR: " << ticksRecibir << endl;
 		procesarUltimosMensajes(datosRecibidos, cliente, update, &primeraVez);
-		//cout << "TICKS DURACION PROCESAR: " << (capTimer.getTicks() - ticksRecibir)<< endl;
+		int ticksProcesar = capTimer.getTicks() - ticksRecibir;
 		//si se procesa antes, espero lo que tengo que resta.
 		int frameTicks = capTimer.getTicks();
 		if( frameTicks < SCREEN_TICKS_PER_FRAME )
@@ -174,7 +231,8 @@ void* recibirPosicionJugadores(void* arg) {
 		}
 		else{
 			cout << frameTicks << endl;
-			cout << "ME FALTA TIEMPO EN RECIBIR" << endl;
+			cout << "TICKS DURACION RECIBIR: " << ticksRecibir << endl;
+			cout << "TICKS DURACION PROCESAR: " << ticksProcesar << endl;
 		}
 	}
 }
@@ -196,57 +254,50 @@ void* enviarEventos(void* arg) {
 		usleep(3000);
 		while(SDL_PollEvent(&evento)){
 			const Uint8 *keys = SDL_GetKeyboardState(NULL);
-			//usleep(50000);
 			//cout << "Adentro de enviar eventos en mainCliente" << endl;
 			capTimer.start();
+
 			if (evento.type == SDL_QUIT){
 				controlador->setCerrarVentana();
 			}
-            if(keys[SDL_SCANCODE_LEFT])
-            {
-            	cout << "IZQ" << endl;
-                presionadaIzquierda = true;
-            }
-            if(keys[SDL_SCANCODE_RIGHT]){
-            	cout << "DER" << endl;
-                presionadaDerecha = true;
-            }
-            if(keys[SDL_SCANCODE_UP])
-            {
-            	if (!vista->salto){
-                	cout << "ARRIBA" << endl;
-            		vista->salto = true;
-            		presionadaArriba = true;
-            	}
-            }
-			if(controlador->soltarBoton(SDLK_RIGHT)){
-				cliente->enviar("Soltar Tecla Derecha","Todos");
+			if(controlador->presionarBoton(SDLK_r)){
+				cliente->enviar("R","Todos");
 			}
-			if(controlador->soltarBoton(SDLK_LEFT)){
-				cliente->enviar("Soltar Tecla Izquierda","Todos");
+
+			if (evento.type == SDL_QUIT){
+				vista->controlador->setCerrarVentana();
 			}
-			if (presionadaDerecha && !presionadaIzquierda){
+			if(vista->controlador->presionarBoton(SDLK_RIGHT)){
 				cliente->enviar("Tecla Derecha","Todos");
 			}
-			if (presionadaIzquierda && !presionadaDerecha){
+			else if(vista->controlador->presionarBoton(SDLK_LEFT)){
 				cliente->enviar("Tecla Izquierda","Todos");
 			}
-			if (presionadaArriba){
-				cliente->enviar("Tecla Arriba","Todos");
+			else if(vista->controlador->presionarBoton(SDLK_UP)){
+				if (!vista->salto){
+					vista->salto = true;
+					cliente->enviar("Tecla Arriba","Todos");
+				}
 			}
-			presionadaArriba = false;
-			presionadaDerecha = false;
-			presionadaIzquierda = false;
+			else if(vista->controlador->presionarBoton(SDLK_r)){
+				cliente->enviar("R","Todos");
+			}
+			else if(vista->controlador->soltarBoton(SDLK_RIGHT)){
+				cliente->enviar("Soltar Tecla Derecha","Todos");
+			}
+			else if(vista->controlador->soltarBoton(SDLK_LEFT)){
+				cliente->enviar("Soltar Tecla Izquierda","Todos");
+			}
+
 			/*
-			if (controlador->presionarBoton(SDLK_RIGHT))
-			{
-				presionadaDerecha = true;
-			}
-			else if (controlador->presionarBoton(SDLK_LEFT))
+			if(keys[SDL_SCANCODE_LEFT])
 			{
 				presionadaIzquierda = true;
 			}
-			else if (controlador->presionarBoton(SDLK_UP))
+			if(keys[SDL_SCANCODE_RIGHT]){
+				presionadaDerecha = true;
+			}
+			if(keys[SDL_SCANCODE_UP])
 			{
 				if (!vista->salto){
 					vista->salto = true;
@@ -270,25 +321,8 @@ void* enviarEventos(void* arg) {
 			if (presionadaArriba){
 				cliente->enviar("Tecla Arriba","Todos");
 				presionadaArriba = false;
-			}/*
-			if(controlador->presionarBoton(SDLK_RIGHT)){
-				cliente->enviar("Tecla Derecha","Todos");
 			}
-			else if(controlador->presionarBoton(SDLK_LEFT)){
-				cliente->enviar("Tecla Izquierda","Todos");
-			}
-			else if(controlador->presionarBoton(SDLK_UP)){
-				cliente->enviar("Tecla Arriba","Todos");
-			}
-			else if(controlador->presionarBoton(SDLK_r)){
-				cliente->enviar("R","Todos");
-			}
-			if(controlador->soltarBoton(SDLK_RIGHT)){
-				cliente->enviar("Soltar Tecla Derecha","Todos");
-			}
-			if(controlador->soltarBoton(SDLK_LEFT)){
-				cliente->enviar("Soltar Tecla Izquierda","Todos");
-			}*/
+*/
 			SDL_FlushEvent(SDL_MOUSEMOTION);
 			SDL_FlushEvent(SDL_KEYDOWN);
 			//si se procesa antes, espero lo que tengo que resta.

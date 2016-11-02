@@ -15,7 +15,7 @@
 #include <unistd.h>
 #include "Servidor.h"
 #include <pthread.h>
-
+#include "LTimer.h"
 using namespace std;
 
 struct parametrosThreadCliente {
@@ -141,11 +141,9 @@ void* procesar(void* arg) {
 	Servidor* servidor = parametros->servidor;
 	string usuario = parametros->usuario;
 	int socket = parametros->socketCliente;
-
 	pthread_mutex_lock(&servidor->mutexListaProcesados);
 	string mensajesProcesados = servidor->traerMensajesProcesados(usuario);
 	pthread_mutex_unlock(&servidor->mutexListaProcesados);
-
 	int largo = strlen(mensajesProcesados.c_str());
 	stringstream iss;
 	iss << largo;
@@ -159,19 +157,7 @@ void* procesar(void* arg) {
 		while (BUFFER_MAX_SIZE < (largo - inicio)) {
 			string mensajeSpliteado = mensajesProcesados.substr(inicio, BUFFER_MAX_SIZE);
 			strcpy(buffer, mensajeSpliteado.c_str());
-			/*do{
-				ok = send(socket, buffer, strlen(buffer), 0);
-			}while (ok == 0 );
-			*/
-			//pthread_mutex_lock(&servidor->mutexSocket);
 			ok = send(socket, buffer, strlen(buffer), 0);
-			//pthread_mutex_unlock(&servidor->mutexSocket);
-			/*if (ok == 0){
-				servidor->guardarLog("Se cerró la conexión con el cliente " + string(usuario) + string(".\n"),DEBUG);
-			}
-			else if (ok < 0){
-				servidor->guardarLog("ERROR: Ocurrió un problema con el socket del cliente: " + string(usuario)+ string(".\n"),DEBUG);
-			}*/
 			inicio += BUFFER_MAX_SIZE;
 		}
 		string mensajeSpliteado = mensajesProcesados.substr(inicio, largo);
@@ -179,18 +165,7 @@ void* procesar(void* arg) {
 	} else {
 		strcpy(buffer, mensajesProcesados.c_str());
 	}
-	//pthread_mutex_lock(&servidor->mutexSocket);
 	ok = send(socket, buffer, strlen(buffer), 0);
-	//pthread_mutex_unlock(&servidor->mutexSocket);
-	/*if (ok == 0){
-		servidor->guardarLog("Se cerró la conexión con el cliente " + string(usuario) + string(".\n"),DEBUG);
-	}
-	else if (ok < 0){
-		servidor->guardarLog("ERROR: Ocurrió un problema con el socket del cliente: " + string(usuario)+ string(".\n"),DEBUG);
-	}
-	servidor->guardarLog("Mensajes para el cliente:" + string(usuario) + ", Mensajes: " + mensajesProcesados + string(".\n"),INFO);
-<<<<<<< HEAD
-	*/
 	return NULL;
 }
 

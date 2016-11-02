@@ -31,7 +31,6 @@ struct datosConexion {
 class Vista {
 private:
 	VentanaSDL* ventana;
-	Controlador* controlador;
 	vector<TexturaSDL*> textura;
 	datosConexion datos;
 	int opacidad;
@@ -68,6 +67,7 @@ public:
 	bool salto;
 	void actualizarPosJugador(UpdateJugador* update, int anchoVentana, int anchoCapaPrincipal);
 	void actualizarPantalla(int anchoVentana);
+	Controlador* controlador;
 };
 
 #endif /* TP2_VISTA_H_ */
