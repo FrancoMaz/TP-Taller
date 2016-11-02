@@ -525,9 +525,9 @@ bool Cliente::checkearInicioJuego(Vista* vista)
 	texto = s.substr(0,pos);
 
 	string nombreJugador;
-	string x;
-	string y;
-	string sprite;
+	string x,xJugador;
+	string y,yJugador;
+	string sprite,spriteJugador;
 	string camaraX;
 	string camaraY;
 
@@ -555,8 +555,17 @@ bool Cliente::checkearInicioJuego(Vista* vista)
 			posAux = texto.find(delimitadorFinal);
 			sprite = texto.substr(0,posAux);
 			texto.erase(0,posAux+delimitadorFinal.length());
-			vista->cargarVistaInicialJugador(nombreJugador,atoi(x.c_str()),atoi(y.c_str()),buscarSprite(sprite));
+			if(this->nombre == nombreJugador){
+				xJugador = x;
+				yJugador = y;
+				spriteJugador = sprite;
+			}
+			else{
+				vista->cargarVistaInicialJugador(nombreJugador,atoi(x.c_str()),atoi(y.c_str()),buscarSprite(sprite));
+			}
+			vista->cargarVistaInicialJugador(this->nombre,atoi(xJugador.c_str()),atoi(yJugador.c_str()),buscarSprite(spriteJugador));
 		}
+
 		s.erase(0,pos+del.length());
 		pos = s.find(delimitador);
 		camaraX = s.substr(0,pos);
