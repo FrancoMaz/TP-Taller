@@ -69,7 +69,6 @@ void procesarUltimosMensajes(string mensajes, Cliente* cliente, UpdateJugador* u
 		size_t posCapas;
 		size_t pos = s.find(delimitador);
 		texto = s.substr(0, pos);
-		cout << mensajes << endl;
 		while (texto != "") {
 			update->setRemitente(texto);
 			s.erase(0, pos + delimitador.length());

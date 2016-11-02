@@ -37,7 +37,7 @@ Servidor::Servidor(char* nombreArchivoDeUsuarios, int puerto, Logger* logger) {
 	this->guardarLog(mensaje, DEBUG);
 	this->guardarDatosDeUsuarios();
 	this->guardarDatosDeConfiguracion();
-	vectorEquipos = {"rojo", "verde", "amarillo"};
+	vectorEquipos = {"rojo", "verde", "amarillo", "azul"};
 	posicionXInicial = 20;
 	posicionVector = 0;
 	camara.x = 0;
@@ -850,6 +850,10 @@ void Servidor::verificarDesconexion(string nombre)
 					encolarMensajeProcesadoParaCadaCliente(*mensaje,mensajeDesconectado);
 				}
 			}
+			jugador->setSprite("Jugador_" + jugador->getEquipo());
+			mensajeDesconectado = jugador->getStringJugador();
+			mensaje = new Mensaje(jugador->getNombre(),"Todos",mensajeDesconectado);
+			encolarMensajeProcesadoParaCadaCliente(*mensaje,mensajeDesconectado);
 		}
 	}
 }
