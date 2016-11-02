@@ -175,6 +175,9 @@ void* recibirPosicionJugadores(void* arg) {
 void* enviarEventos(void* arg) {
 	Cliente* cliente = (Cliente*) arg;
 	bool controlArriba = false;
+	bool presionadaArriba = false;
+	bool presionadaDerecha = false;
+	bool presionadaIzquierda = false;
 	 //The frames per second timer
 	LTimer fpsTimer;
 	//The frames per second cap timer
@@ -192,7 +195,37 @@ void* enviarEventos(void* arg) {
 			if (evento.type == SDL_QUIT){
 				controlador->setCerrarVentana();
 			}
-			if(controlador->presionarBoton(SDLK_RIGHT)){
+			if (controlador->presionarBoton(SDLK_RIGHT))
+			{
+				presionadaDerecha = true;
+			}
+			else if (controlador->presionarBoton(SDLK_LEFT))
+			{
+				presionadaIzquierda = true;
+			}
+			else if (controlador->presionarBoton(SDLK_UP))
+			{
+				presionadaArriba = true;
+			}
+			if(controlador->soltarBoton(SDLK_RIGHT)){
+				presionadaDerecha = false;
+				cliente->enviar("Soltar Tecla Derecha","Todos");
+			}
+			if(controlador->soltarBoton(SDLK_LEFT)){
+				presionadaIzquierda = false;
+				cliente->enviar("Soltar Tecla Izquierda","Todos");
+			}
+			if (presionadaDerecha){
+				cliente->enviar("Tecla Derecha","Todos");
+			}
+			if (presionadaIzquierda){
+				cliente->enviar("Tecla Izquierda","Todos");
+			}
+			if (presionadaArriba){
+				cliente->enviar("Tecla Arriba","Todos");
+				presionadaArriba = false;
+			}
+			/*if(controlador->presionarBoton(SDLK_RIGHT)){
 				cliente->enviar("Tecla Derecha","Todos");
 			}
 			else if(controlador->presionarBoton(SDLK_LEFT)){
@@ -209,15 +242,6 @@ void* enviarEventos(void* arg) {
 			}
 			if(controlador->soltarBoton(SDLK_LEFT)){
 				cliente->enviar("Soltar Tecla Izquierda","Todos");
-			}
-			/*if (keys[SDL_SCANCODE_UP]){
-				cliente->enviar("Tecla Arriba","Todos");
-			}
-			if (keys[SDL_SCANCODE_RIGHT]){
-				cliente->enviar("Tecla Derecha","Todos");
-			}
-			if (keys[SDL_SCANCODE_LEFT]){
-				cliente->enviar("Tecla Izquierda","Todos");
 			}*/
 			SDL_FlushEvent(SDL_MOUSEMOTION);
 			SDL_FlushEvent(SDL_KEYDOWN);//si se procesa antes, espero lo que tengo que resta.
