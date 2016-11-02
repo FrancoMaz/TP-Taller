@@ -563,10 +563,8 @@ bool Cliente::checkearInicioJuego(Vista* vista)
 			else{
 				vista->cargarVistaInicialJugador(nombreJugador,atoi(x.c_str()),atoi(y.c_str()),buscarSprite(sprite));
 			}
-
 		}
 		vista->cargarVistaInicialJugador(this->nombre,atoi(xJugador.c_str()),atoi(yJugador.c_str()),buscarSprite(spriteJugador));
-
 		s.erase(0,pos+del.length());
 		pos = s.find(delimitador);
 		camaraX = s.substr(0,pos);
