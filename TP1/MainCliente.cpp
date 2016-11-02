@@ -41,8 +41,7 @@ int stringToInt(string atributo) {
 
 bool chequearSocket(string ip, int puerto) {
 	//string ipServer = "192.168.1.11";
-	string ipServer = "10.1.77.13";
-	//string ipServer = "127.0.0.1";
+	string ipServer = "127.0.0.1";
 	int puertoDeEscucha = 7891;
 
 	return (ip == ipServer && puerto == puertoDeEscucha);
