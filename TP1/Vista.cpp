@@ -296,12 +296,6 @@ void Vista::transicionDePantalla(){
 
 void Vista::cargarEscenario(vector<ImagenDto*> imagenes, int anchoVentana, int altoVentana){
 	this->ventana->limpiar();
-	/*for (int i=0; i<imagenes.size(); i++)
-	{
-		SDL_Rect rectangulo = {0,0,anchoVentana,altoVentana};
-		Capa* capa = new Capa(imagenes.at(i), rectangulo, ventana->crearTextura("Recursos/" + imagenes.at(i)->getPath() + ".png",0));
-		vectorCapas.push_back(capa);
-	}*/
 	for (int i=vectorCapas.size()-1; i>=0; i--)
 	{
 		vectorCapas.at(i)->textura->aplicarPosicionDePorcion(0,0,&vectorCapas.at(i)->rectangulo, 0, SDL_FLIP_NONE);

@@ -23,8 +23,6 @@ XmlParser::XmlParser(string xmlPath) {
 	this->cantidadMaximaDeJugadores = "";
 	pair<const char*, const char*> dimensiones ("", "");
 	this->tamanioVentana = dimensiones;
-	//this->escenario = new list<ImagenDto>();
-	//this->sprites = new list<SetDeSpritesDto*>();
 }
 
 const char* XmlParser::getCantidadMaximaDeJugadores() {
@@ -57,38 +55,18 @@ string XmlParser::serializarEscenario(){
 	string escenarioConcatenado = "Escenario[";
 	for (int i = 0; i < this->escenario.size(); i++) {
 		escenarioConcatenado += this->escenario.at(i)->getPath();
-		//cout << (*i).getPath() << endl;
 		escenarioConcatenado += ",";
 		escenarioConcatenado += this->escenario.at(i)->getAncho();
-		//cout << (*i).getZIndex() << endl;
 		escenarioConcatenado += ",";
 		escenarioConcatenado += this->escenario.at(i)->getAlto();
-		//cout << (*i).getVelocidad() << endl;
 		escenarioConcatenado += ",";
 		escenarioConcatenado += this->escenario.at(i)->getZIndex();
 		escenarioConcatenado += "|";
 	}
-	//string escenarioC = escenarioConcatenado.substr(0, escenarioConcatenado.length() -1);
 	escenarioConcatenado += "]-";
 	return escenarioConcatenado;
 
 }
-
-/*
- * void ordenarArreglo(int arreglo[], int tamano)
-{
-  for (int i = 0; i<tamano-1 ; i++)
-    for (int j = 0; j<tamano-1 ; j++)
-      if(arreglo[j] < arreglo[j+1])
- intercambiar(arreglo[j],arreglo[j+1]);
-}
-void intercambiar(int &a, int &b)
-{
-  int tmp = b;
-  b = a;
-  a = tmp;
-}
- */
 
 vector<ImagenDto*> XmlParser::getEscenario() {
 	if (this->escenario.empty()) {
@@ -109,9 +87,6 @@ vector<ImagenDto*> XmlParser::getEscenario() {
 			}
 		}
 
-		/*for (int i = 0; i < this->escenario.size(); i++) {
-		   cout << this->escenario.at(i)->getZIndex() << ' ';
-		}*/
 	}
 
 	return this->escenario;
@@ -143,10 +118,8 @@ string XmlParser::serializarSetDeSprites(){
 		setDeSpritesconcatenados += this->sprites.at(i)->getCarpeta();
 		setDeSpritesconcatenados += ";";
 		setDeSpritesconcatenados += this->serializarSprites(this->sprites.at(i)->getSprites());
-		//setDeSpritesconcatenados = setDeSpritesconcatenados.substr(0, setDeSpritesconcatenados.length() -1);
 		setDeSpritesconcatenados += "|-";
 	}
-	//setDeSpritesconcatenados = setDeSpritesconcatenados.substr(0, setDeSpritesconcatenados.length() -1);
 	setDeSpritesconcatenados += "]";
 	return setDeSpritesconcatenados;
 }

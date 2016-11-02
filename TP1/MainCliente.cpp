@@ -23,7 +23,6 @@ using namespace std;
 
 datosConexion datosCliente;
 Vista * vista = new Vista();
-Controlador* controlador = new Controlador();
 Handshake* handshakeDeserializado;
 
 struct ComunicacionCliente{
@@ -154,7 +153,7 @@ void* recibirPosicionJugadores(void* arg) {
 	 //The frames per second timer
 	LTimer capTimer;
 	usleep(50000);
-	while(!controlador->comprobarCierreVentana()){
+	while(!vista->controlador->comprobarCierreVentana()){
 		usleep(3000);
 		 //Start cap timer
 		capTimer.start();
@@ -181,7 +180,7 @@ void* enviarEventos(void* arg) {
 	//Start counting frames per second
 	int countedFrames = 0;
 	fpsTimer.start();
-	while(!controlador->comprobarCierreVentana()){
+	while(!vista->controlador->comprobarCierreVentana()){
 		const Uint8 *keys = SDL_GetKeyboardState(NULL);
 		usleep(3000);
 		while(SDL_PollEvent(&evento)){
@@ -189,35 +188,26 @@ void* enviarEventos(void* arg) {
 			//cout << "Adentro de enviar eventos en mainCliente" << endl;
 			capTimer.start();
 			if (evento.type == SDL_QUIT){
-				controlador->setCerrarVentana();
+				vista->controlador->setCerrarVentana();
 			}
-			if(controlador->presionarBoton(SDLK_RIGHT)){
+			if(vista->controlador->presionarBoton(SDLK_RIGHT)){
 				cliente->enviar("Tecla Derecha","Todos");
 			}
-			else if(controlador->presionarBoton(SDLK_LEFT)){
+			else if(vista->controlador->presionarBoton(SDLK_LEFT)){
 				cliente->enviar("Tecla Izquierda","Todos");
 			}
-			else if(controlador->presionarBoton(SDLK_UP)){
+			else if(vista->controlador->presionarBoton(SDLK_UP)){
 				cliente->enviar("Tecla Arriba","Todos");
 			}
-			else if(controlador->presionarBoton(SDLK_r)){
+			else if(vista->controlador->presionarBoton(SDLK_r)){
 				cliente->enviar("R","Todos");
 			}
-			if(controlador->soltarBoton(SDLK_RIGHT)){
+			else if(vista->controlador->soltarBoton(SDLK_RIGHT)){
 				cliente->enviar("Soltar Tecla Derecha","Todos");
 			}
-			if(controlador->soltarBoton(SDLK_LEFT)){
+			else if(vista->controlador->soltarBoton(SDLK_LEFT)){
 				cliente->enviar("Soltar Tecla Izquierda","Todos");
 			}
-			/*if (keys[SDL_SCANCODE_UP]){
-				cliente->enviar("Tecla Arriba","Todos");
-			}
-			if (keys[SDL_SCANCODE_RIGHT]){
-				cliente->enviar("Tecla Derecha","Todos");
-			}
-			if (keys[SDL_SCANCODE_LEFT]){
-				cliente->enviar("Tecla Izquierda","Todos");
-			}*/
 			SDL_FlushEvent(SDL_MOUSEMOTION);
 			SDL_FlushEvent(SDL_KEYDOWN);//si se procesa antes, espero lo que tengo que resta.
 			int frameTicks = capTimer.getTicks();

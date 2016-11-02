@@ -31,7 +31,6 @@ struct datosConexion {
 class Vista {
 private:
 	VentanaSDL* ventana;
-	Controlador* controlador;
 	vector<TexturaSDL*> textura;
 	datosConexion datos;
 	int opacidad;
@@ -43,7 +42,6 @@ private:
 		string sprite;
 	};
 	vector<VistaJugador*> vistaJugadores;
-
 	datosConexion cargarPantallaIngresoDatos(bool aviso, int numeroPantalla);
 	vector<Capa*> vectorCapas;
 
@@ -65,6 +63,7 @@ public:
 	SDL_Rect camara;
 	void inicializarCamara(int camaraX, int camaraY, int anchoVentana, int altoVentana, vector<pair<int,int>> abscisasCapas, vector<ImagenDto*> imagenes);
 	void resetearVistas(int anchoCapaPrincipal);
+	Controlador* controlador;
 };
 
 #endif /* TP2_VISTA_H_ */
