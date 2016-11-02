@@ -58,16 +58,23 @@ Servidor::~Servidor() {
 
 void Servidor::guardarDatosDeConfiguracion() {
 	string path;
+	cin.ignore();
 	cout << "Ingrese el path del archivo de configuracion" << endl;
-	cin >> path;
+	getline(cin,path);
+	//cin >> path;
+
 	if (this->existeArchivo(path))
 	{
 	   this->parser = new XmlParser(path);
 	}
-	else
-	{
-	   cout << "No existe el archivo ingresado. Se cargara el xml por defecto" << endl;
-	   this->parser = new XmlParser("Recursos/configuration.xml");
+	else {
+			if(path.empty()){
+				cout << "No se ingreso ninguna ruta. Se cargara el xml por defecto" << endl;
+			}
+			else {
+				cout << "No existe el archivo ingresado. Se cargara el xml por defecto" << endl;
+			}
+			this->parser = new XmlParser("Recursos/configuration.xml");
 	}
 	vector<ImagenDto*> escenario = this->parser->getEscenario();
 	vector<SetDeSpritesDto*> setDeSprites = this->parser->getSprites();
@@ -722,7 +729,7 @@ void Servidor::verificarDesconexion(string nombre)
 			mensaje = new Mensaje(jugador->getNombre(),"Todos",mensajeDesconectado);
 			encolarMensajeProcesadoParaCadaCliente(*mensaje,mensajeDesconectado);
 			while (this->escuchando && !jugador->getConectado())
-			{
+			{	usleep(100);
 				if (jugador->getPosicion().first < camara.x)
 				{
 					jugador->setPosicion(camara.x);
