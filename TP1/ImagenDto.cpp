@@ -11,6 +11,7 @@ ImagenDto::ImagenDto(string path, string ancho, string alto, string zIndex) {
 	this->path = path;
 	this->ancho = ancho;
 	this->alto = alto;
+	this->zIndex = zIndex;
 }
 
 string ImagenDto::getPath() {

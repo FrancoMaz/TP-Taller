@@ -71,6 +71,18 @@ void Servidor::guardarDatosDeConfiguracion() {
 	vector<SetDeSpritesDto*> setDeSprites = this->parser->getSprites();
 	pair<const char*, const char*> ventana = this->parser->getTamanioVentana();
 	const char* cantidadMaximaJugadores = this->parser->getCantidadMaximaDeJugadores();
+
+	ImagenDto* imagenTemporal;
+	for (int i = 0; i < escenario.size(); i++) {
+		for (int j = 0; j < escenario.size() - 1; j++) {
+			if (escenario.at(j)->getZIndex() > escenario.at(j+1)->getZIndex()) {
+				imagenTemporal = escenario.at(j);
+				escenario.at(j) = escenario.at(j+1);
+				escenario.at(j+1) = imagenTemporal;
+			}
+		}
+	}
+
 	this->handshake = new Handshake(escenario, setDeSprites, ventana.first, ventana.second, cantidadMaximaJugadores);
 }
 

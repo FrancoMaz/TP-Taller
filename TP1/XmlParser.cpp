@@ -74,12 +74,44 @@ string XmlParser::serializarEscenario(){
 
 }
 
+/*
+ * void ordenarArreglo(int arreglo[], int tamano)
+{
+  for (int i = 0; i<tamano-1 ; i++)
+    for (int j = 0; j<tamano-1 ; j++)
+      if(arreglo[j] < arreglo[j+1])
+ intercambiar(arreglo[j],arreglo[j+1]);
+}
+void intercambiar(int &a, int &b)
+{
+  int tmp = b;
+  b = a;
+  a = tmp;
+}
+ */
+
 vector<ImagenDto*> XmlParser::getEscenario() {
 	if (this->escenario.empty()) {
 		for (pugi::xml_node image = this->rootNode.child("Escenario").first_child(); image; image = image.next_sibling()) {
 			ImagenDto* imagen = new ImagenDto(string(image.child_value("Archivo")), string(image.child_value("Ancho")), string(image.child_value("Alto")), string(image.child_value("z-index")));
 			this->escenario.push_back(imagen);
 		}
+
+		ImagenDto* imagenTemporal;
+
+		for (int i = 0; i < this->escenario.size(); i++) {
+			for (int j = 0; j < this->escenario.size() - 1; j++) {
+				if (this->escenario.at(j)->getZIndex() > this->escenario.at(j+1)->getZIndex()) {
+					imagenTemporal = this->escenario.at(j);
+					this->escenario.at(j) = this->escenario.at(j+1);
+					this->escenario.at(j+1) = imagenTemporal;
+				}
+			}
+		}
+
+		/*for (int i = 0; i < this->escenario.size(); i++) {
+		   cout << this->escenario.at(i)->getZIndex() << ' ';
+		}*/
 	}
 
 	return this->escenario;
