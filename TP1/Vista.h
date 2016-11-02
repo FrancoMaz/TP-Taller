@@ -65,6 +65,9 @@ public:
 	SDL_Rect camara;
 	void inicializarCamara(int camaraX, int camaraY, int anchoVentana, int altoVentana, vector<pair<int,int>> abscisasCapas, vector<ImagenDto*> imagenes);
 	void resetearVistas(int anchoCapaPrincipal);
+	bool salto;
+	void actualizarPosJugador(UpdateJugador* update, int anchoVentana, int anchoCapaPrincipal);
+	void actualizarPantalla(int anchoVentana);
 };
 
 #endif /* TP2_VISTA_H_ */

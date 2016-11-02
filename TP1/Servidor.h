@@ -29,7 +29,7 @@
 #include <vector>
 #include "Capa.h"
 #define MAX_CANT_CLIENTES 6
-#define BUFFER_MAX_SIZE 200
+#define BUFFER_MAX_SIZE 2048
 const int INFO = 1;
 const int DEBUG = 2;
 

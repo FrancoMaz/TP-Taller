@@ -15,7 +15,7 @@
 #include "VentanaSDL.h"
 #include "TexturaSDL.h"
 
-#define velocidad 5
+#define velocidad 10
 #define PI 3.14159265
 #define VELMAX 10
 #define MARGENIZQ 15

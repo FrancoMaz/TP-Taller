@@ -241,7 +241,6 @@ void* Servidor::actualizarPosiciones(void* arg)
 	bool jugadorSalto;
 	do {
 		timer.start();
-		int frameTicks = timer.getTicks();
 		string mensajeJugadorPosActualizada = "";
 		pthread_mutex_lock(&servidor->mutexVectorJugadores);
 		Jugador* jugador = servidor->obtenerJugador(mensajeAProcesar.getRemitente());
@@ -294,6 +293,8 @@ void* Servidor::actualizarPosiciones(void* arg)
 		{
 			servidor->encolarMensajeProcesadoParaCadaCliente(*mensajeCamara,mensajeCamaraString);
 		}
+		int frameTicks = timer.getTicks();
+		//cout << frameTicks << endl;
 		if( frameTicks < 25 )
 		{
 			//Wait remaining time
