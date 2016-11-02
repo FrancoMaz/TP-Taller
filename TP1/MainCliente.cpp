@@ -134,15 +134,17 @@ void procesarUltimosMensajes(string mensajes, Cliente* cliente, UpdateJugador* u
 				}
 				vista->actualizarCamara(x,y,abscisasCapas,stringToInt(handshakeDeserializado->getAncho()));
 			}
-			vista->actualizarJugador(update,stringToInt(handshakeDeserializado->getAncho()),stringToInt(handshakeDeserializado->getImagenes().at(0)->getAncho()));
+			vista->actualizarPosJugador(update,stringToInt(handshakeDeserializado->getAncho()),stringToInt(handshakeDeserializado->getImagenes().at(0)->getAncho()));
+			//vista->actualizarJugador(update,stringToInt(handshakeDeserializado->getAncho()),stringToInt(handshakeDeserializado->getImagenes().at(0)->getAncho()));
 			s.erase(0, pos + delimitador.length());
 			pos = s.find(delimitador);
 			texto = s.substr(0,pos);
 		}
 	}
-	else{
-		vista->actualizarJugador(update,stringToInt(handshakeDeserializado->getAncho()), stringToInt(handshakeDeserializado->getImagenes().at(0)->getAncho()));
-	}
+	//else{
+	vista->actualizarPantalla(stringToInt(handshakeDeserializado->getAncho()));
+		//vista->actualizarJugador(update,stringToInt(handshakeDeserializado->getAncho()), stringToInt(handshakeDeserializado->getImagenes().at(0)->getAncho()));
+	//}
 }
 
 void* recibirPosicionJugadores(void* arg) {

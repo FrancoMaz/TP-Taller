@@ -58,12 +58,15 @@ public:
 	bool ventanaCerrada();
 	void cerrar();
 	void actualizarJugador(UpdateJugador* update, int anchoVentana, int anchoCapaPrincipal);
+	void actualizarPosJugador(UpdateJugador* update, int anchoVentana, int anchoCapaPrincipal);
+	void actualizarPantalla(int anchoVentana);
 	void cargarVistaInicialJugador(string nombre, int x, int y, SpriteDto* sprite);
 	void actualizarCamara(int x, int y, vector<pair<int,int>> abscisasCapas, int anchoVentana);
 	SDL_Rect camara;
 	void inicializarCamara(int camaraX, int camaraY, int anchoVentana, int altoVentana, vector<pair<int,int>> abscisasCapas, vector<ImagenDto*> imagenes);
 	void resetearVistas(int anchoCapaPrincipal);
 	Controlador* controlador;
+	bool salto;
 };
 
 #endif /* TP2_VISTA_H_ */

@@ -399,3 +399,58 @@ void Vista::resetearVistas(int anchoCapaPrincipal)
 		vistaJugador->texturaJugador->aplicarPosicion(vistaJugador->x - camara.x,vistaJugador->y - camara.y,0,vistaJugador->flip);
 	}
 }
+
+void Vista::actualizarPosJugador(UpdateJugador* update, int anchoVentana, int anchoCapaPrincipal)
+{
+	TexturaSDL* texturaJugadorX;
+	for (int i = 0; i < vistaJugadores.size(); i++){
+		VistaJugador* vistaJugador = vistaJugadores.at(i);
+		texturaJugadorX = vistaJugador->texturaJugador;
+		if (vistaJugador->nombre == update->getRemitente())
+		{
+			vistaJugador->x = atoi(update->getX().c_str());
+			vistaJugador->y = atoi(update->getY().c_str());
+			texturaJugadorX->cargarImagen("Recursos/" + update->getSprite()->getPath() + ".png");
+			texturaJugadorX->generarSprite(atoi(update->getSprite()->getCantidadDeFotogramas().c_str()));
+			if (update->getCondicion() == "Normal")
+			{
+				vistaJugador->flip = SDL_FLIP_NONE;
+			}
+			else
+			{
+				vistaJugador->flip = SDL_FLIP_HORIZONTAL;
+			}
+			if (vistaJugador->nombre == update->getDestinatario()){
+				if (vistaJugador->y >= 415){
+					salto = false;
+				}
+				else{
+					salto = true;
+				}
+			}
+			if (vistaJugador->x > anchoCapaPrincipal && camara.x == 0)
+			{
+				vistaJugador->x = vistaJugador->x - anchoCapaPrincipal;
+			}
+		}
+	}
+}
+
+void Vista::actualizarPantalla(int anchoVentana){
+	this->ventana->limpiar();
+	for (int i=vectorCapas.size()-1; i>=0; i--)
+	{
+		vectorCapas.at(i)->paralajeInfinito(anchoVentana, i);
+	}
+	TexturaSDL* texturaJugadorX;
+	for (int i = 0; i < vistaJugadores.size(); i++){
+		VistaJugador* vistaJugador = vistaJugadores.at(i);
+		texturaJugadorX = vistaJugador->texturaJugador;
+		texturaJugadorX->aplicarPosicion(vistaJugador->x - camara.x,vistaJugador->y - camara.y,0,vistaJugador->flip);
+	}
+	if (texturaBotonDesconectar->aplicarPosicionDeBoton(10,10,&evento))
+	{
+		controlador->setCerrarVentana();
+	}
+	this->ventana->actualizar();
+}
