@@ -308,7 +308,7 @@ void Vista::cargarEscenario(vector<ImagenDto*> imagenes, int anchoVentana, int a
 	while(!this->controlador->comprobarCierreVentana()){
 		usleep(100);
 	}
-	this->ventana->actualizar();
+	//this->ventana->actualizar();
 }
 
 void Vista::actualizarJugador(UpdateJugador* update, int anchoVentana, int anchoCapaPrincipal)
