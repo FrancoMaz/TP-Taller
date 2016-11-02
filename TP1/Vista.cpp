@@ -158,6 +158,7 @@ datosConexion Vista::cargarPantallaIngresoDatos(bool aviso, int numeroPantalla){
 			campoUno = "7891";
 			//campoDos = this->datos.ip;
 			campoDos = "127.0.0.1";
+			//campoDos = "10.1.77.13";
 			textoIngresePuerto->actualizarTexto("Ingrese el puerto:",colorTexto);
 			textoIngreseIP->actualizarTexto("Ingrese la IP del servidor:",colorTexto);
 			textoDatosNoCoinciden->actualizarTexto("La dirección de ip o el puerto no permiten esta conexión",colorTextoAmarillo);
@@ -436,7 +437,7 @@ void Vista::actualizarPosJugador(UpdateJugador* update, int anchoVentana, int an
 	}
 }
 
-void Vista::actualizarPantalla(int anchoVentana){
+void Vista::actualizarPantalla(int anchoVentana, int anchoCapaPrincipal){
 	this->ventana->limpiar();
 	for (int i=vectorCapas.size()-1; i>=0; i--)
 	{
@@ -446,6 +447,10 @@ void Vista::actualizarPantalla(int anchoVentana){
 	for (int i = 0; i < vistaJugadores.size(); i++){
 		VistaJugador* vistaJugador = vistaJugadores.at(i);
 		texturaJugadorX = vistaJugador->texturaJugador;
+		if (vistaJugador->x > anchoCapaPrincipal && camara.x == 0)
+		{
+			vistaJugador->x = vistaJugador->x - anchoCapaPrincipal;
+		}
 		texturaJugadorX->aplicarPosicion(vistaJugador->x - camara.x,vistaJugador->y - camara.y,0,vistaJugador->flip);
 	}
 	if (texturaBotonDesconectar->aplicarPosicionDeBoton(10,10,&evento))

@@ -24,6 +24,8 @@ Servidor::Servidor(char* nombreArchivoDeUsuarios, int puerto, Logger* logger) {
 	/* Set IP address to localhost */
 	//this->serverAddr.sin_addr.s_addr = inet_addr("192.168.1.11");
 	this->serverAddr.sin_addr.s_addr = inet_addr("127.0.0.1");
+
+	//this->serverAddr.sin_addr.s_addr = inet_addr("10.1.77.13");
 	/* Set all bits of the padding field to 0 */
 	memset(serverAddr.sin_zero, '\0', sizeof serverAddr.sin_zero);
 	/*---- Bind the address struct to the socket ----*/

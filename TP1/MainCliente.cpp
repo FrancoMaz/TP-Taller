@@ -41,6 +41,8 @@ int stringToInt(string atributo) {
 
 bool chequearSocket(string ip, int puerto) {
 	//string ipServer = "192.168.1.11";
+
+	//string ipServer = "10.1.77.13";
 	string ipServer = "127.0.0.1";
 	int puertoDeEscucha = 7891;
 
@@ -142,7 +144,7 @@ void procesarUltimosMensajes(string mensajes, Cliente* cliente, UpdateJugador* u
 		}
 	}
 	//else{
-	vista->actualizarPantalla(stringToInt(handshakeDeserializado->getAncho()));
+	vista->actualizarPantalla(stringToInt(handshakeDeserializado->getAncho()), stringToInt(handshakeDeserializado->getImagenes().at(0)->getAncho()));
 		//vista->actualizarJugador(update,stringToInt(handshakeDeserializado->getAncho()), stringToInt(handshakeDeserializado->getImagenes().at(0)->getAncho()));
 	//}
 }
