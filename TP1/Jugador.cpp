@@ -34,6 +34,8 @@ Jugador::~Jugador() {
 
 void Jugador::actualizarPosicion(SDL_Keycode tecla, bool sePresionoTecla, SDL_Rect camara)
 {
+	int posicionY = 415;
+
 	if (velocidades.first > VELMAX)
 	{
 		velocidades.first = VELMAX;
@@ -47,7 +49,7 @@ void Jugador::actualizarPosicion(SDL_Keycode tecla, bool sePresionoTecla, SDL_Re
 	{
 		velocidades.first += velocidad;
 		if (!saltar) {
-			posicion.second = 415;
+			posicion.second = posicionY;
 			spriteAEjecutar = "Jugador_corriendo_" + this->equipo;
 		}
 		condicionSprite = "Normal";
@@ -56,7 +58,7 @@ void Jugador::actualizarPosicion(SDL_Keycode tecla, bool sePresionoTecla, SDL_Re
 	{
 		velocidades.first -= velocidad;
 		if (!saltar) {
-			posicion.second = 415;
+			posicion.second = posicionY;
 			spriteAEjecutar = "Jugador_corriendo_" + this->equipo;
 		}
 		condicionSprite = "Espejado";
@@ -66,7 +68,7 @@ void Jugador::actualizarPosicion(SDL_Keycode tecla, bool sePresionoTecla, SDL_Re
 		if(angulo == 0)
 		{
 			saltar = true;
-			posicion.second = 415;
+			posicion.second = posicionY;
 		}
 		spriteAEjecutar = "Jugador_saltando_" + this->equipo;
 	}
@@ -75,7 +77,7 @@ void Jugador::actualizarPosicion(SDL_Keycode tecla, bool sePresionoTecla, SDL_Re
 		velocidades.first = 0;
 		if (!saltar)
 		{
-			posicion.second = 455;
+			posicion.second = posicionY+40;
 			spriteAEjecutar = "Jugador_agachado_" + this->equipo;
 		}
 	}
@@ -83,7 +85,7 @@ void Jugador::actualizarPosicion(SDL_Keycode tecla, bool sePresionoTecla, SDL_Re
 	{
 		velocidades.first = 0;
 		if (!saltar) {
-			posicion.second = 415;
+			posicion.second = posicionY;
 			spriteAEjecutar = "Jugador_" + this->equipo;
 		}
 		condicionSprite = "Normal";
@@ -93,7 +95,7 @@ void Jugador::actualizarPosicion(SDL_Keycode tecla, bool sePresionoTecla, SDL_Re
 		velocidades.first = 0;
 		if (!saltar)
 		{
-			posicion.second = 415;
+			posicion.second = posicionY;
 			spriteAEjecutar = "Jugador_" + this->equipo;
 		}
 		condicionSprite = "Espejado";
@@ -103,7 +105,7 @@ void Jugador::actualizarPosicion(SDL_Keycode tecla, bool sePresionoTecla, SDL_Re
 		velocidades.first = 0;
 		if (!saltar)
 		{
-			posicion.second = 415;
+			posicion.second = posicionY;
 			spriteAEjecutar = "Jugador_" + this->equipo;
 		}
 	}
