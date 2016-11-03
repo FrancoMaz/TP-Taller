@@ -203,6 +203,9 @@ void* enviarEventos(void* arg) {
 			else if(vista->controlador->presionarBoton(SDLK_UP)){
 				cliente->enviar("Tecla Arriba","Todos");
 			}
+			else if(vista->controlador->presionarBoton(SDLK_DOWN)){
+				cliente->enviar("Tecla Abajo","Todos");
+			}
 			else if(vista->controlador->presionarBoton(SDLK_r)){
 				cliente->enviar("R","Todos");
 			}
@@ -211,6 +214,9 @@ void* enviarEventos(void* arg) {
 			}
 			else if(vista->controlador->soltarBoton(SDLK_LEFT)){
 				cliente->enviar("Soltar Tecla Izquierda","Todos");
+			}
+			else if(vista->controlador->soltarBoton(SDLK_DOWN)){
+				cliente->enviar("Soltar Tecla Abajo","Todos");
 			}
 			SDL_FlushEvent(SDL_MOUSEMOTION);
 			SDL_FlushEvent(SDL_KEYDOWN);//si se procesa antes, espero lo que tengo que resta.

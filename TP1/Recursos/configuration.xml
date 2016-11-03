@@ -55,6 +55,14 @@
 	      <Imagen>Jugador_rojo</Imagen>
 	      <z-index>1</z-index>
 	    </SpriteQuieto>
+	    <SpriteAgachado>
+	      <Id>Jugador_agachado_rojo</Id>
+	      <CantFotogramas>4</CantFotogramas>
+	      <Ancho>360</Ancho>
+	      <Alto>66</Alto>
+	      <Imagen>Jugador_agachado_rojo</Imagen>
+	      <z-index>1</z-index>
+	    </SpriteAgachado>
 	    <SpriteDesconectado>
 	      <Id>Jugador_desconectado</Id>
 	      <CantFotogramas>0</CantFotogramas>
