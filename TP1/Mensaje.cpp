@@ -80,6 +80,10 @@ SDL_Keycode Mensaje::deserializar(string evento)
 	{
 		return SDLK_DOWN;
 	}
+	else if (evento == "Tecla Espacio")
+	{
+		return SDLK_SPACE;
+	}
 	else if (evento == "Tecla R")
 	{
 		return SDLK_r;
@@ -96,12 +100,16 @@ SDL_Keycode Mensaje::deserializar(string evento)
 	{
 		return SDLK_DOWN;
 	}
+	else if (evento == "Soltar Tecla Espacio")
+	{
+		return SDLK_SPACE;
+	}
 	return -1;
 }
 
 bool Mensaje::sePresionoTecla()
 {
-	if (eventoSerializado == "Tecla Derecha" or eventoSerializado == "Tecla Izquierda" or eventoSerializado == "Tecla Arriba" or eventoSerializado == "Tecla Abajo")
+	if (eventoSerializado == "Tecla Derecha" or eventoSerializado == "Tecla Izquierda" or eventoSerializado == "Tecla Arriba" or eventoSerializado == "Tecla Abajo" or eventoSerializado == "Tecla Espacio")
 	{
 		return true;
 	}

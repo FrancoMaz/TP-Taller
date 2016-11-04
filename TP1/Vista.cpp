@@ -328,8 +328,8 @@ void Vista::actualizarJugador(UpdateJugador* update, int anchoVentana, int ancho
 		{
 			vistaJugador->x = atoi(update->getX().c_str());
 			vistaJugador->y = atoi(update->getY().c_str());
-			texturaJugadorX->cargarImagen("Recursos/" + update->getSprite()->getPath() + ".png");
-			texturaJugadorX->generarSprite(atoi(update->getSprite()->getCantidadDeFotogramas().c_str()));
+			texturaJugadorX->cargarImagen("Recursos/" + update->getSpriteActual()->getPath() + ".png");
+			texturaJugadorX->generarSprite(atoi(update->getSpriteActual()->getCantidadDeFotogramas().c_str()));
 			if (update->getCondicion() == "Normal")
 			{
 				vistaJugador->flip = SDL_FLIP_NONE;
@@ -411,8 +411,11 @@ void Vista::actualizarPosJugador(UpdateJugador* update, int anchoVentana, int an
 		{
 			vistaJugador->x = atoi(update->getX().c_str());
 			vistaJugador->y = atoi(update->getY().c_str());
-			texturaJugadorX->cargarImagen("Recursos/" + update->getSprite()->getPath() + ".png");
-			texturaJugadorX->generarSprite(atoi(update->getSprite()->getCantidadDeFotogramas().c_str()));
+			if(update->getSpriteAnterior() != update->getSpriteActual()){
+				update->setSpriteAnterior(update->getSpriteActual());
+				texturaJugadorX->cargarImagen("Recursos/" + update->getSpriteActual()->getPath() + ".png");
+				texturaJugadorX->generarSprite(atoi(update->getSpriteActual()->getCantidadDeFotogramas().c_str()));
+			}
 			if (update->getCondicion() == "Normal")
 			{
 				vistaJugador->flip = SDL_FLIP_NONE;

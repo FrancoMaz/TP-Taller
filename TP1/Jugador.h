@@ -30,6 +30,8 @@ private:
 	string nombre;
 	string equipo;
 	bool saltar;
+	bool agachar;
+	bool disparar;
 	double angulo;
 	string spriteAEjecutar;
 	bool conectado = false;

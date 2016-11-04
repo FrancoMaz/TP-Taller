@@ -20,7 +20,8 @@ private:
 	string x;
 	string y;
 	string condicion;
-	SpriteDto* spriteAEjecutar;
+	SpriteDto* spriteActual;
+	SpriteDto* spriteAnterior;
 public:
 	UpdateJugador();
 	virtual ~UpdateJugador();
@@ -29,14 +30,15 @@ public:
 	void setX(string x);
 	void setY(string y);
 	void setCondicion(string condicion);
-	void setSprite(SpriteDto* sprite);
+	void setSpriteActual(SpriteDto* sprite);
+	void setSpriteAnterior(SpriteDto* sprite);
 	string getRemitente();
 	string getDestinatario();
 	string getX();
 	string getY();
 	string getCondicion();
-	SpriteDto* getSprite();
-
+	SpriteDto* getSpriteActual();
+	SpriteDto* getSpriteAnterior();
 };
 
 #endif /* UPDATEJUGADOR_H_ */

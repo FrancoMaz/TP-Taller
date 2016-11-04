@@ -103,7 +103,7 @@ void procesarUltimosMensajes(string mensajes, Cliente* cliente, UpdateJugador* u
 					{
 						if ((string(spriteAEjecutar)) == listaSprites.at(i)->getID())
 						{
-							update->setSprite(listaSprites.at(i));
+							update->setSpriteActual(listaSprites.at(i));
 						}
 					}
 				}
@@ -206,6 +206,9 @@ void* enviarEventos(void* arg) {
 			else if(vista->controlador->presionarBoton(SDLK_DOWN)){
 				cliente->enviar("Tecla Abajo","Todos");
 			}
+			else if(vista->controlador->presionarBoton(SDLK_SPACE)){
+				cliente->enviar("Tecla Espacio","Todos");
+			}
 			else if(vista->controlador->presionarBoton(SDLK_r)){
 				cliente->enviar("R","Todos");
 			}
@@ -217,6 +220,9 @@ void* enviarEventos(void* arg) {
 			}
 			else if(vista->controlador->soltarBoton(SDLK_DOWN)){
 				cliente->enviar("Soltar Tecla Abajo","Todos");
+			}
+			else if(vista->controlador->soltarBoton(SDLK_SPACE)){
+				cliente->enviar("Soltar Tecla Espacio","Todos");
 			}
 			SDL_FlushEvent(SDL_MOUSEMOTION);
 			SDL_FlushEvent(SDL_KEYDOWN);//si se procesa antes, espero lo que tengo que resta.

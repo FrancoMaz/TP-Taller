@@ -19,6 +19,7 @@ TexturaSDL::TexturaSDL(SDL_Renderer* renderer){
 	this->frameActual = 0;
 	this->ancho = 0;
 	this->alto = 0;
+	this->velocidadFrameDisminuida = 2;
 }
 
 TexturaSDL::~TexturaSDL(){
@@ -142,11 +143,11 @@ void TexturaSDL::aplicarPosicionYTamanio(float x, float y, int ancho, int alto, 
 
 	if (this->spriteClips.size() != 0){
 		//El frameActual lo divido por 8 para reducir la velocidad de fotogramas
-		clip = &this->spriteClips[this->frameActual];
+		clip = &this->spriteClips[this->frameActual/this->velocidadFrameDisminuida];
 		rectangulo.w = clip->w;
 		rectangulo.h = clip->h;
 		this->frameActual++;
-		if((this->frameActual) >= this->spriteClips.size()){
+		if((this->frameActual/this->velocidadFrameDisminuida) >= this->spriteClips.size()){
 			this->frameReset();
 		}
 	}
@@ -160,11 +161,7 @@ void TexturaSDL::aplicarPosicionYTamanio(float x, float y, int ancho, int alto, 
 }
 
 void TexturaSDL::generarSprite(int frames){
-	//this->frameActual = 0;
-	if (this->frameActual > frames)
-	{
-		this->frameActual = 0;
-	}
+	this->frameActual = 0;
 	if (frames >= 2){
 		this->spriteClips.clear();
 		SDL_Rect clips[frames];
@@ -262,7 +259,7 @@ void TexturaSDL::aplicarPosicionConTamanio(float x, float y, int ancho, int alto
 
 void TexturaSDL::aplicarPosicionDeFrame(float x, float y, int frame, double rotacion, SDL_RendererFlip flip){
 	if(frame < this->spriteClips.size()){
-		this->frameActual = frame;
+		this->frameActual = frame*(this->velocidadFrameDisminuida);
 		this->aplicarPosicionYTamanio(x,y,this->ancho,this->alto, NULL, rotacion, flip);
 	}
 }

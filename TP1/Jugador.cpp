@@ -13,6 +13,8 @@ Jugador::Jugador(pair<int,int> posicionInicial) {
 	velocidades.first = 0;
 	velocidades.second = 0;
 	saltar = false;
+	agachar = false;
+	disparar = false;
 	angulo = 0;
 }
 
@@ -24,6 +26,8 @@ Jugador::Jugador(string nombre, string equipo, int posicionX) {
 	velocidades.first = 0;
 	velocidades.second = 0;
 	saltar = false;
+	agachar = false;
+	disparar = false;
 	angulo = 0;
 	condicionSprite = "Normal";
 	spriteAEjecutar = "Jugador_" + equipo;
@@ -47,19 +51,23 @@ void Jugador::actualizarPosicion(SDL_Keycode tecla, bool sePresionoTecla, SDL_Re
 
 	if (tecla == SDLK_RIGHT && sePresionoTecla)
 	{
-		velocidades.first += velocidad;
-		if (!saltar) {
-			posicion.second = posicionY;
-			spriteAEjecutar = "Jugador_corriendo_" + this->equipo;
+		if (!agachar){
+			velocidades.first += velocidad;
+			if (!saltar) {
+				posicion.second = posicionY;
+				spriteAEjecutar = "Jugador_corriendo_" + this->equipo;
+			}
 		}
 		condicionSprite = "Normal";
 	}
 	else if (tecla == SDLK_LEFT && sePresionoTecla)
 	{
-		velocidades.first -= velocidad;
-		if (!saltar) {
-			posicion.second = posicionY;
-			spriteAEjecutar = "Jugador_corriendo_" + this->equipo;
+		if (!agachar){
+			velocidades.first -= velocidad;
+			if (!saltar) {
+				posicion.second = posicionY;
+				spriteAEjecutar = "Jugador_corriendo_" + this->equipo;
+			}
 		}
 		condicionSprite = "Espejado";
 	}
@@ -74,37 +82,66 @@ void Jugador::actualizarPosicion(SDL_Keycode tecla, bool sePresionoTecla, SDL_Re
 	}
 	else if(tecla == SDLK_DOWN && sePresionoTecla)
 	{
-		velocidades.first = 0;
 		if (!saltar)
 		{
+			agachar = true;
+			velocidades.first = 0;
 			posicion.second = posicionY+40;
 			spriteAEjecutar = "Jugador_agachado_" + this->equipo;
 		}
 	}
+	else if(tecla == SDLK_SPACE && sePresionoTecla)
+	{
+		if (!saltar && !agachar)
+		{
+			if (!disparar) {
+				disparar = true;
+				posicion.second = posicionY;
+				spriteAEjecutar = "Jugador_disparando_" + this->equipo;
+			} else {
+				posicion.second = posicionY;
+				spriteAEjecutar = "Jugador_" + this->equipo;
+			}
+		}
+	}
 	else if(tecla == SDLK_RIGHT && !sePresionoTecla)
 	{
-		velocidades.first = 0;
-		if (!saltar) {
-			posicion.second = posicionY;
-			spriteAEjecutar = "Jugador_" + this->equipo;
+		if (!agachar){
+			velocidades.first = 0;
+			if (!saltar && !agachar) {
+				posicion.second = posicionY;
+				spriteAEjecutar = "Jugador_" + this->equipo;
+			}
 		}
 		condicionSprite = "Normal";
 	}
 	else if(tecla == SDLK_LEFT && !sePresionoTecla)
 	{
-		velocidades.first = 0;
-		if (!saltar)
-		{
-			posicion.second = posicionY;
-			spriteAEjecutar = "Jugador_" + this->equipo;
+		if (!agachar){
+			velocidades.first = 0;
+			if (!saltar && !agachar)
+			{
+				posicion.second = posicionY;
+				spriteAEjecutar = "Jugador_" + this->equipo;
+			}
 		}
 		condicionSprite = "Espejado";
 	}
 	else if(tecla == SDLK_DOWN && !sePresionoTecla)
 	{
-		velocidades.first = 0;
 		if (!saltar)
 		{
+			velocidades.first = 0;
+			agachar = false;
+			posicion.second = posicionY;
+			spriteAEjecutar = "Jugador_" + this->equipo;
+		}
+	}
+	else if(tecla == SDLK_SPACE && !sePresionoTecla)
+	{
+		if (!saltar)
+		{
+			disparar = false;
 			posicion.second = posicionY;
 			spriteAEjecutar = "Jugador_" + this->equipo;
 		}

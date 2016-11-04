@@ -41,9 +41,14 @@ void UpdateJugador::setCondicion(string condicion)
 	this->condicion = condicion;
 }
 
-void UpdateJugador::setSprite(SpriteDto* sprite)
+void UpdateJugador::setSpriteActual(SpriteDto* sprite)
 {
-	this->spriteAEjecutar = sprite;
+	this->spriteActual = sprite;
+}
+
+void UpdateJugador::setSpriteAnterior(SpriteDto* sprite)
+{
+	this->spriteAnterior = sprite;
 }
 
 string UpdateJugador::getRemitente()
@@ -70,7 +75,12 @@ string UpdateJugador::getCondicion()
 {
 	return this->condicion;
 }
-SpriteDto* UpdateJugador::getSprite()
+SpriteDto* UpdateJugador::getSpriteActual()
 {
-	return this->spriteAEjecutar;
+	return this->spriteActual;
+}
+
+SpriteDto* UpdateJugador::getSpriteAnterior()
+{
+	return this->spriteAnterior;
 }

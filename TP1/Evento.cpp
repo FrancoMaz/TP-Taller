@@ -32,6 +32,14 @@ void Evento::deserializar(string evento)
 	{
 		this->tecla = SDLK_UP;
 	}
+	if (evento == "Tecla Abajo")
+	{
+		this->tecla = SDLK_DOWN;
+	}
+	if (evento == "Tecla Espacio")
+	{
+		this->tecla = SDLK_SPACE;
+	}
 	if (evento == "Tecla R")
 	{
 		this->tecla = SDLK_r;
@@ -43,6 +51,14 @@ void Evento::deserializar(string evento)
 	if (evento == "Soltar Tecla Izquierda")
 	{
 		this->tecla = SDLK_LEFT;
+	}
+	if (evento == "Soltar Tecla Abajo")
+	{
+		this->tecla = SDLK_DOWN;
+	}
+	if (evento == "Soltar Tecla Espacio")
+	{
+		this->tecla = SDLK_SPACE;
 	}
 }
 
@@ -74,23 +90,39 @@ bool Evento::getSePresionoTecla()
 void Evento::setSePresionoTecla()
 {
 	if (eventoSerializado == "Tecla Derecha")
-		{
-			this->sePresionoTecla = true;
-		}
-		if (eventoSerializado == "Tecla Izquierda")
-		{
-			this->sePresionoTecla = true;
-		}
-		if (eventoSerializado == "Tecla Arriba")
-		{
-			this->sePresionoTecla = true;
-		}
-		if (eventoSerializado == "Soltar Tecla Derecha")
-		{
-			this->sePresionoTecla = false;
-		}
-		if (eventoSerializado == "Soltar Tecla Izquierda")
-		{
-			this->sePresionoTecla = false;
-		}
+	{
+		this->sePresionoTecla = true;
+	}
+	if (eventoSerializado == "Tecla Izquierda")
+	{
+		this->sePresionoTecla = true;
+	}
+	if (eventoSerializado == "Tecla Arriba")
+	{
+		this->sePresionoTecla = true;
+	}
+	if (eventoSerializado == "Tecla Abajo")
+	{
+		this->sePresionoTecla = true;
+	}
+	if (eventoSerializado == "Tecla Espacio")
+	{
+		this->sePresionoTecla = true;
+	}
+	if (eventoSerializado == "Soltar Tecla Derecha")
+	{
+		this->sePresionoTecla = false;
+	}
+	if (eventoSerializado == "Soltar Tecla Izquierda")
+	{
+		this->sePresionoTecla = false;
+	}
+	if (eventoSerializado == "Soltar Tecla Abajo")
+	{
+		this->sePresionoTecla = false;
+	}
+	if (eventoSerializado == "Soltar Tecla Espacio")
+	{
+		this->sePresionoTecla = false;
+	}
 }

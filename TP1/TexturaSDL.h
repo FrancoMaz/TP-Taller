@@ -27,6 +27,7 @@ private:
 	int frameActual;
 	int ancho;
 	int alto;
+	int velocidadFrameDisminuida;
 
 	void aplicarPosicionYTamanio(float x, float y, int ancho, int alto, SDL_Rect* clip, double rotacion, SDL_RendererFlip flip);
 	void cargarImagenNoEncontrada();
