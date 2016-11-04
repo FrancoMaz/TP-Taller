@@ -15,6 +15,7 @@ Jugador::Jugador(pair<int,int> posicionInicial) {
 	saltar = false;
 	agachar = false;
 	disparar = false;
+	restablecerPosicionSprite = false;
 	angulo = 0;
 }
 
@@ -28,6 +29,7 @@ Jugador::Jugador(string nombre, string equipo, int posicionX) {
 	saltar = false;
 	agachar = false;
 	disparar = false;
+	restablecerPosicionSprite = false;
 	angulo = 0;
 	condicionSprite = "Normal";
 	spriteAEjecutar = "Jugador_" + equipo;
@@ -82,7 +84,7 @@ void Jugador::actualizarPosicion(SDL_Keycode tecla, bool sePresionoTecla, SDL_Re
 	}
 	else if(tecla == SDLK_DOWN && sePresionoTecla)
 	{
-		if (!saltar)
+		if (!saltar && !disparar)
 		{
 			agachar = true;
 			velocidades.first = 0;
@@ -92,15 +94,37 @@ void Jugador::actualizarPosicion(SDL_Keycode tecla, bool sePresionoTecla, SDL_Re
 	}
 	else if(tecla == SDLK_SPACE && sePresionoTecla)
 	{
-		if (!saltar && !agachar)
+		if (!saltar)
 		{
 			if (!disparar) {
 				disparar = true;
-				posicion.second = posicionY;
-				spriteAEjecutar = "Jugador_disparando_" + this->equipo;
+				if(!agachar){
+					if(condicionSprite == "Espejado"){
+						posicion.first = posicion.first - 55;
+						restablecerPosicionSprite = true;
+					}
+					spriteAEjecutar = "Jugador_disparando_" + this->equipo;
+				} else {
+					if(condicionSprite == "Espejado"){
+						posicion.first = posicion.first - 41;
+						restablecerPosicionSprite = true;
+					}
+					spriteAEjecutar = "Jugador_agachado_disparando_" + this->equipo;
+				}
 			} else {
-				posicion.second = posicionY;
-				spriteAEjecutar = "Jugador_" + this->equipo;
+				if(!agachar){
+					if(condicionSprite == "Espejado" && restablecerPosicionSprite){
+						posicion.first = posicion.first + 55;
+						restablecerPosicionSprite = false;
+					}
+					spriteAEjecutar = "Jugador_" + this->equipo;
+				} else {
+					if(condicionSprite == "Espejado" && restablecerPosicionSprite){
+						posicion.first = posicion.first + 41;
+						restablecerPosicionSprite = false;
+					}
+					spriteAEjecutar = "Jugador_agachado_" + this->equipo;
+				}
 			}
 		}
 	}
@@ -142,8 +166,17 @@ void Jugador::actualizarPosicion(SDL_Keycode tecla, bool sePresionoTecla, SDL_Re
 		if (!saltar)
 		{
 			disparar = false;
-			posicion.second = posicionY;
-			spriteAEjecutar = "Jugador_" + this->equipo;
+			if(!agachar){
+				if(condicionSprite == "Espejado" && restablecerPosicionSprite){
+					posicion.first = posicion.first + 55;
+				}
+				spriteAEjecutar = "Jugador_" + this->equipo;
+			} else {
+				if(condicionSprite == "Espejado" && restablecerPosicionSprite){
+					posicion.first = posicion.first + 41;
+				}
+				spriteAEjecutar = "Jugador_agachado_" + this->equipo;
+			}
 		}
 	}
 

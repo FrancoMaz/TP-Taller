@@ -71,6 +71,14 @@
 	      <Imagen>Jugador_disparando_rojo</Imagen>
 	      <z-index>1</z-index>
 	    </SpriteDisparando>
+	    <SpriteAgachadoDisparando>
+	      <Id>Jugador_agachado_disparando_rojo</Id>
+	      <CantFotogramas>5</CantFotogramas>
+	      <Ancho>625</Ancho>
+	      <Alto>66</Alto>
+	      <Imagen>Jugador_agachado_disparando_rojo</Imagen>
+	      <z-index>1</z-index>
+	    </SpriteAgachadoDisparando>
 	    <SpriteDesconectado>
 	      <Id>Jugador_desconectado</Id>
 	      <CantFotogramas>0</CantFotogramas>

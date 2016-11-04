@@ -32,6 +32,7 @@ private:
 	bool saltar;
 	bool agachar;
 	bool disparar;
+	bool restablecerPosicionSprite;
 	double angulo;
 	string spriteAEjecutar;
 	bool conectado = false;
