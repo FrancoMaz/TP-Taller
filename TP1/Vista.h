@@ -31,7 +31,6 @@ struct datosConexion {
 class Vista {
 private:
 	VentanaSDL* ventana;
-	Controlador* controlador;
 	vector<TexturaSDL*> textura;
 	datosConexion datos;
 	int opacidad;
@@ -43,7 +42,6 @@ private:
 		string sprite;
 	};
 	vector<VistaJugador*> vistaJugadores;
-
 	datosConexion cargarPantallaIngresoDatos(bool aviso, int numeroPantalla);
 	vector<Capa*> vectorCapas;
 
@@ -60,11 +58,15 @@ public:
 	bool ventanaCerrada();
 	void cerrar();
 	void actualizarJugador(UpdateJugador* update, int anchoVentana, int anchoCapaPrincipal);
+	void actualizarPosJugador(UpdateJugador* update, int anchoVentana, int anchoCapaPrincipal);
+	void actualizarPantalla(int anchoVentana, int anchoCapaPrincipal);
 	void cargarVistaInicialJugador(string nombre, int x, int y, SpriteDto* sprite);
 	void actualizarCamara(int x, int y, vector<pair<int,int>> abscisasCapas, int anchoVentana);
 	SDL_Rect camara;
 	void inicializarCamara(int camaraX, int camaraY, int anchoVentana, int altoVentana, vector<pair<int,int>> abscisasCapas, vector<ImagenDto*> imagenes);
 	void resetearVistas(int anchoCapaPrincipal);
+	Controlador* controlador;
+	bool salto;
 };
 
 #endif /* TP2_VISTA_H_ */

@@ -23,8 +23,6 @@ XmlParser::XmlParser(string xmlPath) {
 	this->cantidadMaximaDeJugadores = "";
 	pair<const char*, const char*> dimensiones ("", "");
 	this->tamanioVentana = dimensiones;
-	//this->escenario = new list<ImagenDto>();
-	//this->sprites = new list<SetDeSpritesDto*>();
 }
 
 const char* XmlParser::getCantidadMaximaDeJugadores() {
@@ -57,18 +55,14 @@ string XmlParser::serializarEscenario(){
 	string escenarioConcatenado = "Escenario[";
 	for (int i = 0; i < this->escenario.size(); i++) {
 		escenarioConcatenado += this->escenario.at(i)->getPath();
-		//cout << (*i).getPath() << endl;
 		escenarioConcatenado += ",";
 		escenarioConcatenado += this->escenario.at(i)->getAncho();
-		//cout << (*i).getZIndex() << endl;
 		escenarioConcatenado += ",";
 		escenarioConcatenado += this->escenario.at(i)->getAlto();
-		//cout << (*i).getVelocidad() << endl;
 		escenarioConcatenado += ",";
 		escenarioConcatenado += this->escenario.at(i)->getZIndex();
 		escenarioConcatenado += "|";
 	}
-	//string escenarioC = escenarioConcatenado.substr(0, escenarioConcatenado.length() -1);
 	escenarioConcatenado += "]-";
 	return escenarioConcatenado;
 
@@ -80,6 +74,19 @@ vector<ImagenDto*> XmlParser::getEscenario() {
 			ImagenDto* imagen = new ImagenDto(string(image.child_value("Archivo")), string(image.child_value("Ancho")), string(image.child_value("Alto")), string(image.child_value("z-index")));
 			this->escenario.push_back(imagen);
 		}
+
+		ImagenDto* imagenTemporal;
+
+		for (int i = 0; i < this->escenario.size(); i++) {
+			for (int j = 0; j < this->escenario.size() - 1; j++) {
+				if (this->escenario.at(j)->getZIndex() > this->escenario.at(j+1)->getZIndex()) {
+					imagenTemporal = this->escenario.at(j);
+					this->escenario.at(j) = this->escenario.at(j+1);
+					this->escenario.at(j+1) = imagenTemporal;
+				}
+			}
+		}
+
 	}
 
 	return this->escenario;
@@ -111,10 +118,8 @@ string XmlParser::serializarSetDeSprites(){
 		setDeSpritesconcatenados += this->sprites.at(i)->getCarpeta();
 		setDeSpritesconcatenados += ";";
 		setDeSpritesconcatenados += this->serializarSprites(this->sprites.at(i)->getSprites());
-		//setDeSpritesconcatenados = setDeSpritesconcatenados.substr(0, setDeSpritesconcatenados.length() -1);
 		setDeSpritesconcatenados += "|-";
 	}
-	//setDeSpritesconcatenados = setDeSpritesconcatenados.substr(0, setDeSpritesconcatenados.length() -1);
 	setDeSpritesconcatenados += "]";
 	return setDeSpritesconcatenados;
 }

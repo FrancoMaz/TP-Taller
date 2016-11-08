@@ -158,6 +158,7 @@ datosConexion Vista::cargarPantallaIngresoDatos(bool aviso, int numeroPantalla){
 			campoUno = "7891";
 			//campoDos = this->datos.ip;
 			campoDos = "127.0.0.1";
+			//campoDos = "10.1.77.13";
 			textoIngresePuerto->actualizarTexto("Ingrese el puerto:",colorTexto);
 			textoIngreseIP->actualizarTexto("Ingrese la IP del servidor:",colorTexto);
 			textoDatosNoCoinciden->actualizarTexto("La dirección de ip o el puerto no permiten esta conexión",colorTextoAmarillo);
@@ -296,12 +297,6 @@ void Vista::transicionDePantalla(){
 
 void Vista::cargarEscenario(vector<ImagenDto*> imagenes, int anchoVentana, int altoVentana){
 	this->ventana->limpiar();
-	/*for (int i=0; i<imagenes.size(); i++)
-	{
-		SDL_Rect rectangulo = {0,0,anchoVentana,altoVentana};
-		Capa* capa = new Capa(imagenes.at(i), rectangulo, ventana->crearTextura("Recursos/" + imagenes.at(i)->getPath() + ".png",0));
-		vectorCapas.push_back(capa);
-	}*/
 	for (int i=vectorCapas.size()-1; i>=0; i--)
 	{
 		vectorCapas.at(i)->textura->aplicarPosicionDePorcion(0,0,&vectorCapas.at(i)->rectangulo, 0, SDL_FLIP_NONE);
@@ -310,11 +305,7 @@ void Vista::cargarEscenario(vector<ImagenDto*> imagenes, int anchoVentana, int a
 		VistaJugador* vistaJugador = vistaJugadores.at(i);
 		vistaJugador->texturaJugador->aplicarPosicion(vistaJugador->x,vistaJugador->y,0,SDL_FLIP_NONE);
 	}
-
-	while(!this->controlador->comprobarCierreVentana()){
-		usleep(100);
-	}
-	this->ventana->actualizar();
+	//this->ventana->actualizar();
 }
 
 void Vista::actualizarJugador(UpdateJugador* update, int anchoVentana, int anchoCapaPrincipal)
@@ -404,4 +395,64 @@ void Vista::resetearVistas(int anchoCapaPrincipal)
 		vistaJugador->x = vistaJugador->x - anchoCapaPrincipal;
 		vistaJugador->texturaJugador->aplicarPosicion(vistaJugador->x - camara.x,vistaJugador->y - camara.y,0,vistaJugador->flip);
 	}
+}
+
+void Vista::actualizarPosJugador(UpdateJugador* update, int anchoVentana, int anchoCapaPrincipal)
+{
+	TexturaSDL* texturaJugadorX;
+	for (int i = 0; i < vistaJugadores.size(); i++){
+		VistaJugador* vistaJugador = vistaJugadores.at(i);
+		texturaJugadorX = vistaJugador->texturaJugador;
+		if (vistaJugador->nombre == update->getRemitente())
+		{
+			vistaJugador->x = atoi(update->getX().c_str());
+			vistaJugador->y = atoi(update->getY().c_str());
+			texturaJugadorX->cargarImagen("Recursos/" + update->getSprite()->getPath() + ".png");
+			texturaJugadorX->generarSprite(atoi(update->getSprite()->getCantidadDeFotogramas().c_str()));
+			if (update->getCondicion() == "Normal")
+			{
+				vistaJugador->flip = SDL_FLIP_NONE;
+			}
+			else
+			{
+				vistaJugador->flip = SDL_FLIP_HORIZONTAL;
+			}
+			if (vistaJugador->nombre == update->getDestinatario()){
+				if (vistaJugador->y >= 415){
+					salto = false;
+				}
+				else{
+					salto = true;
+				}
+			}
+			if (vistaJugador->x > anchoCapaPrincipal && camara.x == 0)
+			{
+				vistaJugador->x = vistaJugador->x - anchoCapaPrincipal;
+			}
+			break;
+		}
+	}
+}
+
+void Vista::actualizarPantalla(int anchoVentana, int anchoCapaPrincipal){
+	this->ventana->limpiar();
+	for (int i=vectorCapas.size()-1; i>=0; i--)
+	{
+		vectorCapas.at(i)->paralajeInfinito(anchoVentana, i);
+	}
+	TexturaSDL* texturaJugadorX;
+	for (int i = 0; i < vistaJugadores.size(); i++){
+		VistaJugador* vistaJugador = vistaJugadores.at(i);
+		texturaJugadorX = vistaJugador->texturaJugador;
+		if (vistaJugador->x > anchoCapaPrincipal && camara.x == 0)
+		{
+			vistaJugador->x = vistaJugador->x - anchoCapaPrincipal;
+		}
+		texturaJugadorX->aplicarPosicion(vistaJugador->x - camara.x,vistaJugador->y - camara.y,0,vistaJugador->flip);
+	}
+	if (texturaBotonDesconectar->aplicarPosicionDeBoton(10,10,&evento))
+	{
+		controlador->setCerrarVentana();
+	}
+	this->ventana->actualizar();
 }

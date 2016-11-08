@@ -218,11 +218,6 @@ void Jugador::setSprite(string sprite, bool equipo, string condicion)
 	}
 }
 
-string Jugador::getStringJugadorDesconectado()
-{
-	return ("0|" + nombre + "|" + to_string(posicion.first) + "|" + to_string(posicion.second) + "|" + "Jugador_desconectado" + "|" + condicionSprite + "#");
-}
-
 string Jugador::getEquipo()
 {
 	return this->equipo;
