@@ -97,6 +97,7 @@ void Jugador::actualizarPosicion(SDL_Keycode tecla, bool sePresionoTecla, SDL_Re
 		if (!saltar)
 		{
 			if (!disparar) {
+				velocidades.first = 0;
 				disparar = true;
 				if(!agachar){
 					if(condicionSprite == "Espejado"){
