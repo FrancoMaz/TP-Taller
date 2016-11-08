@@ -23,6 +23,7 @@ public:
 	string getStringDatos();
 	void setearDatos(char* datosMensaje);
 	void setRemitente(string remitente);
+	void setDestinatario(string destinatario);
 	string getRemitente();
 	string getDestinatario();
 	SDL_Keycode deserializar(string evento);

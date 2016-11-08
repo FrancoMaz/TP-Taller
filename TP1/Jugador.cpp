@@ -113,6 +113,85 @@ void Jugador::actualizarPosicion(SDL_Keycode tecla, bool sePresionoTecla, SDL_Re
 
 }
 
+void Jugador::mover(SDL_Rect camara){
+	if (velocidades.first > VELMAX)
+	{
+		velocidades.first = VELMAX;
+	}
+	else if (velocidades.first < -VELMAX)
+	{
+		velocidades.first = -VELMAX;
+	}
+
+	if (movDerecha)
+	{
+		velocidades.first += velocidad;
+		if (!saltar) {
+			spriteAEjecutar = "Jugador_corriendo_" + this->equipo;
+		}
+		condicionSprite = "Normal";
+	}
+	else if (movIzquierda)
+	{
+		velocidades.first -= velocidad;
+		if (!saltar) {
+			spriteAEjecutar = "Jugador_corriendo_" + this->equipo;
+		}
+		condicionSprite = "Espejado";
+	}
+	else if (saltar)
+	{
+		if(angulo == 0)
+		{
+			saltar = true;
+		}
+		spriteAEjecutar = "Jugador_saltando_" + this->equipo;
+	}
+	else if(!movDerecha)
+	{
+		velocidades.first = 0;
+		if (!saltar) {
+			spriteAEjecutar = "Jugador_" + this->equipo;
+		}
+		condicionSprite = "Normal";
+	}
+	else if(!movIzquierda)
+	{
+		velocidades.first = 0;
+		if (!saltar)
+		{
+			spriteAEjecutar = "Jugador_" + this->equipo;
+		}
+		condicionSprite = "Espejado";
+	}
+
+	if(saltar)
+	{
+		velocidades.second = -12*cos(angulo);
+		angulo += PI/25;
+		if (angulo > (PI + (PI/25))){
+			angulo = 0;
+			saltar = false;
+			if (velocidades.first != 0) {
+				spriteAEjecutar = "Jugador_corriendo_" + this->equipo;
+			}
+			else {
+				spriteAEjecutar = "Jugador_" + this->equipo;
+			}
+		}
+	} else{
+		velocidades.second = 0;
+	}
+
+	posicion.first += velocidades.first;
+	posicion.second += velocidades.second;
+
+	if (posicion.first < camara.x or posicion.first + 84 > camara.x + ANCHO_VENTANA - MARGENIZQ)
+	{
+		posicion.first -= velocidades.first;
+	}
+}
+
 void Jugador::setPosicion(int x, int y)
 {
 	posicion.first = x;
@@ -218,7 +297,38 @@ void Jugador::setSprite(string sprite, bool equipo, string condicion)
 	}
 }
 
+vector<bool> Jugador::getMov(){
+	vector<bool> movimiento;
+	movimiento.at(DER) = movDerecha;
+	movimiento.at(IZQ) = movIzquierda;
+	movimiento.at(ARRIBA) = saltar;
+	return movimiento;
+}
+
+void Jugador::setMov(SDL_Keycode tecla, bool sePresiono){
+	if (tecla == SDLK_RIGHT){
+		movDerecha = sePresiono;
+	}
+	else if (tecla == SDLK_LEFT){
+		movIzquierda = sePresiono;
+	}
+	else if (tecla == SDLK_UP)
+	{
+		saltar = sePresiono;
+	}
+}
+
 string Jugador::getEquipo()
 {
 	return this->equipo;
 }
+
+pthread_t Jugador::getThreadMovimiento()
+{
+	return thrMov;
+}
+
+void Jugador::setThreadMovimiento(pthread_t thrMovimiento){
+	thrMov = thrMovimiento;
+}
+

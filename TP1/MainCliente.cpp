@@ -174,7 +174,7 @@ void* recibirPosicionJugadores(void* arg) {
 		}
 	}
 }
-
+/* METODO QUE CREE PARA PROBAR ALGO (FRANCO)
 void* enviarYRecibir(void* arg)
 {
 	Cliente* cliente = (Cliente*) arg;
@@ -223,7 +223,7 @@ void* enviarYRecibir(void* arg)
 		}
 	}
 }
-
+*/
 void* enviarEventos(void* arg) {
 	Cliente* cliente = (Cliente*) arg;
 	bool controlArriba = false;
@@ -238,7 +238,39 @@ void* enviarEventos(void* arg) {
 	int countedFrames = 0;
 	fpsTimer.start();
 	while(!vista->controlador->comprobarCierreVentana()){
-		const Uint8 *keys = SDL_GetKeyboardState(NULL);
+		while(SDL_PollEvent(&evento)){
+			if (evento.type == SDL_QUIT){
+				vista->controlador->setCerrarVentana();
+			}
+			else if(vista->controlador->presionarBoton(SDLK_r)){
+				cliente->enviar("R","Todos");
+			}
+			else if (vista->controlador->presionarBoton(SDLK_RIGHT) && !presionadaDerecha){
+				presionadaDerecha = true;
+				cliente->enviar("Tecla Derecha","Todos");
+			}
+			else if (vista->controlador->presionarBoton(SDLK_LEFT) && !presionadaIzquierda)
+			{
+				presionadaIzquierda = true;
+				cliente->enviar("Tecla Izquierda", "Todos");
+			}
+			else if (vista->controlador->presionarBoton(SDLK_UP) && !presionadaArriba && !vista->salto){
+				vista->salto = true;
+				presionadaArriba = true;
+				cliente->enviar("Tecla Arriba", "Todos");
+			}
+			else if(vista->controlador->soltarBoton(SDLK_RIGHT)){
+				presionadaDerecha = false;
+				cliente->enviar("Soltar Tecla Derecha","Todos");
+			}
+			else if(vista->controlador->soltarBoton(SDLK_LEFT)){
+				presionadaIzquierda = false;
+				cliente->enviar("Soltar Tecla Izquierda","Todos");
+			}
+			else if(!vista->salto){
+				presionadaArriba = false;
+			}
+		/*const Uint8 *keys = SDL_GetKeyboardState(NULL);
 		usleep(3000);
 		while(SDL_PollEvent(&evento)){
 			capTimer.start();
@@ -263,13 +295,14 @@ void* enviarEventos(void* arg) {
 			else if(vista->controlador->soltarBoton(SDLK_LEFT)){
 				cliente->enviar("Soltar Tecla Izquierda","Todos");
 			}
+			*/
 			SDL_FlushEvent(SDL_MOUSEMOTION);
 			SDL_FlushEvent(SDL_KEYDOWN);//si se procesa antes, espero lo que tengo que resta.
 			int frameTicks = capTimer.getTicks();
-			if( frameTicks < SCREEN_TICKS_PER_FRAME )
+			if( frameTicks < 25 )
 			{
 				//Wait remaining time
-				SDL_Delay( SCREEN_TICKS_PER_FRAME - frameTicks );
+				SDL_Delay( 25 - frameTicks );
 			}
 		}
 	}

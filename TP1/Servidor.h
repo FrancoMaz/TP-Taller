@@ -66,6 +66,10 @@ private:
 		Mensaje mensajeAProcesar;
 		Servidor* servidor;
 	};
+	struct ParametrosActPosicion{
+		Servidor* servidor;
+		Jugador* jugador;
+	};
 	XmlParser* parser;
 	vector<string> vectorEquipos;
 	int posicionVector;
@@ -106,6 +110,7 @@ public:
 	void procesarMensajes();
 	void restarCantidadClientesConectados();
 	static void* actualizarPosiciones(void *arg);
+	static void* actualizarPosicionesJugador(void* arg);
 	list<MensajesProcesados>* getListaMensajesProcesados();
 	void actualizarPosicionesSalto(Mensaje mensajeAProcesar);
 	vector<Jugador*>* getJugadores();
@@ -131,6 +136,7 @@ public:
 	vector<Jugador*>* jugadores;
 	vector<pair<int,int>> abscisasCapas;
 	string serializarCapas();
+	void iniciarThreadMovimientoJugador(string nombre);
 };
 
 #endif /* TP1_SERVIDOR_H_ */
