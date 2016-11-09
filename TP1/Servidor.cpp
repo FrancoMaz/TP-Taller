@@ -22,8 +22,8 @@ Servidor::Servidor(char* nombreArchivoDeUsuarios, int puerto, Logger* logger) {
 	/* Set port number, using htons function to use proper byte order */
 	this->serverAddr.sin_port = htons(puerto);
 	/* Set IP address to localhost */
-	this->serverAddr.sin_addr.s_addr = inet_addr("192.168.1.12");
-	//this->serverAddr.sin_addr.s_addr = inet_addr("127.0.0.1");
+	//this->serverAddr.sin_addr.s_addr = inet_addr("192.168.1.12");
+	this->serverAddr.sin_addr.s_addr = inet_addr("127.0.0.1");
 
 	//this->serverAddr.sin_addr.s_addr = inet_addr("10.1.77.13");
 	/* Set all bits of the padding field to 0 */
@@ -240,7 +240,7 @@ list<Servidor::MensajesProcesados>* Servidor::getListaMensajesProcesados()
 	return listaMensajesProcesados;
 }
 
-void* Servidor::actualizarPosiciones(void* arg)
+/*void* Servidor::actualizarPosiciones(void* arg)
 {
 	ParametrosServidor parametrosServidor = *(ParametrosServidor*) arg;
 	Mensaje mensajeAProcesar = parametrosServidor.mensajeAProcesar;
@@ -253,7 +253,7 @@ void* Servidor::actualizarPosiciones(void* arg)
 		timer.start();
 		int frameTicks = timer.getTicks();
 		string mensajeJugadorPosActualizada = "";
-		pthread_mutex_lock(&servidor->mutexVectorJugadores);
+		//pthread_mutex_lock(&servidor->mutexVectorJugadores);
 		Jugador* jugador = servidor->obtenerJugador(mensajeAProcesar.getRemitente());
 		jugador->actualizarPosicion(mensajeAProcesar.deserializar(mensajeAProcesar.getTexto()),mensajeAProcesar.sePresionoTecla(),servidor->camara);
 		jugadorSalto = jugador->salto();
@@ -298,7 +298,7 @@ void* Servidor::actualizarPosiciones(void* arg)
 			mensajeCamara = new Mensaje(jugador->getNombre(),"Todos",mensajeCamaraString);
 		}
 		mensajeJugadorPosActualizada = jugador->getStringJugador();
-		pthread_mutex_unlock(&servidor->mutexVectorJugadores);
+		//pthread_mutex_unlock(&servidor->mutexVectorJugadores);
 		servidor->encolarMensajeProcesadoParaCadaCliente(mensajeAProcesar,mensajeJugadorPosActualizada);
 		if (necesitaCambiarCamara)
 		{
@@ -310,13 +310,17 @@ void* Servidor::actualizarPosiciones(void* arg)
 			SDL_Delay( 25 - frameTicks );
 		}
 	} while (jugadorSalto);
-}
+}*/
 
 void* Servidor::actualizarPosicionesJugador(void* arg)
 {
 	ParametrosActPosicion parametrosActPosicion = *(ParametrosActPosicion*) arg;
 	Jugador* jugador = parametrosActPosicion.jugador;
 	Servidor* servidor = parametrosActPosicion.servidor;
+	cout << "Parametros jugador: " << parametrosActPosicion.jugador << endl;
+	cout << "Parametros servidor: " << parametrosActPosicion.servidor << endl;
+	cout << "Parametros jugador: " << jugador << endl;
+	cout << "Parametros servidor: " << servidor << endl;
 	Mensaje* mensajeCamara;
 	string mensajeCamaraString;
 	string mensajeJugadorPosActualizada = "";
@@ -838,6 +842,7 @@ void Servidor::verificarDesconexion(string nombre)
 void Servidor::iniciarThreadMovimientoJugador(string nombre){
 	pthread_mutex_lock(&mutexVectorJugadores);
 	Jugador* jugador = obtenerJugador(nombre);
+	pthread_mutex_unlock(&mutexVectorJugadores);
 	ParametrosActPosicion parametros;
 	parametros.jugador = jugador;
 	parametros.servidor = this;
@@ -845,6 +850,5 @@ void Servidor::iniciarThreadMovimientoJugador(string nombre){
 	pthread_create(&threadMov, NULL, &actualizarPosicionesJugador, &parametros);
 	pthread_detach(threadMov);
 	jugador->setThreadMovimiento(threadMov);
-	pthread_mutex_unlock(&mutexVectorJugadores);
 }
 

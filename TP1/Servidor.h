@@ -100,7 +100,7 @@ public:
 	pthread_mutex_t mutexListaProcesados = PTHREAD_MUTEX_INITIALIZER;
 	pthread_mutex_t mutexColasProcesadas = PTHREAD_MUTEX_INITIALIZER;
 	pthread_mutex_t mutexEnviarMensajes = PTHREAD_MUTEX_INITIALIZER;
-	pthread_mutex_t mutexVectorJugadores = PTHREAD_MUTEX_INITIALIZER;
+	pthread_mutex_t mutexVectorJugadores = PTHREAD_MUTEX_INITIALIZER;;
 	pthread_mutex_t mutexLog = PTHREAD_MUTEX_INITIALIZER;
 	string mensaje;
 	list<string> agregarDestinatarios(string remitente);

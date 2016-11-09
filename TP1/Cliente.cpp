@@ -240,7 +240,7 @@ Handshake* Cliente::getHandshake()
 void Cliente::corroborarConexion() {
  	int ok = 1;
 	while(ok>0){
-		usleep(100);
+		usleep(5000000);
 		char buffer[BUFFER_MAX_SIZE];
 		char* escuchando = "3|";
 		strcpy(buffer, escuchando);
