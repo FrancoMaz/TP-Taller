@@ -240,11 +240,11 @@ Handshake* Cliente::getHandshake()
 void Cliente::corroborarConexion() {
  	int ok = 1;
 	while(ok>0){
+		usleep(100);
 		char buffer[BUFFER_MAX_SIZE];
 		char* escuchando = "3|";
 		strcpy(buffer, escuchando);
 		clock_t tiempoInicio = clock();
-		usleep(5000000);
 		pthread_mutex_lock(&mutexSocket);
 		ok = send(this->socketCliente, escuchando, strlen(escuchando), 0);
 		if (ok > 0)
@@ -253,17 +253,18 @@ void Cliente::corroborarConexion() {
 		}
 		pthread_mutex_unlock(&mutexSocket);
  	}
-	if (this->opcionMenu != 4) {
+	cout << "Se cerro la conexion con el servidor" << endl;
+	/*if (this->opcionMenu != 4) {
 		this->terminoComunicacion = true;
 		int opcion = 1;
 		while (opcion != 5) {
 			cout << endl;
-			cout << "Se cerro la conexion con el servidor. Presione 5 para salir" << endl;
+			cout << "Se cerro la conexion con el servidor" << endl;
 			cin >> opcion; }
 		if (opcion == 5) {
 			this->salir();
 		}
-	}
+	}*/
  }
 
 bool Cliente::conectar(string nombre, string contrasenia) {

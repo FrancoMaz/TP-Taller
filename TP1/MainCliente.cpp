@@ -43,7 +43,7 @@ bool chequearSocket(string ip, int puerto) {
 	//string ipServer = "192.168.1.11";
 
 	//string ipServer = "10.1.77.13";
-	string ipServer = "127.0.0.1";
+	string ipServer = "192.168.1.12";
 	int puertoDeEscucha = 7891;
 
 	return (ip == ipServer && puerto == puertoDeEscucha);
@@ -52,6 +52,7 @@ void* verificarConexion(void * arg){
 	ComunicacionCliente* comunicacion = (ComunicacionCliente*)arg;
 	Cliente* cliente = comunicacion->cliente;
 	cliente->corroborarConexion();
+	vista->controlador->setCerrarVentana();
     //comunicacion->termino = cliente->corroborarConexion();
 }
 
@@ -247,8 +248,8 @@ void* cicloConexion(void* arg) {
 
 	if (!vista->ventanaCerrada()) {
 		//se crea esta hilo para poder verificar la conexion con el servidor
-		//pthread_create(&threadVerificarConexion, NULL,&verificarConexion,&comunicacion);
-		//pthread_detach(threadVerificarConexion);
+		pthread_create(&threadVerificarConexion, NULL,&verificarConexion,&comunicacion);
+		pthread_detach(threadVerificarConexion);
 		bool inicio;
 		do
 		{

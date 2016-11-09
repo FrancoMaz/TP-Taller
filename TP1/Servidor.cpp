@@ -22,8 +22,8 @@ Servidor::Servidor(char* nombreArchivoDeUsuarios, int puerto, Logger* logger) {
 	/* Set port number, using htons function to use proper byte order */
 	this->serverAddr.sin_port = htons(puerto);
 	/* Set IP address to localhost */
-	//this->serverAddr.sin_addr.s_addr = inet_addr("192.168.1.11");
-	this->serverAddr.sin_addr.s_addr = inet_addr("127.0.0.1");
+	this->serverAddr.sin_addr.s_addr = inet_addr("192.168.1.12");
+	//this->serverAddr.sin_addr.s_addr = inet_addr("127.0.0.1");
 
 	//this->serverAddr.sin_addr.s_addr = inet_addr("10.1.77.13");
 	/* Set all bits of the padding field to 0 */
@@ -518,6 +518,17 @@ pair<int,string> Servidor::aceptarConexion() {
 
 	this->addr_size = sizeof serverStorage;
 	int socketCliente = accept(welcomeSocket,(struct sockaddr *) &this->serverStorage, &this->addr_size);
+	struct timeval timeout;
+	timeout.tv_sec = 5;
+	timeout.tv_usec = 0;
+	if (setsockopt (socketCliente, SOL_SOCKET, SO_RCVTIMEO, (char *)&timeout, sizeof(timeout)) < 0)
+	{
+		cout << "No se pudo setear el timeout del recv del socket" << endl;
+	}
+	if (setsockopt (socketCliente, SOL_SOCKET, SO_SNDTIMEO, (char *)&timeout, sizeof(timeout)) < 0)
+	{
+		cout << "No se pudo setear el timeout del send del socket" << endl;
+	}
 	//pthread_mutex_lock(&mutexSocket);
 	int ok = recv(socketCliente, datosRecibidos, BUFFER_MAX_SIZE, 0);
 	if (ok < 0){
@@ -716,6 +727,7 @@ int Servidor::getCantJugadoresConectadosMax()
 
 void Servidor::verificarDesconexion(string nombre)
 {
+	cout << "Entra a verificar desconexion del jugador" << nombre << endl;
 	for (int i = 0; i < jugadores->size(); i++)
 	{
 		Jugador* jugador = jugadores->at(i);
