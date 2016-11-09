@@ -248,12 +248,14 @@ void* cicloEscuchaCliente(void* arg) {
 			}
 			if (largoRequest < 0) {
 				conectado = false;
-				servidor->setJugadorDesconectado(nombre);
+				//servidor->setJugadorDesconectado(nombre);
 				servidor->restarCantidadClientesConectados();
+				servidor->verificarDesconexion(nombre);
 			}
 			else if (largoRequest == 0){
 				conectado = false;
-				servidor->setJugadorDesconectado(nombre);
+				//servidor->setJugadorDesconectado(nombre);
+				servidor->verificarDesconexion(nombre);
 			}
 			else {
 				//en el formato siempre recibimos primero el metodo que es un entero.
@@ -334,8 +336,10 @@ void* cicloEscuchaCliente(void* arg) {
 			else{
 				mensaje = "ERROR: Ocurrió un problema con el socket del cliente: " + nombre + string(".\n");
 			}
-			servidor->setJugadorDesconectado(nombre);
+			//servidor->setJugadorDesconectado(nombre);
+			if (servidor->escuchando) {cout << "Servidor escuchando" << endl;}
 			conectado = false;
+			servidor->verificarDesconexion(nombre);
 			servidor->guardarLog(mensaje, DEBUG);
 			servidor->restarCantidadClientesConectados();
 			std::ostringstream oss;

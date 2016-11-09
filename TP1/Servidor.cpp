@@ -22,7 +22,7 @@ Servidor::Servidor(char* nombreArchivoDeUsuarios, int puerto, Logger* logger) {
 	/* Set port number, using htons function to use proper byte order */
 	this->serverAddr.sin_port = htons(puerto);
 	/* Set IP address to localhost */
-	//this->serverAddr.sin_addr.s_addr = inet_addr("192.168.1.11");
+	//this->serverAddr.sin_addr.s_addr = inet_addr("192.168.1.12");
 	this->serverAddr.sin_addr.s_addr = inet_addr("127.0.0.1");
 
 	//this->serverAddr.sin_addr.s_addr = inet_addr("10.1.77.13");
@@ -253,7 +253,7 @@ list<Servidor::MensajesProcesados>* Servidor::getListaMensajesProcesados()
 		timer.start();
 		int frameTicks = timer.getTicks();
 		string mensajeJugadorPosActualizada = "";
-		pthread_mutex_lock(&servidor->mutexVectorJugadores);
+		//pthread_mutex_lock(&servidor->mutexVectorJugadores);
 		Jugador* jugador = servidor->obtenerJugador(mensajeAProcesar.getRemitente());
 		jugador->actualizarPosicion(mensajeAProcesar.deserializar(mensajeAProcesar.getTexto()),mensajeAProcesar.sePresionoTecla(),servidor->camara);
 		jugadorSalto = jugador->salto();
@@ -298,7 +298,7 @@ list<Servidor::MensajesProcesados>* Servidor::getListaMensajesProcesados()
 			mensajeCamara = new Mensaje(jugador->getNombre(),"Todos",mensajeCamaraString);
 		}
 		mensajeJugadorPosActualizada = jugador->getStringJugador();
-		pthread_mutex_unlock(&servidor->mutexVectorJugadores);
+		//pthread_mutex_unlock(&servidor->mutexVectorJugadores);
 		servidor->encolarMensajeProcesadoParaCadaCliente(mensajeAProcesar,mensajeJugadorPosActualizada);
 		if (necesitaCambiarCamara)
 		{
@@ -312,6 +312,9 @@ list<Servidor::MensajesProcesados>* Servidor::getListaMensajesProcesados()
 	} while (jugadorSalto);
 }*/
 /*
+=======
+
+>>>>>>> 7141cadd9db71637618ff321e8c9e0314344fbbd
 void* Servidor::actualizarPosicionesJugador(void* arg)
 {
 	//ParametrosActPosicion* parametrosActPosicion = (ParametrosActPosicion*) arg;
@@ -603,6 +606,17 @@ pair<int,string> Servidor::aceptarConexion() {
 
 	this->addr_size = sizeof serverStorage;
 	int socketCliente = accept(welcomeSocket,(struct sockaddr *) &this->serverStorage, &this->addr_size);
+	struct timeval timeout;
+	timeout.tv_sec = 5;
+	timeout.tv_usec = 0;
+	if (setsockopt (socketCliente, SOL_SOCKET, SO_RCVTIMEO, (char *)&timeout, sizeof(timeout)) < 0)
+	{
+		cout << "No se pudo setear el timeout del recv del socket" << endl;
+	}
+	if (setsockopt (socketCliente, SOL_SOCKET, SO_SNDTIMEO, (char *)&timeout, sizeof(timeout)) < 0)
+	{
+		cout << "No se pudo setear el timeout del send del socket" << endl;
+	}
 	//pthread_mutex_lock(&mutexSocket);
 	int ok = recv(socketCliente, datosRecibidos, BUFFER_MAX_SIZE, 0);
 	if (ok < 0){
@@ -801,6 +815,7 @@ int Servidor::getCantJugadoresConectadosMax()
 
 void Servidor::verificarDesconexion(string nombre)
 {
+	cout << "Entra a verificar desconexion del jugador" << nombre << endl;
 	for (int i = 0; i < jugadores->size(); i++)
 	{
 		Jugador* jugador = jugadores->at(i);
@@ -835,8 +850,12 @@ void Servidor::iniciarThreadMovimientoJugador(string nombre){
 	pthread_mutex_lock(&mutexVectorJugadores);
 	Jugador* jugador = obtenerJugador(nombre);
 	pthread_mutex_unlock(&mutexVectorJugadores);
+<<<<<<< HEAD
 	Servidor* servidor = this;
 	ParametrosMovimiento * parametros = new ParametrosMovimiento(servidor,jugador);/*ParametrosActPosicion parametros;
+=======
+	ParametrosActPosicion parametros;
+>>>>>>> 7141cadd9db71637618ff321e8c9e0314344fbbd
 	parametros.jugador = jugador;
 	parametros.servidor = this;
 
@@ -844,6 +863,9 @@ void Servidor::iniciarThreadMovimientoJugador(string nombre){
 	pthread_create(&threadMov, NULL, &actualizarPosicionesJugador, parametros);
 	pthread_detach(threadMov);
 	jugador->setThreadMovimiento(threadMov);
+<<<<<<< HEAD
 
 }*/
+
+
 
