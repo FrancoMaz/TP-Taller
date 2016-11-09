@@ -266,14 +266,18 @@ void* cicloConexion(void* arg) {
 		{
 			usleep(500000);
 			inicio = cliente->checkearInicioJuego(vista);
-		}while (!inicio);
-		handshakeDeserializado = cliente->getHandshake();
-		pthread_create(&threadEnviarEventos, NULL, &enviarEventos, cliente);
-		pthread_detach(threadEnviarEventos);
-		pthread_create(&threadRecibirPosicionJugadores, NULL, &recibirPosicionJugadores,cliente);
-		pthread_detach(threadRecibirPosicionJugadores);
-		vector<ImagenDto*> imagenes = handshakeDeserializado->getImagenes();
-		vista->cargarEscenario(imagenes, stringToInt(handshakeDeserializado->getAncho()), stringToInt(handshakeDeserializado->getAlto()));
+			vista->cargarPantallaEsperandoJugadores();
+		}while (!inicio && !vista->ventanaCerrada());
+
+		if (!vista->ventanaCerrada()){
+			handshakeDeserializado = cliente->getHandshake();
+			pthread_create(&threadEnviarEventos, NULL, &enviarEventos, cliente);
+			pthread_detach(threadEnviarEventos);
+			pthread_create(&threadRecibirPosicionJugadores, NULL, &recibirPosicionJugadores,cliente);
+			pthread_detach(threadRecibirPosicionJugadores);
+			vector<ImagenDto*> imagenes = handshakeDeserializado->getImagenes();
+			vista->cargarEscenario(imagenes, stringToInt(handshakeDeserializado->getAncho()), stringToInt(handshakeDeserializado->getAlto()));
+		}
 		cliente->desconectar();
 	}
 }

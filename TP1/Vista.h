@@ -51,6 +51,7 @@ public:
 	void cargarPrimeraPantalla();
 	datosConexion cargarSegundaPantalla(bool aviso);
 	datosConexion cargarTerceraPantalla(bool aviso);
+	void cargarPantallaEsperandoJugadores();
 	void cargarEscenario(vector<ImagenDto*> imagenes, int anchoVentana, int altoVentana);
 	void transicionDePantalla();
 	bool inicializar();

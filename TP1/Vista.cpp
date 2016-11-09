@@ -56,7 +56,7 @@ void Vista::cargarArchivos(){
 	textura.push_back(ventana->crearBoton("Recursos/Boton_Conectar.png"));
 	textura.push_back(ventana->crearTextura("Recursos/Fondo_Escenario_capa_1.png",0));
 	textura.push_back(ventana->crearBoton("Recursos/Boton_Salir.png"));
-	//textura.push_back(ventana->crearTextura("Recursos/Jugador.png",3));
+	textura.push_back(ventana->crearTexto("Recursos/msserif_bold.ttf",25));
 
 	//Defino constantes para cada textura (para evitar llamarlos por índices)
 	#define texturaMenuFondo textura[0]
@@ -77,7 +77,7 @@ void Vista::cargarArchivos(){
 	#define texturaBotonConectar textura[15]
 	#define texturaFondoEscenario textura[16]
 	#define texturaBotonDesconectar textura[17]
-	//#define texturaJugadorPrueba textura[17]
+	#define textoEsperandoJugadores textura[18]
 }
 
 void Vista::cargarPrimeraPantalla(){
@@ -262,6 +262,23 @@ datosConexion Vista::cargarPantallaIngresoDatos(bool aviso, int numeroPantalla){
 	}
 	SDL_StopTextInput();
 	return this->datos;
+}
+
+void Vista::cargarPantallaEsperandoJugadores(){
+	this->ventana->limpiar();
+
+	texturaMenuFondo->aplicarPosicion(0,0,0,SDL_FLIP_NONE);
+	texturaMenuMetalSlug->aplicarPosicion(180,40,0,SDL_FLIP_NONE);
+
+	textoEsperandoJugadores->actualizarTexto("ESPERANDO JUGADORES...",{255,255,255});
+	textoEsperandoJugadores->setAlpha(220);
+	textoEsperandoJugadores->aplicarPosicion(212,410,0,SDL_FLIP_NONE);
+
+	textoTPTaller->aplicarPosicion(254,560,0,SDL_FLIP_NONE);
+	textoTPTaller->setAlpha(200);
+
+	this->ventana->actualizar();
+	this->controlador->botonCerrarVentanaSeleccionado();
 }
 
 void Vista::transicionDePantalla(){
