@@ -34,7 +34,6 @@ const int INFO = 1;
 const int DEBUG = 2;
 
 using namespace std;
-
 class Servidor {
 
 private:

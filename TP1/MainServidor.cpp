@@ -15,7 +15,7 @@
 #include <unistd.h>
 #include "Servidor.h"
 #include <pthread.h>
-
+#include "ParametrosMovimiento.h"
 using namespace std;
 
 struct parametrosThreadCliente {
@@ -135,6 +135,94 @@ void* cicloProcesarMensajes(void* arg) {
 	}
 }
 
+void* actualizarPosicionesJugador(void* arg)
+{
+	//ParametrosActPosicion* parametrosActPosicion = (ParametrosActPosicion*) arg;
+	//Servidor* servidor = (Servidor*)arg;
+	//string nombreJugador = "jochi";
+	//Jugador* jugador = parametrosActPosicion->jugador;
+	//Servidor* servidor = parametrosActPosicion->servidor;
+	//Jugador* jugador = servidor->obtenerJugador(nombreJugador);
+	ParametrosMovimiento* parametros = (ParametrosMovimiento*)arg;
+	Servidor* servidor = parametros->servidor;
+	Jugador* jugador = parametros->jugador;
+	Mensaje* mensajeCamara;
+	string mensajeCamaraString;
+	string mensajeJugadorPosActualizada = "";
+	while (jugador->getConectado()){
+		//cout << "parametros: " << parametrosActPosicion << endl;
+		cout<<"posicion de memoria: " << servidor << endl;
+		pthread_mutex_lock(&servidor->mutexVectorJugadores);
+		jugador->mover(servidor->camara);
+		pair<int,int> posicionesExtremos = servidor->obtenerPosicionesExtremos();
+		int anchoSprite = servidor->getAnchoSprite(jugador->getSpriteAEjecutar());
+		bool necesitaCambiarCamara = jugador->chequearCambiarCamara(servidor->camara, atoi(servidor->handshake->getAncho().c_str()), posicionesExtremos, anchoSprite);
+		if (necesitaCambiarCamara)
+		{
+			if (servidor->camara.x > atoi(servidor->handshake->getImagenes().at(0)->getAncho().c_str())){
+				servidor->camara.x = 0;
+				for (int i = 0; i < servidor->abscisasCapas.size(); i++)
+				{
+					servidor->abscisasCapas.at(i).first = 0;
+				}
+				for (int i = 0; i < servidor->jugadores->size(); i++)
+				{
+					servidor->jugadores->at(i)->resetearPosicion(atoi(servidor->handshake->getImagenes().at(0)->getAncho().c_str()));
+				}
+			} else
+				{
+					servidor->camara.x += jugador->getVelocidadX();
+					//camara.x = (jugador->getPosicion().first) - (atoi(handshake->getAncho().c_str()))/2;
+					for (int i = 0; i < servidor->abscisasCapas.size(); i++)
+					{
+						if (i == 0)
+						{
+							servidor->abscisasCapas.at(i).first = servidor->camara.x;
+						}
+						else
+						{	servidor->abscisasCapas.at(i).second += jugador->getVelocidadX();
+							servidor->abscisasCapas.at(i).first = abs((servidor->abscisasCapas.at(i).second)*(atoi(servidor->handshake->getImagenes().at(i)->getAncho().c_str()) - atoi(servidor->handshake->getAncho().c_str()))/(atoi(servidor->handshake->getImagenes().at(0)->getAncho().c_str()) - atoi(servidor->handshake->getAncho().c_str())));
+							if (servidor->abscisasCapas.at(i).first > atoi(servidor->handshake->getImagenes().at(i)->getAncho().c_str()))
+							{
+								servidor->abscisasCapas.at(i).first = 0;
+								servidor->abscisasCapas.at(i).second = 0;
+							}
+						}
+					}
+				}
+			mensajeCamaraString = "1|" + to_string(servidor->camara.x) + "|" + to_string(servidor->camara.y) + "|" + servidor->serializarCapas() + "#";
+			mensajeCamara = new Mensaje(jugador->getNombre(),"Todos",mensajeCamaraString);
+		}
+		mensajeJugadorPosActualizada = jugador->getStringJugador();
+		Mensaje* mensajeAProcesar = new Mensaje();
+		mensajeAProcesar->setRemitente(jugador->getNombre());
+		pthread_mutex_unlock(&servidor->mutexVectorJugadores);
+		mensajeAProcesar->setDestinatario("Todos");
+		servidor->encolarMensajeProcesadoParaCadaCliente(*mensajeAProcesar,mensajeJugadorPosActualizada);
+		if (necesitaCambiarCamara)
+		{
+			servidor->encolarMensajeProcesadoParaCadaCliente(*mensajeCamara,mensajeCamaraString);
+		}
+		usleep(50000);
+	}
+}
+
+
+void iniciarThreadMovimientoJugador(Servidor* servidor, string nombre)
+{
+	pthread_mutex_lock(&servidor->mutexVectorJugadores);
+	Jugador* jugador = servidor->obtenerJugador(nombre);
+	pthread_mutex_unlock(&servidor->mutexVectorJugadores);
+	ParametrosMovimiento * parametros = new ParametrosMovimiento(servidor,jugador);/*ParametrosActPosicion parametros;
+	parametros.jugador = jugador;
+	parametros.servidor = this;*/
+
+	pthread_t threadMov = jugador->getThreadMovimiento();
+	pthread_create(&threadMov, NULL, &actualizarPosicionesJugador, parametros);
+	pthread_detach(threadMov);
+	jugador->setThreadMovimiento(threadMov);
+}
+
 void* cicloEscuchaCliente(void* arg) {
 	//esta funcion es la que se va a encargar de hacer send y recv de los enviar/recibir/desconectar
 	//es decir, esta funcion es la que va a estar constantemente haciendo send y recv del socket del cliente y detectando lo que quiere hacer.
@@ -217,7 +305,8 @@ void* cicloEscuchaCliente(void* arg) {
 							string jugadoresInicio = servidor->getEstadoInicialSerializado();
 							comenzo = "0|"  + jugadoresInicio + "@";
 							servidor->iniciarCamara();
-							servidor->iniciarThreadMovimientoJugador(nombre);
+							iniciarThreadMovimientoJugador(servidor,nombre);
+							//servidor->iniciarThreadMovimientoJugador(nombre);
 						}
 						else{
 							comenzo = "1@";

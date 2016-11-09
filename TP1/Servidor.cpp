@@ -240,7 +240,7 @@ list<Servidor::MensajesProcesados>* Servidor::getListaMensajesProcesados()
 	return listaMensajesProcesados;
 }
 
-void* Servidor::actualizarPosiciones(void* arg)
+/*void* Servidor::actualizarPosiciones(void* arg)
 {
 	ParametrosServidor parametrosServidor = *(ParametrosServidor*) arg;
 	Mensaje mensajeAProcesar = parametrosServidor.mensajeAProcesar;
@@ -310,17 +310,25 @@ void* Servidor::actualizarPosiciones(void* arg)
 			SDL_Delay( 25 - frameTicks );
 		}
 	} while (jugadorSalto);
-}
-
+}*/
+/*
 void* Servidor::actualizarPosicionesJugador(void* arg)
 {
-	ParametrosActPosicion parametrosActPosicion = *(ParametrosActPosicion*) arg;
-	Jugador* jugador = parametrosActPosicion.jugador;
-	Servidor* servidor = parametrosActPosicion.servidor;
+	//ParametrosActPosicion* parametrosActPosicion = (ParametrosActPosicion*) arg;
+	//Servidor* servidor = (Servidor*)arg;
+	//string nombreJugador = "jochi";
+	//Jugador* jugador = parametrosActPosicion->jugador;
+	//Servidor* servidor = parametrosActPosicion->servidor;
+	//Jugador* jugador = servidor->obtenerJugador(nombreJugador);
+	ParametrosMovimiento* parametros = (ParametrosMovimiento*)arg;
+	Servidor* servidor = parametros->servidor;
+	Jugador* jugador = parametros->jugador;
 	Mensaje* mensajeCamara;
 	string mensajeCamaraString;
 	string mensajeJugadorPosActualizada = "";
 	while (jugador->getConectado()){
+		//cout << "parametros: " << parametrosActPosicion << endl;
+		cout<<"posicion de memoria: " << servidor << endl;
 		pthread_mutex_lock(&servidor->mutexVectorJugadores);
 		jugador->mover(servidor->camara);
 		pair<int,int> posicionesExtremos = servidor->obtenerPosicionesExtremos();
@@ -375,7 +383,7 @@ void* Servidor::actualizarPosicionesJugador(void* arg)
 		usleep(50000);
 	}
 }
-
+*/
 Jugador* Servidor::obtenerJugador(string nombre){
 	for (int i = 0; i < jugadores->size(); i++)
 	{
@@ -822,17 +830,20 @@ void Servidor::verificarDesconexion(string nombre)
 		}
 	}
 }
-
+/*
 void Servidor::iniciarThreadMovimientoJugador(string nombre){
 	pthread_mutex_lock(&mutexVectorJugadores);
 	Jugador* jugador = obtenerJugador(nombre);
-	ParametrosActPosicion parametros;
+	pthread_mutex_unlock(&mutexVectorJugadores);
+	Servidor* servidor = this;
+	ParametrosMovimiento * parametros = new ParametrosMovimiento(servidor,jugador);/*ParametrosActPosicion parametros;
 	parametros.jugador = jugador;
 	parametros.servidor = this;
+
 	pthread_t threadMov = jugador->getThreadMovimiento();
-	pthread_create(&threadMov, NULL, &actualizarPosicionesJugador, &parametros);
+	pthread_create(&threadMov, NULL, &actualizarPosicionesJugador, parametros);
 	pthread_detach(threadMov);
 	jugador->setThreadMovimiento(threadMov);
-	pthread_mutex_unlock(&mutexVectorJugadores);
-}
+
+}*/
 
