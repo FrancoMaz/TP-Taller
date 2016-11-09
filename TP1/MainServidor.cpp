@@ -219,6 +219,7 @@ void* cicloEscuchaCliente(void* arg) {
 							string jugadoresInicio = servidor->getEstadoInicialSerializado();
 							comenzo = "0|"  + jugadoresInicio + "@";
 							servidor->iniciarCamara();
+							servidor->iniciarThreadMovimientoJugador(nombre);
 						}
 						else{
 							comenzo = "1@";

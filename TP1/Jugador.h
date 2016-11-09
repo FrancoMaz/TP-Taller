@@ -20,7 +20,9 @@
 #define VELMAX 10
 #define MARGENIZQ 15
 #define MARGENDER ANCHO_VENTANA/2
-
+#define DER 1
+#define IZQ 2
+#define ARRIBA 3
 using namespace std;
 
 class Jugador {
@@ -30,10 +32,13 @@ private:
 	string nombre;
 	string equipo;
 	bool saltar;
+	bool movDerecha = false;
+	bool movIzquierda = false;
 	double angulo;
 	string spriteAEjecutar;
 	bool conectado = false;
 	string condicionSprite;
+	pthread_t thrMov;
 
 public:
 	Jugador(pair<int,int> posicionInicial);
@@ -57,5 +62,10 @@ public:
 	string getStringJugadorDesconectado();
 	string getEquipo();
 	void setPosicion(int x, int y);
+	void setMov(SDL_Keycode tecla, bool estaMoviendose);
+	vector<bool> getMov();
+	void mover(SDL_Rect camara);
+	pthread_t getThreadMovimiento();
+	void setThreadMovimiento(pthread_t thrMovimiento);
 };
 #endif /* JUGADOR_H_ */

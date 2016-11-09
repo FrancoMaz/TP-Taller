@@ -305,10 +305,6 @@ void Vista::cargarEscenario(vector<ImagenDto*> imagenes, int anchoVentana, int a
 		VistaJugador* vistaJugador = vistaJugadores.at(i);
 		vistaJugador->texturaJugador->aplicarPosicion(vistaJugador->x,vistaJugador->y,0,SDL_FLIP_NONE);
 	}
-
-	while(!this->controlador->comprobarCierreVentana()){
-		usleep(100);
-	}
 	//this->ventana->actualizar();
 }
 
@@ -433,6 +429,7 @@ void Vista::actualizarPosJugador(UpdateJugador* update, int anchoVentana, int an
 			{
 				vistaJugador->x = vistaJugador->x - anchoCapaPrincipal;
 			}
+			break;
 		}
 	}
 }

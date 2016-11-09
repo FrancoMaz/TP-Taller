@@ -24,6 +24,7 @@ using namespace std;
 datosConexion datosCliente;
 Vista * vista = new Vista();
 Handshake* handshakeDeserializado;
+queue<string> colaMensajes;
 
 struct ComunicacionCliente{
 			Cliente* cliente;
@@ -159,7 +160,7 @@ void* recibirPosicionJugadores(void* arg) {
 	LTimer capTimer;
 	usleep(50000);
 	while(!vista->controlador->comprobarCierreVentana()){
-		usleep(3000);
+		//usleep(3000);
 		 //Start cap timer
 		capTimer.start();
 		datosRecibidos = cliente->recibir();
@@ -174,24 +175,16 @@ void* recibirPosicionJugadores(void* arg) {
 		}
 	}
 }
-
-void* enviarEventos(void* arg) {
+/* METODO QUE CREE PARA PROBAR ALGO (FRANCO)
+void* enviarYRecibir(void* arg)
+{
 	Cliente* cliente = (Cliente*) arg;
-	bool controlArriba = false;
-	 //The frames per second timer
-	LTimer fpsTimer;
 	//The frames per second cap timer
 	LTimer capTimer;
-	//Start counting frames per second
-	int countedFrames = 0;
-	fpsTimer.start();
 	while(!vista->controlador->comprobarCierreVentana()){
-		const Uint8 *keys = SDL_GetKeyboardState(NULL);
-		usleep(3000);
-		while(SDL_PollEvent(&evento)){
-			//usleep(50000);
-			//cout << "Adentro de enviar eventos en mainCliente" << endl;
-			capTimer.start();
+		capTimer.start();
+		if (SDL_PollEvent(&evento))
+		{
 			if (evento.type == SDL_QUIT){
 				vista->controlador->setCerrarVentana();
 			}
@@ -214,12 +207,103 @@ void* enviarEventos(void* arg) {
 				cliente->enviar("Soltar Tecla Izquierda","Todos");
 			}
 			SDL_FlushEvent(SDL_MOUSEMOTION);
+			SDL_FlushEvent(SDL_KEYDOWN);
+		}
+		string datosRecibidos = "";
+		UpdateJugador* update = new UpdateJugador();
+		bool primeraVez = true;
+		datosRecibidos = cliente->recibir();
+		procesarUltimosMensajes(datosRecibidos, cliente, update, &primeraVez);
+
+		//si se procesa antes, espero lo que tengo que resta.
+		int frameTicks = capTimer.getTicks();
+		if( frameTicks < SCREEN_TICKS_PER_FRAME )
+		{
+			//Wait remaining time
+			SDL_Delay( SCREEN_TICKS_PER_FRAME - frameTicks );
+		}
+	}
+}
+*/
+void* enviarEventos(void* arg) {
+	Cliente* cliente = (Cliente*) arg;
+	bool controlArriba = false;
+	bool presionadaArriba = false;
+	bool presionadaDerecha = false;
+	bool presionadaIzquierda = false;
+	 //The frames per second timer
+	LTimer fpsTimer;
+	//The frames per second cap timer
+	LTimer capTimer;
+	//Start counting frames per second
+	int countedFrames = 0;
+	fpsTimer.start();
+	while(!vista->controlador->comprobarCierreVentana()){
+		while(SDL_PollEvent(&evento)){
+			if (evento.type == SDL_QUIT){
+				vista->controlador->setCerrarVentana();
+			}
+			else if(vista->controlador->presionarBoton(SDLK_r)){
+				cliente->enviar("R","Todos");
+			}
+			else if (vista->controlador->presionarBoton(SDLK_RIGHT) && !presionadaDerecha){
+				presionadaDerecha = true;
+				cliente->enviar("Tecla Derecha","Todos");
+			}
+			else if (vista->controlador->presionarBoton(SDLK_LEFT) && !presionadaIzquierda)
+			{
+				presionadaIzquierda = true;
+				cliente->enviar("Tecla Izquierda", "Todos");
+			}
+			else if (vista->controlador->presionarBoton(SDLK_UP) && !presionadaArriba && !vista->salto){
+				vista->salto = true;
+				presionadaArriba = true;
+				cliente->enviar("Tecla Arriba", "Todos");
+			}
+			else if(vista->controlador->soltarBoton(SDLK_RIGHT)){
+				presionadaDerecha = false;
+				cliente->enviar("Soltar Tecla Derecha","Todos");
+			}
+			else if(vista->controlador->soltarBoton(SDLK_LEFT)){
+				presionadaIzquierda = false;
+				cliente->enviar("Soltar Tecla Izquierda","Todos");
+			}
+			else if(!vista->salto){
+				presionadaArriba = false;
+			}
+		/*const Uint8 *keys = SDL_GetKeyboardState(NULL);
+		usleep(3000);
+		while(SDL_PollEvent(&evento)){
+			capTimer.start();
+			if (evento.type == SDL_QUIT){
+				vista->controlador->setCerrarVentana();
+			}
+			if(vista->controlador->presionarBoton(SDLK_RIGHT)){
+				cliente->enviar("Tecla Derecha","Todos");
+			}
+			else if(vista->controlador->presionarBoton(SDLK_LEFT)){
+				cliente->enviar("Tecla Izquierda","Todos");
+			}
+			else if(vista->controlador->presionarBoton(SDLK_UP)){
+				cliente->enviar("Tecla Arriba","Todos");
+			}
+			else if(vista->controlador->presionarBoton(SDLK_r)){
+				cliente->enviar("R","Todos");
+			}
+			else if(vista->controlador->soltarBoton(SDLK_RIGHT)){
+				cliente->enviar("Soltar Tecla Derecha","Todos");
+			}
+			else if(vista->controlador->soltarBoton(SDLK_LEFT)){
+				cliente->enviar("Soltar Tecla Izquierda","Todos");
+			}
+			*/
+			SDL_FlushEvent(SDL_MOUSEMOTION);
 			SDL_FlushEvent(SDL_KEYDOWN);//si se procesa antes, espero lo que tengo que resta.
 			int frameTicks = capTimer.getTicks();
-			if( frameTicks < SCREEN_TICKS_PER_FRAME )
+			if( frameTicks < 25 )
 			{
 				//Wait remaining time
-				SDL_Delay( SCREEN_TICKS_PER_FRAME - frameTicks );
+				SDL_Delay( 25 - frameTicks );
 			}
 		}
 	}
@@ -263,6 +347,10 @@ void* cicloConexion(void* arg) {
 		pthread_detach(threadRecibirPosicionJugadores);
 		vector<ImagenDto*> imagenes = handshakeDeserializado->getImagenes();
 		vista->cargarEscenario(imagenes, stringToInt(handshakeDeserializado->getAncho()), stringToInt(handshakeDeserializado->getAlto()));
+		while(!vista->controlador->comprobarCierreVentana()){
+			//recibirPosicionJugadores((void*)&cliente);
+			usleep(100);
+		}
 		cliente->desconectar();
 	}
 }
