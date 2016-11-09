@@ -39,6 +39,7 @@ private:
 	bool conectado = false;
 	string condicionSprite;
 	pthread_t thrMov;
+	SDL_Keycode ultimaTeclaPresionada = SDLK_RIGHT;
 
 public:
 	Jugador(pair<int,int> posicionInicial);

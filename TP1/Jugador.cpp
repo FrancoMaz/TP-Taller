@@ -147,7 +147,7 @@ void Jugador::mover(SDL_Rect camara){
 		}
 		spriteAEjecutar = "Jugador_saltando_" + this->equipo;
 	}
-	else if(!movDerecha)
+	else if(!movDerecha && ultimaTeclaPresionada == SDLK_RIGHT)
 	{
 		velocidades.first = 0;
 		if (!saltar) {
@@ -155,7 +155,7 @@ void Jugador::mover(SDL_Rect camara){
 		}
 		condicionSprite = "Normal";
 	}
-	else if(!movIzquierda)
+	else if(!movIzquierda && ultimaTeclaPresionada == SDLK_LEFT)
 	{
 		velocidades.first = 0;
 		if (!saltar)
@@ -306,6 +306,7 @@ vector<bool> Jugador::getMov(){
 }
 
 void Jugador::setMov(SDL_Keycode tecla, bool sePresiono){
+	SDL_Keycode ultimaTeclaPresionada = tecla;
 	if (tecla == SDLK_RIGHT){
 		movDerecha = sePresiono;
 	}

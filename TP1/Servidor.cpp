@@ -317,10 +317,6 @@ void* Servidor::actualizarPosicionesJugador(void* arg)
 	ParametrosActPosicion parametrosActPosicion = *(ParametrosActPosicion*) arg;
 	Jugador* jugador = parametrosActPosicion.jugador;
 	Servidor* servidor = parametrosActPosicion.servidor;
-	cout << "Parametros jugador: " << parametrosActPosicion.jugador << endl;
-	cout << "Parametros servidor: " << parametrosActPosicion.servidor << endl;
-	cout << "Parametros jugador: " << jugador << endl;
-	cout << "Parametros servidor: " << servidor << endl;
 	Mensaje* mensajeCamara;
 	string mensajeCamaraString;
 	string mensajeJugadorPosActualizada = "";
