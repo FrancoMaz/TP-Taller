@@ -1,7 +1,7 @@
 
 OBJSCLI = MainCliente.cpp Cliente.cpp Mensaje.cpp Evento.cpp Logger.cpp VentanaSDL.cpp TexturaSDL.cpp Vista.cpp Controlador.cpp SetDeSpritesDto.cpp SpriteDto.cpp ImagenDto.cpp Handshake.cpp VistaJugador.cpp UpdateJugador.cpp Capa.cpp LTimer.cpp
 
-OBJSSERV = MainServidor.cpp Servidor.cpp Mensaje.cpp Logger.cpp Evento.cpp Jugador.cpp XmlParser.cpp SetDeSpritesDto.cpp SpriteDto.cpp ImagenDto.cpp pugixml.hpp pugixml.cpp pugiconfig.hpp Handshake.cpp LTimer.cpp
+OBJSSERV = MainServidor.cpp Servidor.cpp Mensaje.cpp Logger.cpp Evento.cpp Jugador.cpp XmlParser.cpp SetDeSpritesDto.cpp SpriteDto.cpp ImagenDto.cpp pugixml.hpp pugixml.cpp pugiconfig.hpp Handshake.cpp LTimer.cpp ParametrosMovimiento.cpp
 
 CC = g++ 
 

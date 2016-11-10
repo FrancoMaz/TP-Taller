@@ -34,7 +34,6 @@ const int INFO = 1;
 const int DEBUG = 2;
 
 using namespace std;
-
 class Servidor {
 
 private:
@@ -66,6 +65,10 @@ private:
 		Mensaje mensajeAProcesar;
 		Servidor* servidor;
 	};
+	struct ParametrosActPosicion{
+		Servidor* servidor;
+		Jugador* jugador;
+	};
 	XmlParser* parser;
 	vector<string> vectorEquipos;
 	int posicionVector;
@@ -96,7 +99,7 @@ public:
 	pthread_mutex_t mutexListaProcesados = PTHREAD_MUTEX_INITIALIZER;
 	pthread_mutex_t mutexColasProcesadas = PTHREAD_MUTEX_INITIALIZER;
 	pthread_mutex_t mutexEnviarMensajes = PTHREAD_MUTEX_INITIALIZER;
-	pthread_mutex_t mutexVectorJugadores = PTHREAD_MUTEX_INITIALIZER;
+	pthread_mutex_t mutexVectorJugadores = PTHREAD_MUTEX_INITIALIZER;;
 	pthread_mutex_t mutexLog = PTHREAD_MUTEX_INITIALIZER;
 	string mensaje;
 	list<string> agregarDestinatarios(string remitente);
@@ -106,6 +109,7 @@ public:
 	void procesarMensajes();
 	void restarCantidadClientesConectados();
 	static void* actualizarPosiciones(void *arg);
+	static void* actualizarPosicionesJugador(void* arg);
 	list<MensajesProcesados>* getListaMensajesProcesados();
 	void actualizarPosicionesSalto(Mensaje mensajeAProcesar);
 	vector<Jugador*>* getJugadores();
@@ -131,6 +135,7 @@ public:
 	vector<Jugador*>* jugadores;
 	vector<pair<int,int>> abscisasCapas;
 	string serializarCapas();
+	void iniciarThreadMovimientoJugador(string nombre);
 };
 
 #endif /* TP1_SERVIDOR_H_ */
