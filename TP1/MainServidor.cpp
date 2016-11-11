@@ -224,6 +224,7 @@ void actualizarPosicionCamara(Servidor* servidor, Jugador* jugador) {
 
 	Mensaje* mensajeCamara;
 	string mensajeCamaraString;
+
 	pair<int,int> posicionesExtremos = servidor->obtenerPosicionesExtremos();
 	int anchoSprite = servidor->getAnchoSprite(jugador->getSpriteAEjecutar());
 	bool necesitaCambiarCamara = jugador->chequearCambiarCamara(servidor->camara, atoi(servidor->handshake->getAncho().c_str()), posicionesExtremos, anchoSprite);
@@ -668,7 +669,7 @@ void* cicloEscuchaCliente(void* arg) {
 				mensaje = "ERROR: Ocurrió un problema con el socket del cliente: " + nombre + string(".\n");
 			}
 			//servidor->setJugadorDesconectado(nombre);
-			if (servidor->escuchando) {cout << "Servidor escuchando" << endl;}
+			cout << "Se desconecto el cliente " << nombre << endl;
 			conectado = false;
 			servidor->verificarDesconexion(nombre);
 			servidor->guardarLog(mensaje, DEBUG);
