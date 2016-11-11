@@ -23,6 +23,8 @@
 #define DER 1
 #define IZQ 2
 #define ARRIBA 3
+#define ABAJO 4
+#define PISO 415
 using namespace std;
 
 class Jugador {

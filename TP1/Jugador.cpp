@@ -23,7 +23,7 @@ Jugador::Jugador(string nombre, string equipo, int posicionX) {
 	this->nombre = nombre;
 	this->equipo = equipo;
 	posicion.first = posicionX;
-	posicion.second = 415;
+	posicion.second = PISO;
 	velocidades.first = 0;
 	velocidades.second = 0;
 	saltar = false;
@@ -38,6 +38,7 @@ Jugador::~Jugador() {
 	// TODO Auto-generated destructor stub
 }
 
+/*
 void Jugador::actualizarPosicion(SDL_Keycode tecla, bool sePresionoTecla, SDL_Rect camara)
 {
 	int posicionY = 415;
@@ -206,8 +207,7 @@ void Jugador::actualizarPosicion(SDL_Keycode tecla, bool sePresionoTecla, SDL_Re
 	{
 		posicion.first -= velocidades.first;
 	}
-
-}
+}*/
 
 void Jugador::mover(SDL_Rect camara){
 	if (velocidades.first > VELMAX)
@@ -221,24 +221,39 @@ void Jugador::mover(SDL_Rect camara){
 
 	if (movDerecha)
 	{
-		velocidades.first += velocidad;
-		if (!saltar) {
-			spriteAEjecutar = "Jugador_corriendo_" + this->equipo;
+		if (!agachar){
+			velocidades.first += velocidad;
+			if (!saltar) {
+				posicion.second = PISO;
+				spriteAEjecutar = "Jugador_corriendo_" + this->equipo;
+			}
 		}
 		condicionSprite = "Normal";
 	}
 	else if (movIzquierda)
 	{
-		velocidades.first -= velocidad;
-		if (!saltar) {
-			spriteAEjecutar = "Jugador_corriendo_" + this->equipo;
+		if (!agachar){
+			velocidades.first -= velocidad;
+			if (!saltar) {
+				posicion.second = PISO;
+				spriteAEjecutar = "Jugador_corriendo_" + this->equipo;
+			}
 		}
 		condicionSprite = "Espejado";
+	}
+	else if (agachar)
+	{
+		if (!saltar){
+			velocidades.first = 0;
+			posicion.second = PISO + 40;
+			spriteAEjecutar = "Jugador_agachado_" + this->equipo;
+		}
 	}
 	else if (saltar)
 	{
 		if(angulo == 0)
 		{
+			posicion.second = PISO;
 			saltar = true;
 		}
 		spriteAEjecutar = "Jugador_saltando_" + this->equipo;
@@ -247,18 +262,20 @@ void Jugador::mover(SDL_Rect camara){
 	{
 		velocidades.first = 0;
 		if (!saltar) {
+			posicion.second = PISO;
 			spriteAEjecutar = "Jugador_" + this->equipo;
 		}
-		condicionSprite = "Normal";
+		//condicionSprite = "Normal";
 	}
 	else if(!movIzquierda && ultimaTeclaPresionada == SDLK_LEFT)
 	{
 		velocidades.first = 0;
 		if (!saltar)
 		{
+			posicion.second = PISO;
 			spriteAEjecutar = "Jugador_" + this->equipo;
 		}
-		condicionSprite = "Espejado";
+		//condicionSprite = "Espejado";
 	}
 
 	if(saltar)
@@ -398,6 +415,7 @@ vector<bool> Jugador::getMov(){
 	movimiento.at(DER) = movDerecha;
 	movimiento.at(IZQ) = movIzquierda;
 	movimiento.at(ARRIBA) = saltar;
+	movimiento.at(ABAJO) = saltar;
 	return movimiento;
 }
 
@@ -412,6 +430,10 @@ void Jugador::setMov(SDL_Keycode tecla, bool sePresiono){
 	else if (tecla == SDLK_UP)
 	{
 		saltar = sePresiono;
+	}
+	else if (tecla == SDLK_DOWN)
+	{
+		agachar = sePresiono;
 	}
 }
 

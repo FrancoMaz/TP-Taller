@@ -231,6 +231,8 @@ void* enviarEventos(void* arg) {
 	bool presionadaArriba = false;
 	bool presionadaDerecha = false;
 	bool presionadaIzquierda = false;
+	bool presionadaAbajo = false;
+	bool presionadoEspacio = false;
 	 //The frames per second timer
 	LTimer fpsTimer;
 	//The frames per second cap timer
@@ -260,11 +262,13 @@ void* enviarEventos(void* arg) {
 				presionadaArriba = true;
 				cliente->enviar("Tecla Arriba", "Todos");
 			}
-			else if (vista->controlador->presionarBoton(SDLK_DOWN))
+			else if (vista->controlador->presionarBoton(SDLK_DOWN) && !presionadaAbajo)
 			{
+				presionadaAbajo = true;
 				cliente->enviar("Tecla Abajo","Todos");
 			}
-			else if(vista->controlador->presionarBoton(SDLK_SPACE)){
+			else if(vista->controlador->presionarBoton(SDLK_SPACE) && !presionadoEspacio){
+				presionadoEspacio = true;
 				cliente->enviar("Tecla Espacio","Todos");
 			}
 			else if(vista->controlador->soltarBoton(SDLK_RIGHT)){
@@ -276,9 +280,11 @@ void* enviarEventos(void* arg) {
 				cliente->enviar("Soltar Tecla Izquierda","Todos");
 			}
 			else if(vista->controlador->soltarBoton(SDLK_DOWN)){
+				presionadaAbajo = false;
 				cliente->enviar("Soltar Tecla Abajo","Todos");
 			}
 			else if(vista->controlador->soltarBoton(SDLK_SPACE)){
+				presionadoEspacio = false;
 				cliente->enviar("Soltar Tecla Espacio","Todos");
 			}
 			else if(!vista->salto){
