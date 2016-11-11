@@ -276,6 +276,14 @@ void Jugador::mover(SDL_Rect camara){
 		}
 		condicionSprite = "Espejado";
 	}
+	else if(!agachar && ultimaTeclaPresionada == SDLK_DOWN)
+	{
+		if (!saltar)
+		{
+			posicion.second = PISO;
+			spriteAEjecutar = "Jugador_" + this->equipo;
+		}
+	}
 
 	if(saltar)
 	{
