@@ -150,8 +150,6 @@ void* actualizarPosicionesJugador(void* arg)
 	string mensajeCamaraString;
 	string mensajeJugadorPosActualizada = "";
 	while (jugador->getConectado()){
-		//cout << "parametros: " << parametrosActPosicion << endl;
-		cout<<"posicion de memoria: " << servidor << endl;
 		pthread_mutex_lock(&servidor->mutexVectorJugadores);
 		jugador->mover(servidor->camara);
 		pair<int,int> posicionesExtremos = servidor->obtenerPosicionesExtremos();
@@ -337,7 +335,7 @@ void* cicloEscuchaCliente(void* arg) {
 				mensaje = "ERROR: Ocurrió un problema con el socket del cliente: " + nombre + string(".\n");
 			}
 			//servidor->setJugadorDesconectado(nombre);
-			if (servidor->escuchando) {cout << "Servidor escuchando" << endl;}
+			cout << "Se desconecto el cliente " << nombre << endl;
 			conectado = false;
 			servidor->verificarDesconexion(nombre);
 			servidor->guardarLog(mensaje, DEBUG);
