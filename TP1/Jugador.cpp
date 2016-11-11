@@ -243,7 +243,7 @@ void Jugador::mover(SDL_Rect camara){
 	}
 	else if (agachar)
 	{
-		if (!saltar){
+		if (!saltar) {
 			velocidades.first = 0;
 			posicion.second = PISO + 40;
 			spriteAEjecutar = "Jugador_agachado_" + this->equipo;
@@ -251,12 +251,11 @@ void Jugador::mover(SDL_Rect camara){
 	}
 	else if (saltar)
 	{
-		if(angulo == 0)
-		{
-			posicion.second = PISO;
+		if(angulo == 0){
 			saltar = true;
+			posicion.second = PISO;
+			spriteAEjecutar = "Jugador_saltando_" + this->equipo;
 		}
-		spriteAEjecutar = "Jugador_saltando_" + this->equipo;
 	}
 	else if(!movDerecha && ultimaTeclaPresionada == SDLK_RIGHT)
 	{
@@ -265,7 +264,7 @@ void Jugador::mover(SDL_Rect camara){
 			posicion.second = PISO;
 			spriteAEjecutar = "Jugador_" + this->equipo;
 		}
-		//condicionSprite = "Normal";
+		condicionSprite = "Normal";
 	}
 	else if(!movIzquierda && ultimaTeclaPresionada == SDLK_LEFT)
 	{
@@ -275,7 +274,7 @@ void Jugador::mover(SDL_Rect camara){
 			posicion.second = PISO;
 			spriteAEjecutar = "Jugador_" + this->equipo;
 		}
-		//condicionSprite = "Espejado";
+		condicionSprite = "Espejado";
 	}
 
 	if(saltar)
@@ -285,11 +284,14 @@ void Jugador::mover(SDL_Rect camara){
 		if (angulo > (PI + (PI/25))){
 			angulo = 0;
 			saltar = false;
-			if (velocidades.first != 0) {
-				spriteAEjecutar = "Jugador_corriendo_" + this->equipo;
-			}
-			else {
-				spriteAEjecutar = "Jugador_" + this->equipo;
+			if(!agachar){
+				posicion.second = PISO - 12;
+				if (velocidades.first != 0) {
+					spriteAEjecutar = "Jugador_corriendo_" + this->equipo;
+				}
+				else {
+					spriteAEjecutar = "Jugador_" + this->equipo;
+				}
 			}
 		}
 	} else{
@@ -415,12 +417,12 @@ vector<bool> Jugador::getMov(){
 	movimiento.at(DER) = movDerecha;
 	movimiento.at(IZQ) = movIzquierda;
 	movimiento.at(ARRIBA) = saltar;
-	movimiento.at(ABAJO) = saltar;
+	movimiento.at(ABAJO) = agachar;
 	return movimiento;
 }
 
 void Jugador::setMov(SDL_Keycode tecla, bool sePresiono){
-	SDL_Keycode ultimaTeclaPresionada = tecla;
+	this->ultimaTeclaPresionada = tecla;
 	if (tecla == SDLK_RIGHT){
 		movDerecha = sePresiono;
 	}
