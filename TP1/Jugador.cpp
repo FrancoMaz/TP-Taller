@@ -15,7 +15,6 @@ Jugador::Jugador(pair<int,int> posicionInicial) {
 	saltar = false;
 	agachar = false;
 	disparar = false;
-	restablecerPosicionSprite = false;
 	angulo = 0;
 }
 
@@ -29,7 +28,6 @@ Jugador::Jugador(string nombre, string equipo, int posicionX) {
 	saltar = false;
 	agachar = false;
 	disparar = false;
-	restablecerPosicionSprite = false;
 	angulo = 0;
 	condicionSprite = "Normal";
 	spriteAEjecutar = "Jugador_" + equipo;
@@ -241,9 +239,22 @@ void Jugador::mover(SDL_Rect camara){
 		}
 		condicionSprite = "Espejado";
 	}
+	else if (disparar)
+	{
+		if(!saltar){
+			velocidades.first = 0;
+			if(!agachar){
+				posicion.second = PISO;
+				spriteAEjecutar = "Jugador_disparando_" + this->equipo;
+			} else {
+				posicion.second = PISO + 40;
+				spriteAEjecutar = "Jugador_agachado_disparando_" + this->equipo;
+			}
+		}
+	}
 	else if (agachar)
 	{
-		if (!saltar) {
+		if (!saltar && !disparar) {
 			velocidades.first = 0;
 			posicion.second = PISO + 40;
 			spriteAEjecutar = "Jugador_agachado_" + this->equipo;
@@ -277,6 +288,14 @@ void Jugador::mover(SDL_Rect camara){
 		condicionSprite = "Espejado";
 	}
 	else if(!agachar && ultimaTeclaPresionada == SDLK_DOWN)
+	{
+		if (!saltar)
+		{
+			posicion.second = PISO;
+			spriteAEjecutar = "Jugador_" + this->equipo;
+		}
+	}
+	else if(!disparar && ultimaTeclaPresionada == SDLK_SPACE)
 	{
 		if (!saltar)
 		{
@@ -426,6 +445,7 @@ vector<bool> Jugador::getMov(){
 	movimiento.at(IZQ) = movIzquierda;
 	movimiento.at(ARRIBA) = saltar;
 	movimiento.at(ABAJO) = agachar;
+	movimiento.at(ESPACIO) = disparar;
 	return movimiento;
 }
 
@@ -444,6 +464,10 @@ void Jugador::setMov(SDL_Keycode tecla, bool sePresiono){
 	else if (tecla == SDLK_DOWN)
 	{
 		agachar = sePresiono;
+	}
+	else if (tecla == SDLK_SPACE)
+	{
+		disparar = sePresiono;
 	}
 }
 

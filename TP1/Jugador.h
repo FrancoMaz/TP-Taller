@@ -24,6 +24,7 @@
 #define IZQ 2
 #define ARRIBA 3
 #define ABAJO 4
+#define ESPACIO 5
 #define PISO 415
 using namespace std;
 
@@ -36,7 +37,6 @@ private:
 	bool saltar;
 	bool agachar;
 	bool disparar;
-	bool restablecerPosicionSprite;
 	bool movDerecha = false;
 	bool movIzquierda = false;
 	double angulo;
