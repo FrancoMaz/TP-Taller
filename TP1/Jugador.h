@@ -24,6 +24,7 @@
 #define IZQ 2
 #define ARRIBA 3
 #define ABAJO 4
+#define ESPACIO 5
 #define PISO 415
 #define PLATAFORMA 330
 #define GRAVEDAD 10
