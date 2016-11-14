@@ -41,7 +41,6 @@ private:
 	char* direccionIP;
 	int puertoServidor;
 	string nombre;
-	int socketCliente;
 	struct sockaddr_in direccionServidor;
 	socklen_t addr_size;
 	pthread_t threadComunicacion;
@@ -65,6 +64,7 @@ private:
 public:
 	Cliente();
 	Cliente(string ip, int puerto);
+	int socketCliente;
 	virtual ~Cliente();
 	ImagenDto* deserializarImagen(string campo);
 	SetDeSpritesDto* deserializarSprite(string campo);

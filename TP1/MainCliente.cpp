@@ -25,6 +25,7 @@ datosConexion datosCliente;
 Vista * vista = new Vista();
 Handshake* handshakeDeserializado;
 queue<string> colaMensajes;
+bool terminoConQ = false;
 
 struct ComunicacionCliente{
 			Cliente* cliente;
@@ -43,8 +44,8 @@ int stringToInt(string atributo) {
 bool chequearSocket(string ip, int puerto) {
 	//string ipServer = "192.168.1.11";
 
-	string ipServer = "127.0.0.1";
-	//string ipServer = "192.168.1.12";
+	//string ipServer = "127.0.0.1";
+	string ipServer = "192.168.1.12";
 	int puertoDeEscucha = 7891;
 
 	return (ip == ipServer && puerto == puertoDeEscucha);
@@ -164,14 +165,21 @@ void* recibirPosicionJugadores(void* arg) {
 		 //Start cap timer
 		capTimer.start();
 		datosRecibidos = cliente->recibir();
-		procesarUltimosMensajes(datosRecibidos, cliente, update, &primeraVez);
+		if(datosRecibidos != "0"){
+			procesarUltimosMensajes(datosRecibidos, cliente, update, &primeraVez);
 
-		//si se procesa antes, espero lo que tengo que resta.
-		int frameTicks = capTimer.getTicks();
-		if( frameTicks < SCREEN_TICKS_PER_FRAME )
-		{
-			//Wait remaining time
-			SDL_Delay( SCREEN_TICKS_PER_FRAME - frameTicks );
+			//si se procesa antes, espero lo que tengo que resta.
+			int frameTicks = capTimer.getTicks();
+			if( frameTicks < SCREEN_TICKS_PER_FRAME )
+			{
+				//Wait remaining time
+				SDL_Delay( SCREEN_TICKS_PER_FRAME - frameTicks );
+			}
+		}
+		else {
+			usleep(5000000);
+			vista->controlador->setCerrarVentana();
+			terminoConQ = true;
 		}
 	}
 }
@@ -351,7 +359,9 @@ void* cicloConexion(void* arg) {
 			//recibirPosicionJugadores((void*)&cliente);
 			usleep(100);
 		}
-		cliente->desconectar();
+		if (!terminoConQ){
+			cliente->desconectar();
+		}
 	}
 }
 
@@ -394,7 +404,7 @@ int main() {
 				//}
 			}
 
-			cliente->salir(); //cierra el socket y realiza trabajos de limpieza de memoria
+			//cliente->salir(); //cierra el socket y realiza trabajos de limpieza de memoria
 			cout << "Saliendo del programa..." << endl;
 		}
 	}

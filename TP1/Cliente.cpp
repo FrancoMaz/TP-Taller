@@ -246,6 +246,7 @@ void Cliente::corroborarConexion() {
 		strcpy(buffer, escuchando);
 		clock_t tiempoInicio = clock();
 		pthread_mutex_lock(&mutexSocket);
+
 		ok = send(this->socketCliente, escuchando, strlen(escuchando), 0);
 		if (ok > 0)
 		{
@@ -254,6 +255,7 @@ void Cliente::corroborarConexion() {
 		pthread_mutex_unlock(&mutexSocket);
  	}
 	cout << "Se cerro la conexion con el servidor" << endl;
+	this->terminoComunicacion = true;
 	/*if (this->opcionMenu != 4) {
 		this->terminoComunicacion = true;
 		int opcion = 1;
@@ -374,38 +376,50 @@ void Cliente::enviar(string mensaje, string destinatario) {
 }
 
 string Cliente::recibir() {
-	//Se reciben todos los mensajes en la secuencia en la que fueron enviados
-	char colaMensajes[BUFFER_MAX_SIZE];
-	memset(colaMensajes, '\0', BUFFER_MAX_SIZE);
-	string metodo = "2|" + this->nombre + "#";
-	char* recibir = strdup(metodo.c_str()); //2 es recibir
-	pthread_mutex_lock(&mutexSocket);
-	send(this->socketCliente, recibir, strlen(recibir), 0);
-	string datosRecibidos = "";
-	int largoRequest;
-	do {
-		largoRequest = recv(this->socketCliente, colaMensajes, BUFFER_MAX_SIZE, 0);
-	} while (largoRequest == 0);
 
-	datosRecibidos += string(colaMensajes);
-	memset(colaMensajes, '\0', strlen(colaMensajes));
-	while (largoRequest >= BUFFER_MAX_SIZE and !stringTerminaCon(datosRecibidos, "@")) //mientras el largoRequest sea del tamaño del max size, sigo pidiendo
-	{
-		int largo;
-		//mientras haya cosas que leer, sigo recibiendo.
-		do {
-			//sigue aca mientras no recibe nada, cuando recibe algo sale de este do while
-			largo = recv(socketCliente, colaMensajes, BUFFER_MAX_SIZE, 0);
-			largoRequest += largo;
-		}
-		while (largoRequest < BUFFER_MAX_SIZE);
-		if (largoRequest > 0){
-			datosRecibidos += string(colaMensajes);
-		}
+	/*int error_code;
+	unsigned int error_code_size = sizeof(error_code);
+	getsockopt(this->socketCliente, SOL_SOCKET, SO_ERROR, &error_code, &error_code_size);
+
+	cout << "Error code: " << error_code << endl;
+	if (error_code == 0) {*/
+		//Se reciben todos los mensajes en la secuencia en la que fueron enviados
+		char colaMensajes[BUFFER_MAX_SIZE];
+		memset(colaMensajes, '\0', BUFFER_MAX_SIZE);
+		string metodo = "2|" + this->nombre + "#";
+		char* recibir = strdup(metodo.c_str()); //2 es recibir
+		pthread_mutex_lock(&mutexSocket);
+		int ok = send(this->socketCliente, recibir, strlen(recibir), 0);
+		string datosRecibidos = "";
+		int largoRequest;
+		//do {
+			largoRequest = recv(this->socketCliente, colaMensajes, BUFFER_MAX_SIZE, 0);
+		//} while (largoRequest == 0 and !this->terminoComunicacion);
+
+		datosRecibidos += string(colaMensajes);
 		memset(colaMensajes, '\0', strlen(colaMensajes));
-	}
-	pthread_mutex_unlock(&mutexSocket);
-	return datosRecibidos;
+		if (largoRequest > 0) {
+			while (largoRequest >= BUFFER_MAX_SIZE and !stringTerminaCon(datosRecibidos, "@")) //mientras el largoRequest sea del tamaño del max size, sigo pidiendo
+			{
+				int largo;
+				//mientras haya cosas que leer, sigo recibiendo.
+				do {
+					//sigue aca mientras no recibe nada, cuando recibe algo sale de este do while
+					largo = recv(socketCliente, colaMensajes, BUFFER_MAX_SIZE, 0);
+					largoRequest += largo;
+				}
+				while (largoRequest < BUFFER_MAX_SIZE);
+				if (largoRequest > 0){
+					datosRecibidos += string(colaMensajes);
+				}
+				memset(colaMensajes, '\0', strlen(colaMensajes));
+			}
+			pthread_mutex_unlock(&mutexSocket);
+			return datosRecibidos;
+			}
+		else {
+			return "0";
+		}
 }
 
 bool Cliente::stringTerminaCon(std::string const &fullString, std::string const &ending) {
