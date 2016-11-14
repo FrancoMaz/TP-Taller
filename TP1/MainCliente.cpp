@@ -257,9 +257,9 @@ void* enviarEventos(void* arg) {
 				presionadaIzquierda = true;
 				cliente->enviar("Tecla Izquierda", "Todos");
 			}
-			else if (vista->controlador->presionarBoton(SDLK_UP) && !presionadaArriba && !vista->salto){
+			else if (vista->controlador->presionarBoton(SDLK_UP) && !vista->salto){
 				vista->salto = true;
-				presionadaArriba = true;
+				//presionadaArriba = true;
 				cliente->enviar("Tecla Arriba", "Todos");
 			}
 			else if (vista->controlador->presionarBoton(SDLK_DOWN) && !presionadaAbajo)
@@ -287,9 +287,9 @@ void* enviarEventos(void* arg) {
 				presionadoEspacio = false;
 				cliente->enviar("Soltar Tecla Espacio","Todos");
 			}
-			else if(!vista->salto){
+			/*else if(!vista->salto){
 				presionadaArriba = false;
-			}
+			}*/
 		/*const Uint8 *keys = SDL_GetKeyboardState(NULL);
 		usleep(3000);
 		while(SDL_PollEvent(&evento)){

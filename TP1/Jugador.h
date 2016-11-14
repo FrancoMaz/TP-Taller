@@ -25,6 +25,8 @@
 #define ARRIBA 3
 #define ABAJO 4
 #define PISO 415
+#define PLATAFORMA 330
+#define GRAVEDAD 10
 using namespace std;
 
 class Jugador {
@@ -36,6 +38,7 @@ private:
 	bool saltar;
 	bool agachar;
 	bool disparar;
+	bool caer;
 	bool restablecerPosicionSprite;
 	bool movDerecha = false;
 	bool movIzquierda = false;
@@ -45,10 +48,11 @@ private:
 	string condicionSprite;
 	pthread_t thrMov;
 	SDL_Keycode ultimaTeclaPresionada = SDLK_RIGHT;
+	vector<pair<int,int>> vectorPlataforma;
 
 public:
 	Jugador(pair<int,int> posicionInicial);
-	Jugador(string nombre, string equipo, int posicionX);
+	Jugador(string nombre, string equipo, int posicionX, vector<pair<int,int>>);
 	virtual ~Jugador();
 	void actualizarPosicion(SDL_Keycode tecla, bool sePresionoTecla, SDL_Rect camara);
 	string getStringJugador();
@@ -73,5 +77,6 @@ public:
 	void mover(SDL_Rect camara);
 	pthread_t getThreadMovimiento();
 	void setThreadMovimiento(pthread_t thrMovimiento);
+	bool esPlataforma(int x);
 };
 #endif /* JUGADOR_H_ */

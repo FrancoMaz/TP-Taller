@@ -73,6 +73,7 @@ private:
 	vector<string> vectorEquipos;
 	int posicionVector;
 	int posicionXInicial;
+	vector<pair<int,int>> vectorPlataforma;
 
 public:
 	Servidor();
@@ -136,6 +137,7 @@ public:
 	vector<pair<int,int>> abscisasCapas;
 	string serializarCapas();
 	void iniciarThreadMovimientoJugador(string nombre);
+	void inicializarVectorPlataforma();
 };
 
 #endif /* TP1_SERVIDOR_H_ */

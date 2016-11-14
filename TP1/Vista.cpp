@@ -438,7 +438,7 @@ void Vista::actualizarPosJugador(UpdateJugador* update, int anchoVentana, int an
 				vistaJugador->flip = SDL_FLIP_HORIZONTAL;
 			}
 			if (vistaJugador->nombre == update->getDestinatario()){
-				if (vistaJugador->y >= 415){
+				if (vistaJugador->y == PISO || vistaJugador->y == PLATAFORMA){
 					salto = false;
 				}
 				else{

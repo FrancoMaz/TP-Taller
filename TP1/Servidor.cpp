@@ -51,11 +51,22 @@ Servidor::Servidor(char* nombreArchivoDeUsuarios, int puerto, Logger* logger) {
 		abscisas.second = 0;
 		abscisasCapas.push_back(abscisas);
 	}
+	this->inicializarVectorPlataforma();
 }
 
 Servidor::~Servidor() {
 }
 
+
+void Servidor::inicializarVectorPlataforma()
+{
+	this->vectorPlataforma.push_back(make_pair(545,700));
+	this->vectorPlataforma.push_back(make_pair(1020,1280));
+	this->vectorPlataforma.push_back(make_pair(2180,2760));
+	this->vectorPlataforma.push_back(make_pair(4260,4385));
+	this->vectorPlataforma.push_back(make_pair(4665,5260));
+	this->vectorPlataforma.push_back(make_pair(6680,6840));
+}
 void Servidor::guardarDatosDeConfiguracion() {
 	string path;
 	cin.ignore();
@@ -186,7 +197,7 @@ void Servidor::autenticar(string nombre, string contrasenia, list<string>& usuar
 			autenticacionOK = true;
 			if (jugadores->empty() || !this->contieneJugador(usuario.nombre))
 			{
-				Jugador* jugador = new Jugador(usuario.nombre, this->vectorEquipos.at(posicionVector), posicionXInicial);
+				Jugador* jugador = new Jugador(usuario.nombre, this->vectorEquipos.at(posicionVector), posicionXInicial, this->vectorPlataforma);
 				jugador->setConectado();
 				pthread_mutex_lock(&mutexVectorJugadores);
 				jugadores->push_back(jugador);

@@ -151,7 +151,7 @@ void* actualizarPosicionesJugador(void* arg)
 	string mensajeJugadorPosActualizada = "";
 	while (jugador->getConectado()){
 		//cout << "parametros: " << parametrosActPosicion << endl;
-		cout<<"posicion de memoria: " << servidor << endl;
+		//cout<<"posicion de memoria: " << servidor << endl;
 		pthread_mutex_lock(&servidor->mutexVectorJugadores);
 		jugador->mover(servidor->camara);
 		pair<int,int> posicionesExtremos = servidor->obtenerPosicionesExtremos();

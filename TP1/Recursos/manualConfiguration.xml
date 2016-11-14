@@ -3,7 +3,7 @@
 <Configuracion>
 	<Escenario>
 	  <Imagen>
-	    <Archivo>Fondo_Escenario_capa_1_test</Archivo>
+	    <Archivo>Fondo_Escenario_capa_1_plataformas</Archivo>
 	    <Ancho>7424</Ancho>
 	    <Alto>600</Alto>
 	    <z-index>1</z-index>  
@@ -55,6 +55,30 @@
 	      <Imagen>Jugador_rojo</Imagen>
 	      <z-index>1</z-index>
 	    </SpriteQuieto>
+	     <SpriteAgachado>
+	      <Id>Jugador_agachado_rojo</Id>
+	      <CantFotogramas>4</CantFotogramas>
+	      <Ancho>360</Ancho>
+	      <Alto>66</Alto>
+	      <Imagen>Jugador_agachado_rojo</Imagen>
+	      <z-index>1</z-index>
+	    </SpriteAgachado>
+	    <SpriteDisparando>
+	      <Id>Jugador_disparando_rojo</Id>
+	      <CantFotogramas>5</CantFotogramas>
+	      <Ancho>696</Ancho>
+	      <Alto>106</Alto>
+	      <Imagen>Jugador_disparando_rojo</Imagen>
+	      <z-index>1</z-index>
+	    </SpriteDisparando>
+	    <SpriteAgachadoDisparando>
+	      <Id>Jugador_agachado_disparando_rojo</Id>
+	      <CantFotogramas>5</CantFotogramas>
+	      <Ancho>625</Ancho>
+	      <Alto>66</Alto>
+	      <Imagen>Jugador_agachado_disparando_rojo</Imagen>
+	      <z-index>1</z-index>
+	    </SpriteAgachadoDisparando>
 	    <SpriteDesconectado>
 	      <Id>Jugador_desconectado</Id>
 	      <CantFotogramas>0</CantFotogramas>
@@ -90,6 +114,30 @@
 	      <Imagen>Jugador_verde</Imagen>
 	      <z-index>1</z-index>
 	    </SpriteQuieto>
+	     <SpriteAgachado>
+	      <Id>Jugador_agachado_verde</Id>
+	      <CantFotogramas>4</CantFotogramas>
+	      <Ancho>360</Ancho>
+	      <Alto>66</Alto>
+	      <Imagen>Jugador_agachado_verde</Imagen>
+	      <z-index>1</z-index>
+	    </SpriteAgachado>
+	    <SpriteDisparando>
+	      <Id>Jugador_disparando_verde</Id>
+	      <CantFotogramas>5</CantFotogramas>
+	      <Ancho>696</Ancho>
+	      <Alto>106</Alto>
+	      <Imagen>Jugador_disparando_verde</Imagen>
+	      <z-index>1</z-index>
+	    </SpriteDisparando>
+	    <SpriteAgachadoDisparando>
+	      <Id>Jugador_agachado_disparando_verde</Id>
+	      <CantFotogramas>5</CantFotogramas>
+	      <Ancho>625</Ancho>
+	      <Alto>66</Alto>
+	      <Imagen>Jugador_agachado_disparando_verde</Imagen>
+	      <z-index>1</z-index>
+	    </SpriteAgachadoDisparando>
 	    <SpriteDesconectado>
 	      <Id>Jugador_desconectado</Id>
 	      <CantFotogramas>0</CantFotogramas>
@@ -125,6 +173,30 @@
 	      <Imagen>Jugador_amarillo</Imagen>
 	      <z-index>1</z-index>
 	    </SpriteQuieto>
+	      <SpriteAgachado>
+	      <Id>Jugador_agachado_amarillo</Id>
+	      <CantFotogramas>4</CantFotogramas>
+	      <Ancho>360</Ancho>
+	      <Alto>66</Alto>
+	      <Imagen>Jugador_agachado_amarillo</Imagen>
+	      <z-index>1</z-index>
+	    </SpriteAgachado>
+	    <SpriteDisparando>
+	      <Id>Jugador_disparando_amarillo</Id>
+	      <CantFotogramas>5</CantFotogramas>
+	      <Ancho>696</Ancho>
+	      <Alto>106</Alto>
+	      <Imagen>Jugador_disparando_amarillo</Imagen>
+	      <z-index>1</z-index>
+	    </SpriteDisparando>
+	    <SpriteAgachadoDisparando>
+	      <Id>Jugador_agachado_disparando_amarillo</Id>
+	      <CantFotogramas>5</CantFotogramas>
+	      <Ancho>625</Ancho>
+	      <Alto>66</Alto>
+	      <Imagen>Jugador_agachado_disparando_amarillo</Imagen>
+	      <z-index>1</z-index>
+	    </SpriteAgachadoDisparando>
 	    <SpriteDesconectado>
 	      <Id>Jugador_desconectado</Id>
 	      <CantFotogramas>0</CantFotogramas>
@@ -160,6 +232,30 @@
 	      <Imagen>Jugador_azul</Imagen>
 	      <z-index>1</z-index>
 	    </SpriteQuieto>
+	     <SpriteAgachado>
+	      <Id>Jugador_agachado_azul</Id>
+	      <CantFotogramas>4</CantFotogramas>
+	      <Ancho>360</Ancho>
+	      <Alto>66</Alto>
+	      <Imagen>Jugador_agachado_azul</Imagen>
+	      <z-index>1</z-index>
+	    </SpriteAgachado>
+	    <SpriteDisparando>
+	      <Id>Jugador_disparando_azul</Id>
+	      <CantFotogramas>5</CantFotogramas>
+	      <Ancho>696</Ancho>
+	      <Alto>106</Alto>
+	      <Imagen>Jugador_disparando_azul</Imagen>
+	      <z-index>1</z-index>
+	    </SpriteDisparando>
+	    <SpriteAgachadoDisparando>
+	      <Id>Jugador_agachado_disparando_azul</Id>
+	      <CantFotogramas>5</CantFotogramas>
+	      <Ancho>625</Ancho>
+	      <Alto>66</Alto>
+	      <Imagen>Jugador_agachado_disparando_azul</Imagen>
+	      <z-index>1</z-index>
+	    </SpriteAgachadoDisparando>
 	    <SpriteDesconectado>
 	      <Id>Jugador_desconectado</Id>
 	      <CantFotogramas>0</CantFotogramas>
@@ -176,5 +272,5 @@
 	  <Alto>600</Alto>
 	</Ventana>
 	
-	<CantMaxJugadores>2</CantMaxJugadores>
+	<CantMaxJugadores>1</CantMaxJugadores>
 </Configuracion>

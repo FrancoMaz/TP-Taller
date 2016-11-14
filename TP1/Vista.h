@@ -19,6 +19,9 @@
 #include "Capa.h"
 #include "Jugador.h"
 
+#define PISO 415
+#define PLATAFORMA 330
+
 using namespace std;
 
 struct datosConexion {

@@ -19,7 +19,7 @@ Jugador::Jugador(pair<int,int> posicionInicial) {
 	angulo = 0;
 }
 
-Jugador::Jugador(string nombre, string equipo, int posicionX) {
+Jugador::Jugador(string nombre, string equipo, int posicionX, vector<pair<int,int>> vectorPlataforma) {
 	this->nombre = nombre;
 	this->equipo = equipo;
 	posicion.first = posicionX;
@@ -29,10 +29,12 @@ Jugador::Jugador(string nombre, string equipo, int posicionX) {
 	saltar = false;
 	agachar = false;
 	disparar = false;
+	caer = false;
 	restablecerPosicionSprite = false;
 	angulo = 0;
 	condicionSprite = "Normal";
 	spriteAEjecutar = "Jugador_" + equipo;
+	this->vectorPlataforma = vectorPlataforma;
 }
 Jugador::~Jugador() {
 	// TODO Auto-generated destructor stub
@@ -218,13 +220,12 @@ void Jugador::mover(SDL_Rect camara){
 	{
 		velocidades.first = -VELMAX;
 	}
-
 	if (movDerecha)
 	{
 		if (!agachar){
 			velocidades.first += velocidad;
 			if (!saltar) {
-				posicion.second = PISO;
+				//posicion.second = PISO;
 				spriteAEjecutar = "Jugador_corriendo_" + this->equipo;
 			}
 		}
@@ -235,7 +236,7 @@ void Jugador::mover(SDL_Rect camara){
 		if (!agachar){
 			velocidades.first -= velocidad;
 			if (!saltar) {
-				posicion.second = PISO;
+				//posicion.second = PISO;
 				spriteAEjecutar = "Jugador_corriendo_" + this->equipo;
 			}
 		}
@@ -243,25 +244,26 @@ void Jugador::mover(SDL_Rect camara){
 	}
 	else if (agachar)
 	{
-		if (!saltar) {
-			velocidades.first = 0;
-			posicion.second = PISO + 40;
-			spriteAEjecutar = "Jugador_agachado_" + this->equipo;
-		}
+		if (!saltar && (posicion.second == PISO || posicion.second == PLATAFORMA))
+			{
+				velocidades.first = 0;
+				posicion.second = posicion.second + 40;
+				spriteAEjecutar = "Jugador_agachado_" + this->equipo;
+			}
 	}
 	else if (saltar)
 	{
 		if(angulo == 0){
 			saltar = true;
-			posicion.second = PISO;
-			spriteAEjecutar = "Jugador_saltando_" + this->equipo;
+			//posicion.second = PISO;
 		}
+			spriteAEjecutar = "Jugador_saltando_" + this->equipo;
 	}
 	else if(!movDerecha && ultimaTeclaPresionada == SDLK_RIGHT)
 	{
 		velocidades.first = 0;
 		if (!saltar) {
-			posicion.second = PISO;
+			//posicion.second = PISO;
 			spriteAEjecutar = "Jugador_" + this->equipo;
 		}
 		condicionSprite = "Normal";
@@ -271,29 +273,36 @@ void Jugador::mover(SDL_Rect camara){
 		velocidades.first = 0;
 		if (!saltar)
 		{
-			posicion.second = PISO;
+			//posicion.second = PISO;
 			spriteAEjecutar = "Jugador_" + this->equipo;
 		}
 		condicionSprite = "Espejado";
 	}
 	else if(!agachar && ultimaTeclaPresionada == SDLK_DOWN)
 	{
-		if (!saltar)
+		velocidades.first = 0;
+		if (!saltar  && (posicion.second == PISO + 40 || posicion.second == PLATAFORMA + 40))
 		{
-			posicion.second = PISO;
+			posicion.second = posicion.second - 40;
 			spriteAEjecutar = "Jugador_" + this->equipo;
 		}
 	}
 
+	if (posicion.second < PISO && !this->esPlataforma(posicion.first) && !saltar && ultimaTeclaPresionada != SDLK_DOWN)
+	{
+		caer = true;
+		//posicion.second = PISO;
+		//spriteAEjecutar = "Jugador_saltando_" + this->equipo;
+	}
 	if(saltar)
 	{
 		velocidades.second = -12*cos(angulo);
 		angulo += PI/25;
-		if (angulo > (PI + (PI/25))){
+		if (angulo > (PI + (PI/25)) || (posicion.second == PLATAFORMA && this->esPlataforma(posicion.first) && angulo != PI/25)){
 			angulo = 0;
 			saltar = false;
 			if(!agachar){
-				posicion.second = PISO - 12;
+				posicion.second = posicion.second + 6;
 				if (velocidades.first != 0) {
 					spriteAEjecutar = "Jugador_corriendo_" + this->equipo;
 				}
@@ -302,17 +311,48 @@ void Jugador::mover(SDL_Rect camara){
 				}
 			}
 		}
-	} else{
+	} else
+	{
 		velocidades.second = 0;
+	}
+	if (caer)
+	{
+		velocidades.second = GRAVEDAD;
+		if (posicion.second == PISO)
+		{
+			caer = false;
+			velocidades.second = 0;
+		}
 	}
 
 	posicion.first += velocidades.first;
 	posicion.second += velocidades.second;
+	if (posicion.second >= PISO && !agachar)
+	{
+		posicion.second = PISO;
+	}
+	else if (posicion.second >= PLATAFORMA && this->esPlataforma(posicion.first) && !agachar)
+	{
+		posicion.second = PLATAFORMA;
+	}
+	cout << posicion.second << endl;
 
 	if (posicion.first < camara.x or posicion.first + 84 > camara.x + ANCHO_VENTANA - MARGENIZQ)
 	{
 		posicion.first -= velocidades.first;
 	}
+}
+
+bool Jugador::esPlataforma(int x)
+{
+	for (int i = 0; i < vectorPlataforma.size(); i++)
+	{
+		if ((x >= vectorPlataforma.at(i).first) && (x <= vectorPlataforma.at(i).second))
+		{
+			return true;
+		}
+	}
+	return false;
 }
 
 void Jugador::setPosicion(int x, int y)
