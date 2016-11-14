@@ -22,8 +22,8 @@ Servidor::Servidor(char* nombreArchivoDeUsuarios, int puerto, Logger* logger) {
 	/* Set port number, using htons function to use proper byte order */
 	this->serverAddr.sin_port = htons(puerto);
 	/* Set IP address to localhost */
-	//this->serverAddr.sin_addr.s_addr = inet_addr("192.168.1.12");
-	this->serverAddr.sin_addr.s_addr = inet_addr("127.0.0.1");
+	this->serverAddr.sin_addr.s_addr = inet_addr("192.168.1.12");
+	//this->serverAddr.sin_addr.s_addr = inet_addr("127.0.0.1");
 
 	//this->serverAddr.sin_addr.s_addr = inet_addr("10.1.77.13");
 	/* Set all bits of the padding field to 0 */
@@ -240,153 +240,6 @@ list<Servidor::MensajesProcesados>* Servidor::getListaMensajesProcesados()
 	return listaMensajesProcesados;
 }
 
-/*void* Servidor::actualizarPosiciones(void* arg)
-{
-	ParametrosServidor parametrosServidor = *(ParametrosServidor*) arg;
-	Mensaje mensajeAProcesar = parametrosServidor.mensajeAProcesar;
-	Servidor* servidor = parametrosServidor.servidor;
-	Mensaje* mensajeCamara;
-	string mensajeCamaraString;
-	LTimer timer;
-	bool jugadorSalto;
-	do {
-		timer.start();
-		int frameTicks = timer.getTicks();
-		string mensajeJugadorPosActualizada = "";
-		//pthread_mutex_lock(&servidor->mutexVectorJugadores);
-		Jugador* jugador = servidor->obtenerJugador(mensajeAProcesar.getRemitente());
-		jugador->actualizarPosicion(mensajeAProcesar.deserializar(mensajeAProcesar.getTexto()),mensajeAProcesar.sePresionoTecla(),servidor->camara);
-		jugadorSalto = jugador->salto();
-		int anchoSprite = servidor->getAnchoSprite(jugador->getSpriteAEjecutar());
-		pair<int,int> posicionesExtremos = servidor->obtenerPosicionesExtremos();
-		bool necesitaCambiarCamara = jugador->chequearCambiarCamara(servidor->camara, atoi(servidor->handshake->getAncho().c_str()), posicionesExtremos, anchoSprite);
-		if (necesitaCambiarCamara)
-		{
-			if (servidor->camara.x > atoi(servidor->handshake->getImagenes().at(0)->getAncho().c_str())){
-				servidor->camara.x = 0;
-				for (int i = 0; i < servidor->abscisasCapas.size(); i++)
-				{
-					servidor->abscisasCapas.at(i).first = 0;
-				}
-				for (int i = 0; i < servidor->jugadores->size(); i++)
-				{
-					servidor->jugadores->at(i)->resetearPosicion(atoi(servidor->handshake->getImagenes().at(0)->getAncho().c_str()));
-				}
-			} else
-				{
-				servidor->camara.x += jugador->getVelocidadX();
-				//servidor->camara.x = (jugador->getPosicion().first) - (atoi(servidor->handshake->getAncho().c_str()))/2;
-				for (int i = 0; i < servidor->abscisasCapas.size(); i++)
-				{
-					if (i == 0)
-					{
-						servidor->abscisasCapas.at(i).first = servidor->camara.x;
-					}
-					else
-					{	servidor->abscisasCapas.at(i).second += jugador->getVelocidadX();
-						servidor->abscisasCapas.at(i).first = abs((servidor->abscisasCapas.at(i).second)*(atoi(servidor->handshake->getImagenes().at(i)->getAncho().c_str()) - atoi(servidor->handshake->getAncho().c_str()))/(atoi(servidor->handshake->getImagenes().at(0)->getAncho().c_str()) - atoi(servidor->handshake->getAncho().c_str())));
-						if (servidor->abscisasCapas.at(i).first > atoi(servidor->handshake->getImagenes().at(i)->getAncho().c_str()))
-						{
-							servidor->abscisasCapas.at(i).first = 0;
-							servidor->abscisasCapas.at(i).second = 0;
-						}
-					}
-				}
-				}
-			//mensajeCamaraString = "1|" + to_string(jugador->getVelocidadX()) + "#";
-			mensajeCamaraString = "1|" + to_string(servidor->camara.x) + "|" + to_string(servidor->camara.y) + "|" + servidor->serializarCapas() + "#";
-			mensajeCamara = new Mensaje(jugador->getNombre(),"Todos",mensajeCamaraString);
-		}
-		mensajeJugadorPosActualizada = jugador->getStringJugador();
-		//pthread_mutex_unlock(&servidor->mutexVectorJugadores);
-		servidor->encolarMensajeProcesadoParaCadaCliente(mensajeAProcesar,mensajeJugadorPosActualizada);
-		if (necesitaCambiarCamara)
-		{
-			servidor->encolarMensajeProcesadoParaCadaCliente(*mensajeCamara,mensajeCamaraString);
-		}
-		if( frameTicks < 25 )
-		{
-			//Wait remaining time
-			SDL_Delay( 25 - frameTicks );
-		}
-	} while (jugadorSalto);
-}*/
-/*
-=======
-
->>>>>>> 7141cadd9db71637618ff321e8c9e0314344fbbd
-void* Servidor::actualizarPosicionesJugador(void* arg)
-{
-	//ParametrosActPosicion* parametrosActPosicion = (ParametrosActPosicion*) arg;
-	//Servidor* servidor = (Servidor*)arg;
-	//string nombreJugador = "jochi";
-	//Jugador* jugador = parametrosActPosicion->jugador;
-	//Servidor* servidor = parametrosActPosicion->servidor;
-	//Jugador* jugador = servidor->obtenerJugador(nombreJugador);
-	ParametrosMovimiento* parametros = (ParametrosMovimiento*)arg;
-	Servidor* servidor = parametros->servidor;
-	Jugador* jugador = parametros->jugador;
-	Mensaje* mensajeCamara;
-	string mensajeCamaraString;
-	string mensajeJugadorPosActualizada = "";
-	while (jugador->getConectado()){
-		//cout << "parametros: " << parametrosActPosicion << endl;
-		cout<<"posicion de memoria: " << servidor << endl;
-		pthread_mutex_lock(&servidor->mutexVectorJugadores);
-		jugador->mover(servidor->camara);
-		pair<int,int> posicionesExtremos = servidor->obtenerPosicionesExtremos();
-		int anchoSprite = servidor->getAnchoSprite(jugador->getSpriteAEjecutar());
-		bool necesitaCambiarCamara = jugador->chequearCambiarCamara(servidor->camara, atoi(servidor->handshake->getAncho().c_str()), posicionesExtremos, anchoSprite);
-		if (necesitaCambiarCamara)
-		{
-			if (servidor->camara.x > atoi(servidor->handshake->getImagenes().at(0)->getAncho().c_str())){
-				servidor->camara.x = 0;
-				for (int i = 0; i < servidor->abscisasCapas.size(); i++)
-				{
-					servidor->abscisasCapas.at(i).first = 0;
-				}
-				for (int i = 0; i < servidor->jugadores->size(); i++)
-				{
-					servidor->jugadores->at(i)->resetearPosicion(atoi(servidor->handshake->getImagenes().at(0)->getAncho().c_str()));
-				}
-			} else
-				{
-					servidor->camara.x += jugador->getVelocidadX();
-					//camara.x = (jugador->getPosicion().first) - (atoi(handshake->getAncho().c_str()))/2;
-					for (int i = 0; i < servidor->abscisasCapas.size(); i++)
-					{
-						if (i == 0)
-						{
-							servidor->abscisasCapas.at(i).first = servidor->camara.x;
-						}
-						else
-						{	servidor->abscisasCapas.at(i).second += jugador->getVelocidadX();
-							servidor->abscisasCapas.at(i).first = abs((servidor->abscisasCapas.at(i).second)*(atoi(servidor->handshake->getImagenes().at(i)->getAncho().c_str()) - atoi(servidor->handshake->getAncho().c_str()))/(atoi(servidor->handshake->getImagenes().at(0)->getAncho().c_str()) - atoi(servidor->handshake->getAncho().c_str())));
-							if (servidor->abscisasCapas.at(i).first > atoi(servidor->handshake->getImagenes().at(i)->getAncho().c_str()))
-							{
-								servidor->abscisasCapas.at(i).first = 0;
-								servidor->abscisasCapas.at(i).second = 0;
-							}
-						}
-					}
-				}
-			mensajeCamaraString = "1|" + to_string(servidor->camara.x) + "|" + to_string(servidor->camara.y) + "|" + servidor->serializarCapas() + "#";
-			mensajeCamara = new Mensaje(jugador->getNombre(),"Todos",mensajeCamaraString);
-		}
-		mensajeJugadorPosActualizada = jugador->getStringJugador();
-		Mensaje* mensajeAProcesar = new Mensaje();
-		mensajeAProcesar->setRemitente(jugador->getNombre());
-		pthread_mutex_unlock(&servidor->mutexVectorJugadores);
-		mensajeAProcesar->setDestinatario("Todos");
-		servidor->encolarMensajeProcesadoParaCadaCliente(*mensajeAProcesar,mensajeJugadorPosActualizada);
-		if (necesitaCambiarCamara)
-		{
-			servidor->encolarMensajeProcesadoParaCadaCliente(*mensajeCamara,mensajeCamaraString);
-		}
-		usleep(50000);
-	}
-}
-*/
 Jugador* Servidor::obtenerJugador(string nombre){
 	for (int i = 0; i < jugadores->size(); i++)
 	{
@@ -815,7 +668,6 @@ int Servidor::getCantJugadoresConectadosMax()
 
 void Servidor::verificarDesconexion(string nombre)
 {
-	cout << "Entra a verificar desconexion del jugador" << nombre << endl;
 	for (int i = 0; i < jugadores->size(); i++)
 	{
 		Jugador* jugador = jugadores->at(i);

@@ -376,13 +376,6 @@ void Cliente::enviar(string mensaje, string destinatario) {
 }
 
 string Cliente::recibir() {
-
-	/*int error_code;
-	unsigned int error_code_size = sizeof(error_code);
-	getsockopt(this->socketCliente, SOL_SOCKET, SO_ERROR, &error_code, &error_code_size);
-
-	cout << "Error code: " << error_code << endl;
-	if (error_code == 0) {*/
 		//Se reciben todos los mensajes en la secuencia en la que fueron enviados
 		char colaMensajes[BUFFER_MAX_SIZE];
 		memset(colaMensajes, '\0', BUFFER_MAX_SIZE);

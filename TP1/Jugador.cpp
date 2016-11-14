@@ -167,9 +167,9 @@ void Jugador::mover(SDL_Rect camara){
 
 	if(saltar)
 	{
-		velocidades.second = -12*cos(angulo);
-		angulo += PI/25;
-		if (angulo > (PI + (PI/25))){
+		velocidades.second = -16*cos(angulo);
+		angulo += PI/14;
+		if (angulo > (PI + (PI/14))){
 			angulo = 0;
 			saltar = false;
 			if (velocidades.first != 0) {
@@ -306,7 +306,7 @@ vector<bool> Jugador::getMov(){
 }
 
 void Jugador::setMov(SDL_Keycode tecla, bool sePresiono){
-	SDL_Keycode ultimaTeclaPresionada = tecla;
+	this->ultimaTeclaPresionada = tecla;
 	if (tecla == SDLK_RIGHT){
 		movDerecha = sePresiono;
 	}
