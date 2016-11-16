@@ -668,6 +668,7 @@ int Servidor::getCantJugadoresConectadosMax()
 
 void Servidor::verificarDesconexion(string nombre)
 {
+	cout << "Se desconecto el cliente " << nombre << endl;
 	for (int i = 0; i < jugadores->size(); i++)
 	{
 		Jugador* jugador = jugadores->at(i);

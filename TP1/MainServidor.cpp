@@ -233,10 +233,13 @@ void* cicloEscuchaCliente(void* arg) {
 	char bufferRecibido[BUFFER_MAX_SIZE];
 	bool conectado = true;
 	servidor->setJugadorConectado(nombre);
+	usleep(1000000);
+	memset(bufferRecibido, '\0', BUFFER_MAX_SIZE);
 	while (conectado and servidor->escuchando) {
 		//en este loop se van a gestionar los send y receive del cliente. aca se va a distinguir que es lo que quiere hacer y actuar segun lo que quiera el cliente.
 		string datosRecibidos;
 		int largoRequest = recv(socketCliente, bufferRecibido, BUFFER_MAX_SIZE,0); //recibo por primera vez
+		cout << "Buffer recibido: " << bufferRecibido << endl;
 		if (largoRequest > 0) {
 			datosRecibidos.append(bufferRecibido, largoRequest);
 			while (largoRequest >= BUFFER_MAX_SIZE and !stringTerminaCon(datosRecibidos, "@")) {
@@ -296,6 +299,7 @@ void* cicloEscuchaCliente(void* arg) {
 					case 4:{//4 es se desconecto el cliente, es un mensaje de log diferente al si se corta la conexion
 						servidor->restarCantidadClientesConectados();
 						servidor->verificarDesconexion(nombre);
+						//conectado = true;
 						break;
 					}
 					case 5:{
@@ -335,7 +339,7 @@ void* cicloEscuchaCliente(void* arg) {
 				mensaje = "ERROR: Ocurrió un problema con el socket del cliente: " + nombre + string(".\n");
 			}
 			//servidor->setJugadorDesconectado(nombre);
-			cout << "Se desconecto el cliente " << nombre << endl;
+			//cout << "Se desconecto el cliente " << nombre << endl;
 			conectado = false;
 			servidor->verificarDesconexion(nombre);
 			servidor->guardarLog(mensaje, DEBUG);

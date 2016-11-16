@@ -339,7 +339,9 @@ void Cliente::splitUsuarios(string datos) {
 
 void Cliente::desconectar() {
 	//Se cierra la conexion con el servidor
+	cout << "Se desconecto el cliente" << endl;
 	char buffer[BUFFER_MAX_SIZE];
+	memset(buffer, '\0', BUFFER_MAX_SIZE);
 	char* desconectar = "4|";
 	strcpy(buffer, desconectar);
 	pthread_mutex_lock(&mutexSocket);

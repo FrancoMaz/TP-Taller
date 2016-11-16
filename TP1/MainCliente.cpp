@@ -311,10 +311,10 @@ void* enviarEventos(void* arg) {
 			SDL_FlushEvent(SDL_MOUSEMOTION);
 			SDL_FlushEvent(SDL_KEYDOWN);//si se procesa antes, espero lo que tengo que resta.
 			int frameTicks = capTimer.getTicks();
-			if( frameTicks < 25 )
+			if( frameTicks < 50 )
 			{
 				//Wait remaining time
-				SDL_Delay( 25 - frameTicks );
+				SDL_Delay( 50 - frameTicks );
 			}
 		}
 	}
@@ -334,6 +334,7 @@ void* cicloConexion(void* arg) {
 	bool datosIncorrectos = false;
 	bool conexion = false;
 	terminoComunicacion = false;
+	terminoConQ = false;
 	while ((!conexion)&&(!vista->ventanaCerrada())) {
 		datosCliente = vista->cargarTerceraPantalla(datosIncorrectos);
 		if((datosCliente.nombre != " ")&&(datosCliente.contrasenia != " ")){
@@ -352,7 +353,6 @@ void* cicloConexion(void* arg) {
 			usleep(500000);
 			inicio = cliente->checkearInicioJuego(vista);
 		}while (!inicio);
-		cout << "pasa el if" << endl;
 		handshakeDeserializado = cliente->getHandshake();
 		pthread_create(&threadEnviarEventos, NULL, &enviarEventos, cliente);
 		pthread_detach(threadEnviarEventos);
@@ -360,7 +360,7 @@ void* cicloConexion(void* arg) {
 		pthread_detach(threadRecibirPosicionJugadores);
 		vector<ImagenDto*> imagenes = handshakeDeserializado->getImagenes();
 		vista->cargarEscenario(imagenes, stringToInt(handshakeDeserializado->getAncho()), stringToInt(handshakeDeserializado->getAlto()));
-		while(!terminoComunicacion){
+		while(!terminoComunicacion && !vista->ventanaCerrada()){
 			//recibirPosicionJugadores((void*)&cliente);
 			usleep(100);
 		}
@@ -413,7 +413,7 @@ int main() {
 				//}
 				primeraVez = false;
 				vista->vaciarVectores();
-				cliente->salir();
+				//cliente->salir();
 			}
 		}
 	}
