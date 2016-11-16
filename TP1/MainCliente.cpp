@@ -412,6 +412,7 @@ int main() {
 				cliente->vaciarClientesDisponibles();
 				//}
 				primeraVez = false;
+				vista->vaciarVectores();
 				cliente->salir();
 			}
 		}

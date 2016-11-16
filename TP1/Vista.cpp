@@ -461,3 +461,9 @@ void Vista::actualizarPantalla(int anchoVentana, int anchoCapaPrincipal){
 	}
 	this->ventana->actualizar();
 }
+
+void Vista::vaciarVectores()
+{
+	this->vistaJugadores.clear();
+	this->vectorCapas.clear();
+}

@@ -68,6 +68,7 @@ public:
 	Controlador* controlador;
 	bool salto;
 	void vaciarDatos();
+	void vaciarVectores();
 };
 
 #endif /* TP2_VISTA_H_ */
