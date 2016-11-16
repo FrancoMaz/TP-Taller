@@ -26,6 +26,7 @@ Vista * vista = new Vista();
 Handshake* handshakeDeserializado;
 queue<string> colaMensajes;
 bool terminoConQ = false;
+bool terminoComunicacion = false;
 
 struct ComunicacionCliente{
 			Cliente* cliente;
@@ -44,8 +45,8 @@ int stringToInt(string atributo) {
 bool chequearSocket(string ip, int puerto) {
 	//string ipServer = "192.168.1.11";
 
-	//string ipServer = "127.0.0.1";
-	string ipServer = "192.168.1.12";
+	string ipServer = "127.0.0.1";
+	//string ipServer = "192.168.1.12";
 	int puertoDeEscucha = 7891;
 
 	return (ip == ipServer && puerto == puertoDeEscucha);
@@ -54,7 +55,8 @@ void* verificarConexion(void * arg){
 	ComunicacionCliente* comunicacion = (ComunicacionCliente*)arg;
 	Cliente* cliente = comunicacion->cliente;
 	cliente->corroborarConexion();
-	vista->controlador->setCerrarVentana();
+	terminoComunicacion = true;
+	//vista->controlador->setCerrarVentana();
     //comunicacion->termino = cliente->corroborarConexion();
 }
 
@@ -178,8 +180,9 @@ void* recibirPosicionJugadores(void* arg) {
 		}
 		else {
 			usleep(5000000);
-			vista->controlador->setCerrarVentana();
+			//vista->controlador->setCerrarVentana();
 			terminoConQ = true;
+			terminoComunicacion = true;
 		}
 	}
 }
@@ -355,7 +358,7 @@ void* cicloConexion(void* arg) {
 		pthread_detach(threadRecibirPosicionJugadores);
 		vector<ImagenDto*> imagenes = handshakeDeserializado->getImagenes();
 		vista->cargarEscenario(imagenes, stringToInt(handshakeDeserializado->getAncho()), stringToInt(handshakeDeserializado->getAlto()));
-		while(!vista->controlador->comprobarCierreVentana()){
+		while(!terminoComunicacion){
 			//recibirPosicionJugadores((void*)&cliente);
 			usleep(100);
 		}
@@ -366,16 +369,20 @@ void* cicloConexion(void* arg) {
 }
 
 int main() {
-	bool esValido = false;
-	bool socketOk = false;
-	pthread_t thrComu;
-
-	if (!vista->inicializar()){
-		cout << "El programa no pudo ejecutarse." << endl;
-	} else {
-		vista->cargarArchivos();
-		vista->cargarPrimeraPantalla();
-
+	bool primeraVez = true;
+	while (!vista->ventanaCerrada())
+	{
+		bool esValido = false;
+		bool socketOk = false;
+		pthread_t thrComu;
+		if (primeraVez)
+		{
+			while (!vista->inicializar()){
+				cout << "El programa no pudo ejecutarse." << endl;
+			}
+			vista->cargarArchivos();
+			vista->cargarPrimeraPantalla();
+		}
 		bool datosIncorrectos = false;
 		while ((!socketOk)&&(!vista->ventanaCerrada())) {
 			datosCliente = vista->cargarSegundaPantalla(datosIncorrectos);
@@ -402,11 +409,11 @@ int main() {
 				cout << "Desconectado del servidor.." << endl;
 				cliente->vaciarClientesDisponibles();
 				//}
+				primeraVez = false;
 			}
-
-			//cliente->salir(); //cierra el socket y realiza trabajos de limpieza de memoria
-			cout << "Saliendo del programa..." << endl;
 		}
 	}
+	//cliente->salir(); //cierra el socket y realiza trabajos de limpieza de memoria
+	cout << "Saliendo del programa..." << endl;
 	return 0;
 }
