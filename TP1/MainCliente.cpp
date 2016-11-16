@@ -45,8 +45,8 @@ int stringToInt(string atributo) {
 bool chequearSocket(string ip, int puerto) {
 	//string ipServer = "192.168.1.11";
 
-	string ipServer = "127.0.0.1";
-	//string ipServer = "192.168.1.12";
+	//string ipServer = "127.0.0.1";
+	string ipServer = "192.168.1.12";
 	int puertoDeEscucha = 7891;
 
 	return (ip == ipServer && puerto == puertoDeEscucha);
@@ -333,6 +333,7 @@ void* cicloConexion(void* arg) {
 	bool termino = false;
 	bool datosIncorrectos = false;
 	bool conexion = false;
+	terminoComunicacion = false;
 	while ((!conexion)&&(!vista->ventanaCerrada())) {
 		datosCliente = vista->cargarTerceraPantalla(datosIncorrectos);
 		if((datosCliente.nombre != " ")&&(datosCliente.contrasenia != " ")){
@@ -340,7 +341,7 @@ void* cicloConexion(void* arg) {
 		}
 		//datosIncorrectos = true;
 	}
-
+	vista->vaciarDatos();
 	if (!vista->ventanaCerrada()) {
 		//se crea esta hilo para poder verificar la conexion con el servidor
 		pthread_create(&threadVerificarConexion, NULL,&verificarConexion,&comunicacion);
@@ -351,6 +352,7 @@ void* cicloConexion(void* arg) {
 			usleep(500000);
 			inicio = cliente->checkearInicioJuego(vista);
 		}while (!inicio);
+		cout << "pasa el if" << endl;
 		handshakeDeserializado = cliente->getHandshake();
 		pthread_create(&threadEnviarEventos, NULL, &enviarEventos, cliente);
 		pthread_detach(threadEnviarEventos);
@@ -410,6 +412,7 @@ int main() {
 				cliente->vaciarClientesDisponibles();
 				//}
 				primeraVez = false;
+				cliente->salir();
 			}
 		}
 	}

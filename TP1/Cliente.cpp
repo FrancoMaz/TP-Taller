@@ -350,8 +350,9 @@ void Cliente::desconectar() {
 
 void Cliente::salir() {
 	//Se termina la ejecucion del programa
-	this->opcionMenu = 5;
-	this->desconectar();
+	//this->opcionMenu = 5;
+	//this->desconectar();
+	close(socketCliente);
 }
 
 void Cliente::enviar(string mensaje, string destinatario) {

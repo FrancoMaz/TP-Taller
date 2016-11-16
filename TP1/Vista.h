@@ -67,6 +67,7 @@ public:
 	void resetearVistas(int anchoCapaPrincipal);
 	Controlador* controlador;
 	bool salto;
+	void vaciarDatos();
 };
 
 #endif /* TP2_VISTA_H_ */
