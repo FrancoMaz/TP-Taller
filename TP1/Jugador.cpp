@@ -58,6 +58,9 @@ void Jugador::mover(SDL_Rect camara){
 			if (!saltar) {
 				spriteAEjecutar = "Jugador_corriendo_" + this->equipo;
 			}
+			else {
+				spriteAEjecutar = "Jugador_saltando_" + this->equipo;
+			}
 		}
 		condicionSprite = "Normal";
 	}
@@ -68,6 +71,9 @@ void Jugador::mover(SDL_Rect camara){
 			if (!saltar) {
 				spriteAEjecutar = "Jugador_corriendo_" + this->equipo;
 			}
+			else {
+					spriteAEjecutar = "Jugador_saltando_" + this->equipo;
+				}
 		}
 		condicionSprite = "Espejado";
 	}
@@ -133,13 +139,13 @@ void Jugador::mover(SDL_Rect camara){
 	if (posicion.second < PISO && !this->esPlataforma(boxCollider.x) && !saltar && (ultimaTeclaPresionada != SDLK_DOWN || ultimaTeclaPresionada != SDLK_SPACE))
 	{
 		caer = true;
-		//spriteAEjecutar = "Jugador_saltando_" + this->equipo;
+		spriteAEjecutar = "Jugador_saltando_" + this->equipo;
 	}
 	if(saltar)
 	{
 		velocidades.second = -12*cos(angulo);
 		angulo += PI/25;
-		if (angulo > (PI + (PI/25)) || (posicion.second == PLATAFORMA && this->esPlataforma(boxCollider.x) && angulo != PI/25)){
+		if (angulo > (PI + (PI/25)) || (posicion.second == PLATAFORMA && this->esPlataforma(boxCollider.x) && angulo > PI/2)){
 			angulo = 0;
 			saltar = false;
 			if(!agachar){
@@ -163,11 +169,17 @@ void Jugador::mover(SDL_Rect camara){
 		{
 			caer = false;
 			velocidades.second = 0;
+			if (velocidades.first != 0) {
+				spriteAEjecutar = "Jugador_corriendo_" + this->equipo;
+			}
+			else {
+				spriteAEjecutar = "Jugador_" + this->equipo;
+			}
 		}
 	}
 
-	cout << "PosJugador: " << posicion.first << " " << posicion.second << endl;
-	cout << "BoxCollider: " << boxCollider.x << " " << boxCollider.y << " " << boxCollider.w << " " << boxCollider.h << endl;
+	//cout << "PosJugador: " << posicion.first << " " << posicion.second << endl;
+	//cout << "BoxCollider: " << boxCollider.x << " " << boxCollider.y << " " << boxCollider.w << " " << boxCollider.h << endl;
 
 	posicion.first += velocidades.first;
 	posicion.second += velocidades.second;
@@ -186,7 +198,7 @@ void Jugador::mover(SDL_Rect camara){
 	{
 		posicion.second = PISO;
 	}
-	else if (posicion.second >= PLATAFORMA && this->esPlataforma(boxCollider.x) && !agachar)
+	else if (posicion.second >= PLATAFORMA && this->esPlataforma(boxCollider.x) && !agachar && !saltar)
 	{
 		posicion.second = PLATAFORMA;
 	}
