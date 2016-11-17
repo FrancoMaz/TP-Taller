@@ -26,6 +26,7 @@
 #define ABAJO 4
 #define ESPACIO 5
 #define PISO 415
+#define MARGENBOXCOLLIDER 87
 #define PLATAFORMA 330
 #define GRAVEDAD 10
 using namespace std;
@@ -40,7 +41,6 @@ private:
 	bool agachar;
 	bool disparar;
 	bool caer;
-	bool restablecerPosicionSprite;
 	bool movDerecha = false;
 	bool movIzquierda = false;
 	double angulo;
@@ -50,6 +50,7 @@ private:
 	pthread_t thrMov;
 	SDL_Keycode ultimaTeclaPresionada = SDLK_RIGHT;
 	vector<pair<int,int>> vectorPlataforma;
+	SDL_Rect boxCollider;
 
 public:
 	Jugador(pair<int,int> posicionInicial);

@@ -6,6 +6,7 @@
  */
 
 #include "Jugador.h"
+#include <iostream>
 
 Jugador::Jugador(pair<int,int> posicionInicial) {
 	posicion.first = posicionInicial.first;
@@ -16,6 +17,7 @@ Jugador::Jugador(pair<int,int> posicionInicial) {
 	agachar = false;
 	disparar = false;
 	angulo = 0;
+	boxCollider = {posicion.first+MARGENBOXCOLLIDER,posicion.second,50,106};
 }
 
 Jugador::Jugador(string nombre, string equipo, int posicionX, vector<pair<int,int>> vectorPlataforma) {
@@ -29,12 +31,13 @@ Jugador::Jugador(string nombre, string equipo, int posicionX, vector<pair<int,in
 	agachar = false;
 	disparar = false;
 	caer = false;
-	restablecerPosicionSprite = false;
 	angulo = 0;
 	condicionSprite = "Normal";
 	spriteAEjecutar = "Jugador_" + equipo;
 	this->vectorPlataforma = vectorPlataforma;
+	boxCollider = {posicion.first+MARGENBOXCOLLIDER,posicion.second,50,106};
 }
+
 Jugador::~Jugador() {
 	// TODO Auto-generated destructor stub
 }
@@ -163,20 +166,35 @@ void Jugador::mover(SDL_Rect camara){
 		}
 	}
 
+	cout << "PosJugador: " << posicion.first << " " << posicion.second << endl;
+	cout << "BoxCollider: " << boxCollider.x << " " << boxCollider.y << " " << boxCollider.w << " " << boxCollider.h << endl;
+
 	posicion.first += velocidades.first;
 	posicion.second += velocidades.second;
+
+	//Establezco el boxCollider
+	boxCollider.x = posicion.first+MARGENBOXCOLLIDER;
+	if(!agachar){
+		boxCollider.y = posicion.second;
+		boxCollider.h = 106;
+	} else {
+		boxCollider.y = posicion.second + 40;
+		boxCollider.h = 66;
+	}
+
 	if (posicion.second >= PISO && !agachar)
 	{
 		posicion.second = PISO;
 	}
-	else if (posicion.second >= PLATAFORMA && this->esPlataforma(posicion.first) && !agachar)
+	else if (posicion.second >= PLATAFORMA && this->esPlataforma(boxCollider.x) && !agachar)
 	{
 		posicion.second = PLATAFORMA;
 	}
 
-	if (posicion.first < camara.x or posicion.first + 84 > camara.x + ANCHO_VENTANA - MARGENIZQ)
+	if (boxCollider.x-MARGENIZQ < camara.x or boxCollider.x + boxCollider.w > camara.x + ANCHO_VENTANA - MARGENIZQ)
 	{
 		posicion.first -= velocidades.first;
+		boxCollider.x = posicion.first+MARGENBOXCOLLIDER;
 	}
 }
 
@@ -260,7 +278,7 @@ bool Jugador::chequearCambiarCamara(SDL_Rect camara, int anchoVentana, pair<int,
 	{
 		return true;
 	}*/
- 	if(this->posicion.first - camara.x > anchoVentana/2 && posicionMasAtras >= (camara.x + MARGENIZQ))
+ 	if(this->boxCollider.x - camara.x > anchoVentana/2 && posicionMasAtras >= (camara.x + MARGENIZQ))
  	{
  		return true;
  	}
