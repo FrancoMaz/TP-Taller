@@ -53,7 +53,6 @@ void Jugador::mover(SDL_Rect camara){
 		if (!agachar){
 			velocidades.first += velocidad;
 			if (!saltar) {
-				//posicion.second = PISO;
 				spriteAEjecutar = "Jugador_corriendo_" + this->equipo;
 			}
 		}
@@ -64,7 +63,6 @@ void Jugador::mover(SDL_Rect camara){
 		if (!agachar){
 			velocidades.first -= velocidad;
 			if (!saltar) {
-				//posicion.second = PISO;
 				spriteAEjecutar = "Jugador_corriendo_" + this->equipo;
 			}
 		}
@@ -75,10 +73,8 @@ void Jugador::mover(SDL_Rect camara){
 		if(!saltar && (posicion.second == PISO || posicion.second == PLATAFORMA)){
 			velocidades.first = 0;
 			if(!agachar){
-				//posicion.second = PISO;
 				spriteAEjecutar = "Jugador_disparando_" + this->equipo;
 			} else {
-				posicion.second = posicion.second + 40;
 				spriteAEjecutar = "Jugador_agachado_disparando_" + this->equipo;
 			}
 		}
@@ -88,7 +84,6 @@ void Jugador::mover(SDL_Rect camara){
 		if (!saltar && !disparar && (posicion.second == PISO || posicion.second == PLATAFORMA))
 			{
 				velocidades.first = 0;
-				posicion.second = posicion.second + 40;
 				spriteAEjecutar = "Jugador_agachado_" + this->equipo;
 			}
 	}
@@ -96,7 +91,6 @@ void Jugador::mover(SDL_Rect camara){
 	{
 		if(angulo == 0){
 			saltar = true;
-			//posicion.second = PISO;
 		}
 			spriteAEjecutar = "Jugador_saltando_" + this->equipo;
 	}
@@ -104,7 +98,6 @@ void Jugador::mover(SDL_Rect camara){
 	{
 		velocidades.first = 0;
 		if (!saltar) {
-			//posicion.second = PISO;
 			spriteAEjecutar = "Jugador_" + this->equipo;
 		}
 		condicionSprite = "Normal";
@@ -114,7 +107,6 @@ void Jugador::mover(SDL_Rect camara){
 		velocidades.first = 0;
 		if (!saltar)
 		{
-			//posicion.second = PISO;
 			spriteAEjecutar = "Jugador_" + this->equipo;
 		}
 		condicionSprite = "Espejado";
@@ -122,9 +114,8 @@ void Jugador::mover(SDL_Rect camara){
 	else if(!agachar && ultimaTeclaPresionada == SDLK_DOWN)
 	{
 		velocidades.first = 0;
-		if (!saltar  && (posicion.second == PISO + 40 || posicion.second == PLATAFORMA + 40))
+		if (!saltar  && (posicion.second == PISO || posicion.second == PLATAFORMA))
 		{
-			posicion.second = posicion.second - 40;
 			spriteAEjecutar = "Jugador_" + this->equipo;
 		}
 	}
@@ -132,7 +123,6 @@ void Jugador::mover(SDL_Rect camara){
 	{
 		if (!saltar && (posicion.second == PISO || posicion.second == PLATAFORMA))
 		{
-			//posicion.second = posicion.second - 40;
 			spriteAEjecutar = "Jugador_" + this->equipo;
 		}
 	}
@@ -140,7 +130,6 @@ void Jugador::mover(SDL_Rect camara){
 	if (posicion.second < PISO && !this->esPlataforma(posicion.first) && !saltar && (ultimaTeclaPresionada != SDLK_DOWN || ultimaTeclaPresionada != SDLK_SPACE))
 	{
 		caer = true;
-		//posicion.second = PISO;
 		//spriteAEjecutar = "Jugador_saltando_" + this->equipo;
 	}
 	if(saltar)
