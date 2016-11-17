@@ -130,7 +130,7 @@ void Jugador::mover(SDL_Rect camara){
 		}
 	}
 
-	if (posicion.second < PISO && !this->esPlataforma(posicion.first) && !saltar && (ultimaTeclaPresionada != SDLK_DOWN || ultimaTeclaPresionada != SDLK_SPACE))
+	if (posicion.second < PISO && !this->esPlataforma(boxCollider.x) && !saltar && (ultimaTeclaPresionada != SDLK_DOWN || ultimaTeclaPresionada != SDLK_SPACE))
 	{
 		caer = true;
 		//spriteAEjecutar = "Jugador_saltando_" + this->equipo;
@@ -139,7 +139,7 @@ void Jugador::mover(SDL_Rect camara){
 	{
 		velocidades.second = -12*cos(angulo);
 		angulo += PI/25;
-		if (angulo > (PI + (PI/25)) || (posicion.second == PLATAFORMA && this->esPlataforma(posicion.first) && angulo != PI/25)){
+		if (angulo > (PI + (PI/25)) || (posicion.second == PLATAFORMA && this->esPlataforma(boxCollider.x) && angulo != PI/25)){
 			angulo = 0;
 			saltar = false;
 			if(!agachar){
@@ -202,7 +202,7 @@ bool Jugador::esPlataforma(int x)
 {
 	for (int i = 0; i < vectorPlataforma.size(); i++)
 	{
-		if ((x >= vectorPlataforma.at(i).first) && (x <= vectorPlataforma.at(i).second))
+		if ((x+boxCollider.w >= vectorPlataforma.at(i).first) && (x <= vectorPlataforma.at(i).second))
 		{
 			return true;
 		}
