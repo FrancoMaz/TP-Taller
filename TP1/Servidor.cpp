@@ -60,12 +60,15 @@ Servidor::~Servidor() {
 
 void Servidor::inicializarVectorPlataforma()
 {
-	this->vectorPlataforma.push_back(make_pair(545,700));
-	this->vectorPlataforma.push_back(make_pair(1020,1280));
-	this->vectorPlataforma.push_back(make_pair(2180,2760));
-	this->vectorPlataforma.push_back(make_pair(4260,4385));
-	this->vectorPlataforma.push_back(make_pair(4665,5260));
-	this->vectorPlataforma.push_back(make_pair(6680,6840));
+	this->vectorPlataforma.push_back(make_pair(402,761));
+	this->vectorPlataforma.push_back(make_pair(1547,1786));
+	this->vectorPlataforma.push_back(make_pair(2087,2326));
+	this->vectorPlataforma.push_back(make_pair(2453,2573));
+	this->vectorPlataforma.push_back(make_pair(2708,2828));
+	this->vectorPlataforma.push_back(make_pair(3369,3848));
+	this->vectorPlataforma.push_back(make_pair(4590,5308));
+	this->vectorPlataforma.push_back(make_pair(5795,6154));
+	this->vectorPlataforma.push_back(make_pair(6878,7117));
 }
 void Servidor::guardarDatosDeConfiguracion() {
 	string path;
