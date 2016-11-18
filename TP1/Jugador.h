@@ -14,6 +14,10 @@
 #include <SDL2/SDL.h>
 #include "VentanaSDL.h"
 #include "TexturaSDL.h"
+#include "Personaje.h"
+#include "HeavyMachineGun.h"
+#include "RocketLauncher.h"
+#include "Flameshot.h"
 
 #define velocidad 5
 #define PI 3.14159265
@@ -31,7 +35,7 @@
 #define GRAVEDAD 10
 using namespace std;
 
-class Jugador {
+class Jugador: public Personaje {
 private:
 	pair<int,int> posicion;
 	pair<int,int> velocidades;
@@ -51,9 +55,8 @@ private:
 	SDL_Keycode ultimaTeclaPresionada = SDLK_RIGHT;
 	vector<pair<int,int>> vectorPlataforma;
 	SDL_Rect boxCollider;
-
+	int armaActual;
 public:
-	Jugador(pair<int,int> posicionInicial);
 	Jugador(string nombre, string equipo, int posicionX, vector<pair<int,int>>);
 	virtual ~Jugador();
 	void actualizarPosicion(SDL_Keycode tecla, bool sePresionoTecla, SDL_Rect camara);
@@ -80,5 +83,7 @@ public:
 	pthread_t getThreadMovimiento();
 	void setThreadMovimiento(pthread_t thrMovimiento);
 	bool esPlataforma(int x);
+	void inicializarVectorArmas();
+	void dispararProyectil();
 };
 #endif /* JUGADOR_H_ */

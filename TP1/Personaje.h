@@ -13,9 +13,9 @@
 using namespace std;
 
 class Personaje {
-private:
+protected:
 	int vida;
-	vector<Arma> armas;
+	vector<Arma*> armas;
 public:
 	Personaje();
 	virtual ~Personaje();

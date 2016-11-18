@@ -15,6 +15,7 @@ public:
 	Flameshot();
 	virtual ~Flameshot();
 	void disparar();
+	bool sinMuniciones();
 };
 
 

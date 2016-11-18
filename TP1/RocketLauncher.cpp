@@ -9,7 +9,7 @@
 
 RocketLauncher::RocketLauncher() {
 	this->disparoDiagonal = false;
-	this->municiones = 0;
+	this->municiones = 30;
 	this->danioEnPorcentaje = 80;
 	this->puntosPorDisparo = 40;
 }
@@ -19,5 +19,10 @@ RocketLauncher::~RocketLauncher() {
 }
 
 void RocketLauncher::disparar() {
+	this->municiones -= 1;
+}
 
+bool RocketLauncher::sinMuniciones()
+{
+	return (this->municiones == 0);
 }

@@ -20,6 +20,7 @@ public:
 	Arma();
 	virtual ~Arma();
 	virtual void disparar();
+	virtual bool sinMuniciones();
 };
 
 

@@ -15,6 +15,7 @@ public:
 	HeavyMachineGun();
 	virtual ~HeavyMachineGun();
 	void disparar();
+	bool sinMuniciones();
 };
 
 #endif /* HEAVYMACHINEGUN_H_ */

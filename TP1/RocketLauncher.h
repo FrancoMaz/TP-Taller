@@ -15,6 +15,7 @@ public:
 	RocketLauncher();
 	virtual ~RocketLauncher();
 	void disparar();
+	bool sinMuniciones();
 };
 
 #endif /* ROCKETLAUNCHER_H_ */

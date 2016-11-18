@@ -19,5 +19,10 @@ HeavyMachineGun::~HeavyMachineGun() {
 }
 
 void HeavyMachineGun::disparar() {
+	this->municiones -= 1;
+}
 
+bool HeavyMachineGun::sinMuniciones()
+{
+	return (this->municiones == 0);
 }

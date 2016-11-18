@@ -175,56 +175,7 @@ void* recibirPosicionJugadores(void* arg) {
 		}
 	}
 }
-/* METODO QUE CREE PARA PROBAR ALGO (FRANCO)
-void* enviarYRecibir(void* arg)
-{
-	Cliente* cliente = (Cliente*) arg;
-	//The frames per second cap timer
-	LTimer capTimer;
-	while(!vista->controlador->comprobarCierreVentana()){
-		capTimer.start();
-		if (SDL_PollEvent(&evento))
-		{
-			if (evento.type == SDL_QUIT){
-				vista->controlador->setCerrarVentana();
-			}
-			if(vista->controlador->presionarBoton(SDLK_RIGHT)){
-				cliente->enviar("Tecla Derecha","Todos");
-			}
-			else if(vista->controlador->presionarBoton(SDLK_LEFT)){
-				cliente->enviar("Tecla Izquierda","Todos");
-			}
-			else if(vista->controlador->presionarBoton(SDLK_UP)){
-				cliente->enviar("Tecla Arriba","Todos");
-			}
-			else if(vista->controlador->presionarBoton(SDLK_r)){
-				cliente->enviar("R","Todos");
-			}
-			else if(vista->controlador->soltarBoton(SDLK_RIGHT)){
-				cliente->enviar("Soltar Tecla Derecha","Todos");
-			}
-			else if(vista->controlador->soltarBoton(SDLK_LEFT)){
-				cliente->enviar("Soltar Tecla Izquierda","Todos");
-			}
-			SDL_FlushEvent(SDL_MOUSEMOTION);
-			SDL_FlushEvent(SDL_KEYDOWN);
-		}
-		string datosRecibidos = "";
-		UpdateJugador* update = new UpdateJugador();
-		bool primeraVez = true;
-		datosRecibidos = cliente->recibir();
-		procesarUltimosMensajes(datosRecibidos, cliente, update, &primeraVez);
 
-		//si se procesa antes, espero lo que tengo que resta.
-		int frameTicks = capTimer.getTicks();
-		if( frameTicks < SCREEN_TICKS_PER_FRAME )
-		{
-			//Wait remaining time
-			SDL_Delay( SCREEN_TICKS_PER_FRAME - frameTicks );
-		}
-	}
-}
-*/
 void* enviarEventos(void* arg) {
 	Cliente* cliente = (Cliente*) arg;
 	bool controlArriba = false;
@@ -290,44 +241,6 @@ void* enviarEventos(void* arg) {
 			/*else if(!vista->salto){
 				presionadaArriba = false;
 			}*/
-		/*const Uint8 *keys = SDL_GetKeyboardState(NULL);
-		usleep(3000);
-		while(SDL_PollEvent(&evento)){
-			capTimer.start();
-			if (evento.type == SDL_QUIT){
-				vista->controlador->setCerrarVentana();
-			}
-			if(vista->controlador->presionarBoton(SDLK_RIGHT)){
-				cliente->enviar("Tecla Derecha","Todos");
-			}
-			else if(vista->controlador->presionarBoton(SDLK_LEFT)){
-				cliente->enviar("Tecla Izquierda","Todos");
-			}
-			else if(vista->controlador->presionarBoton(SDLK_UP)){
-				cliente->enviar("Tecla Arriba","Todos");
-			}
-			else if(vista->controlador->presionarBoton(SDLK_DOWN)){
-				cliente->enviar("Tecla Abajo","Todos");
-			}
-			else if(vista->controlador->presionarBoton(SDLK_SPACE)){
-				cliente->enviar("Tecla Espacio","Todos");
-			}
-			else if(vista->controlador->presionarBoton(SDLK_r)){
-				cliente->enviar("R","Todos");
-			}
-			else if(vista->controlador->soltarBoton(SDLK_RIGHT)){
-				cliente->enviar("Soltar Tecla Derecha","Todos");
-			}
-			else if(vista->controlador->soltarBoton(SDLK_LEFT)){
-				cliente->enviar("Soltar Tecla Izquierda","Todos");
-			}
-			else if(vista->controlador->soltarBoton(SDLK_DOWN)){
-				cliente->enviar("Soltar Tecla Abajo","Todos");
-			}
-			else if(vista->controlador->soltarBoton(SDLK_SPACE)){
-				cliente->enviar("Soltar Tecla Espacio","Todos");
-			}
-			*/
 			SDL_FlushEvent(SDL_MOUSEMOTION);
 			SDL_FlushEvent(SDL_KEYDOWN);//si se procesa antes, espero lo que tengo que resta.
 			int frameTicks = capTimer.getTicks();

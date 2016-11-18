@@ -19,3 +19,8 @@ Arma::~Arma() {
 void Arma::disparar() {
 
 }
+
+bool Arma::sinMuniciones()
+{
+
+}

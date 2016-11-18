@@ -8,18 +8,6 @@
 #include "Jugador.h"
 #include <iostream>
 
-Jugador::Jugador(pair<int,int> posicionInicial) {
-	posicion.first = posicionInicial.first;
-	posicion.second = posicionInicial.second;
-	velocidades.first = 0;
-	velocidades.second = 0;
-	saltar = false;
-	agachar = false;
-	disparar = false;
-	angulo = 0;
-	boxCollider = {posicion.first+MARGENBOXCOLLIDER,posicion.second,50,106};
-}
-
 Jugador::Jugador(string nombre, string equipo, int posicionX, vector<pair<int,int>> vectorPlataforma) {
 	this->nombre = nombre;
 	this->equipo = equipo;
@@ -36,6 +24,7 @@ Jugador::Jugador(string nombre, string equipo, int posicionX, vector<pair<int,in
 	spriteAEjecutar = "Jugador_" + equipo;
 	this->vectorPlataforma = vectorPlataforma;
 	boxCollider = {posicion.first+MARGENBOXCOLLIDER,posicion.second,50,106};
+	this->inicializarVectorArmas();
 }
 
 Jugador::~Jugador() {
@@ -87,6 +76,7 @@ void Jugador::mover(SDL_Rect camara){
 				spriteAEjecutar = "Jugador_agachado_disparando_" + this->equipo;
 			}
 		}
+		this->dispararProyectil();
 	}
 	else if (agachar)
 	{
@@ -207,6 +197,22 @@ void Jugador::mover(SDL_Rect camara){
 	{
 		posicion.first -= velocidades.first;
 		boxCollider.x = posicion.first+MARGENBOXCOLLIDER;
+	}
+}
+
+void Jugador::dispararProyectil()
+{
+	if (!this->armas.at(this->armaActual)->sinMuniciones())
+	{
+		this->armas.at(this->armaActual)->disparar();
+	}
+	else
+	{
+		this->armaActual += 1;
+		if (this->armaActual >= this->armas.size())
+		{
+			this->armaActual = 0;
+		}
 	}
 }
 
@@ -373,3 +379,10 @@ void Jugador::setThreadMovimiento(pthread_t thrMovimiento){
 	thrMov = thrMovimiento;
 }
 
+void Jugador::inicializarVectorArmas()
+{
+	this->armas.push_back(new HeavyMachineGun());
+	this->armas.push_back(new RocketLauncher());
+	this->armas.push_back(new Flameshot());
+	this->armaActual = 0;
+}
