@@ -6,7 +6,6 @@
  */
 
 #include "Jugador.h"
-#include <iostream>
 
 Jugador::Jugador(string nombre, string equipo, int posicionX, vector<pair<int,int>> vectorPlataforma) {
 	this->nombre = nombre;
@@ -133,7 +132,7 @@ void Jugador::mover(SDL_Rect camara){
 	}
 	if(saltar)
 	{
-		velocidades.second = -12*cos(angulo);
+		velocidades.second = -21*cos(angulo);
 		angulo += PI/25;
 		if (angulo > (PI + (PI/25)) || (posicion.second == PLATAFORMA && this->esPlataforma(boxCollider.x) && angulo > PI/2)){
 			angulo = 0;
@@ -168,9 +167,6 @@ void Jugador::mover(SDL_Rect camara){
 		}
 	}
 
-	//cout << "PosJugador: " << posicion.first << " " << posicion.second << endl;
-	//cout << "BoxCollider: " << boxCollider.x << " " << boxCollider.y << " " << boxCollider.w << " " << boxCollider.h << endl;
-
 	posicion.first += velocidades.first;
 	posicion.second += velocidades.second;
 
@@ -184,11 +180,11 @@ void Jugador::mover(SDL_Rect camara){
 		boxCollider.h = 66;
 	}
 
-	if (posicion.second >= PISO && !agachar)
+	if (posicion.second >= PISO)
 	{
 		posicion.second = PISO;
 	}
-	else if (posicion.second >= PLATAFORMA && this->esPlataforma(boxCollider.x) && !agachar && !saltar)
+	else if (posicion.second >= PLATAFORMA && this->esPlataforma(boxCollider.x) && !saltar && !caer)
 	{
 		posicion.second = PLATAFORMA;
 	}

@@ -19,7 +19,7 @@
 #include "RocketLauncher.h"
 #include "Flameshot.h"
 
-#define velocidad 5
+#define velocidad 3
 #define PI 3.14159265
 #define VELMAX 10
 #define MARGENIZQ 15
@@ -31,7 +31,7 @@
 #define ESPACIO 5
 #define PISO 415
 #define MARGENBOXCOLLIDER 87
-#define PLATAFORMA 330
+#define PLATAFORMA 248
 #define GRAVEDAD 10
 using namespace std;
 

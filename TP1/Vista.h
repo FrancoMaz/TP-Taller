@@ -20,7 +20,7 @@
 #include "Jugador.h"
 
 #define PISO 415
-#define PLATAFORMA 330
+#define PLATAFORMA 248
 
 using namespace std;
 
