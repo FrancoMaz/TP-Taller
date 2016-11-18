@@ -190,11 +190,11 @@ void Jugador::mover(SDL_Rect camara){
 		boxCollider.h = 66;
 	}
 
-	if (posicion.second >= PISO && !agachar)
+	if (posicion.second >= PISO)
 	{
 		posicion.second = PISO;
 	}
-	else if (posicion.second >= PLATAFORMA && this->esPlataforma(boxCollider.x) && !agachar && !saltar)
+	else if (posicion.second >= PLATAFORMA && this->esPlataforma(boxCollider.x) && !saltar && !caer)
 	{
 		posicion.second = PLATAFORMA;
 	}
