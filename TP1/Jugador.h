@@ -50,7 +50,6 @@ private:
 	double angulo;
 	string spriteAEjecutar;
 	bool conectado = false;
-	string condicionSprite;
 	pthread_t thrMov;
 	SDL_Keycode ultimaTeclaPresionada = SDLK_RIGHT;
 	vector<pair<int,int>> vectorPlataforma;
@@ -84,6 +83,9 @@ public:
 	void setThreadMovimiento(pthread_t thrMovimiento);
 	bool esPlataforma(int x);
 	void inicializarVectorArmas();
-	void dispararProyectil();
+	Proyectil* dispararProyectil();
+	bool estaDisparando();
+	Proyectil* getProyectilDisparado();
+	string condicionSprite;
 };
 #endif /* JUGADOR_H_ */

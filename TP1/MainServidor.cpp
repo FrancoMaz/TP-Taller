@@ -18,6 +18,7 @@
 #include "ParametrosMovimiento.h"
 using namespace std;
 
+int idProyectil = 0;
 struct parametrosThreadCliente {
 	//estructura que sirve para guardar los parametros que se le pasan a la funcion del thread.
 	Servidor* serv;
@@ -135,14 +136,34 @@ void* cicloProcesarMensajes(void* arg) {
 	}
 }
 
+void* disparoProyectil(void* arg)
+{
+	ParametrosMovimiento* parametros = (ParametrosMovimiento*)arg;
+	Servidor* servidor = parametros->servidor;
+	Jugador* jugador = parametros->jugador;
+	Proyectil* proyectil = parametros->proyectil;
+	Mensaje* mensajeProyectil;
+	servidor->escenario->agregarProyectil(proyectil,jugador->getNombre(),idProyectil);
+	string mensajeProyectilString = "2|0|";
+	mensajeProyectilString += proyectil->getStringProyectil();
+	mensajeProyectil = new Mensaje(jugador->getNombre(),"Todos",mensajeProyectilString);
+	servidor->encolarMensajeProcesadoParaCadaCliente(*mensajeProyectil,mensajeProyectilString);
+	idProyectil += 1;
+	while (!servidor->escenario->verificarColision(servidor->camara, proyectil))
+	{
+		usleep(5000);
+		proyectil->mover(jugador->condicionSprite);
+		mensajeProyectilString = "2|1|";
+		mensajeProyectilString += proyectil->getStringProyectil();
+		mensajeProyectil = new Mensaje(jugador->getNombre(),"Todos",mensajeProyectilString);
+		servidor->encolarMensajeProcesadoParaCadaCliente(*mensajeProyectil,mensajeProyectilString);
+	}
+	proyectil->~Proyectil();
+	pthread_exit(NULL);
+}
+
 void* actualizarPosicionesJugador(void* arg)
 {
-	//ParametrosActPosicion* parametrosActPosicion = (ParametrosActPosicion*) arg;
-	//Servidor* servidor = (Servidor*)arg;
-	//string nombreJugador = "jochi";
-	//Jugador* jugador = parametrosActPosicion->jugador;
-	//Servidor* servidor = parametrosActPosicion->servidor;
-	//Jugador* jugador = servidor->obtenerJugador(nombreJugador);
 	ParametrosMovimiento* parametros = (ParametrosMovimiento*)arg;
 	Servidor* servidor = parametros->servidor;
 	Jugador* jugador = parametros->jugador;
@@ -152,6 +173,15 @@ void* actualizarPosicionesJugador(void* arg)
 	while (jugador->getConectado()){
 		pthread_mutex_lock(&servidor->mutexVectorJugadores);
 		jugador->mover(servidor->camara);
+		if (jugador->estaDisparando())
+		{
+			Proyectil* proyectil = jugador->dispararProyectil();
+			parametros->proyectil = proyectil;
+			pthread_t threadDisparo = proyectil->getThreadDisparo();
+			pthread_create(&threadDisparo, NULL, &disparoProyectil, parametros);
+			pthread_detach(threadDisparo);
+			proyectil->setThreadDisparo(threadDisparo);
+		}
 		pair<int,int> posicionesExtremos = servidor->obtenerPosicionesExtremos();
 		int anchoSprite = servidor->getAnchoSprite(jugador->getSpriteAEjecutar());
 		bool necesitaCambiarCamara = jugador->chequearCambiarCamara(servidor->camara, atoi(servidor->handshake->getAncho().c_str()), posicionesExtremos, anchoSprite);
@@ -170,7 +200,6 @@ void* actualizarPosicionesJugador(void* arg)
 			} else
 				{
 					servidor->camara.x += jugador->getVelocidadX();
-					//camara.x = (jugador->getPosicion().first) - (atoi(handshake->getAncho().c_str()))/2;
 					for (int i = 0; i < servidor->abscisasCapas.size(); i++)
 					{
 						if (i == 0)

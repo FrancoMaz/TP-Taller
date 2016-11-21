@@ -15,6 +15,7 @@ class ParametrosMovimiento {
 public:
 	Servidor* servidor;
 	Jugador* jugador;
+	Proyectil* proyectil;
 	ParametrosMovimiento(Servidor* servidorActual, Jugador* jugadorActual);
 	virtual ~ParametrosMovimiento();
 };

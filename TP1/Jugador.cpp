@@ -75,7 +75,7 @@ void Jugador::mover(SDL_Rect camara){
 				spriteAEjecutar = "Jugador_agachado_disparando_" + this->equipo;
 			}
 		}
-		this->dispararProyectil();
+		//this->dispararProyectil();
 	}
 	else if (agachar)
 	{
@@ -196,11 +196,11 @@ void Jugador::mover(SDL_Rect camara){
 	}
 }
 
-void Jugador::dispararProyectil()
+Proyectil* Jugador::dispararProyectil()
 {
 	if (!this->armas.at(this->armaActual)->sinMuniciones())
 	{
-		this->armas.at(this->armaActual)->disparar();
+		return (this->armas.at(this->armaActual)->disparar(boxCollider));
 	}
 	else
 	{
@@ -209,6 +209,7 @@ void Jugador::dispararProyectil()
 		{
 			this->armaActual = 0;
 		}
+		return (this->armas.at(this->armaActual)->disparar(boxCollider));
 	}
 }
 
@@ -288,10 +289,6 @@ bool Jugador::chequearCambiarCamara(SDL_Rect camara, int anchoVentana, pair<int,
 	{
 		return false;
 	}
-	/*if (posicionMasAdelante > (camara.x + anchoVentana/2) and posicionMasAtras > (camara.x + MARGENIZQ))
-	{
-		return true;
-	}*/
  	if(this->boxCollider.x - camara.x > anchoVentana/2 && posicionMasAtras >= (camara.x + MARGENIZQ))
  	{
  		return true;
@@ -381,4 +378,13 @@ void Jugador::inicializarVectorArmas()
 	this->armas.push_back(new RocketLauncher());
 	this->armas.push_back(new Flameshot());
 	this->armaActual = 0;
+}
+
+bool Jugador::estaDisparando(){
+	return this->disparar;
+}
+
+Proyectil* Jugador::getProyectilDisparado()
+{
+	return this->armas.at(this->armaActual)->getProyectil();
 }

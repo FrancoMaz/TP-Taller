@@ -52,6 +52,7 @@ Servidor::Servidor(char* nombreArchivoDeUsuarios, int puerto, Logger* logger) {
 		abscisasCapas.push_back(abscisas);
 	}
 	this->inicializarVectorPlataforma();
+	this->escenario = new Escenario();
 }
 
 Servidor::~Servidor() {
@@ -476,24 +477,7 @@ void Servidor::procesarMensajes() {
 		Mensaje mensajeAProcesar = colaMensajesNoProcesados.front();
 		colaMensajesNoProcesados.pop();
 		pthread_mutex_unlock(&mutexColaNoProcesados);
-		if (mensajeAProcesar.getTexto() == "Tecla Arriba")
-		{
-			/*ParametrosServidor parametrosServidor;
-			parametrosServidor.mensajeAProcesar = mensajeAProcesar;
-			parametrosServidor.servidor = this;
-
-			//this->actualizarPosicionesSalto(mensajeAProcesar);
-			pthread_create(&threadSalto,NULL,&actualizarPosiciones,&parametrosServidor);
-			pthread_detach(threadSalto);*/
-
-			pthread_mutex_lock(&mutexVectorJugadores);
-			Jugador* jugador = this->obtenerJugador(mensajeAProcesar.getRemitente());
-			if (jugador->getConectado()){
-				jugador->setMov(mensajeAProcesar.deserializar(mensajeAProcesar.getTexto()), mensajeAProcesar.sePresionoTecla());
-			}
-			pthread_mutex_unlock(&mutexVectorJugadores);
-		}
-		else if (mensajeAProcesar.getTexto() == "R"){
+		if (mensajeAProcesar.getTexto() == "R"){
 			string mensajeJugadorPosActualizada = "";
 			camara.x = 0;
 			camara.y = 0;
@@ -525,60 +509,6 @@ void Servidor::procesarMensajes() {
 				jugador->setMov(mensajeAProcesar.deserializar(mensajeAProcesar.getTexto()), mensajeAProcesar.sePresionoTecla());
 			}
 			pthread_mutex_unlock(&mutexVectorJugadores);
-			/*string mensajeJugadorPosActualizada = "";
-			pthread_mutex_lock(&mutexVectorJugadores);
-			Jugador* jugador = this->obtenerJugador(mensajeAProcesar.getRemitente());
-			if (jugador->getConectado())
-			{
-				jugador->actualizarPosicion(mensajeAProcesar.deserializar(mensajeAProcesar.getTexto()),mensajeAProcesar.sePresionoTecla(), camara);
-			}
-			pair<int,int> posicionesExtremos = this->obtenerPosicionesExtremos();
-			int anchoSprite = this->getAnchoSprite(jugador->getSpriteAEjecutar());
-			bool necesitaCambiarCamara = jugador->chequearCambiarCamara(this->camara, atoi(handshake->getAncho().c_str()), posicionesExtremos, anchoSprite);
-			if (necesitaCambiarCamara)
-			{
-				if (camara.x > atoi(handshake->getImagenes().at(0)->getAncho().c_str())){
-					camara.x = 0;
-					for (int i = 0; i < abscisasCapas.size(); i++)
-					{
-						abscisasCapas.at(i).first = 0;
-					}
-					for (int i = 0; i < jugadores->size(); i++)
-					{
-						jugadores->at(i)->resetearPosicion(atoi(handshake->getImagenes().at(0)->getAncho().c_str()));
-					}
-				} else
-					{
-						camara.x += jugador->getVelocidadX();
-						//camara.x = (jugador->getPosicion().first) - (atoi(handshake->getAncho().c_str()))/2;
-						for (int i = 0; i < abscisasCapas.size(); i++)
-						{
-							if (i == 0)
-							{
-								abscisasCapas.at(i).first = camara.x;
-							}
-							else
-							{	abscisasCapas.at(i).second += jugador->getVelocidadX();
-								abscisasCapas.at(i).first = abs((abscisasCapas.at(i).second)*(atoi(handshake->getImagenes().at(i)->getAncho().c_str()) - atoi(handshake->getAncho().c_str()))/(atoi(handshake->getImagenes().at(0)->getAncho().c_str()) - atoi(handshake->getAncho().c_str())));
-								if (abscisasCapas.at(i).first > atoi(handshake->getImagenes().at(i)->getAncho().c_str()))
-								{
-									abscisasCapas.at(i).first = 0;
-									abscisasCapas.at(i).second = 0;
-								}
-							}
-						}
-					}
-				mensajeCamaraString = "1|" + to_string(camara.x) + "|" + to_string(camara.y) + "|" + this->serializarCapas() + "#";
-				mensajeCamara = new Mensaje(jugador->getNombre(),"Todos",mensajeCamaraString);
-			}
-			mensajeJugadorPosActualizada = jugador->getStringJugador();
-			pthread_mutex_unlock(&mutexVectorJugadores);
-			encolarMensajeProcesadoParaCadaCliente(mensajeAProcesar,mensajeJugadorPosActualizada);
-			if (necesitaCambiarCamara)
-			{
-				encolarMensajeProcesadoParaCadaCliente(*mensajeCamara,mensajeCamaraString);
-			}
-			*/
 		}
 	}
 }

@@ -18,6 +18,7 @@
 #include "UpdateJugador.h"
 #include "Capa.h"
 #include "Jugador.h"
+#include "VistaBala.h"
 
 #define PISO 415
 #define PLATAFORMA 248
@@ -47,6 +48,7 @@ private:
 	vector<VistaJugador*> vistaJugadores;
 	datosConexion cargarPantallaIngresoDatos(bool aviso, int numeroPantalla);
 	vector<Capa*> vectorCapas;
+	vector<VistaBala*> vistaBalas;
 
 public:
 	Vista();
@@ -71,6 +73,7 @@ public:
 	void resetearVistas(int anchoCapaPrincipal);
 	Controlador* controlador;
 	bool salto;
+	void actualizarProyectil(string nuevaBala, int x, int y, string sprite, int id);
 };
 
 #endif /* TP2_VISTA_H_ */

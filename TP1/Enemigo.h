@@ -9,6 +9,7 @@
 #define ENEMIGO_H_
 
 #include "Arma.h"
+#include "Personaje.h"
 
 class Enemigo: public Personaje {
 public:

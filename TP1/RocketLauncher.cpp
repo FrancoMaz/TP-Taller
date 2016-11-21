@@ -10,19 +10,24 @@
 RocketLauncher::RocketLauncher() {
 	this->disparoDiagonal = false;
 	this->municiones = 30;
-	this->danioEnPorcentaje = 80;
-	this->puntosPorDisparo = 40;
 }
 
 RocketLauncher::~RocketLauncher() {
 	// TODO Auto-generated destructor stub
 }
 
-void RocketLauncher::disparar() {
+Proyectil* RocketLauncher::disparar(SDL_Rect boxCollider) {
+	this->proyectil = new Proyectil(80,40,"Rocket",boxCollider);
 	this->municiones -= 1;
+	return this->proyectil;
 }
 
 bool RocketLauncher::sinMuniciones()
 {
 	return (this->municiones == 0);
+}
+
+Proyectil* RocketLauncher::getProyectil()
+{
+	return this->proyectil;
 }

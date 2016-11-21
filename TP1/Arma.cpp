@@ -8,7 +8,6 @@
 #include "Arma.h"
 
 Arma::Arma() {
-	// TODO Auto-generated constructor stub
 
 }
 
@@ -16,11 +15,16 @@ Arma::~Arma() {
 	// TODO Auto-generated destructor stub
 }
 
-void Arma::disparar() {
+Proyectil* Arma::disparar(SDL_Rect boxCollider) {
 
 }
 
 bool Arma::sinMuniciones()
+{
+
+}
+
+Proyectil* Arma::getProyectil()
 {
 
 }

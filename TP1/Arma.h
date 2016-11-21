@@ -7,20 +7,24 @@
 
 #ifndef ARMA_H_
 #define ARMA_H_
+#include "Proyectil.h"
+#include <stdlib.h>
+#include <iostream>
+using namespace std;
 
 class Arma {
 
 protected:
 	bool disparoDiagonal;
 	int municiones;
-	int danioEnPorcentaje;
-	int puntosPorDisparo;
+	Proyectil* proyectil;
 
 public:
 	Arma();
 	virtual ~Arma();
-	virtual void disparar();
+	virtual Proyectil* disparar(SDL_Rect boxCollider);
 	virtual bool sinMuniciones();
+	Proyectil* getProyectil();
 };
 
 

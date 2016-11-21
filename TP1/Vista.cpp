@@ -461,6 +461,7 @@ void Vista::actualizarPantalla(int anchoVentana, int anchoCapaPrincipal){
 		vectorCapas.at(i)->paralajeInfinito(anchoVentana, i);
 	}
 	TexturaSDL* texturaJugadorX;
+	TexturaSDL* texturaBala;
 	for (int i = 0; i < vistaJugadores.size(); i++){
 		VistaJugador* vistaJugador = vistaJugadores.at(i);
 		texturaJugadorX = vistaJugador->texturaJugador;
@@ -470,9 +471,40 @@ void Vista::actualizarPantalla(int anchoVentana, int anchoCapaPrincipal){
 		}
 		texturaJugadorX->aplicarPosicion(vistaJugador->x - camara.x,vistaJugador->y - camara.y,0,vistaJugador->flip);
 	}
+
+	for (int i = 0; i < vistaBalas.size(); i++){
+		VistaBala* vistaBala = vistaBalas.at(i);
+		texturaBala = vistaBala->textura;
+		if ((vistaBala->x > camara.x + camara.w) || vistaBala->x < camara.x)
+		{
+			vistaBalas.erase(vistaBalas.begin()+i);
+		}
+		texturaBala->aplicarPosicion(vistaBala->x - camara.x, vistaBala->y - camara.y,0,SDL_FLIP_NONE);
+	}
+
 	if (texturaBotonDesconectar->aplicarPosicionDeBoton(10,10,&evento))
 	{
 		controlador->setCerrarVentana();
 	}
 	this->ventana->actualizar();
+}
+
+void Vista::actualizarProyectil(string nuevaBala, int x, int y, string sprite, int id)
+{
+	if (nuevaBala == "0")
+	{
+		VistaBala* vistaBala = new VistaBala(x,y,(ventana->crearTextura("Recursos/" + sprite + ".png", 0)),id);
+		vistaBalas.push_back(vistaBala);
+	}
+	else
+	{
+		for (int i = 0; i < vistaBalas.size(); i++){
+			VistaBala* vistaBala = vistaBalas.at(i);
+			if (vistaBala->id == id)
+			{
+				vistaBala->x = x;
+				vistaBala->y = y;
+			}
+		}
+	}
 }

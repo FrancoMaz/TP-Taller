@@ -110,7 +110,7 @@ void procesarUltimosMensajes(string mensajes, Cliente* cliente, UpdateJugador* u
 					}
 				}
 			}
-			else{
+			else if (texto == "1"){
 				s.erase(0, pos + delimitador.length());
 				pos = s.find(delimitador);
 				texto = s.substr(0,pos);
@@ -138,17 +138,37 @@ void procesarUltimosMensajes(string mensajes, Cliente* cliente, UpdateJugador* u
 				}
 				vista->actualizarCamara(x,y,abscisasCapas,stringToInt(handshakeDeserializado->getAncho()));
 			}
+			else
+			{
+				s.erase(0, pos + delimitador.length());
+				pos = s.find(delimitador);
+				texto = s.substr(0,pos);
+				string nuevaBala = texto;
+				s.erase(0, pos + delimitador.length());
+				pos = s.find(delimitador);
+				texto = s.substr(0,pos);
+				int xBala = stringToInt(texto);
+				s.erase(0, pos + delimitador.length());
+				pos = s.find(delimitador);
+				texto = s.substr(0,pos);
+				int yBala = stringToInt(texto);
+				s.erase(0, pos + delimitador.length());
+				pos = s.find(delimitador);
+				texto = s.substr(0,pos);
+				string spriteBala = texto;
+				s.erase(0, pos + delimitador.length());
+				pos = s.find(delimitadorFinal);
+				texto = s.substr(0,pos);
+				int idBala = stringToInt(texto);
+				vista->actualizarProyectil(nuevaBala,xBala,yBala,spriteBala,idBala);
+			}
 			vista->actualizarPosJugador(update,stringToInt(handshakeDeserializado->getAncho()),stringToInt(handshakeDeserializado->getImagenes().at(0)->getAncho()));
-			//vista->actualizarJugador(update,stringToInt(handshakeDeserializado->getAncho()),stringToInt(handshakeDeserializado->getImagenes().at(0)->getAncho()));
 			s.erase(0, pos + delimitador.length());
 			pos = s.find(delimitador);
 			texto = s.substr(0,pos);
 		}
 	}
-	//else{
 	vista->actualizarPantalla(stringToInt(handshakeDeserializado->getAncho()), stringToInt(handshakeDeserializado->getImagenes().at(0)->getAncho()));
-		//vista->actualizarJugador(update,stringToInt(handshakeDeserializado->getAncho()), stringToInt(handshakeDeserializado->getImagenes().at(0)->getAncho()));
-	//}
 }
 
 void* recibirPosicionJugadores(void* arg) {

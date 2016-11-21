@@ -28,6 +28,7 @@
 #include "Handshake.h"
 #include <vector>
 #include "Capa.h"
+#include "Escenario.h"
 #define MAX_CANT_CLIENTES 6
 #define BUFFER_MAX_SIZE 1024
 const int INFO = 1;
@@ -138,6 +139,7 @@ public:
 	string serializarCapas();
 	void iniciarThreadMovimientoJugador(string nombre);
 	void inicializarVectorPlataforma();
+	Escenario* escenario;
 };
 
 #endif /* TP1_SERVIDOR_H_ */
