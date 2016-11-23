@@ -8,15 +8,18 @@
 #ifndef ENEMIGO_H_
 #define ENEMIGO_H_
 
-#include "Arma.h"
+#include "HeavyMachineGun.h"
 #include "Personaje.h"
 
 class Enemigo: public Personaje {
+private:
+	int id;
 public:
 	Enemigo();
 	virtual ~Enemigo();
 	void disparar();
-	void daniarseCon(Arma* arma);
+	//void daniarseCon(Proyectil* proyectil);
+	void setId(int id);
 };
 
 #endif /* ENEMIGO_H_ */

@@ -35,6 +35,7 @@ public:
 	pair<int,int> posicion;
 	void mover();
 	string getStringProyectil();
+	int getDanio();
 };
 
 #endif /* PROYECTIL_H_ */
