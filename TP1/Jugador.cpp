@@ -131,16 +131,6 @@ void Jugador::mover(SDL_Rect camara){
 		}
 	}
 
-	cout << "Saltar: " << saltar << endl;
-	cout << "Caer: " << caer << endl;
-	cout << "Disparar: " << disparar << endl;
-	cout << "Agachar: " << agachar << endl;
-	cout << "MovIzquierda: " << movIzquierda << endl;
-	cout << "MovDerecha: " << movDerecha << endl;
-	cout << "Angulo: " << angulo << endl;
-	cout << "Posicion jugador/boxCollider: x: " << posicion.first << "/" << boxCollider.x << " ,y: " << posicion.second << "/" << boxCollider.y << endl;
-	cout << "Alto/Ancho boxCollider: w: " << boxCollider.w << " ,h: " << boxCollider.h << endl;
-
 	if (posicion.second < PISO && !this->esPlataforma(boxCollider.x) && !saltar && (ultimaTeclaPresionada != SDLK_DOWN || ultimaTeclaPresionada != SDLK_SPACE))
 	{
 		caer = true;

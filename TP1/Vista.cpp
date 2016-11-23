@@ -489,9 +489,9 @@ void Vista::actualizarPantalla(int anchoVentana, int anchoCapaPrincipal){
 	this->ventana->actualizar();
 }
 
-void Vista::actualizarProyectil(string nuevaBala, int x, int y, string sprite, int id) {
+void Vista::actualizarProyectil(string nuevaBala, int x, int y, string sprite, int id, int cantFotogramas) {
 	if (nuevaBala == "0") {
-		VistaBala* vistaBala = new VistaBala(x,y,(ventana->crearTextura("Recursos/" + sprite + ".png", 0)),id);
+		VistaBala* vistaBala = new VistaBala(x,y,(ventana->crearTextura("Recursos/" + sprite + ".png", cantFotogramas)),id);
 		vistaBalas.push_back(vistaBala);
 	} else {
 		if (nuevaBala == "1") {
