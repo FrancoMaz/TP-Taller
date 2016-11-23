@@ -23,8 +23,9 @@ private:
 	int puntosPorDisparo;
 	string spriteBala;
 	pthread_t threadDisparo;
+	string sentido;
 public:
-	Proyectil(int danioEnPorcentaje, int puntosPorDisparo, string spriteBala,SDL_Rect boxCollider);
+	Proyectil(int danioEnPorcentaje, int puntosPorDisparo, string spriteBala,SDL_Rect boxCollider,string sentido);
 	virtual ~Proyectil();
 	pthread_t getThreadDisparo();
 	void setThreadDisparo(pthread_t threadDisparo);
@@ -32,7 +33,7 @@ public:
 	string jugadorQueLoDisparo;
 	int id;
 	pair<int,int> posicion;
-	void mover(string condicion);
+	void mover();
 	string getStringProyectil();
 };
 

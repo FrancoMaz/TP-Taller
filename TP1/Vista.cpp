@@ -462,16 +462,6 @@ void Vista::actualizarPantalla(int anchoVentana, int anchoCapaPrincipal){
 	}
 	TexturaSDL* texturaJugadorX;
 	TexturaSDL* texturaBala;
-	for (int i = 0; i < vistaJugadores.size(); i++){
-		VistaJugador* vistaJugador = vistaJugadores.at(i);
-		texturaJugadorX = vistaJugador->texturaJugador;
-		if (vistaJugador->x > anchoCapaPrincipal && camara.x == 0)
-		{
-			vistaJugador->x = vistaJugador->x - anchoCapaPrincipal;
-		}
-		texturaJugadorX->aplicarPosicion(vistaJugador->x - camara.x,vistaJugador->y - camara.y,0,vistaJugador->flip);
-	}
-
 	for (int i = 0; i < vistaBalas.size(); i++){
 		VistaBala* vistaBala = vistaBalas.at(i);
 		texturaBala = vistaBala->textura;
@@ -480,6 +470,16 @@ void Vista::actualizarPantalla(int anchoVentana, int anchoCapaPrincipal){
 			vistaBalas.erase(vistaBalas.begin()+i);
 		}
 		texturaBala->aplicarPosicion(vistaBala->x - camara.x, vistaBala->y - camara.y,0,SDL_FLIP_NONE);
+	}
+
+	for (int i = 0; i < vistaJugadores.size(); i++){
+		VistaJugador* vistaJugador = vistaJugadores.at(i);
+		texturaJugadorX = vistaJugador->texturaJugador;
+		if (vistaJugador->x > anchoCapaPrincipal && camara.x == 0)
+		{
+			vistaJugador->x = vistaJugador->x - anchoCapaPrincipal;
+		}
+		texturaJugadorX->aplicarPosicion(vistaJugador->x - camara.x,vistaJugador->y - camara.y,0,vistaJugador->flip);
 	}
 
 	if (texturaBotonDesconectar->aplicarPosicionDeBoton(10,10,&evento))

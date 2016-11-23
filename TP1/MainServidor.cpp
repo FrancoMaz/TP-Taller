@@ -152,7 +152,7 @@ void* disparoProyectil(void* arg)
 	while (!servidor->escenario->verificarColision(servidor->camara, proyectil))
 	{
 		usleep(5000);
-		proyectil->mover(jugador->condicionSprite);
+		proyectil->mover();
 		mensajeProyectilString = "2|1|";
 		mensajeProyectilString += proyectil->getStringProyectil();
 		mensajeProyectil = new Mensaje(jugador->getNombre(),"Todos",mensajeProyectilString);

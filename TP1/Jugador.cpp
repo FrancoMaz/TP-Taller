@@ -200,7 +200,7 @@ Proyectil* Jugador::dispararProyectil()
 {
 	if (!this->armas.at(this->armaActual)->sinMuniciones())
 	{
-		return (this->armas.at(this->armaActual)->disparar(boxCollider));
+		return (this->armas.at(this->armaActual)->disparar(boxCollider,condicionSprite));
 	}
 	else
 	{
@@ -209,7 +209,7 @@ Proyectil* Jugador::dispararProyectil()
 		{
 			this->armaActual = 0;
 		}
-		return (this->armas.at(this->armaActual)->disparar(boxCollider));
+		return (this->armas.at(this->armaActual)->disparar(boxCollider,condicionSprite));
 	}
 }
 

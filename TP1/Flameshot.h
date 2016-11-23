@@ -14,7 +14,7 @@ class Flameshot: public Arma {
 public:
 	Flameshot();
 	virtual ~Flameshot();
-	Proyectil* disparar(SDL_Rect boxCollider);
+	Proyectil* disparar(SDL_Rect boxCollider, string condicion);
 	bool sinMuniciones();
 	Proyectil* getProyectil();
 };
