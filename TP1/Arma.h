@@ -25,6 +25,7 @@ public:
 	virtual Proyectil* disparar(SDL_Rect boxCollider, string condicion);
 	virtual bool sinMuniciones();
 	Proyectil* getProyectil();
+	string nombre;
 };
 
 
