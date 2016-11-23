@@ -20,8 +20,8 @@
 #include "Jugador.h"
 #include "VistaBala.h"
 
-#define PISO 415
-#define PLATAFORMA 248
+#define PISO 301
+#define PLATAFORMA 134
 
 using namespace std;
 

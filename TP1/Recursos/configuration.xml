@@ -35,7 +35,7 @@
 	      <Id>Jugador_saltando_rojo</Id>
 	      <CantFotogramas>9</CantFotogramas>
 	      <Ancho>1971</Ancho>
-	      <Alto>137</Alto>
+	      <Alto>251</Alto>
 	      <Imagen>Jugador_saltando_rojo</Imagen>
 	      <z-index>1</z-index>
 	    </SpriteSalto> 
@@ -43,7 +43,7 @@
 	      <Id>Jugador_corriendo_rojo</Id>
 	      <CantFotogramas>9</CantFotogramas>
 	      <Ancho>1971</Ancho>
-	      <Alto>113</Alto>
+	      <Alto>227</Alto>
 	      <Imagen>Jugador_corriendo_rojo</Imagen>
 	      <z-index>1</z-index>
 	    </SpriteCorrer>
@@ -51,7 +51,7 @@
 	      <Id>Jugador_rojo</Id>
 	      <CantFotogramas>3</CantFotogramas>
 	      <Ancho>657</Ancho>
-	      <Alto>106</Alto>
+	      <Alto>220</Alto>
 	      <Imagen>Jugador_rojo</Imagen>
 	      <z-index>1</z-index>
 	    </SpriteQuieto>
@@ -59,7 +59,7 @@
 	      <Id>Jugador_agachado_rojo</Id>
 	      <CantFotogramas>4</CantFotogramas>
 	      <Ancho>876</Ancho>
-	      <Alto>106</Alto>
+	      <Alto>220</Alto>
 	      <Imagen>Jugador_agachado_rojo</Imagen>
 	      <z-index>1</z-index>
 	    </SpriteAgachado>
@@ -67,7 +67,7 @@
 	      <Id>Jugador_disparando_rojo</Id>
 	      <CantFotogramas>5</CantFotogramas>
 	      <Ancho>1095</Ancho>
-	      <Alto>106</Alto>
+	      <Alto>220</Alto>
 	      <Imagen>Jugador_disparando_rojo</Imagen>
 	      <z-index>1</z-index>
 	    </SpriteDisparando>
@@ -75,7 +75,7 @@
 	      <Id>Jugador_agachado_disparando_rojo</Id>
 	      <CantFotogramas>5</CantFotogramas>
 	      <Ancho>1095</Ancho>
-	      <Alto>106</Alto>
+	      <Alto>220</Alto>
 	      <Imagen>Jugador_agachado_disparando_rojo</Imagen>
 	      <z-index>1</z-index>
 	    </SpriteAgachadoDisparando>
@@ -83,7 +83,7 @@
 	      <Id>Jugador_desconectado</Id>
 	      <CantFotogramas>0</CantFotogramas>
 	      <Ancho>219</Ancho>
-	      <Alto>106</Alto>
+	      <Alto>220</Alto>
 	      <Imagen>Jugador_desconectado</Imagen>
 	      <z-index>1</z-index>
 	    </SpriteDesconectado>
@@ -94,7 +94,7 @@
 	      <Id>Jugador_saltando_verde</Id>
 	      <CantFotogramas>9</CantFotogramas>
 	      <Ancho>1971</Ancho>
-	      <Alto>137</Alto>
+	      <Alto>251</Alto>
 	      <Imagen>Jugador_saltando_verde</Imagen>
 	      <z-index>1</z-index>
 	    </SpriteSalto> 
@@ -102,7 +102,7 @@
 	      <Id>Jugador_corriendo_verde</Id>
 	      <CantFotogramas>9</CantFotogramas>
 	      <Ancho>1971</Ancho>
-	      <Alto>113</Alto>
+	      <Alto>227</Alto>
 	      <Imagen>Jugador_corriendo_verde</Imagen>
 	      <z-index>1</z-index>
 	    </SpriteCorrer>
@@ -110,7 +110,7 @@
 	      <Id>Jugador_verde</Id>
 	      <CantFotogramas>3</CantFotogramas>
 	      <Ancho>657</Ancho>
-	      <Alto>106</Alto>
+	      <Alto>220</Alto>
 	      <Imagen>Jugador_verde</Imagen>
 	      <z-index>1</z-index>
 	    </SpriteQuieto>
@@ -118,7 +118,7 @@
 	      <Id>Jugador_agachado_verde</Id>
 	      <CantFotogramas>4</CantFotogramas>
 	      <Ancho>876</Ancho>
-	      <Alto>106</Alto>
+	      <Alto>220</Alto>
 	      <Imagen>Jugador_agachado_verde</Imagen>
 	      <z-index>1</z-index>
 	    </SpriteAgachado>
@@ -126,7 +126,7 @@
 	      <Id>Jugador_disparando_verde</Id>
 	      <CantFotogramas>5</CantFotogramas>
 	      <Ancho>1095</Ancho>
-	      <Alto>106</Alto>
+	      <Alto>220</Alto>
 	      <Imagen>Jugador_disparando_verde</Imagen>
 	      <z-index>1</z-index>
 	    </SpriteDisparando>
@@ -134,7 +134,7 @@
 	      <Id>Jugador_agachado_disparando_verde</Id>
 	      <CantFotogramas>5</CantFotogramas>
 	      <Ancho>1095</Ancho>
-	      <Alto>106</Alto>
+	      <Alto>220</Alto>
 	      <Imagen>Jugador_agachado_disparando_verde</Imagen>
 	      <z-index>1</z-index>
 	    </SpriteAgachadoDisparando>
@@ -142,7 +142,7 @@
 	      <Id>Jugador_desconectado</Id>
 	      <CantFotogramas>0</CantFotogramas>
 	      <Ancho>219</Ancho>
-	      <Alto>106</Alto>
+	      <Alto>220</Alto>
 	      <Imagen>Jugador_desconectado</Imagen>
 	      <z-index>1</z-index>
 	    </SpriteDesconectado>
@@ -153,7 +153,7 @@
 	      <Id>Jugador_saltando_amarillo</Id>
 	      <CantFotogramas>9</CantFotogramas>
 	      <Ancho>1971</Ancho>
-	      <Alto>137</Alto>
+	      <Alto>251</Alto>
 	      <Imagen>Jugador_saltando_amarillo</Imagen>
 	      <z-index>1</z-index>
 	    </SpriteSalto> 
@@ -161,7 +161,7 @@
 	      <Id>Jugador_corriendo_amarillo</Id>
 	      <CantFotogramas>9</CantFotogramas>
 	      <Ancho>1971</Ancho>
-	      <Alto>113</Alto>
+	      <Alto>227</Alto>
 	      <Imagen>Jugador_corriendo_amarillo</Imagen>
 	      <z-index>1</z-index>
 	    </SpriteCorrer>
@@ -169,7 +169,7 @@
 	      <Id>Jugador_amarillo</Id>
 	      <CantFotogramas>3</CantFotogramas>
 	      <Ancho>657</Ancho>
-	      <Alto>106</Alto>
+	      <Alto>220</Alto>
 	      <Imagen>Jugador_amarillo</Imagen>
 	      <z-index>1</z-index>
 	    </SpriteQuieto>
@@ -177,7 +177,7 @@
 	      <Id>Jugador_agachado_amarillo</Id>
 	      <CantFotogramas>4</CantFotogramas>
 	      <Ancho>876</Ancho>
-	      <Alto>106</Alto>
+	      <Alto>220</Alto>
 	      <Imagen>Jugador_agachado_amarillo</Imagen>
 	      <z-index>1</z-index>
 	    </SpriteAgachado>
@@ -185,7 +185,7 @@
 	      <Id>Jugador_disparando_amarillo</Id>
 	      <CantFotogramas>5</CantFotogramas>
 	      <Ancho>1095</Ancho>
-	      <Alto>106</Alto>
+	      <Alto>220</Alto>
 	      <Imagen>Jugador_disparando_amarillo</Imagen>
 	      <z-index>1</z-index>
 	    </SpriteDisparando>
@@ -193,7 +193,7 @@
 	      <Id>Jugador_agachado_disparando_amarillo</Id>
 	      <CantFotogramas>5</CantFotogramas>
 	      <Ancho>1095</Ancho>
-	      <Alto>106</Alto>
+	      <Alto>220</Alto>
 	      <Imagen>Jugador_agachado_disparando_amarillo</Imagen>
 	      <z-index>1</z-index>
 	    </SpriteAgachadoDisparando>
@@ -201,7 +201,7 @@
 	      <Id>Jugador_desconectado</Id>
 	      <CantFotogramas>0</CantFotogramas>
 	      <Ancho>219</Ancho>
-	      <Alto>106</Alto>
+	      <Alto>220</Alto>
 	      <Imagen>Jugador_desconectado</Imagen>
 	      <z-index>1</z-index>
 	    </SpriteDesconectado>
@@ -212,7 +212,7 @@
 	      <Id>Jugador_saltando_azul</Id>
 	      <CantFotogramas>9</CantFotogramas>
 	      <Ancho>1971</Ancho>
-	      <Alto>137</Alto>
+	      <Alto>251</Alto>
 	      <Imagen>Jugador_saltando_azul</Imagen>
 	      <z-index>1</z-index>
 	    </SpriteSalto> 
@@ -220,7 +220,7 @@
 	      <Id>Jugador_corriendo_azul</Id>
 	      <CantFotogramas>9</CantFotogramas>
 	      <Ancho>1971</Ancho>
-	      <Alto>113</Alto>
+	      <Alto>227</Alto>
 	      <Imagen>Jugador_corriendo_azul</Imagen>
 	      <z-index>1</z-index>
 	    </SpriteCorrer>
@@ -228,7 +228,7 @@
 	      <Id>Jugador_azul</Id>
 	      <CantFotogramas>3</CantFotogramas>
 	      <Ancho>657</Ancho>
-	      <Alto>106</Alto>
+	      <Alto>220</Alto>
 	      <Imagen>Jugador_azul</Imagen>
 	      <z-index>1</z-index>
 	    </SpriteQuieto>
@@ -236,7 +236,7 @@
 	      <Id>Jugador_agachado_azul</Id>
 	      <CantFotogramas>4</CantFotogramas>
 	      <Ancho>876</Ancho>
-	      <Alto>106</Alto>
+	      <Alto>220</Alto>
 	      <Imagen>Jugador_agachado_azul</Imagen>
 	      <z-index>1</z-index>
 	    </SpriteAgachado>
@@ -244,7 +244,7 @@
 	      <Id>Jugador_disparando_azul</Id>
 	      <CantFotogramas>5</CantFotogramas>
 	      <Ancho>1095</Ancho>
-	      <Alto>106</Alto>
+	      <Alto>220</Alto>
 	      <Imagen>Jugador_disparando_azul</Imagen>
 	      <z-index>1</z-index>
 	    </SpriteDisparando>
@@ -252,7 +252,7 @@
 	      <Id>Jugador_agachado_disparando_azul</Id>
 	      <CantFotogramas>5</CantFotogramas>
 	      <Ancho>1095</Ancho>
-	      <Alto>106</Alto>
+	      <Alto>220</Alto>
 	      <Imagen>Jugador_agachado_disparando_azul</Imagen>
 	      <z-index>1</z-index>
 	    </SpriteAgachadoDisparando>
@@ -260,7 +260,7 @@
 	      <Id>Jugador_desconectado</Id>
 	      <CantFotogramas>0</CantFotogramas>
 	      <Ancho>219</Ancho>
-	      <Alto>106</Alto>
+	      <Alto>220</Alto>
 	      <Imagen>Jugador_desconectado</Imagen>
 	      <z-index>1</z-index>
 	    </SpriteDesconectado>

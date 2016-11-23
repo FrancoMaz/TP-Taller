@@ -29,9 +29,9 @@
 #define ARRIBA 3
 #define ABAJO 4
 #define ESPACIO 5
-#define PISO 415
+#define PISO 301
 #define MARGENBOXCOLLIDER 87
-#define PLATAFORMA 248
+#define PLATAFORMA 134
 #define GRAVEDAD 10
 using namespace std;
 
