@@ -165,9 +165,6 @@ void procesarUltimosMensajes(string mensajes, Cliente* cliente, UpdateJugador* u
 					vector<SpriteDto*> listaSprites = setsSprites.at(i)->getSprites();
 					for (int i = 0; i < listaSprites.size(); i++)
 					{
-						cout << "Sprite bala: " << spriteBala << endl;
-						cout << "ID sprite: " << listaSprites.at(i)->getID() << endl;
-						cout << endl;
 						if (spriteBala == listaSprites.at(i)->getID())
 						{
 							cantFotogramas = stringToInt(listaSprites.at(i)->getCantidadDeFotogramas());
