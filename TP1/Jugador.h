@@ -87,5 +87,6 @@ public:
 	bool estaDisparando();
 	Proyectil* getProyectilDisparado();
 	string condicionSprite;
+	bool armasVacias;
 };
 #endif /* JUGADOR_H_ */

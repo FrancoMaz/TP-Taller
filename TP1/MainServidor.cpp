@@ -176,11 +176,13 @@ void* actualizarPosicionesJugador(void* arg)
 		if (jugador->estaDisparando())
 		{
 			Proyectil* proyectil = jugador->dispararProyectil();
-			parametros->proyectil = proyectil;
-			pthread_t threadDisparo = proyectil->getThreadDisparo();
-			pthread_create(&threadDisparo, NULL, &disparoProyectil, parametros);
-			pthread_detach(threadDisparo);
-			proyectil->setThreadDisparo(threadDisparo);
+			if (proyectil != NULL) {
+				parametros->proyectil = proyectil;
+				pthread_t threadDisparo = proyectil->getThreadDisparo();
+				pthread_create(&threadDisparo, NULL, &disparoProyectil, parametros);
+				pthread_detach(threadDisparo);
+				proyectil->setThreadDisparo(threadDisparo);
+			}
 		}
 		pair<int,int> posicionesExtremos = servidor->obtenerPosicionesExtremos();
 		int anchoSprite = servidor->getAnchoSprite(jugador->getSpriteAEjecutar());
