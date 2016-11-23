@@ -20,6 +20,12 @@ void Personaje::disparar() {
 
 }
 
-void Personaje::daniarseCon(Arma* arma) {
-
+void Personaje::daniarseCon(Proyectil* proyectil) {
+	int danio = proyectil->getDanio();
+	if (this->vida > 0 && danio < this->vida) {
+		this->vida -= danio;
+	} else {
+		this->estaMuerto = true;
+	}
 }
+

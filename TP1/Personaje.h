@@ -16,11 +16,12 @@ class Personaje {
 protected:
 	int vida;
 	vector<Arma*> armas;
+	bool estaMuerto;
 public:
 	Personaje();
 	virtual ~Personaje();
 	virtual void disparar();
-	virtual void daniarseCon(Arma* arma);
+	virtual void daniarseCon(Proyectil* proyectil);
 };
 
 #endif /* PERSONAJE_H_ */

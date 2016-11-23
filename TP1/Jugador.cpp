@@ -26,6 +26,7 @@ Jugador::Jugador(string nombre, string equipo, int posicionX, vector<pair<int,in
 	boxCollider = {posicion.first+MARGENBOXCOLLIDER,posicion.second+114,50,106};
 	this->inicializarVectorArmas();
 	this->armasVacias = false;
+	this->vida = 100;
 }
 
 Jugador::~Jugador() {

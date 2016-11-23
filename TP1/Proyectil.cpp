@@ -61,3 +61,7 @@ string Proyectil::getStringProyectil()
 {
 	return (to_string(this->posicion.first) + "|" + to_string(this->posicion.second) + "|" + this->spriteBala + "|" + to_string(this->id) + "#");
 }
+
+int Proyectil::getDanio() {
+	return this->danioEnPorcentaje;
+}

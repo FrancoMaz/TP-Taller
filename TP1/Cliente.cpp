@@ -91,7 +91,6 @@ SetDeSpritesDto* Cliente::deserializarSprite(string campo){
 
 Handshake* Cliente::deserializarHandshake(string handshake, bool primeraVez){
 
-	cout << "Handshake: " << handshake << endl;
 	Handshake* handshakeAux;
 	string s = handshake;
 	string delimitador = "[";
