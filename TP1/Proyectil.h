@@ -15,7 +15,7 @@
 #include <SDL2/SDL.h>
 
 using namespace std;
-#define VELOCIDAD 5;
+#define VELOCIDAD 30;
 
 class Proyectil {
 private:
