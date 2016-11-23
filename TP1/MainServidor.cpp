@@ -151,13 +151,17 @@ void* disparoProyectil(void* arg)
 	idProyectil += 1;
 	while (!servidor->escenario->verificarColision(servidor->camara, proyectil))
 	{
-		usleep(5000);
+		usleep(50000);
 		proyectil->mover();
 		mensajeProyectilString = "2|1|";
 		mensajeProyectilString += proyectil->getStringProyectil();
 		mensajeProyectil = new Mensaje(jugador->getNombre(),"Todos",mensajeProyectilString);
 		servidor->encolarMensajeProcesadoParaCadaCliente(*mensajeProyectil,mensajeProyectilString);
 	}
+	mensajeProyectilString = "2|2|";
+	mensajeProyectilString += proyectil->getStringProyectil();
+	mensajeProyectil = new Mensaje(jugador->getNombre(),"Todos",mensajeProyectilString);
+	servidor->encolarMensajeProcesadoParaCadaCliente(*mensajeProyectil,mensajeProyectilString);
 	proyectil->~Proyectil();
 	pthread_exit(NULL);
 }
@@ -173,8 +177,7 @@ void* actualizarPosicionesJugador(void* arg)
 	while (jugador->getConectado()){
 		pthread_mutex_lock(&servidor->mutexVectorJugadores);
 		jugador->mover(servidor->camara);
-		if (jugador->estaDisparando())
-		{
+		if (jugador->estaDisparando()) {
 			Proyectil* proyectil = jugador->dispararProyectil();
 			if (proyectil != NULL) {
 				parametros->proyectil = proyectil;
@@ -183,6 +186,7 @@ void* actualizarPosicionesJugador(void* arg)
 				pthread_detach(threadDisparo);
 				proyectil->setThreadDisparo(threadDisparo);
 			}
+			usleep(50000);
 		}
 		pair<int,int> posicionesExtremos = servidor->obtenerPosicionesExtremos();
 		int anchoSprite = servidor->getAnchoSprite(jugador->getSpriteAEjecutar());

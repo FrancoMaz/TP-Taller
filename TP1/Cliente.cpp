@@ -50,7 +50,6 @@ ImagenDto* Cliente::deserializarImagen(string campo){
 
 SetDeSpritesDto* Cliente::deserializarSprite(string campo){
 
-
 	string id, cantFotogramas, ancho, alto, imagen, zIndex;
 	string carpeta;
 	vector<SpriteDto*> spritesAccion;
@@ -92,6 +91,7 @@ SetDeSpritesDto* Cliente::deserializarSprite(string campo){
 
 Handshake* Cliente::deserializarHandshake(string handshake, bool primeraVez){
 
+	cout << "Handshake: " << handshake << endl;
 	Handshake* handshakeAux;
 	string s = handshake;
 	string delimitador = "[";

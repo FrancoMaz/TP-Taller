@@ -70,7 +70,7 @@
 	      <Alto>227</Alto>
 	      <Imagen>Jugador_bazooka_corriendo_rojo</Imagen>
 	      <z-index>1</z-index>
-	    </SpriteCorrer>
+	    </SpriteCorrerBazooka>
 	     <SpriteCorrerLanzallamas>
 	      <Id>Jugador_lanzallamas_corriendo_rojo</Id>
 	      <CantFotogramas>9</CantFotogramas>
@@ -86,7 +86,7 @@
 	      <Alto>227</Alto>
 	      <Imagen>Jugador_cuchillo_corriendo_rojo</Imagen>
 	      <z-index>1</z-index>
-	    </SpriteCorrerLanzallamas>
+	    </SpriteCorrerCuchillo>
 	     <SpriteCorrerDisparar>
 	      <Id>Jugador_corriendo_disparando_rojo</Id>
 	      <CantFotogramas>9</CantFotogramas>
@@ -223,14 +223,14 @@
 	      <Imagen>Jugador_lanzallamas_agachado_disparando_rojo</Imagen>
 	      <z-index>1</z-index>
 	    </SpriteAgachadoDisparandoLanzallamas>
-	     <SpriteAgachadoDisparandoCuchillo>
-	      <Id>Jugador_cuchillo_agachado_disparando_rojo</Id>
+	     <SpriteAgachadoCuchillo>
+	      <Id>Jugador_cuchillo_agachado_rojo</Id>
 	      <CantFotogramas>5</CantFotogramas>
 	      <Ancho>1095</Ancho>
 	      <Alto>220</Alto>
-	      <Imagen>Jugador_cuchillo_agachado_disparando_rojo</Imagen>
+	      <Imagen>Jugador_cuchillo_agachado_rojo</Imagen>
 	      <z-index>1</z-index>
-	    </SpriteAgachadoDisparandoCuchillo>
+	    </SpriteAgachadoCuchillo>
 	    <SpriteDesconectado>
 	      <Id>Jugador_desconectado</Id>
 	      <CantFotogramas>0</CantFotogramas>
@@ -418,14 +418,15 @@
 	    </SpriteDesconectado>
 	  </SetAzul>
 	  <SetBalas>
-	   <SpriteBalaNormal>
+	   <Carpeta>Balas</Carpeta>
+	   <SpriteSalto>
 	     <Id>Bala_normal</Id>
 	     <CantFotogramas>0</CantFotogramas>
 	     <Ancho>22</Ancho>
 	     <Alto>13</Alto>
 	     <Imagen>Bala_normal</Imagen>
 	     <z-index>1</z-index>
-	    <SpriteBalaNormal>
+	    </SpriteSalto>
 	    <SpriteRocket>
 	     <Id>Rocket</Id>
 	     <CantFotogramas>4</CantFotogramas>
@@ -433,7 +434,7 @@
 	     <Alto>24</Alto>
 	     <Imagen>Rocket</Imagen>
 	     <z-index>1</z-index>
-	    <SpriteRocket>
+	    </SpriteRocket>
 	     <SpriteLanzallamas>
 	     <Id>Lanzallamas</Id>
 	     <CantFotogramas>7</CantFotogramas>
@@ -441,7 +442,7 @@
 	     <Alto>80</Alto>
 	     <Imagen>Lanzallamas</Imagen>
 	     <z-index>1</z-index>
-	    <SpriteLanzallamas>
+	    </SpriteLanzallamas>
 	  </SetBalas>
 	</Sprites>
 
