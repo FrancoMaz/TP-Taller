@@ -38,7 +38,23 @@
 	      <Alto>251</Alto>
 	      <Imagen>Jugador_saltando_rojo</Imagen>
 	      <z-index>1</z-index>
-	    </SpriteSalto> 
+	    </SpriteSalto>
+	    <SpriteSaltoBazooka>
+	      <Id>Jugador_saltando_bazooka_rojo</Id>
+	      <CantFotogramas>9</CantFotogramas>
+	      <Ancho>1971</Ancho>
+	      <Alto>251</Alto>
+	      <Imagen>Jugador_saltando_bazooka_rojo</Imagen>
+	      <z-index>1</z-index>
+	    </SpriteSaltoBazooka>
+	    <SpriteSaltoLanzallamas>
+	      <Id>Jugador_saltando_lanzallamas_rojo</Id>
+	      <CantFotogramas>9</CantFotogramas>
+	      <Ancho>1971</Ancho>
+	      <Alto>251</Alto>
+	      <Imagen>Jugador_saltando_lanzallamas_rojo</Imagen>
+	      <z-index>1</z-index>
+	    </SpriteSaltoLanzallamas>  
 	    <SpriteCorrer>
 	      <Id>Jugador_corriendo_rojo</Id>
 	      <CantFotogramas>9</CantFotogramas>
@@ -47,7 +63,63 @@
 	      <Imagen>Jugador_corriendo_rojo</Imagen>
 	      <z-index>1</z-index>
 	    </SpriteCorrer>
-	    <SpriteQuieto>
+	     <SpriteCorrerBazooka>
+	      <Id>Jugador_bazooka_corriendo_rojo</Id>
+	      <CantFotogramas>9</CantFotogramas>
+	      <Ancho>1971</Ancho>
+	      <Alto>227</Alto>
+	      <Imagen>Jugador_bazooka_corriendo_rojo</Imagen>
+	      <z-index>1</z-index>
+	    </SpriteCorrer>
+	     <SpriteCorrerLanzallamas>
+	      <Id>Jugador_lanzallamas_corriendo_rojo</Id>
+	      <CantFotogramas>9</CantFotogramas>
+	      <Ancho>1971</Ancho>
+	      <Alto>227</Alto>
+	      <Imagen>Jugador_lanzallamas_corriendo_rojo</Imagen>
+	      <z-index>1</z-index>
+	    </SpriteCorrerLanzallamas>
+	     <SpriteCorrerCuchillo>
+	      <Id>Jugador_cuchillo_corriendo_rojo</Id>
+	      <CantFotogramas>9</CantFotogramas>
+	      <Ancho>1971</Ancho>
+	      <Alto>227</Alto>
+	      <Imagen>Jugador_cuchillo_corriendo_rojo</Imagen>
+	      <z-index>1</z-index>
+	    </SpriteCorrerLanzallamas>
+	     <SpriteCorrerDisparar>
+	      <Id>Jugador_corriendo_disparando_rojo</Id>
+	      <CantFotogramas>9</CantFotogramas>
+	      <Ancho>1971</Ancho>
+	      <Alto>227</Alto>
+	      <Imagen>Jugador_corriendo_disparando_rojo</Imagen>
+	      <z-index>1</z-index>
+	    </SpriteCorrerDisparar>
+	     <SpriteCorrerDispararBazooka>
+	      <Id>Jugador_bazooka_corriendo_disparando_rojo</Id>
+	      <CantFotogramas>9</CantFotogramas>
+	      <Ancho>1971</Ancho>
+	      <Alto>227</Alto>
+	      <Imagen>Jugador_bazooka_corriendo_disparando_rojo</Imagen>
+	      <z-index>1</z-index>
+	    </SpriteCorrerDispararBazooka>
+	     <SpriteCorrerDispararLanzallamas>
+	      <Id>Jugador_lanzallamas_corriendo_disparando_rojo</Id>
+	      <CantFotogramas>9</CantFotogramas>
+	      <Ancho>1971</Ancho>
+	      <Alto>227</Alto>
+	      <Imagen>Jugador_bazooka_lanzallamas_disparando_rojo</Imagen>
+	      <z-index>1</z-index>
+	    </SpriteCorrerDispararLanzallamas>
+	     <SpriteCorrerDisparandoDiagonal>
+	      <Id>Jugador_corriendo_disparando_diagonal_rojo</Id>
+	      <CantFotogramas>9</CantFotogramas>
+	      <Ancho>1971</Ancho>
+	      <Alto>227</Alto>
+	      <Imagen>Jugador_corriendo_disparando_diagonal_rojo</Imagen>
+	      <z-index>1</z-index>
+	    </SpriteCorrerDisparandoDiagonal>
+	     <SpriteQuieto>
 	      <Id>Jugador_rojo</Id>
 	      <CantFotogramas>3</CantFotogramas>
 	      <Ancho>657</Ancho>
@@ -55,14 +127,22 @@
 	      <Imagen>Jugador_rojo</Imagen>
 	      <z-index>1</z-index>
 	    </SpriteQuieto>
-	    <SpriteAgachado>
-	      <Id>Jugador_agachado_rojo</Id>
-	      <CantFotogramas>4</CantFotogramas>
-	      <Ancho>876</Ancho>
+	     <SpriteQuietoBazooka>
+	      <Id>Jugador_bazooka_rojo</Id>
+	      <CantFotogramas>3</CantFotogramas>
+	      <Ancho>657</Ancho>
 	      <Alto>220</Alto>
-	      <Imagen>Jugador_agachado_rojo</Imagen>
+	      <Imagen>Jugador_bazooka_rojo</Imagen>
 	      <z-index>1</z-index>
-	    </SpriteAgachado>
+	    </SpriteQuietoBazooka>
+	    <SpriteQuietoLanzallamas>
+	      <Id>Jugador_lanzallamas_rojo</Id>
+	      <CantFotogramas>3</CantFotogramas>
+	      <Ancho>657</Ancho>
+	      <Alto>220</Alto>
+	      <Imagen>Jugador_lanzallamas_rojo</Imagen>
+	      <z-index>1</z-index>
+	    </SpriteQuietoLanzallamas>
 	    <SpriteDisparando>
 	      <Id>Jugador_disparando_rojo</Id>
 	      <CantFotogramas>5</CantFotogramas>
@@ -71,7 +151,55 @@
 	      <Imagen>Jugador_disparando_rojo</Imagen>
 	      <z-index>1</z-index>
 	    </SpriteDisparando>
-	    <SpriteAgachadoDisparando>
+	     <SpriteDisparandoBazooka>
+	      <Id>Jugador_bazooka_disparando_rojo</Id>
+	      <CantFotogramas>5</CantFotogramas>
+	      <Ancho>1095</Ancho>
+	      <Alto>220</Alto>
+	      <Imagen>Jugador_bazooka_disparando_rojo</Imagen>
+	      <z-index>1</z-index>
+	    </SpriteDisparandoBazooka>
+	     <SpriteDisparandoLanzallamas>
+	      <Id>Jugador_lanzallamas_disparando_rojo</Id>
+	      <CantFotogramas>5</CantFotogramas>
+	      <Ancho>1095</Ancho>
+	      <Alto>220</Alto>
+	      <Imagen>Jugador_lanzallamas_disparando_rojo</Imagen>
+	      <z-index>1</z-index>
+	    </SpriteDisparandoLanzallamas>
+	   <SpriteDisparandoDiagonal>
+	      <Id>Jugador_disparando_diagonal_rojo</Id>
+	      <CantFotogramas>5</CantFotogramas>
+	      <Ancho>1095</Ancho>
+	      <Alto>220</Alto>
+	      <Imagen>Jugador_disparando_diagonal_rojo</Imagen>
+	      <z-index>1</z-index>
+	    </SpriteDisparandoDiagonal>
+	   <SpriteAgachado>
+	      <Id>Jugador_agachado_rojo</Id>
+	      <CantFotogramas>4</CantFotogramas>
+	      <Ancho>876</Ancho>
+	      <Alto>220</Alto>
+	      <Imagen>Jugador_agachado_rojo</Imagen>
+	      <z-index>1</z-index>
+	    </SpriteAgachado>
+	    <SpriteAgachadoBazooka>
+	      <Id>Jugador_bazooka_agachado_rojo</Id>
+	      <CantFotogramas>4</CantFotogramas>
+	      <Ancho>876</Ancho>
+	      <Alto>220</Alto>
+	      <Imagen>Jugador_bazooka_agachado_rojo</Imagen>
+	      <z-index>1</z-index>
+	    </SpriteAgachadoBazooka>
+	    <SpriteAgachadoLanzallamas>
+	      <Id>Jugador_lanzallamas_agachado_rojo</Id>
+	      <CantFotogramas>4</CantFotogramas>
+	      <Ancho>876</Ancho>
+	      <Alto>220</Alto>
+	      <Imagen>Jugador_lanzallamas_agachado_rojo</Imagen>
+	      <z-index>1</z-index>
+	    </SpriteAgachadoLanzallamas>
+	     <SpriteAgachadoDisparando>
 	      <Id>Jugador_agachado_disparando_rojo</Id>
 	      <CantFotogramas>5</CantFotogramas>
 	      <Ancho>1095</Ancho>
@@ -79,6 +207,30 @@
 	      <Imagen>Jugador_agachado_disparando_rojo</Imagen>
 	      <z-index>1</z-index>
 	    </SpriteAgachadoDisparando>
+	     <SpriteAgachadoDisparandoBazooka>
+	      <Id>Jugador_bazooka_agachado_disparando_rojo</Id>
+	      <CantFotogramas>5</CantFotogramas>
+	      <Ancho>1095</Ancho>
+	      <Alto>220</Alto>
+	      <Imagen>Jugador_bazooka_agachado_disparando_rojo</Imagen>
+	      <z-index>1</z-index>
+	    </SpriteAgachadoDisparandoBazooka>
+	    <SpriteAgachadoDisparandoLanzallamas>
+	      <Id>Jugador_lanzallamas_agachado_disparando_rojo</Id>
+	      <CantFotogramas>5</CantFotogramas>
+	      <Ancho>1095</Ancho>
+	      <Alto>220</Alto>
+	      <Imagen>Jugador_lanzallamas_agachado_disparando_rojo</Imagen>
+	      <z-index>1</z-index>
+	    </SpriteAgachadoDisparandoLanzallamas>
+	     <SpriteAgachadoDisparandoCuchillo>
+	      <Id>Jugador_cuchillo_agachado_disparando_rojo</Id>
+	      <CantFotogramas>5</CantFotogramas>
+	      <Ancho>1095</Ancho>
+	      <Alto>220</Alto>
+	      <Imagen>Jugador_cuchillo_agachado_disparando_rojo</Imagen>
+	      <z-index>1</z-index>
+	    </SpriteAgachadoDisparandoCuchillo>
 	    <SpriteDesconectado>
 	      <Id>Jugador_desconectado</Id>
 	      <CantFotogramas>0</CantFotogramas>
@@ -265,6 +417,32 @@
 	      <z-index>1</z-index>
 	    </SpriteDesconectado>
 	  </SetAzul>
+	  <SetBalas>
+	   <SpriteBalaNormal>
+	     <Id>Bala_normal</Id>
+	     <CantFotogramas>0</CantFotogramas>
+	     <Ancho>22</Ancho>
+	     <Alto>13</Alto>
+	     <Imagen>Bala_normal</Imagen>
+	     <z-index>1</z-index>
+	    <SpriteBalaNormal>
+	    <SpriteRocket>
+	     <Id>Rocket</Id>
+	     <CantFotogramas>4</CantFotogramas>
+	     <Ancho>328</Ancho>
+	     <Alto>24</Alto>
+	     <Imagen>Rocket</Imagen>
+	     <z-index>1</z-index>
+	    <SpriteRocket>
+	     <SpriteLanzallamas>
+	     <Id>Lanzallamas</Id>
+	     <CantFotogramas>7</CantFotogramas>
+	     <Ancho>2532</Ancho>
+	     <Alto>80</Alto>
+	     <Imagen>Lanzallamas</Imagen>
+	     <z-index>1</z-index>
+	    <SpriteLanzallamas>
+	  </SetBalas>
 	</Sprites>
 
 	<Ventana>

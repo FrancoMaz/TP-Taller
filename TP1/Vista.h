@@ -73,7 +73,7 @@ public:
 	void resetearVistas(int anchoCapaPrincipal);
 	Controlador* controlador;
 	bool salto;
-	void actualizarProyectil(string nuevaBala, int x, int y, string sprite, int id);
+	void actualizarProyectil(string nuevaBala, int x, int y, string sprite, int id, int cantFotogramas);
 };
 
 #endif /* TP2_VISTA_H_ */
