@@ -6,6 +6,7 @@
  */
 
 #include "Jugador.h"
+#include <iostream>
 
 Jugador::Jugador(string nombre, string equipo, int posicionX, vector<pair<int,int>> vectorPlataforma) {
 	this->nombre = nombre;
@@ -22,7 +23,7 @@ Jugador::Jugador(string nombre, string equipo, int posicionX, vector<pair<int,in
 	condicionSprite = "Normal";
 	spriteAEjecutar = "Jugador_" + equipo;
 	this->vectorPlataforma = vectorPlataforma;
-	boxCollider = {posicion.first+MARGENBOXCOLLIDER,posicion.second,50,106};
+	boxCollider = {posicion.first+MARGENBOXCOLLIDER,posicion.second+114,50,106};
 	this->inicializarVectorArmas();
 }
 
@@ -90,7 +91,7 @@ void Jugador::mover(SDL_Rect camara){
 		if(angulo == 0){
 			saltar = true;
 		}
-			spriteAEjecutar = "Jugador_saltando_" + this->equipo;
+		spriteAEjecutar = "Jugador_saltando_" + this->equipo;
 	}
 	else if(!movDerecha && ultimaTeclaPresionada == SDLK_RIGHT)
 	{
@@ -124,6 +125,16 @@ void Jugador::mover(SDL_Rect camara){
 			spriteAEjecutar = "Jugador_" + this->equipo;
 		}
 	}
+
+	cout << "Saltar: " << saltar << endl;
+	cout << "Caer: " << caer << endl;
+	cout << "Disparar: " << disparar << endl;
+	cout << "Agachar: " << agachar << endl;
+	cout << "MovIzquierda: " << movIzquierda << endl;
+	cout << "MovDerecha: " << movDerecha << endl;
+	cout << "Angulo: " << angulo << endl;
+	cout << "Posicion jugador/boxCollider: x: " << posicion.first << "/" << boxCollider.x << " ,y: " << posicion.second << "/" << boxCollider.y << endl;
+	cout << "Alto/Ancho boxCollider: w: " << boxCollider.w << " ,h: " << boxCollider.h << endl;
 
 	if (posicion.second < PISO && !this->esPlataforma(boxCollider.x) && !saltar && (ultimaTeclaPresionada != SDLK_DOWN || ultimaTeclaPresionada != SDLK_SPACE))
 	{
@@ -173,10 +184,10 @@ void Jugador::mover(SDL_Rect camara){
 	//Establezco el boxCollider
 	boxCollider.x = posicion.first+MARGENBOXCOLLIDER;
 	if(!agachar){
-		boxCollider.y = posicion.second;
+		boxCollider.y = posicion.second + 114;
 		boxCollider.h = 106;
 	} else {
-		boxCollider.y = posicion.second + 40;
+		boxCollider.y = posicion.second + 154;
 		boxCollider.h = 66;
 	}
 
