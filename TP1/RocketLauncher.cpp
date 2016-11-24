@@ -10,7 +10,7 @@
 RocketLauncher::RocketLauncher() {
 	this->disparoDiagonal = false;
 	this->municiones = 30;
-	this->nombre = "bazooka";
+	this->nombre = "_bazooka_";
 }
 
 RocketLauncher::~RocketLauncher() {

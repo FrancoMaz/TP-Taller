@@ -10,7 +10,7 @@
 HeavyMachineGun::HeavyMachineGun() {
 	this->disparoDiagonal = true;
 	this->municiones = 200;
-	this->nombre = "";
+	this->nombre = "_";
 }
 
 HeavyMachineGun::~HeavyMachineGun() {

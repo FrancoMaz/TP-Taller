@@ -10,7 +10,7 @@
 Flameshot::Flameshot() {
 	this->disparoDiagonal = false;
 	this->municiones = 30;
-	this->nombre = "lanzallamas";
+	this->nombre = "_lanzallamas_";
 }
 
 Flameshot::~Flameshot() {
