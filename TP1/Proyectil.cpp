@@ -9,11 +9,20 @@
 #include <iostream>
 using namespace std;
 
-Proyectil::Proyectil(int danioEnPorcentaje, int puntosPorDisparo, string spriteBala,SDL_Rect boxCollider) {
+Proyectil::Proyectil(int danioEnPorcentaje, int puntosPorDisparo, string spriteBala,SDL_Rect boxCollider, string sentido) {
 	this->danioEnPorcentaje = danioEnPorcentaje;
 	this->puntosPorDisparo = puntosPorDisparo;
 	this->spriteBala = spriteBala;
-	this->posicion.first = boxCollider.x+boxCollider.w+10;
+	this->posicion.first = -1;
+	this->sentido=sentido;
+	if (sentido == "Normal")
+	{
+		this->posicion.first = boxCollider.x+boxCollider.w+10;
+	}
+	else
+	{
+		this->posicion.first = boxCollider.x-10;
+	}
 	this->posicion.second = boxCollider.y+20;
 }
 
@@ -36,9 +45,9 @@ void Proyectil::fueDisparadoPor(string nombreJugador)
 	this->jugadorQueLoDisparo = nombreJugador;
 }
 
-void Proyectil::mover(string condicion)
+void Proyectil::mover()
 {
-	if (condicion == "Normal")
+	if (this->sentido == "Normal")
 	{
 		this->posicion.first += VELOCIDAD;
 	}
@@ -51,4 +60,8 @@ void Proyectil::mover(string condicion)
 string Proyectil::getStringProyectil()
 {
 	return (to_string(this->posicion.first) + "|" + to_string(this->posicion.second) + "|" + this->spriteBala + "|" + to_string(this->id) + "#");
+}
+
+int Proyectil::getDanio() {
+	return this->danioEnPorcentaje;
 }

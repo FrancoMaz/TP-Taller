@@ -14,7 +14,7 @@ class RocketLauncher: public Arma {
 public:
 	RocketLauncher();
 	virtual ~RocketLauncher();
-	Proyectil* disparar(SDL_Rect boxCollider);
+	Proyectil* disparar(SDL_Rect boxCollider, string condicion);
 	bool sinMuniciones();
 	Proyectil* getProyectil();
 };

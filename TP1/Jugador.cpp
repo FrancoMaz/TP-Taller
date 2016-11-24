@@ -25,6 +25,8 @@ Jugador::Jugador(string nombre, string equipo, int posicionX, vector<pair<int,in
 	this->vectorPlataforma = vectorPlataforma;
 	boxCollider = {posicion.first+MARGENBOXCOLLIDER,posicion.second+114,50,106};
 	this->inicializarVectorArmas();
+	this->armasVacias = false;
+	this->vida = 100;
 }
 
 Jugador::~Jugador() {
@@ -66,15 +68,18 @@ void Jugador::mover(SDL_Rect camara){
 		}
 		condicionSprite = "Espejado";
 	}
-	else if (disparar)
-	{
-		if(!saltar && (posicion.second == PISO || posicion.second == PLATAFORMA)){
-			velocidades.first = 0;
-			if(!agachar){
-				spriteAEjecutar = "Jugador_disparando_" + this->equipo;
-			} else {
-				spriteAEjecutar = "Jugador_agachado_disparando_" + this->equipo;
+	else if (disparar) {
+		if (!this->armasVacias) {
+			if(!saltar && (posicion.second == PISO || posicion.second == PLATAFORMA)){
+				velocidades.first = 0;
+				if(!agachar){
+					spriteAEjecutar = "Jugador_disparando_" + this->equipo;
+				} else {
+					spriteAEjecutar = "Jugador_agachado_disparando_" + this->equipo;
+				}
 			}
+		} else {
+			spriteAEjecutar = "Jugador_" + this->equipo;
 		}
 		//this->dispararProyectil();
 	}
@@ -125,16 +130,6 @@ void Jugador::mover(SDL_Rect camara){
 			spriteAEjecutar = "Jugador_" + this->equipo;
 		}
 	}
-
-	cout << "Saltar: " << saltar << endl;
-	cout << "Caer: " << caer << endl;
-	cout << "Disparar: " << disparar << endl;
-	cout << "Agachar: " << agachar << endl;
-	cout << "MovIzquierda: " << movIzquierda << endl;
-	cout << "MovDerecha: " << movDerecha << endl;
-	cout << "Angulo: " << angulo << endl;
-	cout << "Posicion jugador/boxCollider: x: " << posicion.first << "/" << boxCollider.x << " ,y: " << posicion.second << "/" << boxCollider.y << endl;
-	cout << "Alto/Ancho boxCollider: w: " << boxCollider.w << " ,h: " << boxCollider.h << endl;
 
 	if (posicion.second < PISO && !this->esPlataforma(boxCollider.x) && !saltar && (ultimaTeclaPresionada != SDLK_DOWN || ultimaTeclaPresionada != SDLK_SPACE))
 	{
@@ -207,21 +202,16 @@ void Jugador::mover(SDL_Rect camara){
 	}
 }
 
-Proyectil* Jugador::dispararProyectil()
-{
-	if (!this->armas.at(this->armaActual)->sinMuniciones())
-	{
-		return (this->armas.at(this->armaActual)->disparar(boxCollider));
-	}
-	else
-	{
-		this->armaActual += 1;
-		if (this->armaActual >= this->armas.size())
-		{
-			this->armaActual = 0;
+Proyectil* Jugador::dispararProyectil() {
+	while (this->armaActual < this->armas.size()) {
+		if (!this->armas.at(this->armaActual)->sinMuniciones()) {
+			return (this->armas.at(this->armaActual)->disparar(boxCollider,condicionSprite));
+		} else {
+			this->armaActual++;
 		}
-		return (this->armas.at(this->armaActual)->disparar(boxCollider));
 	}
+	this->armasVacias = true;
+	return NULL;
 }
 
 bool Jugador::esPlataforma(int x)

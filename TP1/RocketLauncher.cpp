@@ -16,8 +16,8 @@ RocketLauncher::~RocketLauncher() {
 	// TODO Auto-generated destructor stub
 }
 
-Proyectil* RocketLauncher::disparar(SDL_Rect boxCollider) {
-	this->proyectil = new Proyectil(80,40,"Rocket",boxCollider);
+Proyectil* RocketLauncher::disparar(SDL_Rect boxCollider, string condicion) {
+	this->proyectil = new Proyectil(80,40,"Rocket",boxCollider,condicion);
 	this->municiones -= 1;
 	return this->proyectil;
 }

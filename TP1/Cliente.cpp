@@ -50,7 +50,6 @@ ImagenDto* Cliente::deserializarImagen(string campo){
 
 SetDeSpritesDto* Cliente::deserializarSprite(string campo){
 
-
 	string id, cantFotogramas, ancho, alto, imagen, zIndex;
 	string carpeta;
 	vector<SpriteDto*> spritesAccion;

@@ -160,7 +160,18 @@ void procesarUltimosMensajes(string mensajes, Cliente* cliente, UpdateJugador* u
 				pos = s.find(delimitadorFinal);
 				texto = s.substr(0,pos);
 				int idBala = stringToInt(texto);
-				vista->actualizarProyectil(nuevaBala,xBala,yBala,spriteBala,idBala);
+				int cantFotogramas;
+				for (int i = 0; i < setsSprites.size(); i++){
+					vector<SpriteDto*> listaSprites = setsSprites.at(i)->getSprites();
+					for (int i = 0; i < listaSprites.size(); i++)
+					{
+						if (spriteBala == listaSprites.at(i)->getID())
+						{
+							cantFotogramas = stringToInt(listaSprites.at(i)->getCantidadDeFotogramas());
+						}
+					}
+				}
+				vista->actualizarProyectil(nuevaBala,xBala,yBala,spriteBala,idBala,cantFotogramas);
 			}
 			vista->actualizarPosJugador(update,stringToInt(handshakeDeserializado->getAncho()),stringToInt(handshakeDeserializado->getImagenes().at(0)->getAncho()));
 			s.erase(0, pos + delimitador.length());

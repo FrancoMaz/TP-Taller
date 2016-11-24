@@ -16,8 +16,8 @@ HeavyMachineGun::~HeavyMachineGun() {
 	// TODO Auto-generated destructor stub
 }
 
-Proyectil* HeavyMachineGun::disparar(SDL_Rect boxCollider) {
-	this->proyectil = new Proyectil(20,15,"Bala_normal",boxCollider);
+Proyectil* HeavyMachineGun::disparar(SDL_Rect boxCollider, string condicion) {
+	this->proyectil = new Proyectil(20,15,"Bala_normal",boxCollider, condicion);
 	this->municiones -= 1;
 	return this->proyectil;
 }
