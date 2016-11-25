@@ -20,8 +20,8 @@ Flameshot::~Flameshot() {
 	// TODO Auto-generated destructor stub
 }
 
-Proyectil* Flameshot::disparar(SDL_Rect boxCollider, string condicion) {
-	this->proyectil = new Proyectil(35,40,this->nombreArma,boxCollider,condicion);
+Proyectil* Flameshot::disparar(SDL_Rect boxCollider, string condicion, int anguloBala) {
+	this->proyectil = new Proyectil(35,40,this->nombreArma,boxCollider,condicion, anguloBala);
 	this->municiones -= 1;
 	return this->proyectil;
 }

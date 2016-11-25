@@ -75,7 +75,7 @@ public:
 	void resetearVistas(int anchoCapaPrincipal);
 	Controlador* controlador;
 	bool salto;
-	void actualizarProyectil(string nuevaBala, int x, int y, string sprite, int id, int cantFotogramas, string sentido);
+	void actualizarProyectil(string nuevaBala, int x, int y, string sprite, int id, int cantFotogramas, string sentido, double angulo);
 	void agregarVistaItem(string borrarItem, string sprite, int x, int y);
 };
 

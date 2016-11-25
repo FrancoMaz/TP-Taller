@@ -22,7 +22,7 @@ protected:
 public:
 	Arma();
 	virtual ~Arma();
-	virtual Proyectil* disparar(SDL_Rect boxCollider, string condicion);
+	virtual Proyectil* disparar(SDL_Rect boxCollider, string condicion, int anguloBala);
 	virtual bool sinMuniciones();
 	virtual void sumarMuniciones();
 	string nombre;

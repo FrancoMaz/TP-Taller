@@ -11,13 +11,14 @@
 
 class VistaBala {
 public:
-	VistaBala(int x, int y, TexturaSDL* textura, int id, string sentido);
+	VistaBala(int x, int y, TexturaSDL* textura, int id, string sentido,double angulo);
 	virtual ~VistaBala();
 	int x;
 	int y;
 	TexturaSDL* textura;
 	int id;
 	SDL_RendererFlip flip;
+	double angulo;
 };
 
 #endif /* VISTABALA_H_ */

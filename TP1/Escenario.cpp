@@ -27,7 +27,7 @@ void Escenario::agregarProyectil(Proyectil* proyectil, string nombreJugador, int
 
 bool Escenario::verificarColision(SDL_Rect camara, Proyectil* proyectil)
 {
-	return(proyectil->posicion.first > camara.x + camara.w || proyectil->posicion.first < camara.x);
+	return(proyectil->posicion.first > camara.x + camara.w || proyectil->posicion.first < camara.x || proyectil->posicion.second < camara.y || proyectil->posicion.second > camara.y + camara.h);
 }
 
 bool Escenario::verificarColisionConItem(Jugador* jugador)

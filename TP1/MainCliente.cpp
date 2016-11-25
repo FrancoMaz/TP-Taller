@@ -21,6 +21,8 @@
 #include "LTimer.h"
 using namespace std;
 
+#define PI 3.14159265
+
 datosConexion datosCliente;
 Vista * vista = new Vista();
 Handshake* handshakeDeserializado;
@@ -55,6 +57,31 @@ void* verificarConexion(void * arg){
 	cliente->corroborarConexion();
 	vista->controlador->setCerrarVentana();
     //comunicacion->termino = cliente->corroborarConexion();
+}
+
+
+double calcularAngulo(int numero)
+{
+	double angulo;
+	switch (numero)
+	{
+		case 0:
+		{
+			angulo = 0;
+			break;
+		}
+		case 1:
+		{
+			angulo = -90;
+			break;
+		}
+		case 2:
+		{
+			angulo = -45;
+			break;
+		}
+	}
+	return angulo;
 }
 
 void procesarUltimosMensajes(string mensajes, Cliente* cliente, UpdateJugador* update, bool primeraVez)
@@ -157,9 +184,17 @@ void procesarUltimosMensajes(string mensajes, Cliente* cliente, UpdateJugador* u
 				texto = s.substr(0,pos);
 				string spriteBala = texto;
 				s.erase(0, pos + delimitador.length());
-				pos = s.find(delimitadorFinal);
+				pos = s.find(delimitador);
 				texto = s.substr(0,pos);
 				int idBala = stringToInt(texto);
+				s.erase(0, pos + delimitador.length());
+				pos = s.find(delimitador);
+				texto = s.substr(0,pos);
+				string sentido = texto;
+				s.erase(0, pos + delimitador.length());
+				pos = s.find(delimitadorFinal);
+				texto = s.substr(0,pos);
+				double angulo = calcularAngulo(stringToInt(texto));
 				int cantFotogramas;
 				for (int i = 0; i < setsSprites.size(); i++){
 					vector<SpriteDto*> listaSprites = setsSprites.at(i)->getSprites();
@@ -171,7 +206,7 @@ void procesarUltimosMensajes(string mensajes, Cliente* cliente, UpdateJugador* u
 						}
 					}
 				}
-				vista->actualizarProyectil(nuevaBala,xBala,yBala,spriteBala,idBala,cantFotogramas);
+				vista->actualizarProyectil(nuevaBala,xBala,yBala,spriteBala,idBala,cantFotogramas,sentido,angulo);
 			}
 			else if (texto == "3")
 			{
@@ -234,7 +269,7 @@ void* enviarEventos(void* arg) {
 	bool presionadaDerecha = false;
 	bool presionadaIzquierda = false;
 	bool presionadaAbajo = false;
-	bool presionadoEspacio = false;
+	bool presionadaX = false;
 	 //The frames per second timer
 	LTimer fpsTimer;
 	//The frames per second cap timer
@@ -259,19 +294,23 @@ void* enviarEventos(void* arg) {
 				presionadaIzquierda = true;
 				cliente->enviar("Tecla Izquierda", "Todos");
 			}
-			else if (vista->controlador->presionarBoton(SDLK_UP) && !vista->salto){
+			else if (vista->controlador->presionarBoton(SDLK_z) && !vista->salto){
 				vista->salto = true;
-				//presionadaArriba = true;
-				cliente->enviar("Tecla Arriba", "Todos");
+				cliente->enviar("Z", "Todos");
+			}
+			else if (vista->controlador->presionarBoton(SDLK_UP) && !presionadaArriba)
+			{
+				presionadaArriba = true;
+				cliente->enviar("Tecla Arriba","Todos");
 			}
 			else if (vista->controlador->presionarBoton(SDLK_DOWN) && !presionadaAbajo)
 			{
 				presionadaAbajo = true;
 				cliente->enviar("Tecla Abajo","Todos");
 			}
-			else if(vista->controlador->presionarBoton(SDLK_SPACE) && !presionadoEspacio){
-				presionadoEspacio = true;
-				cliente->enviar("Tecla Espacio","Todos");
+			else if(vista->controlador->presionarBoton(SDLK_x) && !presionadaX){
+				presionadaX = true;
+				cliente->enviar("X","Todos");
 			}
 			else if(vista->controlador->soltarBoton(SDLK_RIGHT)){
 				presionadaDerecha = false;
@@ -285,13 +324,14 @@ void* enviarEventos(void* arg) {
 				presionadaAbajo = false;
 				cliente->enviar("Soltar Tecla Abajo","Todos");
 			}
-			else if(vista->controlador->soltarBoton(SDLK_SPACE)){
-				presionadoEspacio = false;
-				cliente->enviar("Soltar Tecla Espacio","Todos");
-			}
-			/*else if(!vista->salto){
+			else if(vista->controlador->soltarBoton(SDLK_UP)){
 				presionadaArriba = false;
-			}*/
+				cliente->enviar("Soltar Tecla Arriba","Todos");
+			}
+			else if(vista->controlador->soltarBoton(SDLK_x)){
+				presionadaX = false;
+				cliente->enviar("Soltar X","Todos");
+			}
 			SDL_FlushEvent(SDL_MOUSEMOTION);
 			SDL_FlushEvent(SDL_KEYDOWN);//si se procesa antes, espero lo que tengo que resta.
 			int frameTicks = capTimer.getTicks();

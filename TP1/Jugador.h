@@ -47,6 +47,7 @@ private:
 	bool caer;
 	bool movDerecha = false;
 	bool movIzquierda = false;
+	bool arriba = false;
 	double angulo;
 	string spriteAEjecutar;
 	bool conectado = false;
@@ -89,6 +90,8 @@ public:
 	bool armasVacias;
 	SDL_Rect boxCollider;
 	void obtenerMuniciones(string arma);
+	void condicionesMovimiento();
+	int anguloBala;
 	//void daniarseCon(Proyectil* proyectil);
 };
 #endif /* JUGADOR_H_ */
