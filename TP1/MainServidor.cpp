@@ -113,7 +113,7 @@ void* procesar(void* arg) {
 		strcpy(buffer, mensajesProcesados.c_str());
 	}
 	ok = send(socket, buffer, strlen(buffer), 0);
-	cout << "mensaje: " << mensajesProcesados << endl;
+	//cout << "mensaje: " << mensajesProcesados << endl;
 	return NULL;
 }
 
@@ -318,7 +318,7 @@ void* cicloEscuchaCliente(void* arg) {
 						char* remitente = strtok(NULL, "|");
 						char* destinatario = strtok(NULL, "|");
 						char* mensaje = strtok(NULL, "#");
-						cout << "recibido :" <<  mensaje << endl;
+						//cout << "recibido :" <<  mensaje << endl;
 						if( remitente != NULL && destinatario != NULL && mensaje != NULL ){
 							encolarMensaje(string(remitente), string(destinatario), string(mensaje), servidor);
 						}
@@ -326,7 +326,7 @@ void* cicloEscuchaCliente(void* arg) {
 						break;
 					}
 					case 2: { //2 el cliente quiere recibir sus mensajes
-						cout << "le llega un 2" << endl;
+						//cout << "le llega un 2" << endl;
 						char* usuarioQueSolicita = strtok(NULL, "#");
 						//usleep(50000);
 						if (usuarioQueSolicita != NULL) {
@@ -424,7 +424,7 @@ void* cicloEscucharConexionesNuevasThreadProceso(void* arg) {
 	pthread_t threadProceso;
 	pthread_t threadEnemigosPetutos;
 	int ok = pthread_create(&threadProceso, NULL, &cicloProcesarMensajes, (void*) servidor);
-	//pthread_create(&threadEnemigosPetutos, NULL, &controlDeEnemigos, (void*) servidor);
+	pthread_create(&threadEnemigosPetutos, NULL, &controlDeEnemigos, (void*) servidor);
 	servidor->setThreadProceso(threadProceso);
 
 	pthread_t thread_id[MAX_CANT_CLIENTES]; //la cantidad maxima de clientes es 6, voy a crear, como mucho 6 threads para manejar dichas conexiones.

@@ -72,112 +72,146 @@ void procesarUltimosMensajes(string mensajes, Cliente* cliente, UpdateJugador* u
 		size_t posCapas;
 		size_t pos = s.find(delimitador);
 		texto = s.substr(0, pos);
+
 		while (texto != "") {
 			update->setRemitente(texto);
 			s.erase(0, pos + delimitador.length());
 			pos = s.find(delimitador);
 			texto = s.substr(0,pos);
-			if (texto == "0"){
-				s.erase(0, pos + delimitador.length());
-				pos = s.find(delimitador);
-				texto = s.substr(0,pos);
-				update->setDestinatario(texto);
-				s.erase(0, pos + delimitador.length());
-				pos = s.find(delimitador);
-				texto = s.substr(0,pos);
-				update->setX(texto);
-				s.erase(0, pos + delimitador.length());
-				pos = s.find(delimitador);
-				texto = s.substr(0,pos);
-				update->setY(texto);
-				s.erase(0, pos + delimitador.length());
-				pos = s.find(delimitador);
-				texto = s.substr(0,pos);
-				string spriteAEjecutar;
-				spriteAEjecutar = texto;
-				s.erase(0, pos + delimitador.length());
-				pos = s.find(delimitadorFinal);
-				texto = s.substr(0,pos);
-				update->setCondicion(texto);
-				for (int i = 0; i < setsSprites.size(); i++){
-					vector<SpriteDto*> listaSprites = setsSprites.at(i)->getSprites();
-					for (int i = 0; i < listaSprites.size(); i++)
-					{
-						if ((string(spriteAEjecutar)) == listaSprites.at(i)->getID())
-						{
-							update->setSpriteActual(listaSprites.at(i));
+			switch (texto) {
+				case "0": {
+					s.erase(0, pos + delimitador.length());
+					pos = s.find(delimitador);
+					texto = s.substr(0,pos);
+					update->setDestinatario(texto);
+					s.erase(0, pos + delimitador.length());
+					pos = s.find(delimitador);
+					texto = s.substr(0,pos);
+					update->setX(texto);
+					s.erase(0, pos + delimitador.length());
+					pos = s.find(delimitador);
+					texto = s.substr(0,pos);
+					update->setY(texto);
+					s.erase(0, pos + delimitador.length());
+					pos = s.find(delimitador);
+					texto = s.substr(0,pos);
+					string spriteAEjecutar;
+					spriteAEjecutar = texto;
+					s.erase(0, pos + delimitador.length());
+					pos = s.find(delimitadorFinal);
+					texto = s.substr(0,pos);
+					update->setCondicion(texto);
+					for (int i = 0; i < setsSprites.size(); i++){
+						vector<SpriteDto*> listaSprites = setsSprites.at(i)->getSprites();
+						for (int i = 0; i < listaSprites.size(); i++) {
+							if ((string(spriteAEjecutar)) == listaSprites.at(i)->getID()) {
+								update->setSpriteActual(listaSprites.at(i));
+							}
 						}
 					}
+					break;
 				}
-			}
-			else if (texto == "1"){
-				s.erase(0, pos + delimitador.length());
-				pos = s.find(delimitador);
-				texto = s.substr(0,pos);
-				int x = stringToInt(texto);
-				s.erase(0, pos + delimitador.length());
-				pos = s.find(delimitador);
-				texto = s.substr(0,pos);
-				int y = stringToInt(texto);
-				s.erase(0, pos + delimitador.length());
-				pos = s.find(delimitadorFinal);
-				texto = s.substr(0,pos);
-				vector<pair<int,int>> abscisasCapas;
-				while ((posCapas = texto.find(delimitador)) != string::npos)
-				{
-					pair<int,int> abscisas;
-					posCapas = texto.find(delimitadorFinal);
-					capas = texto.substr(0,posCapas);
-					abscisas.first = stringToInt(capas);
-					texto.erase(0,posCapas+delimitadorCapas.length());
-					posCapas = texto.find(delimitador);
-					capas = texto.substr(0,posCapas);
-					abscisas.second = stringToInt(capas);
-					abscisasCapas.push_back(abscisas);
-					texto.erase(0,posCapas+delimitador.length());
+				case "1": {
+					s.erase(0, pos + delimitador.length());
+					pos = s.find(delimitador);
+					texto = s.substr(0,pos);
+					int x = stringToInt(texto);
+					s.erase(0, pos + delimitador.length());
+					pos = s.find(delimitador);
+					texto = s.substr(0,pos);
+					int y = stringToInt(texto);
+					s.erase(0, pos + delimitador.length());
+					pos = s.find(delimitadorFinal);
+					texto = s.substr(0,pos);
+					vector<pair<int,int>> abscisasCapas;
+					while ((posCapas = texto.find(delimitador)) != string::npos) {
+						pair<int,int> abscisas;
+						posCapas = texto.find(delimitadorFinal);
+						capas = texto.substr(0,posCapas);
+						abscisas.first = stringToInt(capas);
+						texto.erase(0,posCapas+delimitadorCapas.length());
+						posCapas = texto.find(delimitador);
+						capas = texto.substr(0,posCapas);
+						abscisas.second = stringToInt(capas);
+						abscisasCapas.push_back(abscisas);
+						texto.erase(0,posCapas+delimitador.length());
+					}
+					vista->actualizarCamara(x,y,abscisasCapas,stringToInt(handshakeDeserializado->getAncho()));
+					break;
 				}
-				vista->actualizarCamara(x,y,abscisasCapas,stringToInt(handshakeDeserializado->getAncho()));
-			}
-			else
-			{
-				s.erase(0, pos + delimitador.length());
-				pos = s.find(delimitador);
-				texto = s.substr(0,pos);
-				string nuevaBala = texto;
-				s.erase(0, pos + delimitador.length());
-				pos = s.find(delimitador);
-				texto = s.substr(0,pos);
-				int xBala = stringToInt(texto);
-				s.erase(0, pos + delimitador.length());
-				pos = s.find(delimitador);
-				texto = s.substr(0,pos);
-				int yBala = stringToInt(texto);
-				s.erase(0, pos + delimitador.length());
-				pos = s.find(delimitador);
-				texto = s.substr(0,pos);
-				string spriteBala = texto;
-				s.erase(0, pos + delimitador.length());
-				pos = s.find(delimitadorFinal);
-				texto = s.substr(0,pos);
-				int idBala = stringToInt(texto);
-				int cantFotogramas;
-				for (int i = 0; i < setsSprites.size(); i++){
-					vector<SpriteDto*> listaSprites = setsSprites.at(i)->getSprites();
-					for (int i = 0; i < listaSprites.size(); i++)
-					{
-						if (spriteBala == listaSprites.at(i)->getID())
-						{
-							cantFotogramas = stringToInt(listaSprites.at(i)->getCantidadDeFotogramas());
+				case "2": {
+					s.erase(0, pos + delimitador.length());
+					pos = s.find(delimitador);
+					texto = s.substr(0,pos);
+					string nuevaBala = texto;
+					s.erase(0, pos + delimitador.length());
+					pos = s.find(delimitador);
+					texto = s.substr(0,pos);
+					int xBala = stringToInt(texto);
+					s.erase(0, pos + delimitador.length());
+					pos = s.find(delimitador);
+					texto = s.substr(0,pos);
+					int yBala = stringToInt(texto);
+					s.erase(0, pos + delimitador.length());
+					pos = s.find(delimitador);
+					texto = s.substr(0,pos);
+					string spriteBala = texto;
+					s.erase(0, pos + delimitador.length());
+					pos = s.find(delimitadorFinal);
+					texto = s.substr(0,pos);
+					int idBala = stringToInt(texto);
+					int cantFotogramas;
+					for (int i = 0; i < setsSprites.size(); i++) {
+						vector<SpriteDto*> listaSprites = setsSprites.at(i)->getSprites();
+						for (int i = 0; i < listaSprites.size(); i++) {
+							if (spriteBala == listaSprites.at(i)->getID()) {
+								cantFotogramas = stringToInt(listaSprites.at(i)->getCantidadDeFotogramas());
+							}
 						}
 					}
+					vista->actualizarProyectil(nuevaBala,xBala,yBala,spriteBala,idBala,cantFotogramas);
+					break;
 				}
-				vista->actualizarProyectil(nuevaBala,xBala,yBala,spriteBala,idBala,cantFotogramas);
+				case "3": {
+					s.erase(0, pos + delimitador.length());
+					pos = s.find(delimitador);
+					texto = s.substr(0,pos);
+					string nuevoEnemigo = texto;
+					s.erase(0, pos + delimitador.length());
+					pos = s.find(delimitador);
+					texto = s.substr(0,pos);
+					int xEnemigo = stringToInt(texto);
+					s.erase(0, pos + delimitador.length());
+					pos = s.find(delimitador);
+					texto = s.substr(0,pos);
+					int yEnemigo = stringToInt(texto);
+					s.erase(0, pos + delimitador.length());
+					pos = s.find(delimitador);
+					texto = s.substr(0,pos);
+					string spriteEnemigo = texto;
+					s.erase(0, pos + delimitador.length());
+					pos = s.find(delimitadorFinal);
+					texto = s.substr(0,pos);
+					int idEnemigo = stringToInt(texto);
+					int cantFotogramas = 1;
+					/*for (int i = 0; i < setsSprites.size(); i++) {
+						vector<SpriteDto*> listaSprites = setsSprites.at(i)->getSprites();
+						for (int i = 0; i < listaSprites.size(); i++) {
+							if (spriteBala == listaSprites.at(i)->getID()) {
+								cantFotogramas = stringToInt(listaSprites.at(i)->getCantidadDeFotogramas());
+							}
+						}
+					}*/
+					vista->actualizarEnemigo(nuevoEnemigo, xEnemigo, yEnemigo, spriteEnemigo, idEnemigo, cantFotogramas);
+					break;
+				}
 			}
-			vista->actualizarPosJugador(update,stringToInt(handshakeDeserializado->getAncho()),stringToInt(handshakeDeserializado->getImagenes().at(0)->getAncho()));
-			s.erase(0, pos + delimitador.length());
-			pos = s.find(delimitador);
-			texto = s.substr(0,pos);
 		}
+
+		vista->actualizarPosJugador(update,stringToInt(handshakeDeserializado->getAncho()),stringToInt(handshakeDeserializado->getImagenes().at(0)->getAncho()));
+		s.erase(0, pos + delimitador.length());
+		pos = s.find(delimitador);
+		texto = s.substr(0,pos);
 	}
 	vista->actualizarPantalla(stringToInt(handshakeDeserializado->getAncho()), stringToInt(handshakeDeserializado->getImagenes().at(0)->getAncho()));
 }

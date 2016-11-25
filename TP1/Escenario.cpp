@@ -12,8 +12,10 @@
 using namespace std;
 
 Escenario::Escenario() {
-	pair<int,int> lala(rand() % 800, 0);
+	pair<int,int> lala(rand() % 800, 520);
 	for(int i=0; i < 1; i++) {
+		cout << "Posicion x del enemigo: " << lala.first << endl;
+		cout << "Posicion y del enemigo: " << lala.second << endl;
 		this->enemigosPorNivel.push_back(lala);
 	}
 }
@@ -35,7 +37,7 @@ bool Escenario::verificarColision(SDL_Rect camara, Proyectil* proyectil)
 
 void Escenario::despertarEnemigos(SDL_Rect* camara) {
 	if (this->enemigosPorNivel.at(0).first < camara->x + camara->w && this->enemigosPorNivel.at(0).first > camara->x) {
-		Enemigo* enemigo = new Enemigo(this->enemigosPorNivel.at(0).first,0,0);
+		Enemigo* enemigo = new Enemigo(this->enemigosPorNivel.at(0).first,this->enemigosPorNivel.at(0).second,0);
 		this->enemigosActivos.push_back(enemigo);
 	}
 }
