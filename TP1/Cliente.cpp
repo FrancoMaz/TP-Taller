@@ -365,6 +365,7 @@ void Cliente::enviar(string mensaje, string destinatario) {
 			largoRequest = send(this->socketCliente, stringDatosMensaje, largo, 0);
 			largo -= largoRequest;
 		}
+		cout << "enviado: " << stringDatosMensaje << endl;
 		pthread_mutex_unlock(&mutexSocket);
 		free(mensajeCadena);
 		mensajeAEnviar->~Mensaje();
@@ -392,18 +393,21 @@ string Cliente::recibir() {
 	{
 		int largo;
 		//mientras haya cosas que leer, sigo recibiendo.
-		do {
+		//do {
 			//sigue aca mientras no recibe nada, cuando recibe algo sale de este do while
 			largo = recv(socketCliente, colaMensajes, BUFFER_MAX_SIZE, 0);
 			largoRequest += largo;
-		}
-		while (largoRequest < BUFFER_MAX_SIZE);
-		if (largoRequest > 0){
+			cout << "mensaje: "<< colaMensajes << endl;
+		//} while (largoRequest < BUFFER_MAX_SIZE);
+		if (largo > 0){
 			datosRecibidos += string(colaMensajes);
 		}
 		memset(colaMensajes, '\0', strlen(colaMensajes));
 	}
 	pthread_mutex_unlock(&mutexSocket);
+	cout <<endl;
+	cout << "Datos rec: " << datosRecibidos << endl;
+	cout <<endl;
 	return datosRecibidos;
 }
 

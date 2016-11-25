@@ -113,6 +113,7 @@ void* procesar(void* arg) {
 		strcpy(buffer, mensajesProcesados.c_str());
 	}
 	ok = send(socket, buffer, strlen(buffer), 0);
+	cout << "mensaje: " << mensajesProcesados << endl;
 	return NULL;
 }
 
@@ -256,6 +257,8 @@ void iniciarThreadMovimientoJugador(Servidor* servidor, string nombre)
 	jugador->setThreadMovimiento(threadMov);
 }
 
+
+
 void* cicloEscuchaCliente(void* arg) {
 	//esta funcion es la que se va a encargar de hacer send y recv de los enviar/recibir/desconectar
 	//es decir, esta funcion es la que va a estar constantemente haciendo send y recv del socket del cliente y detectando lo que quiere hacer.
@@ -297,17 +300,19 @@ void* cicloEscuchaCliente(void* arg) {
 				char* metodo = strtok(datos, "|");
 				int accion = atoi(metodo); //convierto a entero el metodo recibido por string
 				switch (accion) {
-					case 1: { //1 es enviar
+					case 1: { //1 el cliente me envia un mensaje
 						char* remitente = strtok(NULL, "|");
 						char* destinatario = strtok(NULL, "|");
 						char* mensaje = strtok(NULL, "#");
+						cout << "recibido :" <<  mensaje << endl;
 						if( remitente != NULL && destinatario != NULL && mensaje != NULL ){
 							encolarMensaje(string(remitente), string(destinatario), string(mensaje), servidor);
 						}
 						//usleep(50000);
 						break;
 					}
-					case 2: { //2 es recibir
+					case 2: { //2 el cliente quiere recibir sus mensajes
+						cout << "le llega un 2" << endl;
 						char* usuarioQueSolicita = strtok(NULL, "#");
 						//usleep(50000);
 						if (usuarioQueSolicita != NULL) {
@@ -383,18 +388,27 @@ void* cicloEscuchaCliente(void* arg) {
 	}
 }
 
+void* controlDeEnemigos(void* arg) {
+	Servidor* servidor = (Servidor*) arg;
+	while (servidor->escuchando) {
+		servidor->escenario->despertarEnemigos(&servidor->camara);
+		Enemigo* enemigo = servidor->escenario->getEnemigoActivo();
+		if (enemigo != NULL) {
+			string mensajeEnemigo = "3|0|";
+			mensajeEnemigo += enemigo->getInformacionDelEnemigo();
+			Mensaje* mensaje = new Mensaje("jochi","Todos",mensajeEnemigo);
+			servidor->encolarMensajeProcesadoParaCadaCliente(*mensaje,mensajeEnemigo);
+		}
+	}
+
+}
+
 void* cicloEscucharConexionesNuevasThreadProceso(void* arg) {
 	Servidor* servidor = (Servidor*) arg;
 	pthread_t threadProceso;
-	int ok = pthread_create(&threadProceso, NULL, &cicloProcesarMensajes,
-			(void*) servidor);
-	if (ok != 0)
-	{
-		servidor->guardarLog("ERROR: Problema al crear el thread de escucha de conexiones \n",DEBUG);
-	}
-	else{
-		servidor->guardarLog("Thread de escucha de conexiones creado correctamente.",DEBUG);
-	}
+	pthread_t threadEnemigosPetutos;
+	int ok = pthread_create(&threadProceso, NULL, &cicloProcesarMensajes, (void*) servidor);
+	pthread_create(&threadEnemigosPetutos, NULL, &controlDeEnemigos, (void*) servidor);
 	servidor->setThreadProceso(threadProceso);
 
 	pthread_t thread_id[MAX_CANT_CLIENTES]; //la cantidad maxima de clientes es 6, voy a crear, como mucho 6 threads para manejar dichas conexiones.

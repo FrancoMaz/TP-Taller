@@ -30,7 +30,7 @@
 #include "SpriteDto.h"
 #include "SetDeSpritesDto.h"
 #include "Handshake.h"
-#define BUFFER_MAX_SIZE 1024
+#define BUFFER_MAX_SIZE 1000
  const int SCREEN_FPS = 20;
  const int SCREEN_TICKS_PER_FRAME = 1000 / SCREEN_FPS;
 using namespace std;

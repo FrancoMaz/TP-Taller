@@ -7,10 +7,14 @@
 
 #include "Enemigo.h"
 
-Enemigo::Enemigo() {
+Enemigo::Enemigo(int posX, int posY, int id) {
 	this->vida = 100;
 	this->armas.push_back(new HeavyMachineGun());
 	this->estaMuerto = false;
+	this->posX = posX;
+	this->posY = posY;
+	this->spriteEnemigo = "Jugador_azul";
+	this->id = id;
 }
 
 Enemigo::~Enemigo() {
@@ -19,6 +23,10 @@ Enemigo::~Enemigo() {
 
 void Enemigo::disparar() {
 
+}
+
+string Enemigo::getInformacionDelEnemigo() {
+	return (to_string(this->posX) + "|" + to_string(this->posY) + "|" + this->spriteEnemigo + "|" + to_string(this->id) + "#");
 }
 
 /*void Enemigo::daniarseCon(Proyectil* proyectil) {

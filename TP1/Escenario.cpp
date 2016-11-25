@@ -7,25 +7,43 @@
 
 #include "Escenario.h"
 #include <iostream>
+#include <cstdlib>
+
 using namespace std;
 
 Escenario::Escenario() {
-	// TODO Auto-generated constructor stub
-
+	pair<int,int> lala(rand() % 800, 0);
+	for(int i=0; i < 1; i++) {
+		this->enemigosPorNivel.push_back(lala);
+	}
 }
 
 Escenario::~Escenario() {
 	// TODO Auto-generated destructor stub
 }
 
-void Escenario::agregarProyectil(Proyectil* proyectil, string nombreJugador, int idProyectil)
-{
+void Escenario::agregarProyectil(Proyectil* proyectil, string nombreJugador, int idProyectil) {
+	proyectil->id = idProyectil;
 	this->proyectiles.push_back(proyectil);
 	//proyectil->fueDisparadoPor(nombreJugador);
-	proyectil->id = idProyectil;
 }
 
 bool Escenario::verificarColision(SDL_Rect camara, Proyectil* proyectil)
 {
 	return(proyectil->posicion.first > camara.x + camara.w || proyectil->posicion.first < camara.x);
+}
+
+void Escenario::despertarEnemigos(SDL_Rect* camara) {
+	if (this->enemigosPorNivel.at(0).first < camara->x + camara->w && this->enemigosPorNivel.at(0).first > camara->x) {
+		Enemigo* enemigo = new Enemigo(this->enemigosPorNivel.at(0).first,0,0);
+		this->enemigosActivos.push_back(enemigo);
+	}
+}
+
+Enemigo* Escenario::getEnemigoActivo() {
+	if (!this->enemigosActivos.empty()) {
+		return this->enemigosActivos.at(0);
+	} else {
+		return NULL;
+	}
 }

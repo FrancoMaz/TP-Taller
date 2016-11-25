@@ -16,13 +16,16 @@ using namespace std;
 
 class Escenario {
 private:
-	vector<Enemigo*> enemigos;
+	vector<pair<int, int>> enemigosPorNivel;
+	vector<Enemigo*> enemigosActivos;
 	vector<Proyectil*> proyectiles;
 public:
 	Escenario();
 	virtual ~Escenario();
 	void agregarProyectil(Proyectil* proyectil, string nombre, int idProyectil);
 	bool verificarColision(SDL_Rect camara, Proyectil* proyectil);
+	void despertarEnemigos(SDL_Rect* camara);
+	Enemigo* getEnemigoActivo();
 };
 
 #endif /* ESCENARIO_H_ */

@@ -14,12 +14,17 @@
 class Enemigo: public Personaje {
 private:
 	int id;
+	int posX;
+	int posY;
+	string spriteEnemigo;
+
 public:
-	Enemigo();
+	Enemigo(int posX, int posY, int id);
 	virtual ~Enemigo();
 	void disparar();
 	//void daniarseCon(Proyectil* proyectil);
 	void setId(int id);
+	string getInformacionDelEnemigo();
 };
 
 #endif /* ENEMIGO_H_ */
