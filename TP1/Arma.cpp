@@ -24,7 +24,7 @@ bool Arma::sinMuniciones()
 
 }
 
-Proyectil* Arma::getProyectil()
+void Arma::sumarMuniciones()
 {
 
 }

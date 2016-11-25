@@ -16,7 +16,7 @@ public:
 	virtual ~HeavyMachineGun();
 	Proyectil* disparar(SDL_Rect boxCollider, string condicion);
 	bool sinMuniciones();
-	Proyectil* getProyectil();
+	void sumarMuniciones();
 };
 
 #endif /* HEAVYMACHINEGUN_H_ */

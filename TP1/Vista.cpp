@@ -462,13 +462,17 @@ void Vista::actualizarPantalla(int anchoVentana, int anchoCapaPrincipal){
 	}
 	TexturaSDL* texturaJugadorX;
 	TexturaSDL* texturaBala;
+	TexturaSDL* texturaItem;
+
+	for (int i = 0; i < vistaItems.size(); i++){
+			Item* vistaItem = vistaItems.at(i);
+			texturaItem = vistaItem->textura;
+			texturaItem->aplicarPosicion(vistaItem->boxCollider.x - camara.x, vistaItem->boxCollider.y - camara.y,0,SDL_FLIP_NONE);
+		}
+
 	for (int i = 0; i < vistaBalas.size(); i++){
 		VistaBala* vistaBala = vistaBalas.at(i);
 		texturaBala = vistaBala->textura;
-		/*if ((vistaBala->x > camara.x + camara.w) || vistaBala->x < camara.x)
-		{
-			vistaBalas.erase(vistaBalas.begin()+i);
-		}*/
 		texturaBala->aplicarPosicion(vistaBala->x - camara.x, vistaBala->y - camara.y,0,SDL_FLIP_NONE);
 	}
 
@@ -511,6 +515,27 @@ void Vista::actualizarProyectil(string nuevaBala, int x, int y, string sprite, i
 						break;
 					}
 				}
+			}
+		}
+	}
+}
+
+void Vista::agregarVistaItem(string borrarItem, string sprite, int x, int y)
+{
+	if (borrarItem == "0")
+	{
+		Item* vistaItem = new Item(x,y,(ventana->crearTextura("Recursos/" + sprite + ".png", 0)));
+		vistaItems.push_back(vistaItem);
+	}
+	else if (borrarItem == "1")
+	{
+		for (int i = 0; i < vistaItems.size(); i++)
+		{
+			Item* vistaItem = vistaItems.at(i);
+			if (vistaItem->boxCollider.x == x)
+			{
+				vistaItems.erase(vistaItems.begin() + i);
+				break;
 			}
 		}
 	}

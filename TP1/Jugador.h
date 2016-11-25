@@ -53,7 +53,6 @@ private:
 	pthread_t thrMov;
 	SDL_Keycode ultimaTeclaPresionada = SDLK_RIGHT;
 	vector<pair<int,int>> vectorPlataforma;
-	SDL_Rect boxCollider;
 	int armaActual;
 public:
 	Jugador(string nombre, string equipo, int posicionX, vector<pair<int,int>>);
@@ -88,6 +87,8 @@ public:
 	Proyectil* getProyectilDisparado();
 	string condicionSprite;
 	bool armasVacias;
+	SDL_Rect boxCollider;
+	void obtenerMuniciones(string arma);
 	//void daniarseCon(Proyectil* proyectil);
 };
 #endif /* JUGADOR_H_ */

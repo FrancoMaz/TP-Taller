@@ -9,7 +9,9 @@
 #define ESCENARIO_H_
 #include "Enemigo.h"
 #include "Proyectil.h"
+#include "Item.h"
 #include "string.h"
+#include "Jugador.h"
 #include <SDL2/SDL.h>
 
 using namespace std;
@@ -23,6 +25,9 @@ public:
 	virtual ~Escenario();
 	void agregarProyectil(Proyectil* proyectil, string nombre, int idProyectil);
 	bool verificarColision(SDL_Rect camara, Proyectil* proyectil);
+	bool verificarColisionConItem(Jugador* jugador);
+	bool colisionaronObjetos(SDL_Rect boxCollider1, SDL_Rect boxCollider2);
+	vector<Item*> itemArmas;
 };
 
 #endif /* ESCENARIO_H_ */

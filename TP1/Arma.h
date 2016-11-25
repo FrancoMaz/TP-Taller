@@ -17,6 +17,7 @@ class Arma {
 protected:
 	bool disparoDiagonal;
 	int municiones;
+	int municionesPorRepuesto;
 	Proyectil* proyectil;
 
 public:
@@ -24,8 +25,9 @@ public:
 	virtual ~Arma();
 	virtual Proyectil* disparar(SDL_Rect boxCollider, string condicion);
 	virtual bool sinMuniciones();
-	Proyectil* getProyectil();
+	virtual void sumarMuniciones();
 	string nombre;
+	string nombreArma;
 };
 
 

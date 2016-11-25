@@ -11,6 +11,8 @@ RocketLauncher::RocketLauncher() {
 	this->disparoDiagonal = false;
 	this->municiones = 30;
 	this->nombre = "_bazooka_";
+	this->municionesPorRepuesto = 15;
+	this->nombreArma = "RocketLauncher";
 }
 
 RocketLauncher::~RocketLauncher() {
@@ -18,7 +20,7 @@ RocketLauncher::~RocketLauncher() {
 }
 
 Proyectil* RocketLauncher::disparar(SDL_Rect boxCollider, string condicion) {
-	this->proyectil = new Proyectil(80,40,"Rocket",boxCollider,condicion);
+	this->proyectil = new Proyectil(80,40,this->nombreArma,boxCollider,condicion);
 	this->municiones -= 1;
 	return this->proyectil;
 }
@@ -28,7 +30,7 @@ bool RocketLauncher::sinMuniciones()
 	return (this->municiones == 0);
 }
 
-Proyectil* RocketLauncher::getProyectil()
+void RocketLauncher::sumarMuniciones()
 {
-	return this->proyectil;
+	this->municiones += this->municionesPorRepuesto;
 }

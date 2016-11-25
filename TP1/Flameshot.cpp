@@ -11,6 +11,8 @@ Flameshot::Flameshot() {
 	this->disparoDiagonal = false;
 	this->municiones = 30;
 	this->nombre = "_lanzallamas_";
+	this->municionesPorRepuesto = 15;
+	this->nombreArma = "FlameShot";
 }
 
 Flameshot::~Flameshot() {
@@ -18,7 +20,7 @@ Flameshot::~Flameshot() {
 }
 
 Proyectil* Flameshot::disparar(SDL_Rect boxCollider, string condicion) {
-	this->proyectil = new Proyectil(35,40,"Lanzallamas",boxCollider,condicion);
+	this->proyectil = new Proyectil(35,40,this->nombreArma,boxCollider,condicion);
 	this->municiones -= 1;
 	return this->proyectil;
 }
@@ -28,7 +30,7 @@ bool Flameshot::sinMuniciones()
 	return (this->municiones == 0);
 }
 
-Proyectil* Flameshot::getProyectil()
+void Flameshot::sumarMuniciones()
 {
-	return this->proyectil;
+	this->municiones += this->municionesPorRepuesto;
 }

@@ -11,6 +11,8 @@ HeavyMachineGun::HeavyMachineGun() {
 	this->disparoDiagonal = true;
 	this->municiones = 200;
 	this->nombre = "_";
+	this->municionesPorRepuesto = 150;
+	this->nombreArma = "HeavyMachineGun";
 }
 
 HeavyMachineGun::~HeavyMachineGun() {
@@ -18,7 +20,7 @@ HeavyMachineGun::~HeavyMachineGun() {
 }
 
 Proyectil* HeavyMachineGun::disparar(SDL_Rect boxCollider, string condicion) {
-	this->proyectil = new Proyectil(20,15,"Bala_normal",boxCollider, condicion);
+	this->proyectil = new Proyectil(20,15,this->nombreArma,boxCollider, condicion);
 	this->municiones -= 1;
 	return this->proyectil;
 }
@@ -28,7 +30,7 @@ bool HeavyMachineGun::sinMuniciones()
 	return (this->municiones == 0);
 }
 
-Proyectil* HeavyMachineGun::getProyectil()
+void HeavyMachineGun::sumarMuniciones()
 {
-	return this->proyectil;
+	this->municiones += this->municionesPorRepuesto;
 }

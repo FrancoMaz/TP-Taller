@@ -112,6 +112,7 @@ public:
 	void cargarImagenPorDefecto(ImagenDto* imagen);
 	void cargarImagenPorDefecto(SpriteDto* imagen);
 	SpriteDto* buscarSprite(string ID);
+	void cargarObjetosEscenario();
 };
 
 #endif /* TP1_CLIENTE_H_ */

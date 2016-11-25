@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Configuracion>
+	<Plataformas>
+		<Altura>134</Altura>
+		<Plataforma1>
+			<Comienzo>402</Comienzo>
+			<Final>761</Final>
+		</Plataforma1>
+		<Plataforma2>
+			<Comienzo>1547</Comienzo>
+			<Final>1786</Final>
+		</Plataforma2>
+		<Plataforma3>
+			<Comienzo>2087</Comienzo>
+			<Final>2326</Final>
+		</Plataforma3>
+		<Plataforma4>
+			<Comienzo>2453</Comienzo>
+			<Final>2573</Final>
+		</Plataforma4>
+		<Plataforma5>
+			<Comienzo>2708</Comienzo>
+			<Final>2828</Final>
+		</Plataforma5>
+		<Plataforma6>
+			<Comienzo>3369</Comienzo>
+			<Final>3848</Final>
+		</Plataforma6>
+		<Plataforma7>
+			<Comienzo>4590</Comienzo>
+			<Final>5308</Final>
+		</Plataforma7>
+		<Plataforma8>
+			<Comienzo>5795</Comienzo>
+			<Final>6154</Final>
+		</Plataforma8>
+		<Plataforma9>
+			<Comienzo>6878</Comienzo>
+			<Final>7117</Final>
+		</Plataforma9>
+	</Plataformas>
+	
+	<ItemArmas>
+		<Item1>
+			<Arma>HeavyMachineGun</Arma>
+			<PosicionX>320</PosicionX>
+			<PosicionY>476</PosicionY>
+		</Item1>
+		<Item2>
+			<Arma>RocketLauncher</Arma>
+			<PosicionX>508</PosicionX>
+			<PosicionY>310</PosicionY>
+		</Item2>
+		<Item3>
+			<Arma>FlameShot</Arma>
+			<PosicionX>740</PosicionX>
+			<PosicionY>476</PosicionY>
+		</Item3>
+	</ItemArmas>
+</Configuracion>

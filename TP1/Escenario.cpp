@@ -29,3 +29,31 @@ bool Escenario::verificarColision(SDL_Rect camara, Proyectil* proyectil)
 {
 	return(proyectil->posicion.first > camara.x + camara.w || proyectil->posicion.first < camara.x);
 }
+
+bool Escenario::verificarColisionConItem(Jugador* jugador)
+{
+	for (int i = 0; i < itemArmas.size(); i++)
+	{
+		if (this->colisionaronObjetos(jugador->boxCollider, itemArmas.at(i)->boxCollider))
+		{
+			jugador->obtenerMuniciones(itemArmas.at(i)->arma);
+			itemArmas.at(i)->fueObtenido = true;
+			return true;
+		}
+	}
+	return false;
+}
+
+bool Escenario::colisionaronObjetos(SDL_Rect boxCollider1, SDL_Rect boxCollider2)
+{
+	bool colision = true;
+	if ((boxCollider1.x + boxCollider1.w) < boxCollider2.x || boxCollider1.x > (boxCollider2.x + boxCollider2.w))
+	{
+		colision = false;
+	}
+	else if ((boxCollider1.y + boxCollider1.h) < boxCollider2.y || boxCollider1.y > (boxCollider2.y + boxCollider2.h))
+	{
+		colision = false;
+	}
+	return colision;
+}

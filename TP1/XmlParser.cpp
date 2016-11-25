@@ -128,7 +128,7 @@ vector<SetDeSpritesDto*> XmlParser::getSprites() {
 	if (this->sprites.empty()) {
 		for (pugi::xml_node set = this->rootNode.child("Sprites").child("SetRojo"); set; set = set.next_sibling()) {
 			vector<SpriteDto*> sprites;
-			for (pugi::xml_node sprite = set.child("SpriteSalto"); sprite; sprite = sprite.next_sibling()) {
+			for (pugi::xml_node sprite = set.child("Sprite1"); sprite; sprite = sprite.next_sibling()) {
 				SpriteDto* spriteDto = new SpriteDto(string(sprite.child_value("Id")),string(sprite.child_value("CantFotogramas")), string(sprite.child_value("Ancho")), string(sprite.child_value("Alto")), string(sprite.child_value("Imagen")), string(sprite.child_value("z-index")));
 				sprites.push_back(spriteDto);
 			}
@@ -139,14 +139,16 @@ vector<SetDeSpritesDto*> XmlParser::getSprites() {
 
 	return this->sprites;
 }
-void XmlParser::mostrarSprites(SpriteDto* sprite){
 
-	cout<<"Id: "<<sprite->getID()<<endl;
-	cout<<"cantFotogramas: "<<sprite->getCantidadDeFotogramas()<<endl;
-	cout<<"Ancho: "<<sprite->getAncho()<<endl;
-	cout<<"Alto: "<<sprite->getAlto()<<endl;
-	cout<<"Imagen: "<<sprite->getPath()<<endl;
-	cout<<"Zindex: "<<sprite->getZIndex()<<endl;
+vector<Item*> XmlParser::getItemArmas()
+{
+	if (this->itemArmas.empty()) {
+		for (pugi::xml_node image = this->rootNode.child("ItemArmas").first_child(); image; image = image.next_sibling()) {
+			Item* item = new Item(string(image.child_value("Arma")), string(image.child_value("PosicionX")), string(image.child_value("PosicionY")));
+			this->itemArmas.push_back(item);
+		}
+		return this->itemArmas;
+	}
 }
 
 XmlParser::~XmlParser() {

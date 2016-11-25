@@ -138,7 +138,7 @@ void procesarUltimosMensajes(string mensajes, Cliente* cliente, UpdateJugador* u
 				}
 				vista->actualizarCamara(x,y,abscisasCapas,stringToInt(handshakeDeserializado->getAncho()));
 			}
-			else
+			else if (texto == "2")
 			{
 				s.erase(0, pos + delimitador.length());
 				pos = s.find(delimitador);
@@ -172,6 +172,26 @@ void procesarUltimosMensajes(string mensajes, Cliente* cliente, UpdateJugador* u
 					}
 				}
 				vista->actualizarProyectil(nuevaBala,xBala,yBala,spriteBala,idBala,cantFotogramas);
+			}
+			else if (texto == "3")
+			{
+				s.erase(0, pos + delimitador.length());
+				pos = s.find(delimitador);
+				texto = s.substr(0,pos);
+				string borrarItem = texto;
+				s.erase(0,pos+delimitador.length());
+				pos = s.find(delimitador);
+				texto = s.substr(0,pos);
+				string spriteItem = texto;
+				s.erase(0,pos+delimitador.length());
+				pos = s.find(delimitador);
+				texto = s.substr(0,pos);
+				int xItem = stringToInt(texto);
+				s.erase(0,pos+delimitador.length());
+				pos = s.find(delimitadorFinal);
+				texto = s.substr(0,pos);
+				int yItem = stringToInt(texto);
+				vista->agregarVistaItem(borrarItem,spriteItem,xItem,yItem);
 			}
 			vista->actualizarPosJugador(update,stringToInt(handshakeDeserializado->getAncho()),stringToInt(handshakeDeserializado->getImagenes().at(0)->getAncho()));
 			s.erase(0, pos + delimitador.length());
@@ -316,7 +336,6 @@ void* cicloConexion(void* arg) {
 			inicio = cliente->checkearInicioJuego(vista);
 			vista->cargarPantallaEsperandoJugadores();
 		}while (!inicio && !vista->ventanaCerrada());
-
 		if (!vista->ventanaCerrada()){
 			handshakeDeserializado = cliente->getHandshake();
 			pthread_create(&threadEnviarEventos, NULL, &enviarEventos, cliente);

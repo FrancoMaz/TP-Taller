@@ -16,7 +16,7 @@ public:
 	virtual ~RocketLauncher();
 	Proyectil* disparar(SDL_Rect boxCollider, string condicion);
 	bool sinMuniciones();
-	Proyectil* getProyectil();
+	void sumarMuniciones();
 };
 
 #endif /* ROCKETLAUNCHER_H_ */

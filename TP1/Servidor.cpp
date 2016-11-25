@@ -51,16 +51,17 @@ Servidor::Servidor(char* nombreArchivoDeUsuarios, int puerto, Logger* logger) {
 		abscisas.second = 0;
 		abscisasCapas.push_back(abscisas);
 	}
-	this->inicializarVectorPlataforma();
 	this->escenario = new Escenario();
+	this->inicializarDatosNivel();
 }
 
 Servidor::~Servidor() {
 }
 
 
-void Servidor::inicializarVectorPlataforma()
+void Servidor::inicializarDatosNivel()
 {
+	XmlParser* parserNivel = new XmlParser("Recursos/nivel1.xml");
 	this->vectorPlataforma.push_back(make_pair(402,761));
 	this->vectorPlataforma.push_back(make_pair(1547,1786));
 	this->vectorPlataforma.push_back(make_pair(2087,2326));
@@ -70,6 +71,7 @@ void Servidor::inicializarVectorPlataforma()
 	this->vectorPlataforma.push_back(make_pair(4590,5308));
 	this->vectorPlataforma.push_back(make_pair(5795,6154));
 	this->vectorPlataforma.push_back(make_pair(6878,7117));
+	this->escenario->itemArmas = parserNivel->getItemArmas();
 }
 void Servidor::guardarDatosDeConfiguracion() {
 	string path;

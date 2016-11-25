@@ -388,7 +388,15 @@ bool Jugador::estaDisparando(){
 	return this->disparar;
 }
 
-Proyectil* Jugador::getProyectilDisparado()
+void Jugador::obtenerMuniciones(string arma)
 {
-	return this->armas.at(this->armaActual)->getProyectil();
+	for (int i = 0; i < this->armas.size(); i++)
+	{
+		if (this->armas.at(i)->nombreArma == arma)
+		{
+			this->armas.at(i)->sumarMuniciones();
+			this->armaActual = i;
+			break;
+		}
+	}
 }

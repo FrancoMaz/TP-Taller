@@ -17,6 +17,8 @@
 #include "SetDeSpritesDto.h"
 #include <vector>
 #include <algorithm>
+#include "Item.h"
+#include "Plataforma.h"
 
 using namespace std;
 
@@ -30,6 +32,8 @@ private:
 	pair<const char*, const char*> tamanioVentana;
 	vector<ImagenDto*> escenario;
 	vector<SetDeSpritesDto*> sprites;
+	vector<Plataforma*> plataformas;
+	vector<Item*> itemArmas;
 
 public:
 	XmlParser(string path);
@@ -43,6 +47,8 @@ public:
 	string serializarSetDeSprites();
 	void mostrarSprites(SpriteDto* sprite);
 	virtual ~XmlParser();
+	vector<Plataforma*> getPlataformas();
+	vector<Item*> getItemArmas();
 };
 
 #endif /* XMLPARSER_H_ */

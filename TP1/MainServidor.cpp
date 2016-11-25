@@ -166,6 +166,39 @@ void* disparoProyectil(void* arg)
 	pthread_exit(NULL);
 }
 
+void* enviarObjetosEnCamara(void* arg)
+{
+	ParametrosMovimiento* parametros = (ParametrosMovimiento*)arg;
+	Servidor* servidor = parametros->servidor;
+	Jugador* jugador = parametros->jugador;
+	Mensaje* mensajeObjetos;
+	string mensajeObjetosString = "";
+	while (jugador->getConectado()){
+		usleep(500);
+		for (int i = 0; i < servidor->escenario->itemArmas.size(); i++)
+		{
+			SDL_Rect box = servidor->escenario->itemArmas.at(i)->boxCollider;
+			bool visto = servidor->escenario->itemArmas.at(i)->visto;
+			if (box.x <= (servidor->camara.x + servidor->camara.w) && !visto)
+			{
+				mensajeObjetosString = "3|0|";
+				servidor->escenario->itemArmas.at(i)->visto = true;
+				mensajeObjetosString += servidor->escenario->itemArmas.at(i)->getStringItem();
+				mensajeObjetos = new Mensaje(jugador->getNombre(),"Todos",mensajeObjetosString);
+				servidor->encolarMensajeProcesadoParaCadaCliente(*mensajeObjetos,mensajeObjetosString);
+			}
+			if (servidor->escenario->itemArmas.at(i)->fueObtenido)
+			{
+				mensajeObjetosString = "3|1|";
+				mensajeObjetosString += servidor->escenario->itemArmas.at(i)->getStringItem();
+				mensajeObjetos = new Mensaje(jugador->getNombre(),"Todos",mensajeObjetosString);
+				servidor->encolarMensajeProcesadoParaCadaCliente(*mensajeObjetos,mensajeObjetosString);
+				servidor->escenario->itemArmas.erase(servidor->escenario->itemArmas.begin()+i);
+			}
+		}
+	}
+}
+
 void* actualizarPosicionesJugador(void* arg)
 {
 	ParametrosMovimiento* parametros = (ParametrosMovimiento*)arg;
@@ -174,6 +207,9 @@ void* actualizarPosicionesJugador(void* arg)
 	Mensaje* mensajeCamara;
 	string mensajeCamaraString;
 	string mensajeJugadorPosActualizada = "";
+	pthread_t threadObjetos;
+	pthread_create(&threadObjetos, NULL, &enviarObjetosEnCamara, parametros);
+	pthread_detach(threadObjetos);
 	while (jugador->getConectado()){
 		pthread_mutex_lock(&servidor->mutexVectorJugadores);
 		jugador->mover(servidor->camara);
@@ -232,6 +268,7 @@ void* actualizarPosicionesJugador(void* arg)
 		pthread_mutex_unlock(&servidor->mutexVectorJugadores);
 		mensajeAProcesar->setDestinatario("Todos");
 		servidor->encolarMensajeProcesadoParaCadaCliente(*mensajeAProcesar,mensajeJugadorPosActualizada);
+		servidor->escenario->verificarColisionConItem(jugador);
 		if (necesitaCambiarCamara)
 		{
 			servidor->encolarMensajeProcesadoParaCadaCliente(*mensajeCamara,mensajeCamaraString);
@@ -239,7 +276,6 @@ void* actualizarPosicionesJugador(void* arg)
 		usleep(50000);
 	}
 }
-
 
 void iniciarThreadMovimientoJugador(Servidor* servidor, string nombre)
 {
@@ -341,7 +377,6 @@ void* cicloEscuchaCliente(void* arg) {
 							comenzo = "0|"  + jugadoresInicio + "@";
 							servidor->iniciarCamara();
 							iniciarThreadMovimientoJugador(servidor,nombre);
-							//servidor->iniciarThreadMovimientoJugador(nombre);
 						}
 						else{
 							comenzo = "1@";

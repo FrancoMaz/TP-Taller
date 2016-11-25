@@ -138,7 +138,7 @@ public:
 	vector<pair<int,int>> abscisasCapas;
 	string serializarCapas();
 	void iniciarThreadMovimientoJugador(string nombre);
-	void inicializarVectorPlataforma();
+	void inicializarDatosNivel();
 	Escenario* escenario;
 };
 
