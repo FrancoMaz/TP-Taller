@@ -9,6 +9,7 @@
 
 RocketLauncher::RocketLauncher() {
 	this->disparoDiagonal = false;
+	this->cortoAlcance = false;
 	this->municiones = 30;
 	this->nombre = "_bazooka_";
 	this->municionesPorRepuesto = 15;

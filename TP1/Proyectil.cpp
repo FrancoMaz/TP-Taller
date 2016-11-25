@@ -59,7 +59,7 @@ void Proyectil::mover()
 
 string Proyectil::getStringProyectil()
 {
-	return (to_string(this->posicion.first) + "|" + to_string(this->posicion.second) + "|" + this->spriteBala + "|" + to_string(this->id) + "#");
+	return (to_string(this->posicion.first) + "|" + to_string(this->posicion.second) + "|" + this->spriteBala + "|" + to_string(this->id) + "|" + this->sentido + "#");
 }
 
 int Proyectil::getDanio() {

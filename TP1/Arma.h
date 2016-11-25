@@ -15,7 +15,6 @@ using namespace std;
 class Arma {
 
 protected:
-	bool disparoDiagonal;
 	int municiones;
 	int municionesPorRepuesto;
 	Proyectil* proyectil;
@@ -28,6 +27,8 @@ public:
 	virtual void sumarMuniciones();
 	string nombre;
 	string nombreArma;
+	bool disparoDiagonal;
+	bool cortoAlcance;
 };
 
 

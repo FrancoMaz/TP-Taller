@@ -473,7 +473,7 @@ void Vista::actualizarPantalla(int anchoVentana, int anchoCapaPrincipal){
 	for (int i = 0; i < vistaBalas.size(); i++){
 		VistaBala* vistaBala = vistaBalas.at(i);
 		texturaBala = vistaBala->textura;
-		texturaBala->aplicarPosicion(vistaBala->x - camara.x, vistaBala->y - camara.y,0,SDL_FLIP_NONE);
+		texturaBala->aplicarPosicion(vistaBala->x - camara.x, vistaBala->y - camara.y,0,vistaBala->flip);
 	}
 
 	for (int i = 0; i < vistaJugadores.size(); i++){
@@ -493,9 +493,9 @@ void Vista::actualizarPantalla(int anchoVentana, int anchoCapaPrincipal){
 	this->ventana->actualizar();
 }
 
-void Vista::actualizarProyectil(string nuevaBala, int x, int y, string sprite, int id, int cantFotogramas) {
+void Vista::actualizarProyectil(string nuevaBala, int x, int y, string sprite, int id, int cantFotogramas, string sentido) {
 	if (nuevaBala == "0") {
-		VistaBala* vistaBala = new VistaBala(x,y,(ventana->crearTextura("Recursos/" + sprite + ".png", cantFotogramas)),id);
+		VistaBala* vistaBala = new VistaBala(x,y,(ventana->crearTextura("Recursos/" + sprite + ".png", cantFotogramas)),id,sentido);
 		vistaBalas.push_back(vistaBala);
 	} else {
 		if (nuevaBala == "1") {
