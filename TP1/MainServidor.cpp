@@ -167,76 +167,90 @@ void* disparoProyectil(void* arg)
 	pthread_exit(NULL);
 }
 
+//funciones auxiliares para actualizar jugadores proyectiles y enemigos
+
+void actualizarPosicionProyectil( ParametrosMovimiento* paramDisparo ) {
+
+	if (paramDisparo->jugador->estaDisparando()) {
+		Proyectil* proyectil = paramDisparo->jugador->dispararProyectil();
+		if (proyectil != NULL) {
+			paramDisparo->proyectil = proyectil;
+			pthread_t threadDisparo = proyectil->getThreadDisparo();
+			pthread_create(&threadDisparo, NULL, &disparoProyectil, paramDisparo);
+			pthread_detach(threadDisparo);
+			proyectil->setThreadDisparo(threadDisparo);
+		}
+		usleep(50000);
+	}
+}
+
+void actualizarPosicionCamara( Servidor* servidor, Jugador* jugador ) {
+
+	Mensaje* mensajeCamara;
+	string mensajeCamaraString;
+	pair<int,int> posicionesExtremos = servidor->obtenerPosicionesExtremos();
+	int anchoSprite = servidor->getAnchoSprite(jugador->getSpriteAEjecutar());
+	bool necesitaCambiarCamara = jugador->chequearCambiarCamara(servidor->camara, atoi(servidor->handshake->getAncho().c_str()), posicionesExtremos, anchoSprite);
+	if (necesitaCambiarCamara) {
+		if (servidor->camara.x > atoi(servidor->handshake->getImagenes().at(0)->getAncho().c_str())){
+			servidor->camara.x = 0;
+			for (int i = 0; i < servidor->abscisasCapas.size(); i++)
+			{
+				servidor->abscisasCapas.at(i).first = 0;
+			}
+			for (int i = 0; i < servidor->jugadores->size(); i++)
+			{
+				servidor->jugadores->at(i)->resetearPosicion(atoi(servidor->handshake->getImagenes().at(0)->getAncho().c_str()));
+			}
+		} else {
+			servidor->camara.x += jugador->getVelocidadX();
+			for (int i = 0; i < servidor->abscisasCapas.size(); i++) {
+				if (i == 0) {
+					servidor->abscisasCapas.at(i).first = servidor->camara.x;
+				} else {
+					servidor->abscisasCapas.at(i).second += jugador->getVelocidadX();
+					servidor->abscisasCapas.at(i).first = abs((servidor->abscisasCapas.at(i).second)*(atoi(servidor->handshake->getImagenes().at(i)->getAncho().c_str()) - atoi(servidor->handshake->getAncho().c_str()))/(atoi(servidor->handshake->getImagenes().at(0)->getAncho().c_str()) - atoi(servidor->handshake->getAncho().c_str())));
+					if (servidor->abscisasCapas.at(i).first > atoi(servidor->handshake->getImagenes().at(i)->getAncho().c_str()))
+					{
+						servidor->abscisasCapas.at(i).first = 0;
+						servidor->abscisasCapas.at(i).second = 0;
+					}
+				}
+			}
+		}
+		mensajeCamaraString = "1|" + to_string(servidor->camara.x) + "|" + to_string(servidor->camara.y) + "|" + servidor->serializarCapas() + "#";
+		mensajeCamara = new Mensaje(jugador->getNombre(),"Todos",mensajeCamaraString);
+		servidor->encolarMensajeProcesadoParaCadaCliente(*mensajeCamara,mensajeCamaraString);
+		mensajeCamara->~Mensaje();
+	}
+
+}
+
 void* actualizarPosicionesJugador(void* arg)
 {
 	ParametrosMovimiento* parametros = (ParametrosMovimiento*)arg;
 	Servidor* servidor = parametros->servidor;
 	Jugador* jugador = parametros->jugador;
-	Mensaje* mensajeCamara;
-	string mensajeCamaraString;
+	//Mensaje* mensajeCamara;
+	//string mensajeCamaraString;
 	string mensajeJugadorPosActualizada = "";
 	while (jugador->getConectado()){
 		pthread_mutex_lock(&servidor->mutexVectorJugadores);
 		jugador->mover(servidor->camara);
-		if (jugador->estaDisparando()) {
-			Proyectil* proyectil = jugador->dispararProyectil();
-			if (proyectil != NULL) {
-				parametros->proyectil = proyectil;
-				pthread_t threadDisparo = proyectil->getThreadDisparo();
-				pthread_create(&threadDisparo, NULL, &disparoProyectil, parametros);
-				pthread_detach(threadDisparo);
-				proyectil->setThreadDisparo(threadDisparo);
-			}
-			usleep(50000);
-		}
-		pair<int,int> posicionesExtremos = servidor->obtenerPosicionesExtremos();
-		int anchoSprite = servidor->getAnchoSprite(jugador->getSpriteAEjecutar());
-		bool necesitaCambiarCamara = jugador->chequearCambiarCamara(servidor->camara, atoi(servidor->handshake->getAncho().c_str()), posicionesExtremos, anchoSprite);
-		if (necesitaCambiarCamara)
-		{
-			if (servidor->camara.x > atoi(servidor->handshake->getImagenes().at(0)->getAncho().c_str())){
-				servidor->camara.x = 0;
-				for (int i = 0; i < servidor->abscisasCapas.size(); i++)
-				{
-					servidor->abscisasCapas.at(i).first = 0;
-				}
-				for (int i = 0; i < servidor->jugadores->size(); i++)
-				{
-					servidor->jugadores->at(i)->resetearPosicion(atoi(servidor->handshake->getImagenes().at(0)->getAncho().c_str()));
-				}
-			} else
-				{
-					servidor->camara.x += jugador->getVelocidadX();
-					for (int i = 0; i < servidor->abscisasCapas.size(); i++)
-					{
-						if (i == 0)
-						{
-							servidor->abscisasCapas.at(i).first = servidor->camara.x;
-						}
-						else
-						{	servidor->abscisasCapas.at(i).second += jugador->getVelocidadX();
-							servidor->abscisasCapas.at(i).first = abs((servidor->abscisasCapas.at(i).second)*(atoi(servidor->handshake->getImagenes().at(i)->getAncho().c_str()) - atoi(servidor->handshake->getAncho().c_str()))/(atoi(servidor->handshake->getImagenes().at(0)->getAncho().c_str()) - atoi(servidor->handshake->getAncho().c_str())));
-							if (servidor->abscisasCapas.at(i).first > atoi(servidor->handshake->getImagenes().at(i)->getAncho().c_str()))
-							{
-								servidor->abscisasCapas.at(i).first = 0;
-								servidor->abscisasCapas.at(i).second = 0;
-							}
-						}
-					}
-				}
-			mensajeCamaraString = "1|" + to_string(servidor->camara.x) + "|" + to_string(servidor->camara.y) + "|" + servidor->serializarCapas() + "#";
-			mensajeCamara = new Mensaje(jugador->getNombre(),"Todos",mensajeCamaraString);
-		}
+		//se controla la vida de los proyectiles
+		actualizarPosicionProyectil(parametros);
+
+		//Aca se encolan mensajes todo el tiempo del estado del jugador si esta corriendo quieto o lo que sea
 		mensajeJugadorPosActualizada = jugador->getStringJugador();
 		Mensaje* mensajeAProcesar = new Mensaje();
 		mensajeAProcesar->setRemitente(jugador->getNombre());
 		pthread_mutex_unlock(&servidor->mutexVectorJugadores);
 		mensajeAProcesar->setDestinatario("Todos");
 		servidor->encolarMensajeProcesadoParaCadaCliente(*mensajeAProcesar,mensajeJugadorPosActualizada);
-		if (necesitaCambiarCamara)
-		{
-			servidor->encolarMensajeProcesadoParaCadaCliente(*mensajeCamara,mensajeCamaraString);
-		}
+		mensajeAProcesar->~Mensaje();
+		//----------------------------------------------------------------------------------------------------
+
+		actualizarPosicionCamara(servidor,jugador);
 		usleep(50000);
 	}
 }
@@ -390,6 +404,7 @@ void* cicloEscuchaCliente(void* arg) {
 
 void* controlDeEnemigos(void* arg) {
 	Servidor* servidor = (Servidor*) arg;
+	usleep(2000000);
 	while (servidor->escuchando) {
 		servidor->escenario->despertarEnemigos(&servidor->camara);
 		Enemigo* enemigo = servidor->escenario->getEnemigoActivo();
@@ -399,6 +414,7 @@ void* controlDeEnemigos(void* arg) {
 			Mensaje* mensaje = new Mensaje("jochi","Todos",mensajeEnemigo);
 			servidor->encolarMensajeProcesadoParaCadaCliente(*mensaje,mensajeEnemigo);
 		}
+		usleep(50000);
 	}
 
 }
@@ -408,7 +424,7 @@ void* cicloEscucharConexionesNuevasThreadProceso(void* arg) {
 	pthread_t threadProceso;
 	pthread_t threadEnemigosPetutos;
 	int ok = pthread_create(&threadProceso, NULL, &cicloProcesarMensajes, (void*) servidor);
-	pthread_create(&threadEnemigosPetutos, NULL, &controlDeEnemigos, (void*) servidor);
+	//pthread_create(&threadEnemigosPetutos, NULL, &controlDeEnemigos, (void*) servidor);
 	servidor->setThreadProceso(threadProceso);
 
 	pthread_t thread_id[MAX_CANT_CLIENTES]; //la cantidad maxima de clientes es 6, voy a crear, como mucho 6 threads para manejar dichas conexiones.
