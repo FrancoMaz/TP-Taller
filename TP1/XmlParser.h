@@ -29,7 +29,7 @@ private:
 	string xmlPath;
 	pugi::xml_node rootNode;
 	const char* cantidadMaximaDeJugadores;
-	pair<const char*, const char*> tamanioVentana;
+	pair<string, string> tamanioVentana;
 	vector<ImagenDto*> escenario;
 	vector<SetDeSpritesDto*> sprites;
 	vector<Plataforma*> plataformas;
@@ -38,17 +38,18 @@ private:
 public:
 	XmlParser(string path);
 	const char * getCantidadMaximaDeJugadores();
-	pair<const char *, const char *> getTamanioVentana();
+	pair<string, string> getTamanioVentana();
 	string serializarVentana();
 	vector<ImagenDto*> getEscenario();
 	string serializarEscenario();
 	vector<SetDeSpritesDto*> getSprites();
-	string serializarSprites(vector<SpriteDto*> sprites);
-	string serializarSetDeSprites();
+	string serializarSprites(vector<SpriteDto*> sprites, vector<string> colores);
+	string serializarSetDeSprites(vector<string> colores);
 	void mostrarSprites(SpriteDto* sprite);
 	virtual ~XmlParser();
 	vector<Plataforma*> getPlataformas();
 	vector<Item*> getItemArmas();
+	bool stringTerminaCon(std::string const &fullString, std::string const &ending);
 };
 
 #endif /* XMLPARSER_H_ */

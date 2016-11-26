@@ -33,13 +33,13 @@ Servidor::Servidor(char* nombreArchivoDeUsuarios, int puerto, Logger* logger) {
 	this->datosUsuarios = new list<Datos>();
 	this->jugadores = new vector<Jugador*>();
 	this->listaMensajesProcesados = new list<MensajesProcesados>();
+	vectorEquipos = {"rojo", "verde", "amarillo", "azul"};
 	stringstream ss;
 	ss << puerto;
 	mensaje = "Se creó correctamente el servidor en el puerto: " + ss.str() + ", ip: 192.168.1.10" + "\n";
 	this->guardarLog(mensaje, DEBUG);
 	this->guardarDatosDeUsuarios();
 	this->guardarDatosDeConfiguracion();
-	vectorEquipos = {"rojo", "verde", "amarillo", "azul"};
 	posicionXInicial = 20;
 	posicionVector = 0;
 	camara.x = 0;
@@ -95,7 +95,7 @@ void Servidor::guardarDatosDeConfiguracion() {
 	}
 	vector<ImagenDto*> escenario = this->parser->getEscenario();
 	vector<SetDeSpritesDto*> setDeSprites = this->parser->getSprites();
-	pair<const char*, const char*> ventana = this->parser->getTamanioVentana();
+	pair<string, string> ventana = this->parser->getTamanioVentana();
 	const char* cantidadMaximaJugadores = this->parser->getCantidadMaximaDeJugadores();
 
 	ImagenDto* imagenTemporal;
@@ -119,7 +119,7 @@ bool Servidor::existeArchivo(string fileName) {
 
 void Servidor::enviarHandshake(int socket, char* cliente){
 	string handshake = this->parser->serializarEscenario();
-	handshake += this->parser->serializarSetDeSprites();
+	handshake += this->parser->serializarSetDeSprites(this->vectorEquipos);
 	handshake += this->parser->serializarVentana();
 	handshake += "#@";
 	int largo = strlen(handshake.c_str());
