@@ -246,7 +246,7 @@ void* recibirPosicionJugadores(void* arg) {
 	LTimer capTimer;
 	usleep(50000);
 	while(!vista->controlador->comprobarCierreVentana()){
-		//usleep(3000);
+		usleep(1000);
 		 //Start cap timer
 		capTimer.start();
 		datosRecibidos = cliente->recibir();
@@ -335,10 +335,10 @@ void* enviarEventos(void* arg) {
 			SDL_FlushEvent(SDL_MOUSEMOTION);
 			SDL_FlushEvent(SDL_KEYDOWN);//si se procesa antes, espero lo que tengo que resta.
 			int frameTicks = capTimer.getTicks();
-			if( frameTicks < 25 )
+			if( frameTicks < SCREEN_TICKS_PER_FRAME )
 			{
 				//Wait remaining time
-				SDL_Delay( 25 - frameTicks );
+				SDL_Delay( SCREEN_TICKS_PER_FRAME - frameTicks );
 			}
 		}
 	}
@@ -386,7 +386,7 @@ void* cicloConexion(void* arg) {
 			vista->cargarEscenario(imagenes, stringToInt(handshakeDeserializado->getAncho()), stringToInt(handshakeDeserializado->getAlto()));
 			while(!vista->controlador->comprobarCierreVentana()){
 				//recibirPosicionJugadores((void*)&cliente);
-				usleep(100);
+				usleep(1000000);
 			}
 		}
 		cliente->desconectar();
