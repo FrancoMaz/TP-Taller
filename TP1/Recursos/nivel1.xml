@@ -2,7 +2,6 @@
 
 <Configuracion>
 	<Plataformas>
-		<Altura>134</Altura>
 		<Plataforma1>
 			<Comienzo>402</Comienzo>
 			<Final>761</Final>
@@ -57,5 +56,10 @@
 			<PosicionX>740</PosicionX>
 			<PosicionY>476</PosicionY>
 		</Item3>
+		<Item4>
+			<Arma>RocketLauncher</Arma>
+			<PosicionX>1600</PosicionX>
+			<PosicionY>310</PosicionY>
+		</Item4>
 	</ItemArmas>
 </Configuracion>

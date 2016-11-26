@@ -62,15 +62,7 @@ Servidor::~Servidor() {
 void Servidor::inicializarDatosNivel()
 {
 	XmlParser* parserNivel = new XmlParser("Recursos/nivel1.xml");
-	this->vectorPlataforma.push_back(make_pair(402,761));
-	this->vectorPlataforma.push_back(make_pair(1547,1786));
-	this->vectorPlataforma.push_back(make_pair(2087,2326));
-	this->vectorPlataforma.push_back(make_pair(2453,2573));
-	this->vectorPlataforma.push_back(make_pair(2708,2828));
-	this->vectorPlataforma.push_back(make_pair(3369,3848));
-	this->vectorPlataforma.push_back(make_pair(4590,5308));
-	this->vectorPlataforma.push_back(make_pair(5795,6154));
-	this->vectorPlataforma.push_back(make_pair(6878,7117));
+	this->vectorPlataforma = parserNivel->getPlataformas();
 	this->escenario->itemArmas = parserNivel->getItemArmas();
 }
 void Servidor::guardarDatosDeConfiguracion() {
