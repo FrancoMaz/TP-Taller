@@ -10,8 +10,6 @@
 ParametrosMovimiento::ParametrosMovimiento(Servidor* servidorActual, Jugador* jugadorActual) {
 	this->servidor = servidorActual;
 	this->jugador = jugadorActual;
-	// TODO Auto-generated constructor stub
-
 }
 
 ParametrosMovimiento::~ParametrosMovimiento() {

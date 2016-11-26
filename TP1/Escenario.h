@@ -22,10 +22,12 @@ private:
 public:
 	Escenario();
 	virtual ~Escenario();
+	int idEnemigo;
 	void agregarProyectil(Proyectil* proyectil, string nombre, int idProyectil);
 	bool verificarColision(SDL_Rect camara, Proyectil* proyectil);
 	void despertarEnemigos(SDL_Rect* camara);
 	Enemigo* getEnemigoActivo();
+	bool enemigoVivo(int idEnemigo);
 };
 
 #endif /* ESCENARIO_H_ */

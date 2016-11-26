@@ -76,6 +76,6 @@ public:
 	Controlador* controlador;
 	bool salto;
 	void actualizarProyectil(string nuevaBala, int x, int y, string sprite, int id, int cantFotogramas);
-	void Vista::actualizarEnemigo(string enemigo, int x, int y, string sprite, int id, int cantFotogramas);
+	void actualizarEnemigo(string enemigo, int x, int y, string sprite, int id, int cantFotogramas);
 
 #endif /* TP2_VISTA_H_ */

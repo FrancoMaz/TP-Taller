@@ -18,6 +18,7 @@ Escenario::Escenario() {
 		cout << "Posicion y del enemigo: " << lala.second << endl;
 		this->enemigosPorNivel.push_back(lala);
 	}
+	this->idEnemigo = 0;
 }
 
 Escenario::~Escenario() {
@@ -37,8 +38,9 @@ bool Escenario::verificarColision(SDL_Rect camara, Proyectil* proyectil)
 
 void Escenario::despertarEnemigos(SDL_Rect* camara) {
 	if (this->enemigosPorNivel.at(0).first < camara->x + camara->w && this->enemigosPorNivel.at(0).first > camara->x) {
-		Enemigo* enemigo = new Enemigo(this->enemigosPorNivel.at(0).first,this->enemigosPorNivel.at(0).second,0);
+		Enemigo* enemigo = new Enemigo(this->enemigosPorNivel.at(0).first,this->enemigosPorNivel.at(0).second,this->idEnemigo);
 		this->enemigosActivos.push_back(enemigo);
+		this->idEnemigo++;
 	}
 }
 
@@ -48,4 +50,8 @@ Enemigo* Escenario::getEnemigoActivo() {
 	} else {
 		return NULL;
 	}
+}
+
+bool Escenario::enemigoVivo(int idEnemigo) {
+	return true;
 }

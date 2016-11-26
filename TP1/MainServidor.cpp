@@ -402,26 +402,47 @@ void* cicloEscuchaCliente(void* arg) {
 	}
 }
 
-void* enemigoActivo(void* arg){
-
+void* enemigoActivo(void* arg) {
+	ParametrosMovimiento* parametrosEnemigo = (ParametrosMovimiento*) arg;
 	string mensajeEnemigo = "3|0|";
-			mensajeEnemigo += enemigo->getInformacionDelEnemigo();
-			Mensaje* mensaje = new Mensaje("jochi","Todos",mensajeEnemigo);
-			servidor->encolarMensajeProcesadoParaCadaCliente(*mensaje,mensajeEnemigo);
+	mensajeEnemigo += parametrosEnemigo->enemigo->getInformacionDelEnemigo();
+	Mensaje* mensaje = new Mensaje("jochi","Todos",mensajeEnemigo);
+	parametrosEnemigo->servidor->encolarMensajeProcesadoParaCadaCliente(*mensaje,mensajeEnemigo);
+	Enemigo* enemigo = parametrosEnemigo->enemigo;
+	while (parametrosEnemigo->servidor->escenario->enemigoVivo(enemigo->id)) {
+		usleep(50000);
+		mensajeEnemigo = "3|1|";
+		mensajeEnemigo += enemigo->getInformacionDelEnemigo()();
+		mensaje = new Mensaje("jochi","Todos",mensajeEnemigo);
+		parametrosEnemigo->servidor->encolarMensajeProcesadoParaCadaCliente(*mensaje,mensajeEnemigo);
+		mensaje->~Mensaje();
+	}
+	mensajeEnemigo = "3|2|";
+	mensajeEnemigo += enemigo->getInformacionDelEnemigo()();
+	mensaje = new Mensaje("jochi","Todos",mensajeEnemigo);
+	parametrosEnemigo->servidor->encolarMensajeProcesadoParaCadaCliente(*mensaje,mensajeEnemigo);
+	enemigo->~Enemigo();
+	mensaje->~Mensaje();
+	pthread_exit(NULL);
 }
 
 void* controlDeEnemigos(void* arg) {
 	Servidor* servidor = (Servidor*) arg;
+	ParametrosMovimiento* parametrosEnemigo = new ParametrosMovimiento(servidor,NULL);
 	usleep(2000000);
 	while (servidor->escuchando) {
 		servidor->escenario->despertarEnemigos(&servidor->camara);
 		Enemigo* enemigo = servidor->escenario->getEnemigoActivo();
 		if (enemigo != NULL) {
-
+			parametrosEnemigo->enemigo = enemigo;
+			pthread_t threadEnemigo;
+			pthread_create(&threadEnemigo, NULL, &enemigoActivo, parametrosEnemigo);
+			pthread_detach(threadEnemigo);
 		}
+
 		usleep(50000);
 	}
-
+	parametrosEnemigo->~ParametrosMovimiento();
 }
 
 void* cicloEscucharConexionesNuevasThreadProceso(void* arg) {

@@ -9,6 +9,9 @@
 #define PARAMETROSMOVIMIENTO_H_
 #include "Jugador.h"
 #include "Servidor.h"
+#include "Enemigo.h"
+
+using namespace std;
 
 class ParametrosMovimiento {
 
@@ -16,6 +19,7 @@ public:
 	Servidor* servidor;
 	Jugador* jugador;
 	Proyectil* proyectil;
+	Enemigo* enemigo;
 	ParametrosMovimiento(Servidor* servidorActual, Jugador* jugadorActual);
 	virtual ~ParametrosMovimiento();
 };
