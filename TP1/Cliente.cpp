@@ -358,14 +358,14 @@ void Cliente::enviar(string mensaje, string destinatario) {
 		Mensaje *mensajeAEnviar = new Mensaje(this->nombre, destinatario, mensaje);
 		char* stringDatosMensaje = strdup(("1|" + mensajeAEnviar->getStringDatos()).c_str()); //1 significa enviar.
 		int largo = strlen(stringDatosMensaje);
-		int largoRequest = 0;
-		pthread_mutex_lock(&mutexSocket);
+		int largoRequest =
+		pthread_mutex_lock(&mutexSocket);0;
 		while (largo > 0)
 		{
 			largoRequest = send(this->socketCliente, stringDatosMensaje, largo, 0);
 			largo -= largoRequest;
 		}
-		pthread_mutex_unlock(&mutexSocket);
+		pthread_mutex_unlock(&mutexSocket);0;
 		free(mensajeCadena);
 		mensajeAEnviar->~Mensaje();
 	}

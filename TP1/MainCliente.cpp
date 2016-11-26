@@ -246,7 +246,7 @@ void* recibirPosicionJugadores(void* arg) {
 	LTimer capTimer;
 	usleep(50000);
 	while(!vista->controlador->comprobarCierreVentana()){
-		//usleep(3000);
+		usleep(1000);
 		 //Start cap timer
 		capTimer.start();
 		datosRecibidos = cliente->recibir();
@@ -386,7 +386,7 @@ void* cicloConexion(void* arg) {
 			vista->cargarEscenario(imagenes, stringToInt(handshakeDeserializado->getAncho()), stringToInt(handshakeDeserializado->getAlto()));
 			while(!vista->controlador->comprobarCierreVentana()){
 				//recibirPosicionJugadores((void*)&cliente);
-				usleep(100);
+				usleep(1000000);
 			}
 		}
 		cliente->desconectar();
