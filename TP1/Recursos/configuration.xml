@@ -390,7 +390,33 @@
 	     <z-index>1</z-index>
 	   </Sprite3>
 	  </SetItemArmas>
-	     
+	  <SetEnemigos>
+	  	<Carpeta>Enemigos</Carpeta>
+	  	<Sprite1>
+	  		<Id>Enemigo_quieto</Id>
+		    <CantFotogramas>7</CantFotogramas>
+		    <Ancho>1533</Ancho>
+		    <Alto>106</Alto>
+		    <Imagen>Enemigo_quieto</Imagen>
+		    <z-index>1</z-index>
+		</Sprite1>
+		<Sprite2>
+	  		<Id>Enemigo_caminando</Id>
+		    <CantFotogramas>12</CantFotogramas>
+		    <Ancho>2628</Ancho>
+		    <Alto>106</Alto>
+		    <Imagen>Enemigo_caminando</Imagen>
+		    <z-index>1</z-index>
+		</Sprite2>
+		<Sprite3>
+	  		<Id>Enemigo_disparando</Id>
+		    <CantFotogramas>6</CantFotogramas>
+		    <Ancho>1314</Ancho>
+		    <Alto>106</Alto>
+		    <Imagen>Enemigo_disparando</Imagen>
+		    <z-index>1</z-index>
+		</Sprite3>
+	  </SetEnemigos>
 	</Sprites>
 
 	<Ventana>

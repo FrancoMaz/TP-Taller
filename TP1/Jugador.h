@@ -92,6 +92,7 @@ public:
 	void obtenerMuniciones(string arma);
 	void condicionesMovimiento();
 	int anguloBala;
+	bool hayMuniciones();
 	//void daniarseCon(Proyectil* proyectil);
 };
 #endif /* JUGADOR_H_ */
