@@ -23,6 +23,7 @@ public:
 	virtual ~Enemigo();
 	void disparar();
 	//void daniarseCon(Proyectil* proyectil);
+	int getId();
 	void setId(int id);
 	string getInformacionDelEnemigo();
 };

@@ -78,8 +78,9 @@ void procesarUltimosMensajes(string mensajes, Cliente* cliente, UpdateJugador* u
 			s.erase(0, pos + delimitador.length());
 			pos = s.find(delimitador);
 			texto = s.substr(0,pos);
-			switch (texto) {
-				case "0": {
+			int textoInt = stringToInt(string(texto));
+			switch (textoInt) {
+				case 0: {
 					s.erase(0, pos + delimitador.length());
 					pos = s.find(delimitador);
 					texto = s.substr(0,pos);
@@ -111,7 +112,7 @@ void procesarUltimosMensajes(string mensajes, Cliente* cliente, UpdateJugador* u
 					}
 					break;
 				}
-				case "1": {
+				case 1: {
 					s.erase(0, pos + delimitador.length());
 					pos = s.find(delimitador);
 					texto = s.substr(0,pos);
@@ -139,7 +140,7 @@ void procesarUltimosMensajes(string mensajes, Cliente* cliente, UpdateJugador* u
 					vista->actualizarCamara(x,y,abscisasCapas,stringToInt(handshakeDeserializado->getAncho()));
 					break;
 				}
-				case "2": {
+				case 2: {
 					s.erase(0, pos + delimitador.length());
 					pos = s.find(delimitador);
 					texto = s.substr(0,pos);
@@ -172,7 +173,7 @@ void procesarUltimosMensajes(string mensajes, Cliente* cliente, UpdateJugador* u
 					vista->actualizarProyectil(nuevaBala,xBala,yBala,spriteBala,idBala,cantFotogramas);
 					break;
 				}
-				case "3": {
+				case 3: {
 					s.erase(0, pos + delimitador.length());
 					pos = s.find(delimitador);
 					texto = s.substr(0,pos);

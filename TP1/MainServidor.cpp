@@ -409,16 +409,16 @@ void* enemigoActivo(void* arg) {
 	Mensaje* mensaje = new Mensaje("jochi","Todos",mensajeEnemigo);
 	parametrosEnemigo->servidor->encolarMensajeProcesadoParaCadaCliente(*mensaje,mensajeEnemigo);
 	Enemigo* enemigo = parametrosEnemigo->enemigo;
-	while (parametrosEnemigo->servidor->escenario->enemigoVivo(enemigo->id)) {
+	while (parametrosEnemigo->servidor->escenario->enemigoVivo(enemigo->getId())) {
 		usleep(50000);
 		mensajeEnemigo = "3|1|";
-		mensajeEnemigo += enemigo->getInformacionDelEnemigo()();
+		mensajeEnemigo += enemigo->getInformacionDelEnemigo();
 		mensaje = new Mensaje("jochi","Todos",mensajeEnemigo);
 		parametrosEnemigo->servidor->encolarMensajeProcesadoParaCadaCliente(*mensaje,mensajeEnemigo);
 		mensaje->~Mensaje();
 	}
 	mensajeEnemigo = "3|2|";
-	mensajeEnemigo += enemigo->getInformacionDelEnemigo()();
+	mensajeEnemigo += enemigo->getInformacionDelEnemigo();
 	mensaje = new Mensaje("jochi","Todos",mensajeEnemigo);
 	parametrosEnemigo->servidor->encolarMensajeProcesadoParaCadaCliente(*mensaje,mensajeEnemigo);
 	enemigo->~Enemigo();
@@ -451,6 +451,7 @@ void* cicloEscucharConexionesNuevasThreadProceso(void* arg) {
 	pthread_t threadEnemigosPetutos;
 	int ok = pthread_create(&threadProceso, NULL, &cicloProcesarMensajes, (void*) servidor);
 	pthread_create(&threadEnemigosPetutos, NULL, &controlDeEnemigos, (void*) servidor);
+	pthread_detach(threadEnemigosPetutos);
 	servidor->setThreadProceso(threadProceso);
 
 	pthread_t thread_id[MAX_CANT_CLIENTES]; //la cantidad maxima de clientes es 6, voy a crear, como mucho 6 threads para manejar dichas conexiones.

@@ -29,6 +29,10 @@ string Enemigo::getInformacionDelEnemigo() {
 	return (to_string(this->posX) + "|" + to_string(this->posY) + "|" + this->spriteEnemigo + "|" + to_string(this->id) + "#");
 }
 
+int Enemigo::getId() {
+	return this->id;
+}
+
 /*void Enemigo::daniarseCon(Proyectil* proyectil) {
 	int danio = proyectil->danioEnPorcentaje;
 	if (this->vida > 0 && danio < this->vida) {
