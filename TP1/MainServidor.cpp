@@ -402,6 +402,14 @@ void* cicloEscuchaCliente(void* arg) {
 	}
 }
 
+void* enemigoActivo(void* arg){
+
+	string mensajeEnemigo = "3|0|";
+			mensajeEnemigo += enemigo->getInformacionDelEnemigo();
+			Mensaje* mensaje = new Mensaje("jochi","Todos",mensajeEnemigo);
+			servidor->encolarMensajeProcesadoParaCadaCliente(*mensaje,mensajeEnemigo);
+}
+
 void* controlDeEnemigos(void* arg) {
 	Servidor* servidor = (Servidor*) arg;
 	usleep(2000000);
@@ -409,10 +417,7 @@ void* controlDeEnemigos(void* arg) {
 		servidor->escenario->despertarEnemigos(&servidor->camara);
 		Enemigo* enemigo = servidor->escenario->getEnemigoActivo();
 		if (enemigo != NULL) {
-			string mensajeEnemigo = "3|0|";
-			mensajeEnemigo += enemigo->getInformacionDelEnemigo();
-			Mensaje* mensaje = new Mensaje("jochi","Todos",mensajeEnemigo);
-			servidor->encolarMensajeProcesadoParaCadaCliente(*mensaje,mensajeEnemigo);
+
 		}
 		usleep(50000);
 	}
