@@ -15,7 +15,7 @@ Arma::~Arma() {
 	// TODO Auto-generated destructor stub
 }
 
-Proyectil* Arma::disparar(SDL_Rect boxCollider, string condicion, int anguloBala) {
+Proyectil* Arma::disparar(int posicionX,int posicionY, string condicion, int anguloBala, bool agachar) {
 
 }
 

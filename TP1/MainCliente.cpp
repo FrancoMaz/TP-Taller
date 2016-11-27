@@ -77,7 +77,7 @@ double calcularAngulo(int numero)
 		}
 		case 2:
 		{
-			angulo = -45;
+			angulo = -30;
 			break;
 		}
 	}

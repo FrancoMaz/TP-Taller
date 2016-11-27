@@ -292,7 +292,7 @@ Proyectil* Jugador::dispararProyectil() {
 	{
 		if (hayMuniciones()) {
 			if (!this->armas.at(this->armaActual)->sinMuniciones()) {
-				return (this->armas.at(this->armaActual)->disparar(boxCollider,condicionSprite,anguloBala));
+				return (this->armas.at(this->armaActual)->disparar(posicion.first,posicion.second,condicionSprite,anguloBala,agachar));
 			} else {
 				this->armaActual++;
 				if (armaActual >= this->armas.size())

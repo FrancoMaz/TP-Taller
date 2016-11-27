@@ -9,21 +9,14 @@
 #include <iostream>
 using namespace std;
 
-Proyectil::Proyectil(int danioEnPorcentaje, int puntosPorDisparo, string spriteBala,SDL_Rect boxCollider, string sentido, int angulo) {
+Proyectil::Proyectil(int danioEnPorcentaje, int puntosPorDisparo, string spriteBala,int posicionX, int posicionY, string sentido, int angulo) {
 	this->danioEnPorcentaje = danioEnPorcentaje;
 	this->puntosPorDisparo = puntosPorDisparo;
 	this->spriteBala = spriteBala;
 	this->posicion.first = -1;
+	this->posicion.first = posicionX;
+	this->posicion.second = posicionY;
 	this->sentido=sentido;
-	if (sentido == "Normal")
-	{
-		this->posicion.first = boxCollider.x+boxCollider.w+10;
-	}
-	else
-	{
-		this->posicion.first = boxCollider.x-10;
-	}
-	this->posicion.second = boxCollider.y+20;
 	this->angulo = angulo;
 }
 
@@ -64,8 +57,9 @@ void Proyectil::mover()
 			}
 			case 2:
 			{
+				int velocidad_Y = VELOCIDAD;
 				this->posicion.first += VELOCIDAD;
-				this->posicion.second -= VELOCIDAD;
+				this->posicion.second -= (velocidad_Y/2);
 				break;
 			}
 		}
@@ -86,8 +80,9 @@ void Proyectil::mover()
 			}
 			case 2:
 			{
+				int velocidad_Y = VELOCIDAD;
 				this->posicion.first -= VELOCIDAD;
-				this->posicion.second -= VELOCIDAD;
+				this->posicion.second -= (velocidad_Y/2);
 				break;
 			}
 		}
