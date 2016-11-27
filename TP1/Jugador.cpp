@@ -8,7 +8,7 @@
 #include "Jugador.h"
 #include <iostream>
 
-Jugador::Jugador(string nombre, string equipo, int posicionX, vector<pair<int,int>> vectorPlataforma) {
+Jugador::Jugador(string nombre, string equipo, int posicionX, vector<pair<string,string>> vectorPlataforma) {
 	this->nombre = nombre;
 	this->equipo = equipo;
 	posicion.first = posicionX;
@@ -314,7 +314,7 @@ bool Jugador::esPlataforma(int x)
 {
 	for (int i = 0; i < vectorPlataforma.size(); i++)
 	{
-		if ((x+boxCollider.w >= vectorPlataforma.at(i).first) && (x <= vectorPlataforma.at(i).second))
+		if ((x+boxCollider.w >= atoi(vectorPlataforma.at(i).first.c_str())) && (x <= atoi(vectorPlataforma.at(i).second.c_str())))
 		{
 			return true;
 		}

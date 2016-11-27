@@ -74,7 +74,7 @@ private:
 	vector<string> vectorEquipos;
 	int posicionVector;
 	int posicionXInicial;
-	vector<pair<int,int>> vectorPlataforma;
+	vector<pair<string,string>> vectorPlataforma;
 
 public:
 	Servidor();

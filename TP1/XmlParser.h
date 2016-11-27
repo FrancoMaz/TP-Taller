@@ -18,7 +18,6 @@
 #include <vector>
 #include <algorithm>
 #include "Item.h"
-#include "Plataforma.h"
 
 using namespace std;
 
@@ -32,7 +31,7 @@ private:
 	pair<string, string> tamanioVentana;
 	vector<ImagenDto*> escenario;
 	vector<SetDeSpritesDto*> sprites;
-	vector<Plataforma*> plataformas;
+	vector<pair<string,string>> plataformas;
 	vector<Item*> itemArmas;
 
 public:
@@ -47,7 +46,7 @@ public:
 	string serializarSetDeSprites(vector<string> colores);
 	void mostrarSprites(SpriteDto* sprite);
 	virtual ~XmlParser();
-	vector<Plataforma*> getPlataformas();
+	vector<pair<string,string>> getPlataformas();
 	vector<Item*> getItemArmas();
 	bool stringTerminaCon(std::string const &fullString, std::string const &ending);
 };

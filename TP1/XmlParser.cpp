@@ -6,6 +6,7 @@
  */
 
 #include "XmlParser.h"
+using namespace std;
 
 XmlParser::XmlParser(string xmlPath) {
 
@@ -163,9 +164,9 @@ vector<SetDeSpritesDto*> XmlParser::getSprites() {
 vector<Item*> XmlParser::getItemArmas()
 {
 	if (this->itemArmas.empty()) {
-		for (pugi::xml_node image = this->rootNode.child("ItemArmas").first_child(); image; image = image.next_sibling()) {
-			Item* item = new Item(string(image.child_value("Arma")), string(image.child_value("PosicionX")), string(image.child_value("PosicionY")));
-			this->itemArmas.push_back(item);
+		for (pugi::xml_node item = this->rootNode.child("ItemArmas").first_child(); item; item = item.next_sibling()) {
+			Item* itemArma = new Item(string(item.child_value("Arma")), string(item.child_value("PosicionX")), string(item.child_value("PosicionY")));
+			this->itemArmas.push_back(itemArma);
 		}
 		return this->itemArmas;
 	}
@@ -175,3 +176,17 @@ XmlParser::~XmlParser() {
 	// TODO Auto-generated destructor stub
 }
 
+vector<pair<string,string>> XmlParser::getPlataformas()
+{
+	if (this->plataformas.empty()) {
+		for (pugi::xml_node plataforma = this->rootNode.child("Plataformas").first_child(); plataforma; plataforma = plataforma.next_sibling()) {
+			pair<string,string> plat;
+			plat.first = string(plataforma.child_value("Comienzo"));
+			plat.second = string(plataforma.child_value("Final"));
+			cout << "Comienzo: " << plat.first << endl;
+			cout << "Final: " << plat.second << endl;
+			this->plataformas.push_back(plat);
+		}
+		return this->plataformas;
+	}
+}
