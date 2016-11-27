@@ -454,7 +454,7 @@ void Vista::actualizarPosJugador(UpdateJugador* update, int anchoVentana, int an
 	}
 }
 
-void Vista::actualizarPantalla(int anchoVentana, int anchoCapaPrincipal){
+void Vista::actualizarPantalla(int anchoVentana, int anchoCapaPrincipal) {
 	this->ventana->limpiar();
 	for (int i=vectorCapas.size()-1; i>=0; i--)
 	{
@@ -463,42 +463,44 @@ void Vista::actualizarPantalla(int anchoVentana, int anchoCapaPrincipal){
 	TexturaSDL* texturaJugadorX;
 	TexturaSDL* texturaBala;
 	TexturaSDL* texturaEnemigo;
+	TexturaSDL* texturaItem;
 
-	for (int i = 0; i < vistaBalas.size(); i++){
+	for (int i = 0; i < vistaItems.size(); i++) {
+		Item* vistaItem = vistaItems.at(i);
+		texturaItem = vistaItem->textura;
+		texturaItem->aplicarPosicion(vistaItem->boxCollider.x - camara.x, vistaItem->boxCollider.y - camara.y,0,SDL_FLIP_NONE);
+	}
+
+	for (int i = 0; i < vistaBalas.size(); i++) {
 		VistaBala* vistaBala = vistaBalas.at(i);
 		texturaBala = vistaBala->textura;
-		/*if ((vistaBala->x > camara.x + camara.w) || vistaBala->x < camara.x)
-		{
-			vistaBalas.erase(vistaBalas.begin()+i);
-		}*/
-		texturaBala->aplicarPosicion(vistaBala->x - camara.x, vistaBala->y - camara.y,0,SDL_FLIP_NONE);
+		texturaBala->aplicarPosicion(vistaBala->x - camara.x, vistaBala->y - camara.y,vistaBala->angulo,vistaBala->flip);
 	}
-	for (int i = 0; i < vistaEnemigos.size(); i++){
-			VistaEnemigo* vistaEnemigo = vistaEnemigos.at(i);
-			texturaEnemigo = vistaEnemigo->textura;
-			texturaEnemigo->aplicarPosicion(vistaEnemigo->x - camara.x, vistaEnemigo->y - camara.y,0,SDL_FLIP_NONE);
-		}
 
-	for (int i = 0; i < vistaJugadores.size(); i++){
+	for (int i = 0; i < vistaEnemigos.size(); i++) {
+		VistaEnemigo* vistaEnemigo = vistaEnemigos.at(i);
+		texturaEnemigo = vistaEnemigo->textura;
+		texturaEnemigo->aplicarPosicion(vistaEnemigo->x - camara.x, vistaEnemigo->y - camara.y,0,SDL_FLIP_NONE);
+	}
+
+	for (int i = 0; i < vistaJugadores.size(); i++) {
 		VistaJugador* vistaJugador = vistaJugadores.at(i);
 		texturaJugadorX = vistaJugador->texturaJugador;
-		if (vistaJugador->x > anchoCapaPrincipal && camara.x == 0)
-		{
+		if (vistaJugador->x > anchoCapaPrincipal && camara.x == 0) {
 			vistaJugador->x = vistaJugador->x - anchoCapaPrincipal;
 		}
 		texturaJugadorX->aplicarPosicion(vistaJugador->x - camara.x,vistaJugador->y - camara.y,0,vistaJugador->flip);
 	}
 
-	if (texturaBotonDesconectar->aplicarPosicionDeBoton(10,10,&evento))
-	{
+	if (texturaBotonDesconectar->aplicarPosicionDeBoton(10,10,&evento)) {
 		controlador->setCerrarVentana();
 	}
 	this->ventana->actualizar();
 }
 
-void Vista::actualizarProyectil(string nuevaBala, int x, int y, string sprite, int id, int cantFotogramas) {
+void Vista::actualizarProyectil(string nuevaBala, int x, int y, string sprite, int id, int cantFotogramas, string sentido, double angulo) {
 	if (nuevaBala == "0") {
-		VistaBala* vistaBala = new VistaBala(x,y,(ventana->crearTextura("Recursos/" + sprite + ".png", cantFotogramas)),id);
+		VistaBala* vistaBala = new VistaBala(x,y,(ventana->crearTextura("Recursos/" + sprite + ".png", cantFotogramas)),id,sentido,angulo);
 		vistaBalas.push_back(vistaBala);
 	} else {
 		if (nuevaBala == "1") {
@@ -548,6 +550,27 @@ void Vista::actualizarEnemigo(string enemigo, int x, int y, string sprite, int i
 						break;
 					}
 				}
+			}
+		}
+	}
+}
+
+void Vista::agregarVistaItem(string borrarItem, string sprite, int x, int y)
+{
+	if (borrarItem == "0")
+	{
+		Item* vistaItem = new Item(x,y,(ventana->crearTextura("Recursos/" + sprite + ".png", 0)));
+		vistaItems.push_back(vistaItem);
+	}
+	else if (borrarItem == "1")
+	{
+		for (int i = 0; i < vistaItems.size(); i++)
+		{
+			Item* vistaItem = vistaItems.at(i);
+			if (vistaItem->boxCollider.x == x)
+			{
+				vistaItems.erase(vistaItems.begin() + i);
+				break;
 			}
 		}
 	}

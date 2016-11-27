@@ -15,17 +15,20 @@ using namespace std;
 class Arma {
 
 protected:
-	bool disparoDiagonal;
 	int municiones;
+	int municionesPorRepuesto;
 	Proyectil* proyectil;
 
 public:
 	Arma();
 	virtual ~Arma();
-	virtual Proyectil* disparar(SDL_Rect boxCollider, string condicion);
+	virtual Proyectil* disparar(int posicionX,int posicionY, string condicion, int anguloBala, bool agachar);
 	virtual bool sinMuniciones();
-	Proyectil* getProyectil();
+	virtual void sumarMuniciones();
 	string nombre;
+	string nombreArma;
+	bool disparoDiagonal;
+	bool cortoAlcance;
 };
 
 

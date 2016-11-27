@@ -30,7 +30,7 @@
 #include "Capa.h"
 #include "Escenario.h"
 #define MAX_CANT_CLIENTES 6
-#define BUFFER_MAX_SIZE 1000
+#define BUFFER_MAX_SIZE 1024
 const int INFO = 1;
 const int DEBUG = 2;
 
@@ -74,7 +74,7 @@ private:
 	vector<string> vectorEquipos;
 	int posicionVector;
 	int posicionXInicial;
-	vector<pair<int,int>> vectorPlataforma;
+	vector<pair<string,string>> vectorPlataforma;
 
 public:
 	Servidor();
@@ -138,7 +138,7 @@ public:
 	vector<pair<int,int>> abscisasCapas;
 	string serializarCapas();
 	void iniciarThreadMovimientoJugador(string nombre);
-	void inicializarVectorPlataforma();
+	void inicializarDatosNivel();
 	Escenario* escenario;
 };
 

@@ -358,14 +358,13 @@ void Cliente::enviar(string mensaje, string destinatario) {
 		Mensaje *mensajeAEnviar = new Mensaje(this->nombre, destinatario, mensaje);
 		char* stringDatosMensaje = strdup(("1|" + mensajeAEnviar->getStringDatos()).c_str()); //1 significa enviar.
 		int largo = strlen(stringDatosMensaje);
-		int largoRequest = 0;
-		pthread_mutex_lock(&mutexSocket);
+		int largoRequest =
+		pthread_mutex_lock(&mutexSocket);0;
 		while (largo > 0)
 		{
 			largoRequest = send(this->socketCliente, stringDatosMensaje, largo, 0);
 			largo -= largoRequest;
 		}
-		cout << "enviado: " << stringDatosMensaje << endl;
 		pthread_mutex_unlock(&mutexSocket);
 		free(mensajeCadena);
 		mensajeAEnviar->~Mensaje();
@@ -405,9 +404,6 @@ string Cliente::recibir() {
 		memset(colaMensajes, '\0', strlen(colaMensajes));
 	}
 	pthread_mutex_unlock(&mutexSocket);
-	cout <<endl;
-	cout << "Datos rec: " << datosRecibidos << endl;
-	cout <<endl;
 	return datosRecibidos;
 }
 
@@ -496,7 +492,7 @@ string Cliente::recibirResponse(){
 	return datosRecibidos;
 }
 
-SpriteDto* Cliente::buscarSprite(string ID){
+SpriteDto* Cliente::buscarSprite(string ID) {
 
 	vector<SetDeSpritesDto*> setsSprites = this->handshake->getSprites();
 	for (int i = 0; i < setsSprites.size(); i++){
@@ -508,8 +504,8 @@ SpriteDto* Cliente::buscarSprite(string ID){
 				return listaSprites.at(i);
 			}
 		}
-					}
- return NULL;
+	}
+	return NULL;
 }
 
 bool Cliente::checkearInicioJuego(Vista* vista)

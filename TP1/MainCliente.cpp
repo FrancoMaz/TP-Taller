@@ -21,6 +21,8 @@
 #include "LTimer.h"
 using namespace std;
 
+#define PI 3.14159265
+
 datosConexion datosCliente;
 Vista * vista = new Vista();
 Handshake* handshakeDeserializado;
@@ -57,10 +59,43 @@ void* verificarConexion(void * arg){
     //comunicacion->termino = cliente->corroborarConexion();
 }
 
-void procesarUltimosMensajes(string mensajes, Cliente* cliente, UpdateJugador* update, bool primeraVez)
-{   string mensajeVacio = "#noHayMensajes@";
+
+double calcularAngulo(int numero, string sentido)
+{
+	double angulo;
+	switch (numero)
+	{
+		case 0:
+		{
+			angulo = 0;
+			break;
+		}
+		case 1:
+		{
+			if (sentido == "Normal"){
+				angulo = -90;
+			} else {
+				angulo = 90;
+			}
+			break;
+		}
+		case 2:
+		{
+			if (sentido == "Normal"){
+				angulo = -30;
+			} else {
+				angulo = 30;
+			}
+			break;
+		}
+	}
+	return angulo;
+}
+
+void procesarUltimosMensajes(string mensajes, Cliente* cliente, UpdateJugador* update, bool primeraVez) {
+	string mensajeVacio = "#noHayMensajes@";
 	vector<SetDeSpritesDto*> setsSprites = handshakeDeserializado->getSprites();
-	if(mensajes != mensajeVacio && mensajes != ""){
+	if(mensajes != mensajeVacio && mensajes != "") {
 		primeraVez = false;
 		mensajes[mensajes.length() - 1] = '#';
 		string s = mensajes;
@@ -78,22 +113,8 @@ void procesarUltimosMensajes(string mensajes, Cliente* cliente, UpdateJugador* u
 			s.erase(0, pos + delimitador.length());
 			pos = s.find(delimitador);
 			texto = s.substr(0,pos);
-			int textoInt;// = stringToInt(string(texto));
+			int textoInt = stringToInt(string(texto));
 
-			if (texto == "0") {
-				textoInt = 0;
-			}
-			if (texto == "1") {
-				textoInt = 1;
-			}
-			if (texto == "2") {
-				textoInt = 2;
-			}
-			if (texto == "3") {
-				textoInt = 3;
-			}
-			cout << "texto "<< texto << endl;
-			cout << "Textoint " << textoInt << endl;
 			switch (textoInt) {
 				case 0: {
 					s.erase(0, pos + delimitador.length());
@@ -173,9 +194,17 @@ void procesarUltimosMensajes(string mensajes, Cliente* cliente, UpdateJugador* u
 					texto = s.substr(0,pos);
 					string spriteBala = texto;
 					s.erase(0, pos + delimitador.length());
-					pos = s.find(delimitadorFinal);
+					pos = s.find(delimitador);
 					texto = s.substr(0,pos);
 					int idBala = stringToInt(texto);
+					s.erase(0, pos + delimitador.length());
+					pos = s.find(delimitador);
+					texto = s.substr(0,pos);
+					string sentido = texto;
+					s.erase(0, pos + delimitador.length());
+					pos = s.find(delimitadorFinal);
+					texto = s.substr(0,pos);
+					double angulo = calcularAngulo(stringToInt(texto),sentido);
 					int cantFotogramas;
 					for (int i = 0; i < setsSprites.size(); i++) {
 						vector<SpriteDto*> listaSprites = setsSprites.at(i)->getSprites();
@@ -185,10 +214,30 @@ void procesarUltimosMensajes(string mensajes, Cliente* cliente, UpdateJugador* u
 							}
 						}
 					}
-					vista->actualizarProyectil(nuevaBala,xBala,yBala,spriteBala,idBala,cantFotogramas);
+					vista->actualizarProyectil(nuevaBala,xBala,yBala,spriteBala,idBala,cantFotogramas,sentido,angulo);
 					break;
 				}
 				case 3: {
+					s.erase(0, pos + delimitador.length());
+					pos = s.find(delimitador);
+					texto = s.substr(0,pos);
+					string borrarItem = texto;
+					s.erase(0,pos+delimitador.length());
+					pos = s.find(delimitador);
+					texto = s.substr(0,pos);
+					string spriteItem = texto;
+					s.erase(0,pos+delimitador.length());
+					pos = s.find(delimitador);
+					texto = s.substr(0,pos);
+					int xItem = stringToInt(texto);
+					s.erase(0,pos+delimitador.length());
+					pos = s.find(delimitadorFinal);
+					texto = s.substr(0,pos);
+					int yItem = stringToInt(texto);
+					vista->agregarVistaItem(borrarItem,spriteItem,xItem,yItem);
+					break;
+				}
+				case 4: {
 					s.erase(0, pos + delimitador.length());
 					pos = s.find(delimitador);
 					texto = s.substr(0,pos);
@@ -222,14 +271,13 @@ void procesarUltimosMensajes(string mensajes, Cliente* cliente, UpdateJugador* u
 					break;
 				}
 			}
-
 			vista->actualizarPosJugador(update,stringToInt(handshakeDeserializado->getAncho()),stringToInt(handshakeDeserializado->getImagenes().at(0)->getAncho()));
 			s.erase(0, pos + delimitador.length());
 			pos = s.find(delimitador);
 			texto = s.substr(0,pos);
 		}
+		vista->actualizarPantalla(stringToInt(handshakeDeserializado->getAncho()), stringToInt(handshakeDeserializado->getImagenes().at(0)->getAncho()));
 	}
-	vista->actualizarPantalla(stringToInt(handshakeDeserializado->getAncho()), stringToInt(handshakeDeserializado->getImagenes().at(0)->getAncho()));
 }
 
 void* recibirPosicionJugadores(void* arg) {
@@ -241,7 +289,7 @@ void* recibirPosicionJugadores(void* arg) {
 	LTimer capTimer;
 	usleep(50000);
 	while(!vista->controlador->comprobarCierreVentana()){
-		//usleep(3000);
+		usleep(1000);
 		 //Start cap timer
 		capTimer.start();
 		datosRecibidos = cliente->recibir();
@@ -264,7 +312,7 @@ void* enviarEventos(void* arg) {
 	bool presionadaDerecha = false;
 	bool presionadaIzquierda = false;
 	bool presionadaAbajo = false;
-	bool presionadoEspacio = false;
+	bool presionadaX = false;
 	 //The frames per second timer
 	LTimer fpsTimer;
 	//The frames per second cap timer
@@ -289,19 +337,23 @@ void* enviarEventos(void* arg) {
 				presionadaIzquierda = true;
 				cliente->enviar("Tecla Izquierda", "Todos");
 			}
-			else if (vista->controlador->presionarBoton(SDLK_UP) && !vista->salto){
+			else if (vista->controlador->presionarBoton(SDLK_z) && !vista->salto){
 				vista->salto = true;
-				//presionadaArriba = true;
-				cliente->enviar("Tecla Arriba", "Todos");
+				cliente->enviar("Z", "Todos");
+			}
+			else if (vista->controlador->presionarBoton(SDLK_UP) && !presionadaArriba)
+			{
+				presionadaArriba = true;
+				cliente->enviar("Tecla Arriba","Todos");
 			}
 			else if (vista->controlador->presionarBoton(SDLK_DOWN) && !presionadaAbajo)
 			{
 				presionadaAbajo = true;
 				cliente->enviar("Tecla Abajo","Todos");
 			}
-			else if(vista->controlador->presionarBoton(SDLK_SPACE) && !presionadoEspacio){
-				presionadoEspacio = true;
-				cliente->enviar("Tecla Espacio","Todos");
+			else if(vista->controlador->presionarBoton(SDLK_x) && !presionadaX){
+				presionadaX = true;
+				cliente->enviar("X","Todos");
 			}
 			else if(vista->controlador->soltarBoton(SDLK_RIGHT)){
 				presionadaDerecha = false;
@@ -315,20 +367,21 @@ void* enviarEventos(void* arg) {
 				presionadaAbajo = false;
 				cliente->enviar("Soltar Tecla Abajo","Todos");
 			}
-			else if(vista->controlador->soltarBoton(SDLK_SPACE)){
-				presionadoEspacio = false;
-				cliente->enviar("Soltar Tecla Espacio","Todos");
-			}
-			/*else if(!vista->salto){
+			else if(vista->controlador->soltarBoton(SDLK_UP)){
 				presionadaArriba = false;
-			}*/
+				cliente->enviar("Soltar Tecla Arriba","Todos");
+			}
+			else if(vista->controlador->soltarBoton(SDLK_x)){
+				presionadaX = false;
+				cliente->enviar("Soltar X","Todos");
+			}
 			SDL_FlushEvent(SDL_MOUSEMOTION);
 			SDL_FlushEvent(SDL_KEYDOWN);//si se procesa antes, espero lo que tengo que resta.
 			int frameTicks = capTimer.getTicks();
-			if( frameTicks < 25 )
+			if( frameTicks < SCREEN_TICKS_PER_FRAME )
 			{
 				//Wait remaining time
-				SDL_Delay( 25 - frameTicks );
+				SDL_Delay( SCREEN_TICKS_PER_FRAME - frameTicks );
 			}
 		}
 	}
@@ -366,7 +419,6 @@ void* cicloConexion(void* arg) {
 			inicio = cliente->checkearInicioJuego(vista);
 			vista->cargarPantallaEsperandoJugadores();
 		}while (!inicio && !vista->ventanaCerrada());
-
 		if (!vista->ventanaCerrada()){
 			handshakeDeserializado = cliente->getHandshake();
 			pthread_create(&threadEnviarEventos, NULL, &enviarEventos, cliente);
@@ -377,7 +429,7 @@ void* cicloConexion(void* arg) {
 			vista->cargarEscenario(imagenes, stringToInt(handshakeDeserializado->getAncho()), stringToInt(handshakeDeserializado->getAlto()));
 			while(!vista->controlador->comprobarCierreVentana()){
 				//recibirPosicionJugadores((void*)&cliente);
-				usleep(100);
+				usleep(1000000);
 			}
 		}
 		cliente->desconectar();

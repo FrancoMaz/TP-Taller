@@ -17,32 +17,37 @@
 #include "SetDeSpritesDto.h"
 #include <vector>
 #include <algorithm>
+#include "Item.h"
 
 using namespace std;
 
 class XmlParser {
 
 private:
-	// TODO continuar de poner como atributos todos los elementos del xml
 	string xmlPath;
 	pugi::xml_node rootNode;
 	const char* cantidadMaximaDeJugadores;
-	pair<const char*, const char*> tamanioVentana;
+	pair<string, string> tamanioVentana;
 	vector<ImagenDto*> escenario;
 	vector<SetDeSpritesDto*> sprites;
+	vector<pair<string,string>> plataformas;
+	vector<Item*> itemArmas;
 
 public:
 	XmlParser(string path);
 	const char * getCantidadMaximaDeJugadores();
-	pair<const char *, const char *> getTamanioVentana();
+	pair<string, string> getTamanioVentana();
 	string serializarVentana();
 	vector<ImagenDto*> getEscenario();
 	string serializarEscenario();
 	vector<SetDeSpritesDto*> getSprites();
-	string serializarSprites(vector<SpriteDto*> sprites);
-	string serializarSetDeSprites();
+	string serializarSprites(vector<SpriteDto*> sprites, vector<string> colores);
+	string serializarSetDeSprites(vector<string> colores);
 	void mostrarSprites(SpriteDto* sprite);
 	virtual ~XmlParser();
+	vector<pair<string,string>> getPlataformas();
+	vector<Item*> getItemArmas();
+	bool stringTerminaCon(string const &fullString, string const &ending);
 };
 
 #endif /* XMLPARSER_H_ */

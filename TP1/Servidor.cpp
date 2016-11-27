@@ -33,13 +33,13 @@ Servidor::Servidor(char* nombreArchivoDeUsuarios, int puerto, Logger* logger) {
 	this->datosUsuarios = new list<Datos>();
 	this->jugadores = new vector<Jugador*>();
 	this->listaMensajesProcesados = new list<MensajesProcesados>();
+	vectorEquipos = {"rojo", "verde", "amarillo", "azul"};
 	stringstream ss;
 	ss << puerto;
 	mensaje = "Se creó correctamente el servidor en el puerto: " + ss.str() + ", ip: 192.168.1.10" + "\n";
 	this->guardarLog(mensaje, DEBUG);
 	this->guardarDatosDeUsuarios();
 	this->guardarDatosDeConfiguracion();
-	vectorEquipos = {"rojo", "verde", "amarillo", "azul"};
 	posicionXInicial = 20;
 	posicionVector = 0;
 	camara.x = 0;
@@ -51,25 +51,19 @@ Servidor::Servidor(char* nombreArchivoDeUsuarios, int puerto, Logger* logger) {
 		abscisas.second = 0;
 		abscisasCapas.push_back(abscisas);
 	}
-	this->inicializarVectorPlataforma();
 	this->escenario = new Escenario();
+	this->inicializarDatosNivel();
 }
 
 Servidor::~Servidor() {
 }
 
 
-void Servidor::inicializarVectorPlataforma()
+void Servidor::inicializarDatosNivel()
 {
-	this->vectorPlataforma.push_back(make_pair(402,761));
-	this->vectorPlataforma.push_back(make_pair(1547,1786));
-	this->vectorPlataforma.push_back(make_pair(2087,2326));
-	this->vectorPlataforma.push_back(make_pair(2453,2573));
-	this->vectorPlataforma.push_back(make_pair(2708,2828));
-	this->vectorPlataforma.push_back(make_pair(3369,3848));
-	this->vectorPlataforma.push_back(make_pair(4590,5308));
-	this->vectorPlataforma.push_back(make_pair(5795,6154));
-	this->vectorPlataforma.push_back(make_pair(6878,7117));
+	XmlParser* parserNivel = new XmlParser("Recursos/nivel1.xml");
+	this->vectorPlataforma = parserNivel->getPlataformas();
+	this->escenario->itemArmas = parserNivel->getItemArmas();
 }
 void Servidor::guardarDatosDeConfiguracion() {
 	string path;
@@ -93,7 +87,7 @@ void Servidor::guardarDatosDeConfiguracion() {
 	}
 	vector<ImagenDto*> escenario = this->parser->getEscenario();
 	vector<SetDeSpritesDto*> setDeSprites = this->parser->getSprites();
-	pair<const char*, const char*> ventana = this->parser->getTamanioVentana();
+	pair<string, string> ventana = this->parser->getTamanioVentana();
 	const char* cantidadMaximaJugadores = this->parser->getCantidadMaximaDeJugadores();
 
 	ImagenDto* imagenTemporal;
@@ -117,7 +111,7 @@ bool Servidor::existeArchivo(string fileName) {
 
 void Servidor::enviarHandshake(int socket, char* cliente){
 	string handshake = this->parser->serializarEscenario();
-	handshake += this->parser->serializarSetDeSprites();
+	handshake += this->parser->serializarSetDeSprites(this->vectorEquipos);
 	handshake += this->parser->serializarVentana();
 	handshake += "#@";
 	int largo = strlen(handshake.c_str());
@@ -254,7 +248,6 @@ list<Servidor::MensajesProcesados>* Servidor::getListaMensajesProcesados()
 {
 	return listaMensajesProcesados;
 }
-
 
 Jugador* Servidor::obtenerJugador(string nombre){
 	for (int i = 0; i < jugadores->size(); i++)

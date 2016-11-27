@@ -20,6 +20,7 @@
 #include "Jugador.h"
 #include "VistaBala.h"
 #include "VistaEnemigo.h"
+#include "Item.h"
 
 #define PISO 301
 #define PLATAFORMA 134
@@ -51,6 +52,7 @@ private:
 	vector<Capa*> vectorCapas;
 	vector<VistaBala*> vistaBalas;
 	vector<VistaEnemigo*> vistaEnemigos;
+	vector<Item*> vistaItems;
 
 public:
 	Vista();
@@ -75,8 +77,9 @@ public:
 	void resetearVistas(int anchoCapaPrincipal);
 	Controlador* controlador;
 	bool salto;
-	void actualizarProyectil(string nuevaBala, int x, int y, string sprite, int id, int cantFotogramas);
 	void actualizarEnemigo(string enemigo, int x, int y, string sprite, int id, int cantFotogramas);
+	void actualizarProyectil(string nuevaBala, int x, int y, string sprite, int id, int cantFotogramas, string sentido, double angulo);
+	void agregarVistaItem(string borrarItem, string sprite, int x, int y);
 };
 
 #endif /* TP2_VISTA_H_ */

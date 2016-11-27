@@ -87,7 +87,6 @@ void* procesar(void* arg) {
 	Servidor* servidor = parametros->servidor;
 	string usuario = parametros->usuario;
 	int socket = parametros->socketCliente;
-
 	pthread_mutex_lock(&servidor->mutexListaProcesados);
 	string mensajesProcesados = servidor->traerMensajesProcesados(usuario);
 	pthread_mutex_unlock(&servidor->mutexListaProcesados);
@@ -223,7 +222,39 @@ void actualizarPosicionCamara( Servidor* servidor, Jugador* jugador ) {
 		servidor->encolarMensajeProcesadoParaCadaCliente(*mensajeCamara,mensajeCamaraString);
 		mensajeCamara->~Mensaje();
 	}
+}
 
+void* enviarObjetosEnCamara(void* arg)
+{
+	ParametrosMovimiento* parametros = (ParametrosMovimiento*)arg;
+	Servidor* servidor = parametros->servidor;
+	Jugador* jugador = parametros->jugador;
+	Mensaje* mensajeObjetos;
+	string mensajeObjetosString = "";
+	while (jugador->getConectado()){
+		usleep(50000);
+		for (int i = 0; i < servidor->escenario->itemArmas.size(); i++)
+		{
+			SDL_Rect box = servidor->escenario->itemArmas.at(i)->boxCollider;
+			bool visto = servidor->escenario->itemArmas.at(i)->visto;
+			if (box.x <= (servidor->camara.x + servidor->camara.w) && !visto)
+			{
+				mensajeObjetosString = "3|0|";
+				servidor->escenario->itemArmas.at(i)->visto = true;
+				mensajeObjetosString += servidor->escenario->itemArmas.at(i)->getStringItem();
+				mensajeObjetos = new Mensaje(jugador->getNombre(),"Todos",mensajeObjetosString);
+				servidor->encolarMensajeProcesadoParaCadaCliente(*mensajeObjetos,mensajeObjetosString);
+			}
+			if (servidor->escenario->itemArmas.at(i)->fueObtenido)
+			{
+				mensajeObjetosString = "3|1|";
+				mensajeObjetosString += servidor->escenario->itemArmas.at(i)->getStringItem();
+				mensajeObjetos = new Mensaje(jugador->getNombre(),"Todos",mensajeObjetosString);
+				servidor->encolarMensajeProcesadoParaCadaCliente(*mensajeObjetos,mensajeObjetosString);
+				servidor->escenario->itemArmas.erase(servidor->escenario->itemArmas.begin()+i);
+			}
+		}
+	}
 }
 
 void* actualizarPosicionesJugador(void* arg)
@@ -234,6 +265,9 @@ void* actualizarPosicionesJugador(void* arg)
 	//Mensaje* mensajeCamara;
 	//string mensajeCamaraString;
 	string mensajeJugadorPosActualizada = "";
+	pthread_t threadObjetos;
+	pthread_create(&threadObjetos, NULL, &enviarObjetosEnCamara, parametros);
+	pthread_detach(threadObjetos);
 	while (jugador->getConectado()){
 		pthread_mutex_lock(&servidor->mutexVectorJugadores);
 		jugador->mover(servidor->camara);
@@ -247,6 +281,7 @@ void* actualizarPosicionesJugador(void* arg)
 		pthread_mutex_unlock(&servidor->mutexVectorJugadores);
 		mensajeAProcesar->setDestinatario("Todos");
 		servidor->encolarMensajeProcesadoParaCadaCliente(*mensajeAProcesar,mensajeJugadorPosActualizada);
+		servidor->escenario->verificarColisionConItem(jugador);
 		mensajeAProcesar->~Mensaje();
 		//----------------------------------------------------------------------------------------------------
 
@@ -257,20 +292,20 @@ void* actualizarPosicionesJugador(void* arg)
 
 void* enemigoActivo(void* arg) {
 	ParametrosMovimiento* parametrosEnemigo = (ParametrosMovimiento*) arg;
-	string mensajeEnemigo = "3|0|";
+	string mensajeEnemigo = "4|0|";
 	mensajeEnemigo += parametrosEnemigo->enemigo->getInformacionDelEnemigo();
 	Mensaje* mensaje = new Mensaje("jochi","Todos",mensajeEnemigo);
 	parametrosEnemigo->servidor->encolarMensajeProcesadoParaCadaCliente(*mensaje,mensajeEnemigo);
 	Enemigo* enemigo = parametrosEnemigo->enemigo;
 	while (parametrosEnemigo->servidor->escenario->enemigoVivo(enemigo->getId())) {
 		usleep(50000);
-		mensajeEnemigo = "3|1|";
+		mensajeEnemigo = "4|1|";
 		mensajeEnemigo += enemigo->getInformacionDelEnemigo();
 		mensaje = new Mensaje("jochi","Todos",mensajeEnemigo);
 		parametrosEnemigo->servidor->encolarMensajeProcesadoParaCadaCliente(*mensaje,mensajeEnemigo);
 		mensaje->~Mensaje();
 	}
-	mensajeEnemigo = "3|2|";
+	mensajeEnemigo = "4|2|";
 	mensajeEnemigo += enemigo->getInformacionDelEnemigo();
 	mensaje = new Mensaje("jochi","Todos",mensajeEnemigo);
 	parametrosEnemigo->servidor->encolarMensajeProcesadoParaCadaCliente(*mensaje,mensajeEnemigo);
@@ -292,12 +327,10 @@ void* controlDeEnemigos(void* arg) {
 			pthread_create(&threadEnemigo, NULL, &enemigoActivo, parametrosEnemigo);
 			pthread_detach(threadEnemigo);
 		}
-
 		usleep(50000);
 	}
 	parametrosEnemigo->~ParametrosMovimiento();
 }
-
 
 void iniciarThreadMovimientoJugador(Servidor* servidor, string nombre)
 {
@@ -322,6 +355,7 @@ void iniciarThreadMovimientoJugador(Servidor* servidor, string nombre)
 void* cicloEscuchaCliente(void* arg) {
 	//esta funcion es la que se va a encargar de hacer send y recv de los enviar/recibir/desconectar
 	//es decir, esta funcion es la que va a estar constantemente haciendo send y recv del socket del cliente y detectando lo que quiere hacer.
+	pthread_mutex_t mutexSocket;
 	struct parametrosThreadCliente* parametros = (parametrosThreadCliente*) arg;
 	Servidor* servidor = parametros->serv;
 	string nombre = parametros->nombre;
@@ -353,77 +387,80 @@ void* cicloEscuchaCliente(void* arg) {
 				//servidor->setJugadorDesconectado(nombre);
 				servidor->verificarDesconexion(nombre);
 			}
-			else {
+			else
+			{
 				//en el formato siempre recibimos primero el metodo que es un entero.
 				//1 representa enviar un mensaje, 2 representa recibir mis mensajes, 3 verificar la conexion.
+
 				char* datos = strdup(datosRecibidos.c_str());
 				char* metodo = strtok(datos, "|");
-				int accion = atoi(metodo); //convierto a entero el metodo recibido por string
-				switch (accion) {
-					case 1: { //1 el cliente me envia un mensaje
-						char* remitente = strtok(NULL, "|");
-						char* destinatario = strtok(NULL, "|");
-						char* mensaje = strtok(NULL, "#");
-						//cout << "recibido :" <<  mensaje << endl;
-						if( remitente != NULL && destinatario != NULL && mensaje != NULL ){
-							encolarMensaje(string(remitente), string(destinatario), string(mensaje), servidor);
+				while (metodo != NULL) {
+					int accion = atoi(metodo); //convierto a entero el metodo recibido por string
+					switch (accion) {
+						case 1: { //1 el cliente me envia un mensaje
+							char* remitente = strtok(NULL, "|");
+							char* destinatario = strtok(NULL, "|");
+							char* mensaje = strtok(NULL, "#");
+							if (remitente != NULL && destinatario != NULL && mensaje != NULL) {
+								encolarMensaje(string(remitente), string(destinatario), string(mensaje), servidor);
+							}
+							//usleep(50000);
+							break;
 						}
-						//usleep(50000);
-						break;
+						case 2: { //2 el cliente quiere recibir sus mensajes
+							char* usuarioQueSolicita = strtok(NULL, "#");
+							//usleep(50000);
+							if (usuarioQueSolicita != NULL) {
+								enviarMensajesProcesadosA(string(usuarioQueSolicita), servidor, socketCliente);
+							}
+							break;
+						}
+						case 3: {//3 es verificar conexion
+							char buffer[BUFFER_MAX_SIZE] = "Escuchando";
+							int ok = send(socketCliente,buffer,strlen(buffer),0);
+							if (ok > 0) {
+
+							}
+							else if (ok == 0){
+								servidor->guardarLog("Se cerró la conexión con el cliente " + nombre + string(".\n"),DEBUG);
+							}
+							else{
+								servidor->guardarLog("ERROR: Ocurrió un problema con el socket del cliente: " + nombre + string(".\n"),DEBUG);
+							}
+							break;
+						}
+						case 4: {//4 es se desconecto el cliente, es un mensaje de log diferente al si se corta la conexion
+							servidor->restarCantidadClientesConectados();
+							servidor->verificarDesconexion(nombre);
+							break;
+						}
+						case 5: {
+							char comenzoJuego[BUFFER_MAX_SIZE];
+							string comenzo;
+							if (servidor->getJugadoresConectados()->size() == servidor->getCantJugadoresConectadosMax()){
+								string jugadoresInicio = servidor->getEstadoInicialSerializado();
+								comenzo = "0|"  + jugadoresInicio + "@";
+								servidor->iniciarCamara();
+								iniciarThreadMovimientoJugador(servidor,nombre);
+							}
+							else {
+								comenzo = "1@";
+							}
+							strcpy(comenzoJuego,comenzo.c_str());
+							send(socketCliente,comenzoJuego,strlen(comenzoJuego),0);
+							break;
+						}
+						case 6: {//6 es enviarHandShake
+							char* cliente = strtok(NULL, "|");
+							if (cliente != NULL)
+							{
+								servidor->enviarHandshake(socketCliente,cliente);
+								//usleep(1000000);
+							}
+							break;
+						}
 					}
-					case 2: { //2 el cliente quiere recibir sus mensajes
-						//cout << "le llega un 2" << endl;
-						char* usuarioQueSolicita = strtok(NULL, "#");
-						//usleep(50000);
-						if (usuarioQueSolicita != NULL) {
-							enviarMensajesProcesadosA(string(usuarioQueSolicita), servidor, socketCliente);
-						}
-						break;
-					}
-					case 3:{//3 es verificar conexion
-						char buffer[BUFFER_MAX_SIZE] = "Escuchando";
-						int ok = send(socketCliente,buffer,strlen(buffer),0);
-						if (ok > 0){
-						}
-						else if (ok == 0){
-							servidor->guardarLog("Se cerró la conexión con el cliente " + nombre + string(".\n"),DEBUG);
-						}
-						else{
-							servidor->guardarLog("ERROR: Ocurrió un problema con el socket del cliente: " + nombre + string(".\n"),DEBUG);
-						}
-						break;
-					}
-					case 4:{//4 es se desconecto el cliente, es un mensaje de log diferente al si se corta la conexion
-						servidor->restarCantidadClientesConectados();
-						servidor->verificarDesconexion(nombre);
-						break;
-					}
-					case 5:{
-						char comenzoJuego[BUFFER_MAX_SIZE];
-						string comenzo;
-						if (servidor->getJugadoresConectados()->size() == servidor->getCantJugadoresConectadosMax()){
-							string jugadoresInicio = servidor->getEstadoInicialSerializado();
-							comenzo = "0|"  + jugadoresInicio + "@";
-							servidor->iniciarCamara();
-							iniciarThreadMovimientoJugador(servidor,nombre);
-							//servidor->iniciarThreadMovimientoJugador(nombre);
-						}
-						else{
-							comenzo = "1@";
-						}
-						strcpy(comenzoJuego,comenzo.c_str());
-						send(socketCliente,comenzoJuego,strlen(comenzoJuego),0);
-						break;
-					}
-					case 6:{//6 es enviarHandShake
-						char* cliente = strtok(NULL, "|");
-						if (cliente != NULL)
-						{
-							servidor->enviarHandshake(socketCliente,cliente);
-							//usleep(1000000);
-						}
-						break;
-					}
+					metodo = strtok(NULL, "|");
 				}
 			}
 		} else {

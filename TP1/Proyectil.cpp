@@ -9,21 +9,15 @@
 #include <iostream>
 using namespace std;
 
-Proyectil::Proyectil(int danioEnPorcentaje, int puntosPorDisparo, string spriteBala,SDL_Rect boxCollider, string sentido) {
+Proyectil::Proyectil(int danioEnPorcentaje, int puntosPorDisparo, string spriteBala,int posicionX, int posicionY, string sentido, int angulo) {
 	this->danioEnPorcentaje = danioEnPorcentaje;
 	this->puntosPorDisparo = puntosPorDisparo;
 	this->spriteBala = spriteBala;
 	this->posicion.first = -1;
+	this->posicion.first = posicionX;
+	this->posicion.second = posicionY;
 	this->sentido=sentido;
-	if (sentido == "Normal")
-	{
-		this->posicion.first = boxCollider.x+boxCollider.w+10;
-	}
-	else
-	{
-		this->posicion.first = boxCollider.x-10;
-	}
-	this->posicion.second = boxCollider.y+20;
+	this->angulo = angulo;
 }
 
 Proyectil::~Proyectil() {
@@ -49,17 +43,55 @@ void Proyectil::mover()
 {
 	if (this->sentido == "Normal")
 	{
-		this->posicion.first += VELOCIDAD;
+		switch (this->angulo)
+		{
+			case 0:
+			{
+				this->posicion.first += VELOCIDAD;
+				break;
+			}
+			case 1:
+			{
+				this->posicion.second -= VELOCIDAD;
+				break;
+			}
+			case 2:
+			{
+				int velocidad_Y = VELOCIDAD;
+				this->posicion.first += VELOCIDAD;
+				this->posicion.second -= (velocidad_Y/2);
+				break;
+			}
+		}
 	}
 	else
 	{
-		this->posicion.first -= VELOCIDAD;
+		switch (this->angulo)
+		{
+			case 0:
+			{
+				this->posicion.first -= VELOCIDAD;
+				break;
+			}
+			case 1:
+			{
+				this->posicion.second -= VELOCIDAD;
+				break;
+			}
+			case 2:
+			{
+				int velocidad_Y = VELOCIDAD;
+				this->posicion.first -= VELOCIDAD;
+				this->posicion.second -= (velocidad_Y/2);
+				break;
+			}
+		}
 	}
 }
 
 string Proyectil::getStringProyectil()
 {
-	return (to_string(this->posicion.first) + "|" + to_string(this->posicion.second) + "|" + this->spriteBala + "|" + to_string(this->id) + "#");
+	return (to_string(this->posicion.first) + "|" + to_string(this->posicion.second) + "|" + this->spriteBala + "|" + to_string(this->id) + "|" + this->sentido + "|" + to_string(this->angulo) + "#");
 }
 
 int Proyectil::getDanio() {

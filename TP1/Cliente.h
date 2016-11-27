@@ -30,9 +30,10 @@
 #include "SpriteDto.h"
 #include "SetDeSpritesDto.h"
 #include "Handshake.h"
-#define BUFFER_MAX_SIZE 1000
- const int SCREEN_FPS = 20;
- const int SCREEN_TICKS_PER_FRAME = 1000 / SCREEN_FPS;
+
+#define BUFFER_MAX_SIZE 1024
+const int SCREEN_FPS = 30;
+const int SCREEN_TICKS_PER_FRAME = 1000 / SCREEN_FPS;
 using namespace std;
 
 class Cliente {
@@ -112,6 +113,7 @@ public:
 	void cargarImagenPorDefecto(ImagenDto* imagen);
 	void cargarImagenPorDefecto(SpriteDto* imagen);
 	SpriteDto* buscarSprite(string ID);
+	void cargarObjetosEscenario();
 };
 
 #endif /* TP1_CLIENTE_H_ */

@@ -8,7 +8,7 @@
 #include "Jugador.h"
 #include <iostream>
 
-Jugador::Jugador(string nombre, string equipo, int posicionX, vector<pair<int,int>> vectorPlataforma) {
+Jugador::Jugador(string nombre, string equipo, int posicionX, vector<pair<string,string>> vectorPlataforma) {
 	this->nombre = nombre;
 	this->equipo = equipo;
 	posicion.first = posicionX;
@@ -27,10 +27,59 @@ Jugador::Jugador(string nombre, string equipo, int posicionX, vector<pair<int,in
 	this->inicializarVectorArmas();
 	this->armasVacias = false;
 	this->vida = 100;
+	this->anguloBala = 0; //0 equivale al angulo 0, 1 al angulo PI/2, 2 al angulo PI/4
 }
 
 Jugador::~Jugador() {
 	// TODO Auto-generated destructor stub
+}
+
+void Jugador::condicionesMovimiento()
+{
+	if (!saltar && !arriba && !disparar)
+	{
+		spriteAEjecutar = "Jugador" + this->armas.at(armaActual)->nombre + "corriendo_" + this->equipo;
+	}
+	else if (!arriba && disparar && !saltar)
+	{
+		if (!this->armasVacias) {
+			spriteAEjecutar = "Jugador" + this->armas.at(armaActual)->nombre + "corriendo_disparando_" + this->equipo;
+			this->anguloBala = 0;
+		}
+		else {
+			spriteAEjecutar = "Jugador_" + this->armas.at(armaActual)->nombre + "corriendo_" + this->equipo;
+		}
+	}
+	else if (arriba && !disparar && !saltar)
+	{
+		spriteAEjecutar = "Jugador" + this->armas.at(armaActual)->nombre + "corriendo_mirando_arriba_" + this->equipo;
+	}
+	else if (arriba && disparar && !this->armas.at(armaActual)->disparoDiagonal && !saltar)
+	{
+		if (!this->armasVacias) {
+			spriteAEjecutar = "Jugador" + this->armas.at(armaActual)->nombre + "corriendo_disparando_arriba_" + this->equipo;
+			this->anguloBala = 1;
+		}
+		else
+		{
+			spriteAEjecutar = "Jugador" + this->armas.at(armaActual)->nombre + "corriendo_mirando_arriba_" + this->equipo;
+		}
+	}
+	else if (arriba && disparar && this->armas.at(armaActual)->disparoDiagonal && !saltar)
+	{
+		if (!this->armasVacias) {
+			spriteAEjecutar = "Jugador" + this->armas.at(armaActual)->nombre + "corriendo_disparando_diagonal_" + this->equipo;
+			this->anguloBala = 2;
+		}
+		else
+		{
+			spriteAEjecutar = "Jugador" + this->armas.at(armaActual)->nombre + "corriendo_mirando_arriba_" + this->equipo;
+		}
+	}
+	else if (saltar)
+	{
+		spriteAEjecutar = "Jugador" + this->armas.at(armaActual)->nombre + "saltando_" + this->equipo;
+	}
 }
 
 void Jugador::mover(SDL_Rect camara){
@@ -44,14 +93,10 @@ void Jugador::mover(SDL_Rect camara){
 	}
 	if (movDerecha)
 	{
-		if (!agachar){
+		if (!agachar)
+		{
 			velocidades.first += velocidad;
-			if (!saltar) {
-				spriteAEjecutar = "Jugador" + this->armas.at(armaActual)->nombre + "corriendo_" + this->equipo;
-			}
-			else {
-				spriteAEjecutar = "Jugador" + this->armas.at(armaActual)->nombre + "saltando_" + this->equipo;
-			}
+			this->condicionesMovimiento();
 		}
 		condicionSprite = "Normal";
 	}
@@ -59,23 +104,20 @@ void Jugador::mover(SDL_Rect camara){
 	{
 		if (!agachar){
 			velocidades.first -= velocidad;
-			if (!saltar) {
-				spriteAEjecutar = "Jugador" + this->armas.at(armaActual)->nombre + "corriendo_" + this->equipo;
-			}
-			else {
-					spriteAEjecutar = "Jugador" + this->armas.at(armaActual)->nombre + "saltando_" + this->equipo;
-				}
+			this->condicionesMovimiento();
 		}
 		condicionSprite = "Espejado";
 	}
-	else if (disparar) {
+	else if (disparar && !arriba) {
 		if (!this->armasVacias) {
-			if(!saltar && (posicion.second == PISO || posicion.second == PLATAFORMA)){
+			if(!saltar && !movDerecha && !movIzquierda && (posicion.second == PISO || posicion.second == PLATAFORMA)){
 				velocidades.first = 0;
 				if(!agachar){
 					spriteAEjecutar = "Jugador" + this->armas.at(armaActual)->nombre + "disparando_" + this->equipo;
+					this->anguloBala = 0;
 				} else {
 					spriteAEjecutar = "Jugador" + this->armas.at(armaActual)->nombre + "agachado_disparando_" + this->equipo;
+					this->anguloBala = 0;
 				}
 			}
 		} else {
@@ -84,11 +126,23 @@ void Jugador::mover(SDL_Rect camara){
 	}
 	else if (agachar)
 	{
+		velocidades.first = 0;
 		if (!saltar && !disparar && (posicion.second == PISO || posicion.second == PLATAFORMA))
+		{
+			spriteAEjecutar = "Jugador" + this->armas.at(armaActual)->nombre + "agachado_" + this->equipo;
+		}
+		else if (!saltar && disparar && (posicion.second == PISO || posicion.second == PLATAFORMA))
+		{
+			if (!armasVacias)
 			{
-				velocidades.first = 0;
+				spriteAEjecutar = "Jugador" + this->armas.at(armaActual)->nombre + "agachado_disparando_" + this->equipo;
+				this->anguloBala = 0;
+			}
+			else
+			{
 				spriteAEjecutar = "Jugador" + this->armas.at(armaActual)->nombre + "agachado_" + this->equipo;
 			}
+		}
 	}
 	else if (saltar)
 	{
@@ -96,6 +150,15 @@ void Jugador::mover(SDL_Rect camara){
 			saltar = true;
 		}
 		spriteAEjecutar = "Jugador" + this->armas.at(armaActual)->nombre + "saltando_" + this->equipo;
+	}
+	else if (arriba && !disparar && !agachar && !movDerecha && !movIzquierda)
+	{
+		spriteAEjecutar = "Jugador" + this->armas.at(armaActual)->nombre + "mirando_arriba_" + this->equipo;
+	}
+	else if (arriba && disparar && !agachar && !movDerecha && !movIzquierda)
+	{
+		spriteAEjecutar = "Jugador" + this->armas.at(armaActual)->nombre + "disparando_arriba_" + this->equipo;
+		this->anguloBala = 1;
 	}
 	else if(!movDerecha && ultimaTeclaPresionada == SDLK_RIGHT)
 	{
@@ -122,7 +185,7 @@ void Jugador::mover(SDL_Rect camara){
 			spriteAEjecutar = "Jugador" + this->armas.at(armaActual)->nombre + this->equipo;
 		}
 	}
-	else if(!disparar && ultimaTeclaPresionada == SDLK_SPACE)
+	else if(!disparar && ultimaTeclaPresionada == SDLK_x)
 	{
 		if (!saltar && (posicion.second == PISO || posicion.second == PLATAFORMA))
 		{
@@ -130,7 +193,16 @@ void Jugador::mover(SDL_Rect camara){
 		}
 	}
 
-	if (posicion.second < PISO && !this->esPlataforma(boxCollider.x) && !saltar && (ultimaTeclaPresionada != SDLK_DOWN || ultimaTeclaPresionada != SDLK_SPACE))
+	else if (!arriba && ultimaTeclaPresionada == SDLK_UP)
+	{
+		velocidades.first = 0;
+		if (!saltar)
+		{
+			spriteAEjecutar = "Jugador" + this->armas.at(armaActual)->nombre + this->equipo;
+		}
+	}
+
+	if (posicion.second < PISO && !this->esPlataforma(boxCollider.x) && !saltar && (ultimaTeclaPresionada != SDLK_DOWN || ultimaTeclaPresionada != SDLK_x))
 	{
 		caer = true;
 		spriteAEjecutar = "Jugador" + this->armas.at(armaActual)->nombre + "saltando_" + this->equipo;
@@ -201,19 +273,40 @@ void Jugador::mover(SDL_Rect camara){
 	}
 }
 
-Proyectil* Jugador::dispararProyectil() {
-	while (this->armaActual < this->armas.size()) {
-		if (!this->armas.at(this->armaActual)->sinMuniciones()) {
-			return (this->armas.at(this->armaActual)->disparar(boxCollider,condicionSprite));
-		} else {
-			this->armaActual++;
+bool Jugador::hayMuniciones()
+{
+	bool municiones = false;
+	for (int i = 0; i < this->armas.size(); i++)
+	{
+		if (!this->armas.at(i)->sinMuniciones())
+		{
+			municiones = true;
+			break;
 		}
 	}
-	if (this->armaActual >= this->armas.size())
+	return municiones;
+}
+
+Proyectil* Jugador::dispararProyectil() {
+	if (!saltar && !armasVacias)
 	{
-		this->armaActual = 0;
+		if (hayMuniciones()) {
+			if (!this->armas.at(this->armaActual)->sinMuniciones()) {
+				return (this->armas.at(this->armaActual)->disparar(posicion.first,posicion.second,condicionSprite,anguloBala,agachar));
+			} else {
+				this->armaActual++;
+				if (armaActual >= this->armas.size())
+				{
+					this->armaActual = 0;
+				}
+			}
+		}
+		else
+		{
+			this->armaActual = 0;
+			this->armasVacias = true;
+		}
 	}
-	this->armasVacias = true;
 	return NULL;
 }
 
@@ -221,7 +314,7 @@ bool Jugador::esPlataforma(int x)
 {
 	for (int i = 0; i < vectorPlataforma.size(); i++)
 	{
-		if ((x+boxCollider.w >= vectorPlataforma.at(i).first) && (x <= vectorPlataforma.at(i).second))
+		if ((x+boxCollider.w >= atoi(vectorPlataforma.at(i).first.c_str())) && (x <= atoi(vectorPlataforma.at(i).second.c_str())))
 		{
 			return true;
 		}
@@ -348,7 +441,7 @@ void Jugador::setMov(SDL_Keycode tecla, bool sePresiono){
 	else if (tecla == SDLK_LEFT){
 		movIzquierda = sePresiono;
 	}
-	else if (tecla == SDLK_UP)
+	else if (tecla == SDLK_z)
 	{
 		saltar = sePresiono;
 	}
@@ -356,9 +449,13 @@ void Jugador::setMov(SDL_Keycode tecla, bool sePresiono){
 	{
 		agachar = sePresiono;
 	}
-	else if (tecla == SDLK_SPACE)
+	else if (tecla == SDLK_x)
 	{
 		disparar = sePresiono;
+	}
+	else if (tecla == SDLK_UP)
+	{
+		arriba = sePresiono;
 	}
 }
 
@@ -388,7 +485,16 @@ bool Jugador::estaDisparando(){
 	return this->disparar;
 }
 
-Proyectil* Jugador::getProyectilDisparado()
+void Jugador::obtenerMuniciones(string arma)
 {
-	return this->armas.at(this->armaActual)->getProyectil();
+	for (int i = 0; i < this->armas.size(); i++)
+	{
+		if (this->armas.at(i)->nombreArma == arma)
+		{
+			this->armas.at(i)->sumarMuniciones();
+			this->armaActual = i;
+			this->armasVacias = false;
+			break;
+		}
+	}
 }

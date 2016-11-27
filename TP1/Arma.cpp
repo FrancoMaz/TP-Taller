@@ -15,7 +15,7 @@ Arma::~Arma() {
 	// TODO Auto-generated destructor stub
 }
 
-Proyectil* Arma::disparar(SDL_Rect boxCollider, string condicion) {
+Proyectil* Arma::disparar(int posicionX,int posicionY, string condicion, int anguloBala, bool agachar) {
 
 }
 
@@ -24,7 +24,7 @@ bool Arma::sinMuniciones()
 
 }
 
-Proyectil* Arma::getProyectil()
+void Arma::sumarMuniciones()
 {
 
 }

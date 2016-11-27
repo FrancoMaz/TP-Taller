@@ -9,7 +9,9 @@
 #define ESCENARIO_H_
 #include "Enemigo.h"
 #include "Proyectil.h"
+#include "Item.h"
 #include "string.h"
+#include "Jugador.h"
 #include <SDL2/SDL.h>
 
 using namespace std;
@@ -28,6 +30,9 @@ public:
 	void despertarEnemigos(SDL_Rect* camara);
 	Enemigo* getEnemigoActivo();
 	bool enemigoVivo(int idEnemigo);
+	bool verificarColisionConItem(Jugador* jugador);
+	bool colisionaronObjetos(SDL_Rect boxCollider1, SDL_Rect boxCollider2);
+	vector<Item*> itemArmas;
 };
 
 #endif /* ESCENARIO_H_ */

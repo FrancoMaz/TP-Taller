@@ -28,7 +28,7 @@ string Mensaje::getTexto(){
 }
 
 string Mensaje::getStringDatos(){
-	return (this->clienteRemitente + '|' + this->clienteDestinatario + '|' + this->textoMensaje);
+	return (this->clienteRemitente + '|' + this->clienteDestinatario + '|' + this->textoMensaje + '#');
 }
 
 void Mensaje::setRemitente(string remitente)
@@ -85,13 +85,17 @@ SDL_Keycode Mensaje::deserializar(string evento)
 	{
 		return SDLK_DOWN;
 	}
-	else if (evento == "Tecla Espacio")
+	else if (evento == "X")
 	{
-		return SDLK_SPACE;
+		return SDLK_x;
 	}
-	else if (evento == "Tecla R")
+	else if (evento == "R")
 	{
 		return SDLK_r;
+	}
+	else if (evento == "Z")
+	{
+		return SDLK_z;
 	}
 	else if (evento == "Soltar Tecla Derecha")
 	{
@@ -105,16 +109,20 @@ SDL_Keycode Mensaje::deserializar(string evento)
 	{
 		return SDLK_DOWN;
 	}
-	else if (evento == "Soltar Tecla Espacio")
+	else if (evento == "Soltar Tecla Arriba")
 	{
-		return SDLK_SPACE;
+		return SDLK_UP;
+	}
+	else if (evento == "Soltar X")
+	{
+		return SDLK_x;
 	}
 	return -1;
 }
 
 bool Mensaje::sePresionoTecla()
 {
-	if (eventoSerializado == "Tecla Derecha" or eventoSerializado == "Tecla Izquierda" or eventoSerializado == "Tecla Arriba" or eventoSerializado == "Tecla Abajo" or eventoSerializado == "Tecla Espacio")
+	if (eventoSerializado == "Tecla Derecha" or eventoSerializado == "Tecla Izquierda" or eventoSerializado == "Tecla Arriba" or eventoSerializado == "Tecla Abajo" or eventoSerializado == "X" or eventoSerializado == "Z")
 	{
 		return true;
 	}
