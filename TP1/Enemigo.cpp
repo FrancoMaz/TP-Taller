@@ -13,7 +13,7 @@ Enemigo::Enemigo(int posX, int posY, int id) {
 	this->estaMuerto = false;
 	this->posX = posX;
 	this->posY = posY;
-	this->spriteEnemigo = "Jugador_azul";
+	this->spriteEnemigo = "Enemigo_quieto";
 	this->id = id;
 }
 

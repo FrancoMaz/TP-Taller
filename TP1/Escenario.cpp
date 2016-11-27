@@ -12,7 +12,7 @@
 using namespace std;
 
 Escenario::Escenario() {
-	pair<int,int> lala(rand() % 800, 520);
+	pair<int,int> lala(rand() % 800, 415);
 	for(int i=0; i < 1; i++) {
 		cout << "Posicion x del enemigo: " << lala.first << endl;
 		cout << "Posicion y del enemigo: " << lala.second << endl;
@@ -37,16 +37,21 @@ bool Escenario::verificarColision(SDL_Rect camara, Proyectil* proyectil)
 }
 
 void Escenario::despertarEnemigos(SDL_Rect* camara) {
-	if (this->enemigosPorNivel.at(0).first < camara->x + camara->w && this->enemigosPorNivel.at(0).first > camara->x) {
-		Enemigo* enemigo = new Enemigo(this->enemigosPorNivel.at(0).first,this->enemigosPorNivel.at(0).second,this->idEnemigo);
-		this->enemigosActivos.push_back(enemigo);
-		this->idEnemigo++;
+	if (!this->enemigosPorNivel.empty()) {
+		if (this->enemigosPorNivel.at(0).first < camara->x + camara->w && this->enemigosPorNivel.at(0).first > camara->x) {
+			Enemigo* enemigo = new Enemigo(this->enemigosPorNivel.at(0).first,this->enemigosPorNivel.at(0).second,this->idEnemigo);
+			this->enemigosActivos.push_back(enemigo);
+			this->enemigosPorNivel.erase(this->enemigosPorNivel.begin() + 0);
+			this->idEnemigo++;
+		}
 	}
 }
 
 Enemigo* Escenario::getEnemigoActivo() {
 	if (!this->enemigosActivos.empty()) {
-		return this->enemigosActivos.at(0);
+		Enemigo* enemigoPetuto = this->enemigosActivos.at(0);
+		this->enemigosActivos.erase(this->enemigosActivos.begin()+0);
+		return enemigoPetuto;
 	} else {
 		return NULL;
 	}

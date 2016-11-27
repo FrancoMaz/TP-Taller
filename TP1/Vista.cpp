@@ -462,6 +462,8 @@ void Vista::actualizarPantalla(int anchoVentana, int anchoCapaPrincipal){
 	}
 	TexturaSDL* texturaJugadorX;
 	TexturaSDL* texturaBala;
+	TexturaSDL* texturaEnemigo;
+
 	for (int i = 0; i < vistaBalas.size(); i++){
 		VistaBala* vistaBala = vistaBalas.at(i);
 		texturaBala = vistaBala->textura;
@@ -471,6 +473,11 @@ void Vista::actualizarPantalla(int anchoVentana, int anchoCapaPrincipal){
 		}*/
 		texturaBala->aplicarPosicion(vistaBala->x - camara.x, vistaBala->y - camara.y,0,SDL_FLIP_NONE);
 	}
+	for (int i = 0; i < vistaEnemigos.size(); i++){
+			VistaEnemigo* vistaEnemigo = vistaEnemigos.at(i);
+			texturaEnemigo = vistaEnemigo->textura;
+			texturaEnemigo->aplicarPosicion(vistaEnemigo->x - camara.x, vistaEnemigo->y - camara.y,0,SDL_FLIP_NONE);
+		}
 
 	for (int i = 0; i < vistaJugadores.size(); i++){
 		VistaJugador* vistaJugador = vistaJugadores.at(i);

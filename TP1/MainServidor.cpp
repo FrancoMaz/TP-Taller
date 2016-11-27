@@ -255,6 +255,49 @@ void* actualizarPosicionesJugador(void* arg)
 	}
 }
 
+void* enemigoActivo(void* arg) {
+	ParametrosMovimiento* parametrosEnemigo = (ParametrosMovimiento*) arg;
+	string mensajeEnemigo = "3|0|";
+	mensajeEnemigo += parametrosEnemigo->enemigo->getInformacionDelEnemigo();
+	Mensaje* mensaje = new Mensaje("jochi","Todos",mensajeEnemigo);
+	parametrosEnemigo->servidor->encolarMensajeProcesadoParaCadaCliente(*mensaje,mensajeEnemigo);
+	Enemigo* enemigo = parametrosEnemigo->enemigo;
+	while (parametrosEnemigo->servidor->escenario->enemigoVivo(enemigo->getId())) {
+		usleep(50000);
+		mensajeEnemigo = "3|1|";
+		mensajeEnemigo += enemigo->getInformacionDelEnemigo();
+		mensaje = new Mensaje("jochi","Todos",mensajeEnemigo);
+		parametrosEnemigo->servidor->encolarMensajeProcesadoParaCadaCliente(*mensaje,mensajeEnemigo);
+		mensaje->~Mensaje();
+	}
+	mensajeEnemigo = "3|2|";
+	mensajeEnemigo += enemigo->getInformacionDelEnemigo();
+	mensaje = new Mensaje("jochi","Todos",mensajeEnemigo);
+	parametrosEnemigo->servidor->encolarMensajeProcesadoParaCadaCliente(*mensaje,mensajeEnemigo);
+	enemigo->~Enemigo();
+	mensaje->~Mensaje();
+	pthread_exit(NULL);
+}
+
+void* controlDeEnemigos(void* arg) {
+	Servidor* servidor = (Servidor*) arg;
+	ParametrosMovimiento* parametrosEnemigo = new ParametrosMovimiento(servidor,NULL);
+	//usleep(4000000);
+	while (servidor->escuchando) {
+		servidor->escenario->despertarEnemigos(&servidor->camara);
+		Enemigo* enemigo = servidor->escenario->getEnemigoActivo();
+		if (enemigo != NULL) {
+			parametrosEnemigo->enemigo = enemigo;
+			pthread_t threadEnemigo;
+			pthread_create(&threadEnemigo, NULL, &enemigoActivo, parametrosEnemigo);
+			pthread_detach(threadEnemigo);
+		}
+
+		usleep(50000);
+	}
+	parametrosEnemigo->~ParametrosMovimiento();
+}
+
 
 void iniciarThreadMovimientoJugador(Servidor* servidor, string nombre)
 {
@@ -264,10 +307,13 @@ void iniciarThreadMovimientoJugador(Servidor* servidor, string nombre)
 	ParametrosMovimiento * parametros = new ParametrosMovimiento(servidor,jugador);/*ParametrosActPosicion parametros;
 	parametros.jugador = jugador;
 	parametros.servidor = this;*/
-
+	pthread_t threadEnemigosPetutos;
 	pthread_t threadMov = jugador->getThreadMovimiento();
 	pthread_create(&threadMov, NULL, &actualizarPosicionesJugador, parametros);
 	pthread_detach(threadMov);
+
+	pthread_create(&threadEnemigosPetutos, NULL, &controlDeEnemigos, (void*) servidor);
+	pthread_detach(threadEnemigosPetutos);
 	jugador->setThreadMovimiento(threadMov);
 }
 
@@ -402,56 +448,11 @@ void* cicloEscuchaCliente(void* arg) {
 	}
 }
 
-void* enemigoActivo(void* arg) {
-	ParametrosMovimiento* parametrosEnemigo = (ParametrosMovimiento*) arg;
-	string mensajeEnemigo = "3|0|";
-	mensajeEnemigo += parametrosEnemigo->enemigo->getInformacionDelEnemigo();
-	Mensaje* mensaje = new Mensaje("jochi","Todos",mensajeEnemigo);
-	parametrosEnemigo->servidor->encolarMensajeProcesadoParaCadaCliente(*mensaje,mensajeEnemigo);
-	Enemigo* enemigo = parametrosEnemigo->enemigo;
-	while (parametrosEnemigo->servidor->escenario->enemigoVivo(enemigo->getId())) {
-		usleep(50000);
-		mensajeEnemigo = "3|1|";
-		mensajeEnemigo += enemigo->getInformacionDelEnemigo();
-		mensaje = new Mensaje("jochi","Todos",mensajeEnemigo);
-		parametrosEnemigo->servidor->encolarMensajeProcesadoParaCadaCliente(*mensaje,mensajeEnemigo);
-		mensaje->~Mensaje();
-	}
-	mensajeEnemigo = "3|2|";
-	mensajeEnemigo += enemigo->getInformacionDelEnemigo();
-	mensaje = new Mensaje("jochi","Todos",mensajeEnemigo);
-	parametrosEnemigo->servidor->encolarMensajeProcesadoParaCadaCliente(*mensaje,mensajeEnemigo);
-	enemigo->~Enemigo();
-	mensaje->~Mensaje();
-	pthread_exit(NULL);
-}
-
-void* controlDeEnemigos(void* arg) {
-	Servidor* servidor = (Servidor*) arg;
-	ParametrosMovimiento* parametrosEnemigo = new ParametrosMovimiento(servidor,NULL);
-	usleep(2000000);
-	while (servidor->escuchando) {
-		servidor->escenario->despertarEnemigos(&servidor->camara);
-		Enemigo* enemigo = servidor->escenario->getEnemigoActivo();
-		if (enemigo != NULL) {
-			parametrosEnemigo->enemigo = enemigo;
-			pthread_t threadEnemigo;
-			pthread_create(&threadEnemigo, NULL, &enemigoActivo, parametrosEnemigo);
-			pthread_detach(threadEnemigo);
-		}
-
-		usleep(50000);
-	}
-	parametrosEnemigo->~ParametrosMovimiento();
-}
-
 void* cicloEscucharConexionesNuevasThreadProceso(void* arg) {
 	Servidor* servidor = (Servidor*) arg;
 	pthread_t threadProceso;
-	pthread_t threadEnemigosPetutos;
+
 	int ok = pthread_create(&threadProceso, NULL, &cicloProcesarMensajes, (void*) servidor);
-	pthread_create(&threadEnemigosPetutos, NULL, &controlDeEnemigos, (void*) servidor);
-	pthread_detach(threadEnemigosPetutos);
 	servidor->setThreadProceso(threadProceso);
 
 	pthread_t thread_id[MAX_CANT_CLIENTES]; //la cantidad maxima de clientes es 6, voy a crear, como mucho 6 threads para manejar dichas conexiones.

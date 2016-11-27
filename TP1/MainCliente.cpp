@@ -78,7 +78,22 @@ void procesarUltimosMensajes(string mensajes, Cliente* cliente, UpdateJugador* u
 			s.erase(0, pos + delimitador.length());
 			pos = s.find(delimitador);
 			texto = s.substr(0,pos);
-			int textoInt = stringToInt(string(texto));
+			int textoInt;// = stringToInt(string(texto));
+
+			if (texto == "0") {
+				textoInt = 0;
+			}
+			if (texto == "1") {
+				textoInt = 1;
+			}
+			if (texto == "2") {
+				textoInt = 2;
+			}
+			if (texto == "3") {
+				textoInt = 3;
+			}
+			cout << "texto "<< texto << endl;
+			cout << "Textoint " << textoInt << endl;
 			switch (textoInt) {
 				case 0: {
 					s.erase(0, pos + delimitador.length());
@@ -194,7 +209,7 @@ void procesarUltimosMensajes(string mensajes, Cliente* cliente, UpdateJugador* u
 					pos = s.find(delimitadorFinal);
 					texto = s.substr(0,pos);
 					int idEnemigo = stringToInt(texto);
-					int cantFotogramas = 1;
+					int cantFotogramas = 7;
 					/*for (int i = 0; i < setsSprites.size(); i++) {
 						vector<SpriteDto*> listaSprites = setsSprites.at(i)->getSprites();
 						for (int i = 0; i < listaSprites.size(); i++) {
@@ -207,12 +222,12 @@ void procesarUltimosMensajes(string mensajes, Cliente* cliente, UpdateJugador* u
 					break;
 				}
 			}
-		}
 
-		vista->actualizarPosJugador(update,stringToInt(handshakeDeserializado->getAncho()),stringToInt(handshakeDeserializado->getImagenes().at(0)->getAncho()));
-		s.erase(0, pos + delimitador.length());
-		pos = s.find(delimitador);
-		texto = s.substr(0,pos);
+			vista->actualizarPosJugador(update,stringToInt(handshakeDeserializado->getAncho()),stringToInt(handshakeDeserializado->getImagenes().at(0)->getAncho()));
+			s.erase(0, pos + delimitador.length());
+			pos = s.find(delimitador);
+			texto = s.substr(0,pos);
+		}
 	}
 	vista->actualizarPantalla(stringToInt(handshakeDeserializado->getAncho()), stringToInt(handshakeDeserializado->getImagenes().at(0)->getAncho()));
 }
