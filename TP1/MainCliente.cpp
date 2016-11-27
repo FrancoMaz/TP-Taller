@@ -60,7 +60,7 @@ void* verificarConexion(void * arg){
 }
 
 
-double calcularAngulo(int numero)
+double calcularAngulo(int numero, string sentido)
 {
 	double angulo;
 	switch (numero)
@@ -72,12 +72,20 @@ double calcularAngulo(int numero)
 		}
 		case 1:
 		{
-			angulo = -90;
+			if (sentido == "Normal"){
+				angulo = -90;
+			} else {
+				angulo = 90;
+			}
 			break;
 		}
 		case 2:
 		{
-			angulo = -30;
+			if (sentido == "Normal"){
+				angulo = -30;
+			} else {
+				angulo = 30;
+			}
 			break;
 		}
 	}
@@ -194,7 +202,7 @@ void procesarUltimosMensajes(string mensajes, Cliente* cliente, UpdateJugador* u
 				s.erase(0, pos + delimitador.length());
 				pos = s.find(delimitadorFinal);
 				texto = s.substr(0,pos);
-				double angulo = calcularAngulo(stringToInt(texto));
+				double angulo = calcularAngulo(stringToInt(texto),sentido);
 				int cantFotogramas;
 				for (int i = 0; i < setsSprites.size(); i++){
 					vector<SpriteDto*> listaSprites = setsSprites.at(i)->getSprites();

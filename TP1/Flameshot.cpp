@@ -47,7 +47,7 @@ Proyectil* Flameshot::disparar(int posicionX,int posicionY, string condicion, in
 				posX = posicionX-60;
 				posY = posicionY-154;
 			} else {
-				posX = posicionX-60;
+				posX = posicionX-80;
 				posY = posicionY-154;
 			}
 			break;
