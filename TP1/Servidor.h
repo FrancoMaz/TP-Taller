@@ -31,6 +31,7 @@
 #include "Escenario.h"
 #define MAX_CANT_CLIENTES 6
 #define BUFFER_MAX_SIZE 1024
+#define CANTIDADNIVELES 3
 const int INFO = 1;
 const int DEBUG = 2;
 
@@ -74,7 +75,8 @@ private:
 	vector<string> vectorEquipos;
 	int posicionVector;
 	int posicionXInicial;
-	vector<pair<string,string>> vectorPlataforma;
+	int nivelActual;
+	bool gameComplete;
 
 public:
 	Servidor();
@@ -138,8 +140,10 @@ public:
 	vector<pair<int,int>> abscisasCapas;
 	string serializarCapas();
 	void iniciarThreadMovimientoJugador(string nombre);
-	void inicializarDatosNivel();
-	Escenario* escenario;
+	void inicializarDatosNiveles();
+	vector<Escenario*> vectorNiveles;
+	Escenario* getNivelActual();
+	void avanzarDeNivel();
 };
 
 #endif /* TP1_SERVIDOR_H_ */

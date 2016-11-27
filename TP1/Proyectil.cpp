@@ -16,7 +16,7 @@ Proyectil::Proyectil(int danioEnPorcentaje, int puntosPorDisparo, string spriteB
 	this->posicion.first = -1;
 	this->posicion.first = posicionX;
 	this->posicion.second = posicionY;
-	this->sentido=sentido;
+	this->sentido = sentido;
 	this->angulo = angulo;
 }
 

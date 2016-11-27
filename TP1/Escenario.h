@@ -15,6 +15,7 @@
 #include <SDL2/SDL.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include "XmlParser.h"
 
 using namespace std;
 
@@ -24,7 +25,7 @@ private:
 	vector<Enemigo*> enemigosActivos;
 	vector<Proyectil*> proyectiles;
 public:
-	Escenario();
+	Escenario(string rutaXml);
 	virtual ~Escenario();
 	int idEnemigo;
 	void agregarProyectil(Proyectil* proyectil, string nombre, int idProyectil);
@@ -35,7 +36,9 @@ public:
 	bool verificarColisionConItem(Jugador* jugador);
 	bool colisionaronObjetos(SDL_Rect boxCollider1, SDL_Rect boxCollider2);
 	vector<Item*> itemArmas;
+	vector<pair<string,string>> plataformas;
 	uint64_t rdtsc();
+	bool levelClear;
 };
 
 #endif /* ESCENARIO_H_ */

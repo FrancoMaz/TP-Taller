@@ -51,19 +51,21 @@ Servidor::Servidor(char* nombreArchivoDeUsuarios, int puerto, Logger* logger) {
 		abscisas.second = 0;
 		abscisasCapas.push_back(abscisas);
 	}
-	this->escenario = new Escenario();
-	this->inicializarDatosNivel();
+	this->nivelActual = 0;
+	this->gameComplete = false;
+	this->inicializarDatosNiveles();
 }
 
 Servidor::~Servidor() {
 }
 
 
-void Servidor::inicializarDatosNivel()
+void Servidor::inicializarDatosNiveles()
 {
-	XmlParser* parserNivel = new XmlParser("Recursos/nivel1.xml");
-	this->vectorPlataforma = parserNivel->getPlataformas();
-	this->escenario->itemArmas = parserNivel->getItemArmas();
+	for (int i = 0; i < CANTIDADNIVELES; i++)
+	{
+		this->vectorNiveles.push_back(new Escenario("Recursos/nivel" + to_string(i+1) + ".xml"));
+	}
 }
 void Servidor::guardarDatosDeConfiguracion() {
 	string path;
@@ -195,7 +197,7 @@ void Servidor::autenticar(string nombre, string contrasenia, list<string>& usuar
 			autenticacionOK = true;
 			if (jugadores->empty() || !this->contieneJugador(usuario.nombre))
 			{
-				Jugador* jugador = new Jugador(usuario.nombre, this->vectorEquipos.at(posicionVector), posicionXInicial, this->vectorPlataforma);
+				Jugador* jugador = new Jugador(usuario.nombre, this->vectorEquipos.at(posicionVector), posicionXInicial, this->vectorNiveles.at(this->nivelActual)->plataformas);
 				jugador->setConectado();
 				pthread_mutex_lock(&mutexVectorJugadores);
 				jugadores->push_back(jugador);
@@ -636,27 +638,17 @@ void Servidor::verificarDesconexion(string nombre)
 		}
 	}
 }
-/*
-void Servidor::iniciarThreadMovimientoJugador(string nombre){
-	pthread_mutex_lock(&mutexVectorJugadores);
-	Jugador* jugador = obtenerJugador(nombre);
-	pthread_mutex_unlock(&mutexVectorJugadores);
-<<<<<<< HEAD
-	Servidor* servidor = this;
-	ParametrosMovimiento * parametros = new ParametrosMovimiento(servidor,jugador);/*ParametrosActPosicion parametros;
-=======
-	ParametrosActPosicion parametros;
->>>>>>> 7141cadd9db71637618ff321e8c9e0314344fbbd
-	parametros.jugador = jugador;
-	parametros.servidor = this;
 
-	pthread_t threadMov = jugador->getThreadMovimiento();
-	pthread_create(&threadMov, NULL, &actualizarPosicionesJugador, parametros);
-	pthread_detach(threadMov);
-	jugador->setThreadMovimiento(threadMov);
-<<<<<<< HEAD
+Escenario* Servidor::getNivelActual()
+{
+	return (this->vectorNiveles.at(nivelActual));
+}
 
-}*/
-
-
-
+void Servidor::avanzarDeNivel()
+{
+	this->nivelActual++;
+	if (this->nivelActual > CANTIDADNIVELES)
+	{
+		this->gameComplete = true;
+	}
+}

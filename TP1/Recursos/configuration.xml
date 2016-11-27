@@ -390,6 +390,25 @@
 	     <z-index>1</z-index>
 	   </Sprite3>
 	  </SetItemArmas>
+	  <SetItemBonus>
+	  	<Carpeta>ItemBonus</Carpeta>
+	  	 <Sprite1>
+	     <Id>Item_KillAll</Id>
+	     <CantFotogramas>6</CantFotogramas>
+	     <Ancho>276</Ancho>
+	     <Alto>76</Alto>
+	     <Imagen>Item_KillAll</Imagen>
+	     <z-index>1</z-index>
+	    </Sprite1>
+	    <Sprite2>
+	     <Id>Item_Power</Id>
+	     <CantFotogramas>11</CantFotogramas>
+	     <Ancho>594</Ancho>
+	     <Alto>68</Alto>
+	     <Imagen>Item_Power</Imagen>
+	     <z-index>1</z-index>
+	    </Sprite2>
+	  </SetItemBonus>
 	  <SetEnemigos>
 	  	<Carpeta>Enemigos</Carpeta>
 	  	<Sprite1>

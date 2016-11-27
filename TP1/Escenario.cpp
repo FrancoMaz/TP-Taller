@@ -11,7 +11,8 @@
 
 using namespace std;
 
-Escenario::Escenario() {
+Escenario::Escenario(string rutaXml) {
+	XmlParser* parserNivel = new XmlParser(rutaXml);
 	srand(rdtsc());
 	pair<int,int> lala(rand() % 800, 415);
 	for(int i=0; i < 1; i++) {
@@ -20,6 +21,9 @@ Escenario::Escenario() {
 		this->enemigosPorNivel.push_back(lala);
 	}
 	this->idEnemigo = 0;
+	this->plataformas = parserNivel->getPlataformas();
+	this->itemArmas = parserNivel->getItemArmas();
+	this->levelClear = false;
 }
 
 Escenario::~Escenario() {
