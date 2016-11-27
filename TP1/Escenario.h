@@ -13,6 +13,8 @@
 #include "string.h"
 #include "Jugador.h"
 #include <SDL2/SDL.h>
+#include <stdlib.h>
+#include <stdio.h>
 
 using namespace std;
 
@@ -33,6 +35,7 @@ public:
 	bool verificarColisionConItem(Jugador* jugador);
 	bool colisionaronObjetos(SDL_Rect boxCollider1, SDL_Rect boxCollider2);
 	vector<Item*> itemArmas;
+	uint64_t rdtsc();
 };
 
 #endif /* ESCENARIO_H_ */

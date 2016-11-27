@@ -12,6 +12,7 @@
 using namespace std;
 
 Escenario::Escenario() {
+	srand(rdtsc());
 	pair<int,int> lala(rand() % 800, 415);
 	for(int i=0; i < 1; i++) {
 		cout << "Posicion x del enemigo: " << lala.first << endl;
@@ -23,6 +24,12 @@ Escenario::Escenario() {
 
 Escenario::~Escenario() {
 	// TODO Auto-generated destructor stub
+}
+
+uint64_t Escenario::rdtsc() {
+    unsigned int lo,hi;
+    __asm__ __volatile__ ("rdtsc" : "=a" (lo), "=d" (hi));
+    return ((uint64_t)hi << 32) | lo;
 }
 
 void Escenario::agregarProyectil(Proyectil* proyectil, string nombreJugador, int idProyectil) {
