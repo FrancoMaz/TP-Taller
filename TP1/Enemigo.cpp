@@ -15,6 +15,8 @@ Enemigo::Enemigo(int posX, int posY, int id) {
 	this->posY = posY;
 	this->spriteEnemigo = "Enemigo_quieto";
 	this->id = id;
+	this->boxCollider = {posX,posY,86,106};
+	this->threadAsociado = false;
 }
 
 Enemigo::~Enemigo() {
@@ -33,11 +35,10 @@ int Enemigo::getId() {
 	return this->id;
 }
 
-/*void Enemigo::daniarseCon(Proyectil* proyectil) {
-	int danio = proyectil->danioEnPorcentaje;
-	if (this->vida > 0 && danio < this->vida) {
-		this->vida -= danio;
-	} else {
-		this->estaMuerto = true;
-	}
-}*/
+SDL_Rect Enemigo::getBoxCollider() {
+	return this->boxCollider;
+}
+
+int Enemigo::getPosX() {
+	return this->posX;
+}

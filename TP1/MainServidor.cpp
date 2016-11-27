@@ -153,6 +153,7 @@ void* disparoProyectil(void* arg)
 	{
 		usleep(50000);
 		proyectil->mover();
+
 		mensajeProyectilString = "2|1|";
 		mensajeProyectilString += proyectil->getStringProyectil();
 		mensajeProyectil = new Mensaje(jugador->getNombre(),"Todos",mensajeProyectilString);
@@ -311,22 +312,26 @@ void* actualizarPosicionesJugador(void* arg)
 
 void* enemigoActivo(void* arg) {
 	ParametrosMovimiento* parametrosEnemigo = (ParametrosMovimiento*) arg;
+	Servidor* servidor = parametrosEnemigo->servidor;
+	string nombre = parametrosEnemigo->jugador->getNombre();
+	cout << "Nombre: " << nombre << endl;
 	string mensajeEnemigo = "4|0|";
 	mensajeEnemigo += parametrosEnemigo->enemigo->getInformacionDelEnemigo();
-	Mensaje* mensaje = new Mensaje("jochi","Todos",mensajeEnemigo);
+	Mensaje* mensaje = new Mensaje(nombre,"Todos",mensajeEnemigo);
 	parametrosEnemigo->servidor->encolarMensajeProcesadoParaCadaCliente(*mensaje,mensajeEnemigo);
 	Enemigo* enemigo = parametrosEnemigo->enemigo;
-	while (parametrosEnemigo->servidor->getNivelActual()->enemigoVivo(enemigo->getId())) {
+	while (!enemigo->getEstaMuerto() && (!parametrosEnemigo->servidor->getNivelActual()->enemigoPerdido(enemigo->getId(),&servidor->camara))) {
 		usleep(50000);
 		mensajeEnemigo = "4|1|";
 		mensajeEnemigo += enemigo->getInformacionDelEnemigo();
-		mensaje = new Mensaje("jochi","Todos",mensajeEnemigo);
+		mensaje = new Mensaje(nombre,"Todos",mensajeEnemigo);
 		parametrosEnemigo->servidor->encolarMensajeProcesadoParaCadaCliente(*mensaje,mensajeEnemigo);
 		mensaje->~Mensaje();
 	}
+	parametrosEnemigo->servidor->getNivelActual()->eliminarEnemigoActivo(enemigo->getId());
 	mensajeEnemigo = "4|2|";
 	mensajeEnemigo += enemigo->getInformacionDelEnemigo();
-	mensaje = new Mensaje("jochi","Todos",mensajeEnemigo);
+	mensaje = new Mensaje(nombre,"Todos",mensajeEnemigo);
 	parametrosEnemigo->servidor->encolarMensajeProcesadoParaCadaCliente(*mensaje,mensajeEnemigo);
 	enemigo->~Enemigo();
 	mensaje->~Mensaje();
@@ -334,17 +339,23 @@ void* enemigoActivo(void* arg) {
 }
 
 void* controlDeEnemigos(void* arg) {
-	Servidor* servidor = (Servidor*) arg;
-	ParametrosMovimiento* parametrosEnemigo = new ParametrosMovimiento(servidor,NULL);
+	ParametrosMovimiento* parametroRecibido= (ParametrosMovimiento*) arg;
+	Servidor* servidor = parametroRecibido->servidor;
+	Jugador* jugador = parametroRecibido->jugador;
+	ParametrosMovimiento* parametrosEnemigo = new ParametrosMovimiento(servidor, jugador);
 	//usleep(4000000);
 	while (servidor->escuchando) {
 		servidor->getNivelActual()->despertarEnemigos(&servidor->camara);
-		Enemigo* enemigo = servidor->getNivelActual()->getEnemigoActivo();
-		if (enemigo != NULL) {
-			parametrosEnemigo->enemigo = enemigo;
-			pthread_t threadEnemigo;
-			pthread_create(&threadEnemigo, NULL, &enemigoActivo, parametrosEnemigo);
-			pthread_detach(threadEnemigo);
+		for (int i = 0; i < parametrosEnemigo->servidor->getNivelActual()->getEnemigosActivos().size(); i++) {
+			Enemigo* enemigo = parametrosEnemigo->servidor->getNivelActual()->getEnemigoActivo(i);
+			if (enemigo != NULL && !enemigo->threadAsociado) {
+				enemigo->threadAsociado = true;
+				cout << "enemigo: " << enemigo << endl;
+				parametrosEnemigo->enemigo = enemigo;
+				pthread_t threadEnemigo;
+				pthread_create(&threadEnemigo, NULL, &enemigoActivo, parametrosEnemigo);
+				pthread_detach(threadEnemigo);
+			}
 		}
 		usleep(50000);
 	}
@@ -364,7 +375,7 @@ void iniciarThreadMovimientoJugador(Servidor* servidor, string nombre)
 	pthread_create(&threadMov, NULL, &actualizarPosicionesJugador, parametros);
 	pthread_detach(threadMov);
 
-	pthread_create(&threadEnemigosPetutos, NULL, &controlDeEnemigos, (void*) servidor);
+	pthread_create(&threadEnemigosPetutos, NULL, &controlDeEnemigos, parametros);
 	pthread_detach(threadEnemigosPetutos);
 	jugador->setThreadMovimiento(threadMov);
 }

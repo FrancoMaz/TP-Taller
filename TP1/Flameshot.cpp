@@ -14,6 +14,7 @@ Flameshot::Flameshot() {
 	this->nombre = "_lanzallamas_";
 	this->municionesPorRepuesto = 15;
 	this->nombreArma = "FlameShot";
+	this->boxCollider;
 }
 
 Flameshot::~Flameshot() {
@@ -53,7 +54,7 @@ Proyectil* Flameshot::disparar(int posicionX,int posicionY, string condicion, in
 			break;
 	}
 
-	this->proyectil = new Proyectil(35,40,this->nombreArma,posX,posY,condicion, anguloBala);
+	this->proyectil = new Proyectil(35, 40, this->nombreArma, posX, posY, condicion, anguloBala, this->boxCollider);
 	this->municiones -= 1;
 	return this->proyectil;
 }

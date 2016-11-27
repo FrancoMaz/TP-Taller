@@ -31,14 +31,18 @@ public:
 	void agregarProyectil(Proyectil* proyectil, string nombre, int idProyectil);
 	bool verificarColision(SDL_Rect camara, Proyectil* proyectil);
 	void despertarEnemigos(SDL_Rect* camara);
-	Enemigo* getEnemigoActivo();
-	bool enemigoVivo(int idEnemigo);
+	Enemigo* getEnemigoActivo(int posicion);
 	bool verificarColisionConItem(Jugador* jugador);
 	bool colisionaronObjetos(SDL_Rect boxCollider1, SDL_Rect boxCollider2);
 	vector<Item*> itemArmas;
 	vector<pair<string,string>> plataformas;
 	uint64_t rdtsc();
 	bool levelClear;
+	bool verificarColisionConEnemigo(Proyectil* proyectil);
+	void ordenarEnemigos();
+	vector<Enemigo*> getEnemigosActivos();
+	bool enemigoPerdido(int id, SDL_Rect* camara);
+	void eliminarEnemigoActivo(int id);
 };
 
 #endif /* ESCENARIO_H_ */

@@ -18,6 +18,7 @@ protected:
 	int municiones;
 	int municionesPorRepuesto;
 	Proyectil* proyectil;
+	SDL_Rect boxCollider;
 
 public:
 	Arma();

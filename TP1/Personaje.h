@@ -21,7 +21,8 @@ public:
 	Personaje();
 	virtual ~Personaje();
 	virtual void disparar();
-	virtual void daniarseCon(Proyectil* proyectil);
+	virtual void daniarseCon(int danio);
+	bool getEstaMuerto();
 };
 
 #endif /* PERSONAJE_H_ */

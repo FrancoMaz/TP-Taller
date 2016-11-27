@@ -14,6 +14,7 @@ RocketLauncher::RocketLauncher() {
 	this->nombre = "_bazooka_";
 	this->municionesPorRepuesto = 15;
 	this->nombreArma = "RocketLauncher";
+	this->boxCollider;
 }
 
 RocketLauncher::~RocketLauncher() {
@@ -53,7 +54,7 @@ Proyectil* RocketLauncher::disparar(int posicionX,int posicionY, string condicio
 			break;
 	}
 
-	this->proyectil = new Proyectil(80,40,this->nombreArma,posX,posY,condicion,anguloBala);
+	this->proyectil = new Proyectil(80, 40, this->nombreArma, posX, posY, condicion, anguloBala, this->boxCollider);
 	this->municiones -= 1;
 	return this->proyectil;
 }
