@@ -9,7 +9,7 @@
 #include <iostream>
 using namespace std;
 
-Proyectil::Proyectil(int danioEnPorcentaje, int puntosPorDisparo, string spriteBala,int posicionX, int posicionY, string sentido, int angulo, SDL_Rect boxCollider, bool cortoAlcance) {
+Proyectil::Proyectil(int danioEnPorcentaje, int puntosPorDisparo, string spriteBala,int posicionX, int posicionY, string sentido, int angulo, SDL_Rect boxCollider, bool cortoAlcance, int disparadoPor) {
 	this->danioEnPorcentaje = danioEnPorcentaje;
 	this->puntosPorDisparo = puntosPorDisparo;
 	this->spriteBala = spriteBala;
@@ -21,6 +21,7 @@ Proyectil::Proyectil(int danioEnPorcentaje, int puntosPorDisparo, string spriteB
 	this->boxCollider = boxCollider;
 	this->cortoAlcance = cortoAlcance;
 	this->aumentoAncho = true;
+	this->disparadoPor = disparadoPor;
 }
 
 Proyectil::~Proyectil() {

@@ -32,6 +32,7 @@ public:
 	int getPosX();
 	bool threadAsociado;
 	Proyectil* dispararProyectil();
+	string getNombre();
 };
 
 #endif /* ENEMIGO_H_ */

@@ -37,3 +37,7 @@ Proyectil* Personaje::dispararProyectil() {
 
 }
 
+string Personaje::getNombre() {
+
+}
+

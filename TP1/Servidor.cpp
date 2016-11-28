@@ -652,3 +652,30 @@ void Servidor::avanzarDeNivel()
 		this->gameComplete = true;
 	}
 }
+
+bool Servidor::verificarColisionConJugadores(Proyectil* proyectil) {
+	pthread_mutex_lock(&mutexVectorJugadores);
+	for (int i = 0; i < this->jugadores->size(); i++) {
+		if (this->getNivelActual()->colisionaronObjetos(proyectil->getBoxCollider(),this->jugadores->at(i)->boxCollider)) {
+			this->jugadores->at(i)->daniarseCon(proyectil->getDanio());
+			cout << "Jugador colisiono con bala" << endl;
+			pthread_mutex_unlock(&mutexVectorJugadores);
+			return true;
+		}
+	}
+	pthread_mutex_unlock(&mutexVectorJugadores);
+	return false;
+}
+
+bool Servidor::verificarColision(SDL_Rect camara, Proyectil* proyectil, bool estaDisparando) {
+	if (this->verificarColisionConJugadores(proyectil)) {
+		cout << "En verificar colision, ocurrio la colision" << endl;
+		return true;
+	} else {
+		if (!proyectil->cortoAlcance) {
+			return(proyectil->getBoxCollider().x > camara.x + camara.w || (proyectil->getBoxCollider().x + proyectil->getBoxCollider().w) < camara.x || (proyectil->getBoxCollider().y + proyectil->getBoxCollider().h) < camara.y || proyectil->getBoxCollider().y > camara.y + camara.h);
+		} else {
+			return (!estaDisparando);
+		}
+	}
+}

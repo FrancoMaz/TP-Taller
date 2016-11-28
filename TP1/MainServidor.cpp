@@ -141,10 +141,12 @@ void* disparoProyectil(void* arg)
 {
 	ParametrosMovimiento* parametros = (ParametrosMovimiento*)arg;
 	Servidor* servidor = parametros->servidor;
+	Personaje* personaje = parametros->personaje;
 	Jugador* jugador = parametros->jugador;
 	Proyectil* proyectil = parametros->proyectil;
 	Mensaje* mensajeProyectil;
-	servidor->getNivelActual()->agregarProyectil(proyectil,jugador->getNombre(),idProyectil);
+	//servidor->getNivelActual()->agregarProyectil(proyectil,jugador->getNombre(),idProyectil);
+	servidor->getNivelActual()->agregarProyectil(proyectil,"random",idProyectil);
 	string mensajeProyectilString = "2|0|";
 	mensajeProyectilString += proyectil->getStringProyectil();
 	mensajeProyectil = new Mensaje(jugador->getNombre(),"Todos",mensajeProyectilString);
@@ -174,20 +176,34 @@ void* disparoProyectil(void* arg)
 
 	  y de esta forma estaba viendo que no repetiriamos codigo
 	*/
-	while (!servidor->getNivelActual()->verificarColision(servidor->camara, proyectil, jugador->estaDisparando()))
-	{
-		usleep(50000);
-		proyectil->mover();
 
-		mensajeProyectilString = "2|1|";
-		mensajeProyectilString += proyectil->getStringProyectil();
-		mensajeProyectil = new Mensaje(jugador->getNombre(),"Todos",mensajeProyectilString);
-		servidor->encolarMensajeProcesadoParaCadaCliente(*mensajeProyectil,mensajeProyectilString);
+	cout << "Disparado por: " << proyectil->disparadoPor << endl;
+	if (proyectil->disparadoPor == 1) { // disparado por un jugador
+		while (!servidor->getNivelActual()->verificarColision(servidor->camara, proyectil, personaje->estaDisparando())) {
+			usleep(50000);
+			proyectil->mover();
+			mensajeProyectilString = "2|1|";
+			mensajeProyectilString += proyectil->getStringProyectil();
+			mensajeProyectil = new Mensaje(personaje->getNombre(),"Todos",mensajeProyectilString);
+			servidor->encolarMensajeProcesadoParaCadaCliente(*mensajeProyectil,mensajeProyectilString);
+			mensajeProyectil->~Mensaje();
+		}
+	} else { // disparado por un enemigo
+		while (!servidor->verificarColision(servidor->camara, proyectil, personaje->estaDisparando())) {
+			usleep(50000);
+			proyectil->mover();
+			mensajeProyectilString = "2|1|";
+			mensajeProyectilString += proyectil->getStringProyectil();
+			mensajeProyectil = new Mensaje(personaje->getNombre(),"Todos",mensajeProyectilString);
+			servidor->encolarMensajeProcesadoParaCadaCliente(*mensajeProyectil,mensajeProyectilString);
+			mensajeProyectil->~Mensaje();
+		}
 	}
 	mensajeProyectilString = "2|2|";
 	mensajeProyectilString += proyectil->getStringProyectil();
-	mensajeProyectil = new Mensaje(jugador->getNombre(),"Todos",mensajeProyectilString);
+	mensajeProyectil = new Mensaje(personaje->getNombre(),"Todos",mensajeProyectilString);
 	servidor->encolarMensajeProcesadoParaCadaCliente(*mensajeProyectil,mensajeProyectilString);
+	mensajeProyectil->~Mensaje();
 	proyectil->~Proyectil();
 	pthread_exit(NULL);
 }
@@ -304,6 +320,7 @@ void* actualizarPosicionesJugador(void* arg)
 	ParametrosMovimiento* parametros = (ParametrosMovimiento*)arg;
 	Servidor* servidor = parametros->servidor;
 	Jugador* jugador = parametros->jugador;
+	parametros->personaje = jugador;
 	//Mensaje* mensajeCamara;
 	//string mensajeCamaraString;
 	string mensajeJugadorPosActualizada = "";
