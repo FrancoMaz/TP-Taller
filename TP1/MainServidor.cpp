@@ -149,6 +149,30 @@ void* disparoProyectil(void* arg)
 	mensajeProyectil = new Mensaje(jugador->getNombre(),"Todos",mensajeProyectilString);
 	servidor->encolarMensajeProcesadoParaCadaCliente(*mensajeProyectil,mensajeProyectilString);
 	idProyectil += 1;
+
+	/*en este while no nos va a servir el verificarColision ya que este chequea colision de proyectiles
+	  con enemigos, una idea seria poder poner un atributo en el proyectil que nos informe si el
+	  proyectil es de un jugador o de un enemigo, y hacer una especie de if else y duplicar el codigo que
+	  esta dentro del while por ahora seria lo mas facil, para eso deberiamo definir un
+	  metodo que se llame verificarColisionConPersonaje ese metodo puede estar en escenario pero le tenemos
+	  que pasar el vector de jugadores que tiene el servidor, asi hacemos el colisionar de la misma forma que lo
+	  hicimos con enemigos en la clase escenario en el metodo verificarColisionConEnemigo, estaba pensando
+	  que estaria bueno pasarle un vector a ese metodo y el proyectil:
+
+	  bool Escenario::verificarColisionConPersonaje(Proyectil* proyectil, Vector<Personaje> personajes) {
+			for (int i = 0; i < this->personajes.size(); i++) {
+				if (this->colisionaronObjetos(proyectil->getBoxCollider(),this->personajes.at(i)->getBoxCollider()))
+				{
+					this->personajes.at(i)->daniarseCon(proyectil->getDanio());
+					cout << "Personaje colisiono con bala" << endl;
+					return true;
+				}
+			}
+			return false;
+	  }
+
+	  y de esta forma estaba viendo que no repetiriamos codigo
+	*/
 	while (!servidor->getNivelActual()->verificarColision(servidor->camara, proyectil, jugador->estaDisparando()))
 	{
 		usleep(50000);
@@ -171,8 +195,8 @@ void* disparoProyectil(void* arg)
 
 void actualizarPosicionProyectil( ParametrosMovimiento* paramDisparo ) {
 
-	if (paramDisparo->jugador->estaDisparando()) {
-		Proyectil* proyectil = paramDisparo->jugador->dispararProyectil();
+	if (paramDisparo->personaje->estaDisparando()) {
+		Proyectil* proyectil = paramDisparo->personaje->dispararProyectil();
 		if (proyectil != NULL) {
 			paramDisparo->proyectil = proyectil;
 			pthread_t threadDisparo = proyectil->getThreadDisparo();
@@ -314,6 +338,7 @@ void* enemigoActivo(void* arg) {
 	ParametrosMovimiento* parametrosEnemigo = (ParametrosMovimiento*) arg;
 	Servidor* servidor = parametrosEnemigo->servidor;
 	string nombre = parametrosEnemigo->jugador->getNombre();
+	parametrosEnemigo->personaje = parametrosEnemigo->enemigo;
 	string mensajeEnemigo = "4|0|";
 	mensajeEnemigo += parametrosEnemigo->enemigo->getInformacionDelEnemigo();
 	Mensaje* mensaje = new Mensaje(nombre,"Todos",mensajeEnemigo);
@@ -326,6 +351,7 @@ void* enemigoActivo(void* arg) {
 		mensaje = new Mensaje(nombre,"Todos",mensajeEnemigo);
 		parametrosEnemigo->servidor->encolarMensajeProcesadoParaCadaCliente(*mensaje,mensajeEnemigo);
 		mensaje->~Mensaje();
+		actualizarPosicionProyectil(parametrosEnemigo);
 	}
 	parametrosEnemigo->servidor->getNivelActual()->eliminarEnemigoActivo(enemigo->getId());
 	mensajeEnemigo = "4|2|";

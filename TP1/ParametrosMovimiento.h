@@ -20,6 +20,7 @@ public:
 	Jugador* jugador;
 	Proyectil* proyectil;
 	Enemigo* enemigo;
+	Personaje * personaje;
 	ParametrosMovimiento(Servidor* servidorActual, Jugador* jugadorActual);
 	virtual ~ParametrosMovimiento();
 };

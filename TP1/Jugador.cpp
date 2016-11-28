@@ -481,10 +481,6 @@ void Jugador::inicializarVectorArmas()
 	this->armaActual = 0;
 }
 
-bool Jugador::estaDisparando(){
-	return this->disparar;
-}
-
 void Jugador::obtenerMuniciones(string arma)
 {
 	for (int i = 0; i < this->armas.size(); i++)
