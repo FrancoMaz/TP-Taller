@@ -9,7 +9,7 @@
 #include <iostream>
 using namespace std;
 
-Proyectil::Proyectil(int danioEnPorcentaje, int puntosPorDisparo, string spriteBala,int posicionX, int posicionY, string sentido, int angulo, SDL_Rect boxCollider) {
+Proyectil::Proyectil(int danioEnPorcentaje, int puntosPorDisparo, string spriteBala,int posicionX, int posicionY, string sentido, int angulo, SDL_Rect boxCollider, bool cortoAlcance) {
 	this->danioEnPorcentaje = danioEnPorcentaje;
 	this->puntosPorDisparo = puntosPorDisparo;
 	this->spriteBala = spriteBala;
@@ -19,6 +19,8 @@ Proyectil::Proyectil(int danioEnPorcentaje, int puntosPorDisparo, string spriteB
 	this->sentido = sentido;
 	this->angulo = angulo;
 	this->boxCollider = boxCollider;
+	this->cortoAlcance = cortoAlcance;
+	this->aumentoAncho = true;
 }
 
 Proyectil::~Proyectil() {
@@ -42,57 +44,76 @@ void Proyectil::fueDisparadoPor(string nombreJugador)
 
 void Proyectil::mover()
 {
-	if (this->sentido == "Normal")
+	if (!cortoAlcance)
 	{
-		switch (this->angulo)
+		if (this->sentido == "Normal")
 		{
-			case 0:
+			switch (this->angulo)
 			{
-				this->posicion.first += VELOCIDAD;
-				this->boxCollider.x += VELOCIDAD;
-				break;
+				case 0:
+				{
+					this->posicion.first += VELOCIDAD;
+					this->boxCollider.x += VELOCIDAD;
+					break;
+				}
+				case 1:
+				{
+					this->posicion.second -= VELOCIDAD;
+					this->boxCollider.y -= VELOCIDAD;
+					break;
+				}
+				case 2:
+				{
+					int velocidad_Y = VELOCIDAD;
+					this->posicion.first += VELOCIDAD;
+					this->boxCollider.x += VELOCIDAD;
+					this->posicion.second -= (velocidad_Y/2);
+					this->boxCollider.y -= (velocidad_Y/2);
+					break;
+				}
 			}
-			case 1:
+		}
+		else
+		{
+			switch (this->angulo)
 			{
-				this->posicion.second -= VELOCIDAD;
-				this->boxCollider.y -= VELOCIDAD;
-				break;
-			}
-			case 2:
-			{
-				int velocidad_Y = VELOCIDAD;
-				this->posicion.first += VELOCIDAD;
-				this->boxCollider.x += VELOCIDAD;
-				this->posicion.second -= (velocidad_Y/2);
-				this->boxCollider.y -= (velocidad_Y/2);
-				break;
+				case 0:
+				{
+					this->posicion.first -= VELOCIDAD;
+					this->boxCollider.x -= VELOCIDAD;
+					break;
+				}
+				case 1:
+				{
+					this->posicion.second -= VELOCIDAD;
+					this->boxCollider.y -= VELOCIDAD;
+					break;
+				}
+				case 2:
+				{
+					int velocidad_Y = VELOCIDAD;
+					this->posicion.first -= VELOCIDAD;
+					this->boxCollider.x -= VELOCIDAD;
+					this->posicion.second -= (velocidad_Y/2);
+					this->boxCollider.y -= (velocidad_Y/2);
+					break;
+				}
 			}
 		}
 	}
 	else
 	{
-		switch (this->angulo)
+		if (aumentoAncho || this->boxCollider.w == 91)
 		{
-			case 0:
+			this->boxCollider.w += 91;
+			aumentoAncho = true;
+		}
+		else
+		{
+			if (!aumentoAncho || this->boxCollider.w == 364)
 			{
-				this->posicion.first -= VELOCIDAD;
-				this->boxCollider.x -= VELOCIDAD;
-				break;
-			}
-			case 1:
-			{
-				this->posicion.second -= VELOCIDAD;
-				this->boxCollider.y -= VELOCIDAD;
-				break;
-			}
-			case 2:
-			{
-				int velocidad_Y = VELOCIDAD;
-				this->posicion.first -= VELOCIDAD;
-				this->boxCollider.x -= VELOCIDAD;
-				this->posicion.second -= (velocidad_Y/2);
-				this->boxCollider.y -= (velocidad_Y/2);
-				break;
+				this->boxCollider.w -= 91;
+				aumentoAncho = false;
 			}
 		}
 	}

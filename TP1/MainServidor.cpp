@@ -149,7 +149,7 @@ void* disparoProyectil(void* arg)
 	mensajeProyectil = new Mensaje(jugador->getNombre(),"Todos",mensajeProyectilString);
 	servidor->encolarMensajeProcesadoParaCadaCliente(*mensajeProyectil,mensajeProyectilString);
 	idProyectil += 1;
-	while (!servidor->getNivelActual()->verificarColision(servidor->camara, proyectil))
+	while (!servidor->getNivelActual()->verificarColision(servidor->camara, proyectil, jugador->estaDisparando()))
 	{
 		usleep(50000);
 		proyectil->mover();

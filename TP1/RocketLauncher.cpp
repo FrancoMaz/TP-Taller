@@ -54,7 +54,7 @@ Proyectil* RocketLauncher::disparar(int posicionX,int posicionY, string condicio
 			break;
 	}
 	this->boxCollider = {posX,posY,82,24};
-	this->proyectil = new Proyectil(80, 40, this->nombreArma, posX, posY, condicion, anguloBala, this->boxCollider);
+	this->proyectil = new Proyectil(80, 40, this->nombreArma, posX, posY, condicion, anguloBala, this->boxCollider, this->cortoAlcance);
 	this->municiones -= 1;
 	return this->proyectil;
 }

@@ -62,7 +62,7 @@ Proyectil* HeavyMachineGun::disparar(int posicionX,int posicionY, string condici
 			break;
 	}
 	this->boxCollider = {posX,posY,22,13};
-	this->proyectil = new Proyectil(20, 15, this->nombreArma,posX,posY, condicion, anguloBala, this->boxCollider);
+	this->proyectil = new Proyectil(20, 15, this->nombreArma,posX,posY, condicion, anguloBala, this->boxCollider, this->cortoAlcance);
 	this->municiones -= 1;
 	return this->proyectil;
 }

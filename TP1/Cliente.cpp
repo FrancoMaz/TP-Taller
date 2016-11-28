@@ -396,7 +396,6 @@ string Cliente::recibir() {
 			//sigue aca mientras no recibe nada, cuando recibe algo sale de este do while
 			largo = recv(socketCliente, colaMensajes, BUFFER_MAX_SIZE, 0);
 			largoRequest += largo;
-			cout << "mensaje: "<< colaMensajes << endl;
 		//} while (largoRequest < BUFFER_MAX_SIZE);
 		if (largo > 0){
 			datosRecibidos += string(colaMensajes);

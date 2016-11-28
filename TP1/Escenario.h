@@ -29,7 +29,7 @@ public:
 	virtual ~Escenario();
 	int idEnemigo;
 	void agregarProyectil(Proyectil* proyectil, string nombre, int idProyectil);
-	bool verificarColision(SDL_Rect camara, Proyectil* proyectil);
+	bool verificarColision(SDL_Rect camara, Proyectil* proyectil, bool disparando);
 	void despertarEnemigos(SDL_Rect* camara);
 	Enemigo* getEnemigoActivo(int posicion);
 	bool verificarColisionConItem(Jugador* jugador);

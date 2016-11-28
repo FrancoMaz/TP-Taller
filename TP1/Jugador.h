@@ -44,8 +44,8 @@ private:
 	string equipo;
 	bool saltar;
 	bool agachar;
-	bool disparar;
 	bool caer;
+	bool disparar;
 	bool movDerecha = false;
 	bool movIzquierda = false;
 	bool arriba = false;

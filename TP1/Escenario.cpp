@@ -58,13 +58,19 @@ void Escenario::agregarProyectil(Proyectil* proyectil, string nombreJugador, int
 	//proyectil->fueDisparadoPor(nombreJugador);
 }
 
-bool Escenario::verificarColision(SDL_Rect camara, Proyectil* proyectil) {
+bool Escenario::verificarColision(SDL_Rect camara, Proyectil* proyectil, bool disparando) {
 	if (this->verificarColisionConEnemigo(proyectil)) {
 		cout << "En verificar colision, ocurrio la colision" << endl;
 		return true;
 	} else {
-		//cout << "No ocurre colision" << endl;
-		return(proyectil->getBoxCollider().x > camara.x + camara.w || (proyectil->getBoxCollider().x + proyectil->getBoxCollider().w) < camara.x || (proyectil->getBoxCollider().y + proyectil->getBoxCollider().h) < camara.y || proyectil->getBoxCollider().y > camara.y + camara.h);
+		if (!proyectil->cortoAlcance)
+		{
+			return(proyectil->getBoxCollider().x > camara.x + camara.w || (proyectil->getBoxCollider().x + proyectil->getBoxCollider().w) < camara.x || (proyectil->getBoxCollider().y + proyectil->getBoxCollider().h) < camara.y || proyectil->getBoxCollider().y > camara.y + camara.h);
+		}
+		else
+		{
+			return (!disparando);
+		}
 	}
 }
 
