@@ -15,7 +15,7 @@ Enemigo::Enemigo(int posX, int posY, int id) {
 	this->posY = posY;
 	this->spriteEnemigo = "Enemigo_quieto";
 	this->id = id;
-	this->boxCollider = {posX,posY,86,106};
+	this->boxCollider = {posX+86,posY,49,106};
 	this->threadAsociado = false;
 }
 

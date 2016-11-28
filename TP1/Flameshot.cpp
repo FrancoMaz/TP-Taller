@@ -53,7 +53,7 @@ Proyectil* Flameshot::disparar(int posicionX,int posicionY, string condicion, in
 			}
 			break;
 	}
-
+	this->boxCollider = {posX,posY,361,80};
 	this->proyectil = new Proyectil(35, 40, this->nombreArma, posX, posY, condicion, anguloBala, this->boxCollider);
 	this->municiones -= 1;
 	return this->proyectil;

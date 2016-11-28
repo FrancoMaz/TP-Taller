@@ -49,18 +49,22 @@ void Proyectil::mover()
 			case 0:
 			{
 				this->posicion.first += VELOCIDAD;
+				this->boxCollider.x += VELOCIDAD;
 				break;
 			}
 			case 1:
 			{
 				this->posicion.second -= VELOCIDAD;
+				this->boxCollider.y -= VELOCIDAD;
 				break;
 			}
 			case 2:
 			{
 				int velocidad_Y = VELOCIDAD;
 				this->posicion.first += VELOCIDAD;
+				this->boxCollider.x += VELOCIDAD;
 				this->posicion.second -= (velocidad_Y/2);
+				this->boxCollider.y -= (velocidad_Y/2);
 				break;
 			}
 		}
@@ -72,18 +76,22 @@ void Proyectil::mover()
 			case 0:
 			{
 				this->posicion.first -= VELOCIDAD;
+				this->boxCollider.x -= VELOCIDAD;
 				break;
 			}
 			case 1:
 			{
 				this->posicion.second -= VELOCIDAD;
+				this->boxCollider.y -= VELOCIDAD;
 				break;
 			}
 			case 2:
 			{
 				int velocidad_Y = VELOCIDAD;
 				this->posicion.first -= VELOCIDAD;
+				this->boxCollider.x -= VELOCIDAD;
 				this->posicion.second -= (velocidad_Y/2);
+				this->boxCollider.y -= (velocidad_Y/2);
 				break;
 			}
 		}

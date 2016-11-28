@@ -314,7 +314,6 @@ void* enemigoActivo(void* arg) {
 	ParametrosMovimiento* parametrosEnemigo = (ParametrosMovimiento*) arg;
 	Servidor* servidor = parametrosEnemigo->servidor;
 	string nombre = parametrosEnemigo->jugador->getNombre();
-	cout << "Nombre: " << nombre << endl;
 	string mensajeEnemigo = "4|0|";
 	mensajeEnemigo += parametrosEnemigo->enemigo->getInformacionDelEnemigo();
 	Mensaje* mensaje = new Mensaje(nombre,"Todos",mensajeEnemigo);
@@ -350,7 +349,6 @@ void* controlDeEnemigos(void* arg) {
 			Enemigo* enemigo = parametrosEnemigo->servidor->getNivelActual()->getEnemigoActivo(i);
 			if (enemigo != NULL && !enemigo->threadAsociado) {
 				enemigo->threadAsociado = true;
-				cout << "enemigo: " << enemigo << endl;
 				parametrosEnemigo->enemigo = enemigo;
 				pthread_t threadEnemigo;
 				pthread_create(&threadEnemigo, NULL, &enemigoActivo, parametrosEnemigo);

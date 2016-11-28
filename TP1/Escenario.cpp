@@ -14,9 +14,9 @@ using namespace std;
 Escenario::Escenario(string rutaXml) {
 	XmlParser* parserNivel = new XmlParser(rutaXml);
 	for(int i=0; i < 1; i++) {
-		//srand(rdtsc());
-		//pair<int,int> lala(rand() % 1200 + 800, 415);
-		pair<int,int> lala(413, 415);
+		srand(rdtsc());
+		pair<int,int> lala(rand() % 1200 + 800, 415);
+		//pair<int,int> lala(413, 415);
 		cout << "Posicion x del enemigo: " << lala.first << endl;
 		this->enemigosPorNivel.push_back(lala);
 	}
@@ -59,7 +59,6 @@ void Escenario::agregarProyectil(Proyectil* proyectil, string nombreJugador, int
 }
 
 bool Escenario::verificarColision(SDL_Rect camara, Proyectil* proyectil) {
-	cout<<"proyectil posx: " << proyectil->posicion.first <<endl;
 	if (this->verificarColisionConEnemigo(proyectil)) {
 		cout << "En verificar colision, ocurrio la colision" << endl;
 		return true;
@@ -85,9 +84,9 @@ bool Escenario::verificarColisionConItem(Jugador* jugador)
 
 bool Escenario::verificarColisionConEnemigo(Proyectil* proyectil) {
 	for (int i = 0; i < this->enemigosActivos.size(); i++) {
-		//if (this->colisionaronObjetos(proyectil->getBoxCollider(), this->enemigosActivos.at(i)->getBoxCollider())) {
-		cout<<"enemigo pos x: " << this->enemigosActivos.at(i)->getPosX() <<endl;
-		if (proyectil->posicion.first == this->enemigosActivos.at(i)->getPosX()) {
+		//if (proyectil->posicion.first == this->enemigosActivos.at(i)->getPosX()) {
+		if (this->colisionaronObjetos(proyectil->getBoxCollider(),this->enemigosActivos.at(i)->getBoxCollider()))
+		{
 			this->enemigosActivos.at(i)->daniarseCon(proyectil->getDanio());
 			cout << "Enemigo colisiono con bala" << endl;
 			return true;

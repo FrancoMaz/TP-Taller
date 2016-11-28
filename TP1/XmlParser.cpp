@@ -183,8 +183,6 @@ vector<pair<string,string>> XmlParser::getPlataformas()
 			pair<string,string> plat;
 			plat.first = string(plataforma.child_value("Comienzo"));
 			plat.second = string(plataforma.child_value("Final"));
-			cout << "Comienzo: " << plat.first << endl;
-			cout << "Final: " << plat.second << endl;
 			this->plataformas.push_back(plat);
 		}
 		return this->plataformas;

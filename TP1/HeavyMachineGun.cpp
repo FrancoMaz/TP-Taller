@@ -21,7 +21,6 @@ HeavyMachineGun::~HeavyMachineGun() {
 }
 
 Proyectil* HeavyMachineGun::disparar(int posicionX,int posicionY, string condicion, int anguloBala, bool agachar) {
-	this->boxCollider = {posicionX,posicionY,22,13};
 	int posX, posY;
 	switch (anguloBala){
 		case 0:
@@ -62,7 +61,7 @@ Proyectil* HeavyMachineGun::disparar(int posicionX,int posicionY, string condici
 			}
 			break;
 	}
-
+	this->boxCollider = {posX,posY,22,13};
 	this->proyectil = new Proyectil(20, 15, this->nombreArma,posX,posY, condicion, anguloBala, this->boxCollider);
 	this->municiones -= 1;
 	return this->proyectil;
