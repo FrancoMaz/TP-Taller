@@ -60,7 +60,6 @@ public:
 	virtual ~Jugador();
 	void actualizarPosicion(SDL_Keycode tecla, bool sePresionoTecla, SDL_Rect camara);
 	string getStringJugador();
-	string getNombre();
 	string getSpriteAEjecutar();
 	bool salto();
 	void setDesconectado();
@@ -93,5 +92,6 @@ public:
 	bool hayMuniciones();
 	Proyectil* dispararProyectil();
 	//void daniarseCon(Proyectil* proyectil);
+	string getNombre();
 };
 #endif /* JUGADOR_H_ */

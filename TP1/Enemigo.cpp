@@ -46,5 +46,10 @@ int Enemigo::getPosX() {
 }
 
 Proyectil* Enemigo::dispararProyectil() {
-	return (this->armas.at(0)->disparar(this->posX,this->posY,this->condicionSprite,anguloBala,agachado));
+	// le paso un 2 al final para indicar que el proyectil fue disparado por un jugador
+	return (this->armas.at(0)->disparar(this->posX,this->posY,this->condicionSprite,anguloBala,agachado,2));
+}
+
+string Enemigo::getNombre() {
+	return "Enemigo";
 }

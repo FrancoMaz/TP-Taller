@@ -21,7 +21,7 @@ RocketLauncher::~RocketLauncher() {
 	// TODO Auto-generated destructor stub
 }
 
-Proyectil* RocketLauncher::disparar(int posicionX,int posicionY, string condicion, int anguloBala, bool agachar) {
+Proyectil* RocketLauncher::disparar(int posicionX,int posicionY, string condicion, int anguloBala, bool agachar, int disparadoPor) {
 	int posX, posY;
 	switch (anguloBala){
 		case 0:
@@ -54,7 +54,7 @@ Proyectil* RocketLauncher::disparar(int posicionX,int posicionY, string condicio
 			break;
 	}
 	this->boxCollider = {posX,posY,82,24};
-	this->proyectil = new Proyectil(80, 40, this->nombreArma, posX, posY, condicion, anguloBala, this->boxCollider, this->cortoAlcance);
+	this->proyectil = new Proyectil(80, 40, this->nombreArma, posX, posY, condicion, anguloBala, this->boxCollider, this->cortoAlcance, disparadoPor);
 	this->municiones -= 1;
 	return this->proyectil;
 }

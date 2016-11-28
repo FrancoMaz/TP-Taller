@@ -292,7 +292,8 @@ Proyectil* Jugador::dispararProyectil() {
 	{
 		if (hayMuniciones()) {
 			if (!this->armas.at(this->armaActual)->sinMuniciones()) {
-				return (this->armas.at(this->armaActual)->disparar(posicion.first,posicion.second,condicionSprite,anguloBala,agachar));
+				// le paso un 1 al final para indicar que el proyectil fue disparado por un jugador
+				return (this->armas.at(this->armaActual)->disparar(posicion.first,posicion.second,condicionSprite,anguloBala,agachar,1));
 			} else {
 				this->armaActual++;
 				if (armaActual >= this->armas.size())

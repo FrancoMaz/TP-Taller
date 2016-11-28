@@ -144,6 +144,8 @@ public:
 	vector<Escenario*> vectorNiveles;
 	Escenario* getNivelActual();
 	void avanzarDeNivel();
+	bool verificarColision(SDL_Rect camara, Proyectil* proyectil, bool estaDisparando);
+	bool verificarColisionConJugadores(Proyectil* proyectil);
 };
 
 #endif /* TP1_SERVIDOR_H_ */

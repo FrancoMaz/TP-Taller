@@ -14,7 +14,7 @@ class HeavyMachineGun: public Arma {
 public:
 	HeavyMachineGun();
 	virtual ~HeavyMachineGun();
-	Proyectil* disparar(int posicionX,int posicionY, string condicion, int anguloBala, bool agachar);
+	Proyectil* disparar(int posicionX,int posicionY, string condicion, int anguloBala, bool agachar, int disparadoPor);
 	bool sinMuniciones();
 	void sumarMuniciones();
 };

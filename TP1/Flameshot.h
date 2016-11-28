@@ -14,7 +14,7 @@ class Flameshot: public Arma {
 public:
 	Flameshot();
 	virtual ~Flameshot();
-	Proyectil* disparar(int posicionX,int posicionY, string condicion, int anguloBala, bool agachar);
+	Proyectil* disparar(int posicionX,int posicionY, string condicion, int anguloBala, bool agachar, int disparadoPor);
 	bool sinMuniciones();
 	void sumarMuniciones();
 };

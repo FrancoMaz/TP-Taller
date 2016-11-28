@@ -113,9 +113,7 @@ bool Escenario::verificarColisionConItem(Jugador* jugador)
 
 bool Escenario::verificarColisionConEnemigo(Proyectil* proyectil) {
 	for (int i = 0; i < this->enemigosActivos.size(); i++) {
-		//if (proyectil->posicion.first == this->enemigosActivos.at(i)->getPosX()) {
-		if (this->colisionaronObjetos(proyectil->getBoxCollider(),this->enemigosActivos.at(i)->getBoxCollider()))
-		{
+		if (this->colisionaronObjetos(proyectil->getBoxCollider(),this->enemigosActivos.at(i)->getBoxCollider())) {
 			this->enemigosActivos.at(i)->daniarseCon(proyectil->getDanio());
 			cout << "Enemigo colisiono con bala" << endl;
 			return true;
