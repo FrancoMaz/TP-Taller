@@ -418,13 +418,20 @@ void* bossActivo(void* arg)
 	clock_t tiempoInicio = clock();
 	while (!bossNivel->getEstaMuerto()) {
 		usleep(500000);
-		bossNivel->comportamiento(servidor->camara);
+		bossNivel->comportamiento(servidor->camara, clock()-tiempoInicio);
 		mensajeBoss = "5|1|";
 		mensajeBoss += bossNivel->getStringBoss();
 		mensaje = new Mensaje(nombre,"Todos",mensajeBoss);
 		servidor->encolarMensajeProcesadoParaCadaCliente(*mensaje,mensajeBoss);
 		mensaje->~Mensaje();
-		tiempoInicio = clock();
+		if (bossNivel->disparando)
+		{
+			pthread_t threadDisparoBoss;
+			parametrosBoss->proyectil = bossNivel->proyectilADisparar;
+			pthread_create(&threadDisparoBoss, NULL, &disparoProyectil, parametrosBoss);
+			pthread_detach(threadDisparoBoss);
+			bossNivel->disparando = false;
+		}
 	}
 	mensajeBoss = "5|2|";
 	mensajeBoss += bossNivel->getStringBoss();
