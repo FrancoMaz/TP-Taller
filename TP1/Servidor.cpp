@@ -669,7 +669,6 @@ bool Servidor::verificarColisionConJugadores(Proyectil* proyectil) {
 
 bool Servidor::verificarColision(SDL_Rect camara, Proyectil* proyectil, bool estaDisparando) {
 	if (this->verificarColisionConJugadores(proyectil)) {
-		cout << "En verificar colision, ocurrio la colision" << endl;
 		return true;
 	} else {
 		if (!proyectil->cortoAlcance) {
