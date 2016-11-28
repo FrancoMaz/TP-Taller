@@ -149,7 +149,7 @@ void* disparoProyectil(void* arg)
 	servidor->getNivelActual()->agregarProyectil(proyectil,"random",idProyectil);
 	string mensajeProyectilString = "2|0|";
 	mensajeProyectilString += proyectil->getStringProyectil();
-	mensajeProyectil = new Mensaje(jugador->getNombre(),"Todos",mensajeProyectilString);
+	mensajeProyectil = new Mensaje(personaje->getNombre(),"Todos",mensajeProyectilString);
 	servidor->encolarMensajeProcesadoParaCadaCliente(*mensajeProyectil,mensajeProyectilString);
 	idProyectil += 1;
 
