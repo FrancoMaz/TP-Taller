@@ -196,7 +196,7 @@ void* disparoProyectil(void* arg)
 
 void actualizarPosicionProyectil( ParametrosMovimiento* paramDisparo ) {
 
-	if (paramDisparo->personaje->estaDisparando()) {
+	if (paramDisparo->jugador->estaDisparando()) {
 		Proyectil* proyectil = paramDisparo->personaje->dispararProyectil();
 		if (proyectil != NULL) {
 			paramDisparo->proyectil = proyectil;
@@ -393,10 +393,12 @@ void* bossActivo(void* arg)
 	Servidor* servidor = parametrosBoss->servidor;
 	string nombre = parametrosBoss->jugador->getNombre();
 	Boss* bossNivel = parametrosBoss->boss;
+	srand(time(NULL));
 	string mensajeBoss = "5|0|";
 	mensajeBoss += bossNivel->getStringBoss();
 	Mensaje* mensaje = new Mensaje(nombre,"Todos",mensajeBoss);
 	servidor->encolarMensajeProcesadoParaCadaCliente(*mensaje,mensajeBoss);
+	clock_t tiempoInicio = clock();
 	while (!bossNivel->getEstaMuerto()) {
 		usleep(500000);
 		bossNivel->comportamiento(servidor->camara);
@@ -405,6 +407,7 @@ void* bossActivo(void* arg)
 		mensaje = new Mensaje(nombre,"Todos",mensajeBoss);
 		servidor->encolarMensajeProcesadoParaCadaCliente(*mensaje,mensajeBoss);
 		mensaje->~Mensaje();
+		tiempoInicio = clock();
 	}
 	mensajeBoss = "5|2|";
 	mensajeBoss += bossNivel->getStringBoss();
