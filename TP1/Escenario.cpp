@@ -64,7 +64,7 @@ bool Escenario::verificarColision(SDL_Rect camara, Proyectil* proyectil) {
 		return true;
 	} else {
 		//cout << "No ocurre colision" << endl;
-		return(proyectil->posicion.first > camara.x + camara.w || proyectil->posicion.first < camara.x || proyectil->posicion.second < camara.y || proyectil->posicion.second > camara.y + camara.h);
+		return(proyectil->getBoxCollider().x > camara.x + camara.w || (proyectil->getBoxCollider().x + proyectil->getBoxCollider().w) < camara.x || (proyectil->getBoxCollider().y + proyectil->getBoxCollider().h) < camara.y || proyectil->getBoxCollider().y > camara.y + camara.h);
 	}
 }
 
