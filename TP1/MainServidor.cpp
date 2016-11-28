@@ -210,13 +210,16 @@ void* disparoProyectil(void* arg)
 
 //funciones auxiliares para actualizar jugadores proyectiles y enemigos
 
-void actualizarPosicionProyectil( ParametrosMovimiento* paramDisparo ) {
+void actualizarPosicionProyectil(ParametrosMovimiento* paramDisparo) {
 
 	if (paramDisparo->jugador->estaDisparando()) {
 		Proyectil* proyectil = paramDisparo->personaje->dispararProyectil();
 		if (proyectil != NULL) {
 			paramDisparo->proyectil = proyectil;
 			pthread_t threadDisparo = proyectil->getThreadDisparo();
+			if (proyectil->disparadoPor == 2) {
+				usleep(2000000);
+			}
 			pthread_create(&threadDisparo, NULL, &disparoProyectil, paramDisparo);
 			pthread_detach(threadDisparo);
 			proyectil->setThreadDisparo(threadDisparo);
@@ -225,7 +228,7 @@ void actualizarPosicionProyectil( ParametrosMovimiento* paramDisparo ) {
 	}
 }
 
-void actualizarPosicionCamara( Servidor* servidor, Jugador* jugador ) {
+void actualizarPosicionCamara(Servidor* servidor, Jugador* jugador) {
 
 	Mensaje* mensajeCamara;
 	string mensajeCamaraString;
@@ -369,7 +372,9 @@ void* enemigoActivo(void* arg) {
 		mensaje = new Mensaje(nombre,"Todos",mensajeEnemigo);
 		parametrosEnemigo->servidor->encolarMensajeProcesadoParaCadaCliente(*mensaje,mensajeEnemigo);
 		mensaje->~Mensaje();
-		actualizarPosicionProyectil(parametrosEnemigo);
+		if(enemigo->estado == 1){
+			actualizarPosicionProyectil(parametrosEnemigo);
+		}
 	}
 	parametrosEnemigo->servidor->getNivelActual()->eliminarEnemigoActivo(enemigo->getId());
 	mensajeEnemigo = "4|2|";
