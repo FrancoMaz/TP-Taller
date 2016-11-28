@@ -53,6 +53,7 @@ private:
 	vector<VistaBala*> vistaBalas;
 	vector<VistaEnemigo*> vistaEnemigos;
 	vector<Item*> vistaItems;
+	VistaEnemigo* vistaBoss;
 
 public:
 	Vista();
@@ -80,6 +81,7 @@ public:
 	void actualizarEnemigo(string enemigo, int x, int y, string sprite, int id, int cantFotogramas);
 	void actualizarProyectil(string nuevaBala, int x, int y, string sprite, int id, int cantFotogramas, string sentido, double angulo);
 	void agregarVistaItem(string borrarItem, string sprite, int x, int y);
+	void actualizarBoss(string boss, int x, int y, string sprite, string sentido, int cantFotogramas);
 };
 
 #endif /* TP2_VISTA_H_ */

@@ -62,4 +62,9 @@
 			<PosicionY>310</PosicionY>
 		</Item4>
 	</ItemArmas>
+	<Boss>
+		<Nombre>hi_do</Nombre>
+		<PosicionX>1000</PosicionX>
+		<PosicionY>100</PosicionY>
+	</Boss>
 </Configuracion>

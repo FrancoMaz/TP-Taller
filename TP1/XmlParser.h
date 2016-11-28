@@ -18,6 +18,10 @@
 #include <vector>
 #include <algorithm>
 #include "Item.h"
+#include "Boss.h"
+#include "HiDo.h"
+#include "TaniOh.h"
+#include "AirbusterRiberts.h"
 
 using namespace std;
 
@@ -32,6 +36,7 @@ private:
 	vector<SetDeSpritesDto*> sprites;
 	vector<pair<string,string>> plataformas;
 	vector<Item*> itemArmas;
+	Boss* boss;
 
 public:
 	XmlParser(string path);
@@ -48,6 +53,8 @@ public:
 	vector<pair<string,string>> getPlataformas();
 	vector<Item*> getItemArmas();
 	bool stringTerminaCon(string const &fullString, string const &ending);
+	Boss* getBoss();
+	Boss* devolverBoss(string nombre, string x, string y);
 };
 
 #endif /* XMLPARSER_H_ */

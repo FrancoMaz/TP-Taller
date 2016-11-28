@@ -24,6 +24,7 @@ Escenario::Escenario(string rutaXml) {
 	this->idEnemigo = 0;
 	this->plataformas = parserNivel->getPlataformas();
 	this->itemArmas = parserNivel->getItemArmas();
+	this->boss = parserNivel->getBoss();
 	this->levelClear = false;
 }
 
@@ -162,6 +163,17 @@ void Escenario::eliminarEnemigoActivo(int id) {
 		Enemigo* enemigo = this->enemigosActivos.at(i);
 		if (enemigo->getId() == id) {
 			this->enemigosActivos.erase(this->enemigosActivos.begin() + i);
+		}
+	}
+}
+
+void Escenario::despertarBoss(SDL_Rect camara)
+{
+	if (this->boss != NULL)
+	{
+		if (this->boss->posX < camara.x + camara.w && this->boss->posX > camara.x)
+		{
+			boss->visto = true;
 		}
 	}
 }

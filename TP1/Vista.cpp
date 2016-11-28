@@ -464,6 +464,7 @@ void Vista::actualizarPantalla(int anchoVentana, int anchoCapaPrincipal) {
 	TexturaSDL* texturaBala;
 	TexturaSDL* texturaEnemigo;
 	TexturaSDL* texturaItem;
+	TexturaSDL* texturaBoss;
 
 	for (int i = 0; i < vistaItems.size(); i++) {
 		Item* vistaItem = vistaItems.at(i);
@@ -481,6 +482,11 @@ void Vista::actualizarPantalla(int anchoVentana, int anchoCapaPrincipal) {
 		VistaEnemigo* vistaEnemigo = vistaEnemigos.at(i);
 		texturaEnemigo = vistaEnemigo->textura;
 		texturaEnemigo->aplicarPosicion(vistaEnemigo->x - camara.x, vistaEnemigo->y - camara.y,0,SDL_FLIP_NONE);
+	}
+	if (this->vistaBoss != NULL)
+	{
+		texturaBoss = this->vistaBoss->textura;
+		texturaBoss->aplicarPosicion(vistaBoss->x - camara.x, vistaBoss->y - camara.y,0,vistaBoss->flip);
 	}
 
 	for (int i = 0; i < vistaJugadores.size(); i++) {
@@ -528,7 +534,7 @@ void Vista::actualizarProyectil(string nuevaBala, int x, int y, string sprite, i
 void Vista::actualizarEnemigo(string enemigo, int x, int y, string sprite, int id, int cantFotogramas) {
 	//si viene un nuevo enemigo
 	if (enemigo == "0") {
-		VistaEnemigo* vistaEnemigo = new VistaEnemigo(x,y,(ventana->crearTextura("Recursos/" + sprite + ".png", cantFotogramas)),id);
+		VistaEnemigo* vistaEnemigo = new VistaEnemigo(x,y,(ventana->crearTextura("Recursos/" + sprite + ".png", cantFotogramas)),id, "Normal");
 		vistaEnemigos.push_back(vistaEnemigo);
 	} else {
 		//si viene un enemigo ya existente
@@ -573,5 +579,24 @@ void Vista::agregarVistaItem(string borrarItem, string sprite, int x, int y)
 				break;
 			}
 		}
+	}
+}
+
+void Vista::actualizarBoss(string boss, int x, int y, string sprite, string sentido, int cantFotogramas)
+{
+	if (boss == "0")
+	{
+		VistaEnemigo* vistaBoss = new VistaEnemigo(x,y,(ventana->crearTextura("Recursos/" + sprite + ".png", cantFotogramas)),0, sentido);
+		this->vistaBoss = vistaBoss;
+	}
+	else if (boss == "1")
+	{
+		vistaBoss->x = x;
+		vistaBoss->y = y;
+		vistaBoss->verificarSentido(sentido);
+	}
+	else if (boss == "2")
+	{
+		delete(vistaBoss);
 	}
 }

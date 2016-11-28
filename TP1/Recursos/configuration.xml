@@ -439,27 +439,27 @@
 	  <SetBosses>
 	  	<Carpeta>Bosses</Carpeta>
 	  	<Sprite1>
-	  		<Id>Boss_helicoptero</Id>
+	  		<Id>Boss_hi_do</Id>
 		    <CantFotogramas>3</CantFotogramas>
 		    <Ancho>600</Ancho>
 		    <Alto>172</Alto>
-		    <Imagen>Boss_helicoptero</Imagen>
+		    <Imagen>Boss_hi_do</Imagen>
 		    <z-index>1</z-index>
 		</Sprite1>
 		<Sprite2>
-	  		<Id>Boss_helicoptero_bomba</Id>
+	  		<Id>Boss_hi_do_bomba</Id>
 		    <CantFotogramas>0</CantFotogramas>
 		    <Ancho>24</Ancho>
 		    <Alto>50</Alto>
-		    <Imagen>Boss_helicoptero_bomba</Imagen>
+		    <Imagen>Boss_hi_do_bomba</Imagen>
 		    <z-index>1</z-index>
 		</Sprite2>
 		<Sprite3>
-	  		<Id>Boss_helicoptero_disparo</Id>
+	  		<Id>Boss_hi_do_disparo</Id>
 		    <CantFotogramas>0</CantFotogramas>
 		    <Ancho>32</Ancho>
 		    <Alto>30</Alto>
-		    <Imagen>Boss_helicoptero_disparo</Imagen>
+		    <Imagen>Boss_hi_do_disparo</Imagen>
 		    <z-index>1</z-index>
 		</Sprite3>
 	  </SetBosses>

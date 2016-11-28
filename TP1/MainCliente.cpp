@@ -202,6 +202,24 @@ void procesarUltimosMensajes(string mensajes, Cliente* cliente, UpdateJugador* u
 					vista->actualizarEnemigo(nuevoEnemigo, xEnemigo, yEnemigo, spriteEnemigo, idEnemigo, cantFotogramas);
 					break;
 				}
+				case 5:{
+					string nuevoBoss = msjContenido.at(2);
+					int xBoss = stringToInt(msjContenido.at(3));
+					int yBoss = stringToInt(msjContenido.at(4));
+					string spriteBoss = msjContenido.at(5);
+					string sentido = msjContenido.at(6);
+					int cantFotogramas;
+					for (int i = 0; i < setsSprites.size(); i++) {
+						vector<SpriteDto*> listaSprites = setsSprites.at(i)->getSprites();
+						for (int i = 0; i < listaSprites.size(); i++) {
+							if (spriteBoss == listaSprites.at(i)->getID()) {
+								cantFotogramas = stringToInt(listaSprites.at(i)->getCantidadDeFotogramas());
+							}
+						}
+					}
+					vista->actualizarBoss(nuevoBoss, xBoss, yBoss, spriteBoss, sentido, cantFotogramas);
+					break;
+				}
 			}
 		}
 		vista->actualizarPantalla(stringToInt(handshakeDeserializado->getAncho()), stringToInt(handshakeDeserializado->getImagenes().at(0)->getAncho()));

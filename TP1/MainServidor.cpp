@@ -13,6 +13,7 @@
 #include <arpa/inet.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <time.h>
 #include "Servidor.h"
 #include <pthread.h>
 #include "ParametrosMovimiento.h"
@@ -232,7 +233,7 @@ void* enviarObjetosEnCamara(void* arg)
 	Jugador* jugador = parametros->jugador;
 	Mensaje* mensajeObjetos;
 	string mensajeObjetosString = "";
-	while (jugador->getConectado()){
+	while (servidor->escuchando){
 		usleep(50000);
 		for (int i = 0; i < servidor->getNivelActual()->itemArmas.size(); i++)
 		{
@@ -268,7 +269,7 @@ void* verificarPasarDeNivel(void* arg)
 		usleep(50000);
 		if (servidor->getNivelActual()->levelClear)
 		{
-			servidor->getNivelActual()->~Escenario();
+			//servidor->getNivelActual()->~Escenario();
 			servidor->avanzarDeNivel();
 		}
 	}
@@ -360,6 +361,54 @@ void* controlDeEnemigos(void* arg) {
 	parametrosEnemigo->~ParametrosMovimiento();
 }
 
+void* bossActivo(void* arg)
+{
+	ParametrosMovimiento* parametrosBoss = (ParametrosMovimiento*) arg;
+	Servidor* servidor = parametrosBoss->servidor;
+	string nombre = parametrosBoss->jugador->getNombre();
+	Boss* bossNivel = parametrosBoss->boss;
+	string mensajeBoss = "5|0|";
+	mensajeBoss += bossNivel->getStringBoss();
+	Mensaje* mensaje = new Mensaje(nombre,"Todos",mensajeBoss);
+	servidor->encolarMensajeProcesadoParaCadaCliente(*mensaje,mensajeBoss);
+	while (!bossNivel->getEstaMuerto()) {
+		usleep(500000);
+		bossNivel->comportamiento(servidor->camara);
+		mensajeBoss = "5|1|";
+		mensajeBoss += bossNivel->getStringBoss();
+		mensaje = new Mensaje(nombre,"Todos",mensajeBoss);
+		servidor->encolarMensajeProcesadoParaCadaCliente(*mensaje,mensajeBoss);
+		mensaje->~Mensaje();
+	}
+	mensajeBoss = "5|2|";
+	mensajeBoss += bossNivel->getStringBoss();
+	mensaje = new Mensaje(nombre,"Todos",mensajeBoss);
+	servidor->encolarMensajeProcesadoParaCadaCliente(*mensaje,mensajeBoss);
+	bossNivel->~Boss();
+	mensaje->~Mensaje();
+	pthread_exit(NULL);
+}
+
+void* verificarBossEnCamara(void* arg)
+{
+	ParametrosMovimiento* parametroRecibido= (ParametrosMovimiento*) arg;
+	Servidor* servidor = parametroRecibido->servidor;
+	Jugador* jugador = parametroRecibido->jugador;
+	ParametrosMovimiento* parametrosBoss = new ParametrosMovimiento(servidor, jugador);
+	while (servidor->escuchando) {
+		servidor->getNivelActual()->despertarBoss(servidor->camara);
+		Boss* bossNivel = servidor->getNivelActual()->boss;
+		if (bossNivel != NULL && bossNivel->visto) {
+			parametrosBoss->boss = bossNivel;
+			pthread_t threadBoss;
+			pthread_create(&threadBoss, NULL, &bossActivo, parametrosBoss);
+			pthread_detach(threadBoss);
+		}
+		usleep(50000);
+	}
+
+}
+
 void iniciarThreadMovimientoJugador(Servidor* servidor, string nombre)
 {
 	pthread_mutex_lock(&servidor->mutexVectorJugadores);
@@ -369,12 +418,15 @@ void iniciarThreadMovimientoJugador(Servidor* servidor, string nombre)
 	parametros.jugador = jugador;
 	parametros.servidor = this;*/
 	pthread_t threadEnemigosPetutos;
+	pthread_t threadVerificarBoss;
 	pthread_t threadMov = jugador->getThreadMovimiento();
 	pthread_create(&threadMov, NULL, &actualizarPosicionesJugador, parametros);
 	pthread_detach(threadMov);
 
 	pthread_create(&threadEnemigosPetutos, NULL, &controlDeEnemigos, parametros);
 	pthread_detach(threadEnemigosPetutos);
+	pthread_create(&threadVerificarBoss, NULL, &verificarBossEnCamara, parametros);
+	pthread_detach(threadVerificarBoss);
 	jugador->setThreadMovimiento(threadMov);
 }
 
