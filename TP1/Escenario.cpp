@@ -140,8 +140,10 @@ void Escenario::despertarEnemigos(SDL_Rect* camara) {
 	if (!this->enemigosPorNivel.empty()) {
 		for (int i = 0; i < 7; i++) {
 			if (!this->enemigosPorNivel.empty()) {
+				srand(rdtsc());
+				int estado = rand() % 2;
 				if (this->enemigosPorNivel.at(0).first < camara->x + camara->w && this->enemigosPorNivel.at(0).first > camara->x) {
-					Enemigo* enemigo = new Enemigo(this->enemigosPorNivel.at(0).first,this->enemigosPorNivel.at(0).second,this->idEnemigo);
+					Enemigo* enemigo = new Enemigo(this->enemigosPorNivel.at(0).first,this->enemigosPorNivel.at(0).second,this->idEnemigo, estado);
 					this->enemigosActivos.push_back(enemigo);
 					this->enemigosPorNivel.erase(this->enemigosPorNivel.begin() + 0);
 					this->idEnemigo++;

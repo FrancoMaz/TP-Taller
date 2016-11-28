@@ -23,7 +23,7 @@ private:
 	bool agachado;
 
 public:
-	Enemigo(int posX, int posY, int id);
+	Enemigo(int posX, int posY, int id, int estado);
 	virtual ~Enemigo();
 	int getId();
 	void setId(int id);
@@ -33,6 +33,7 @@ public:
 	bool threadAsociado;
 	Proyectil* dispararProyectil();
 	string getNombre();
+	int estado;
 };
 
 #endif /* ENEMIGO_H_ */
