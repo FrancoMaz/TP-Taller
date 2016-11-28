@@ -17,15 +17,18 @@ private:
 	int posX;
 	int posY;
 	string spriteEnemigo;
+	SDL_Rect boxCollider;
 
 public:
 	Enemigo(int posX, int posY, int id);
 	virtual ~Enemigo();
 	void disparar();
-	//void daniarseCon(Proyectil* proyectil);
 	int getId();
 	void setId(int id);
 	string getInformacionDelEnemigo();
+	SDL_Rect getBoxCollider();
+	int getPosX();
+	bool threadAsociado;
 };
 
 #endif /* ENEMIGO_H_ */

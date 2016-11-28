@@ -25,8 +25,9 @@ private:
 	pthread_t threadDisparo;
 	string sentido;
 	int angulo;
+	SDL_Rect boxCollider;
 public:
-	Proyectil(int danioEnPorcentaje, int puntosPorDisparo, string spriteBala,int posicionX,int posicionY,string sentido,int angulo);
+	Proyectil(int danioEnPorcentaje, int puntosPorDisparo, string spriteBala,int posicionX,int posicionY,string sentido,int angulo,SDL_Rect boxCollider);
 	virtual ~Proyectil();
 	pthread_t getThreadDisparo();
 	void setThreadDisparo(pthread_t threadDisparo);
@@ -37,6 +38,7 @@ public:
 	void mover();
 	string getStringProyectil();
 	int getDanio();
+	SDL_Rect getBoxCollider();
 };
 
 #endif /* PROYECTIL_H_ */
