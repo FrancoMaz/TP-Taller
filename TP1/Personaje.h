@@ -17,12 +17,14 @@ protected:
 	int vida;
 	vector<Arma*> armas;
 	bool estaMuerto;
+	bool disparar;
 public:
 	Personaje();
 	virtual ~Personaje();
-	virtual void disparar();
 	virtual void daniarseCon(int danio);
-	bool getEstaMuerto();
+	virtual bool getEstaMuerto();
+	virtual bool estaDisparando();
+	virtual Proyectil* dispararProyectil();
 };
 
 #endif /* PERSONAJE_H_ */

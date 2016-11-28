@@ -45,7 +45,6 @@ private:
 	bool saltar;
 	bool agachar;
 	bool caer;
-	bool disparar;
 	bool movDerecha = false;
 	bool movIzquierda = false;
 	bool arriba = false;
@@ -84,8 +83,6 @@ public:
 	void setThreadMovimiento(pthread_t thrMovimiento);
 	bool esPlataforma(int x);
 	void inicializarVectorArmas();
-	Proyectil* dispararProyectil();
-	bool estaDisparando();
 	Proyectil* getProyectilDisparado();
 	string condicionSprite;
 	bool armasVacias;
@@ -94,6 +91,7 @@ public:
 	void condicionesMovimiento();
 	int anguloBala;
 	bool hayMuniciones();
+	Proyectil* dispararProyectil();
 	//void daniarseCon(Proyectil* proyectil);
 };
 #endif /* JUGADOR_H_ */

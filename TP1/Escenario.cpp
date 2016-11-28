@@ -13,19 +13,42 @@ using namespace std;
 
 Escenario::Escenario(string rutaXml) {
 	XmlParser* parserNivel = new XmlParser(rutaXml);
-	for(int i=0; i < 1; i++) {
-		srand(rdtsc());
-		pair<int,int> lala(rand() % 1200 + 800, 415);
-		//pair<int,int> lala(413, 415);
-		cout << "Posicion x del enemigo: " << lala.first << endl;
-		this->enemigosPorNivel.push_back(lala);
-	}
-	this->ordenarEnemigos();
 	this->idEnemigo = 0;
 	this->plataformas = parserNivel->getPlataformas();
 	this->itemArmas = parserNivel->getItemArmas();
 	this->boss = parserNivel->getBoss();
 	this->levelClear = false;
+	int posX = 1000;
+	for(int i = 0; i < 15; i++) {
+		pair<int,int> lala(posX, 415);
+		cout << "Posicion x del enemigo: " << lala.first << endl;
+		this->enemigosPorNivel.push_back(lala);
+		posX += 350;
+	}
+	// estos enemigos son para las plataformas del nivel 1
+	pair<int,int> plataforma12(575, 354-106);
+	this->enemigosPorNivel.push_back(plataforma12);
+	pair<int,int> plataforma2(1650, 354-106);
+	this->enemigosPorNivel.push_back(plataforma2);
+	pair<int,int> plataforma3(2100, 354-106);
+	this->enemigosPorNivel.push_back(plataforma3);
+	pair<int,int> plataforma4(2370, 354-106);
+	this->enemigosPorNivel.push_back(plataforma4);
+	pair<int,int> plataforma5(2635, 354-106);
+	this->enemigosPorNivel.push_back(plataforma5);
+	pair<int,int> plataforma61(3500, 354-106);
+	this->enemigosPorNivel.push_back(plataforma61);
+	pair<int,int> plataforma62(3700, 354-106);
+	this->enemigosPorNivel.push_back(plataforma62);
+	pair<int,int> plataforma71(4700, 354-106);
+	this->enemigosPorNivel.push_back(plataforma71);
+	pair<int,int> plataforma72(5000, 354-106);
+	this->enemigosPorNivel.push_back(plataforma72);
+	pair<int,int> plataforma8(5900, 354-106);
+	this->enemigosPorNivel.push_back(plataforma8);
+	pair<int,int> plataforma9(6950, 354-106);
+	this->enemigosPorNivel.push_back(plataforma9);
+	this->ordenarEnemigos();
 }
 
 Escenario::~Escenario() {

@@ -22,6 +22,7 @@ public:
 	Proyectil* proyectil;
 	Enemigo* enemigo;
 	Boss* boss;
+	Personaje * personaje;
 	ParametrosMovimiento(Servidor* servidorActual, Jugador* jugadorActual);
 	virtual ~ParametrosMovimiento();
 };

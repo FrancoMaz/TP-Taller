@@ -17,14 +17,16 @@ Enemigo::Enemigo(int posX, int posY, int id) {
 	this->id = id;
 	this->boxCollider = {posX+86,posY,49,106};
 	this->threadAsociado = false;
+	this->disparar = false;
+	this->condicionSprite = "Espejado";
+	this->anguloBala = 0;
+	this->agachado = false;
 }
 
 Enemigo::~Enemigo() {
-	// TODO Auto-generated destructor stub
-}
-
-void Enemigo::disparar() {
-
+	/*for (int i = 0; i < this->armas.size(); i++) {
+		this->armas.at(i)->~Arma();
+	}*/
 }
 
 string Enemigo::getInformacionDelEnemigo() {
@@ -41,4 +43,8 @@ SDL_Rect Enemigo::getBoxCollider() {
 
 int Enemigo::getPosX() {
 	return this->posX;
+}
+
+Proyectil* Enemigo::dispararProyectil() {
+	return (this->armas.at(0)->disparar(this->posX,this->posY,this->condicionSprite,anguloBala,agachado));
 }
