@@ -20,7 +20,9 @@ Enemigo::Enemigo(int posX, int posY, int id) {
 }
 
 Enemigo::~Enemigo() {
-	// TODO Auto-generated destructor stub
+	/*for (int i = 0; i < this->armas.size(); i++) {
+		this->armas.at(i)->~Arma();
+	}*/
 }
 
 void Enemigo::disparar() {
