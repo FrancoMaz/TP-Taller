@@ -33,6 +33,24 @@ struct ComunicacionCliente{
 			bool termino;
 		};
 
+void split(const std::string &s, char delim, std::vector<std::string> &elems) {
+	//splitea un string segun un delim y lo guarda en elems
+    std::stringstream ss;
+    ss.str(s);
+    std::string item;
+    while (std::getline(ss, item, delim)) {
+        elems.push_back(item);
+    }
+}
+
+
+std::vector<std::string> splitToVec(const std::string &s, char delim) {
+	//devuelve un vector de elementos que representan al string spliteado segun delim
+    std::vector<std::string> elems;
+    split(s, delim, elems);
+    return elems;
+}
+
 
 int stringToInt(string atributo) {
 	istringstream atributoStream(atributo);
@@ -99,112 +117,61 @@ void procesarUltimosMensajes(string mensajes, Cliente* cliente, UpdateJugador* u
 		primeraVez = false;
 		mensajes[mensajes.length() - 1] = '#';
 		string s = mensajes;
-		string delimitador = "|";
-		string delimitadorFinal = "#";
-		string delimitadorCapas = ",";
+		char delimitador = '|';
+		char delimitadorFinal = '#';
+		char delimitadorCapas = ',';
 		string texto;
 		string capas;
 		size_t posCapas;
-		size_t pos = s.find(delimitador);
-		texto = s.substr(0, pos);
 
-		while (texto != "") {
-			update->setRemitente(texto);
-			s.erase(0, pos + delimitador.length());
-			pos = s.find(delimitador);
-			texto = s.substr(0,pos);
-			int textoInt = stringToInt(string(texto));
-
-			switch (textoInt) {
-				case 0: {
-					s.erase(0, pos + delimitador.length());
-					pos = s.find(delimitador);
-					texto = s.substr(0,pos);
-					update->setDestinatario(texto);
-					s.erase(0, pos + delimitador.length());
-					pos = s.find(delimitador);
-					texto = s.substr(0,pos);
-					update->setX(texto);
-					s.erase(0, pos + delimitador.length());
-					pos = s.find(delimitador);
-					texto = s.substr(0,pos);
-					update->setY(texto);
-					s.erase(0, pos + delimitador.length());
-					pos = s.find(delimitador);
-					texto = s.substr(0,pos);
-					string spriteAEjecutar;
-					spriteAEjecutar = texto;
-					s.erase(0, pos + delimitador.length());
-					pos = s.find(delimitadorFinal);
-					texto = s.substr(0,pos);
-					update->setCondicion(texto);
+		vector<string> msjVec = splitToVec(s,delimitadorFinal);
+		vector<string> msjContenido;
+		for (int i = 0; i < msjVec.size(); i++){
+			string msjActual = msjVec.at(i);
+			msjContenido = splitToVec(msjActual,delimitador);
+			update->setRemitente(msjContenido.at(0));
+			int caso = stringToInt(msjContenido.at(1));
+			switch (caso){
+				case 0:{
+					update->setDestinatario(msjContenido.at(2));
+					update->setX(msjContenido.at(3));
+					update->setY(msjContenido.at(4));
+					update->setCondicion(msjContenido.at(6));
+					string spriteAEjecutar = msjContenido.at(5);
 					for (int i = 0; i < setsSprites.size(); i++){
 						vector<SpriteDto*> listaSprites = setsSprites.at(i)->getSprites();
 						for (int i = 0; i < listaSprites.size(); i++) {
-							if ((string(spriteAEjecutar)) == listaSprites.at(i)->getID()) {
+							if (spriteAEjecutar == listaSprites.at(i)->getID()) {
 								update->setSpriteActual(listaSprites.at(i));
 							}
 						}
 					}
+					vista->actualizarPosJugador(update,stringToInt(handshakeDeserializado->getAncho()),stringToInt(handshakeDeserializado->getImagenes().at(0)->getAncho()));
 					break;
 				}
-				case 1: {
-					s.erase(0, pos + delimitador.length());
-					pos = s.find(delimitador);
-					texto = s.substr(0,pos);
-					int x = stringToInt(texto);
-					s.erase(0, pos + delimitador.length());
-					pos = s.find(delimitador);
-					texto = s.substr(0,pos);
-					int y = stringToInt(texto);
-					s.erase(0, pos + delimitador.length());
-					pos = s.find(delimitadorFinal);
-					texto = s.substr(0,pos);
+				case 1:{
+					int x = stringToInt(msjContenido.at(2));
+					int y = stringToInt(msjContenido.at(3));
 					vector<pair<int,int>> abscisasCapas;
-					while ((posCapas = texto.find(delimitador)) != string::npos) {
+					for (int i = 4; i < msjContenido.size(); i++){
 						pair<int,int> abscisas;
-						posCapas = texto.find(delimitadorFinal);
-						capas = texto.substr(0,posCapas);
-						abscisas.first = stringToInt(capas);
-						texto.erase(0,posCapas+delimitadorCapas.length());
-						posCapas = texto.find(delimitador);
-						capas = texto.substr(0,posCapas);
-						abscisas.second = stringToInt(capas);
+						vector<string> capa = splitToVec(msjContenido.at(i), delimitadorCapas);
+						abscisas.first = stringToInt(capa.at(0));
+						abscisas.second = stringToInt(capa.at(1));
 						abscisasCapas.push_back(abscisas);
-						texto.erase(0,posCapas+delimitador.length());
 					}
 					vista->actualizarCamara(x,y,abscisasCapas,stringToInt(handshakeDeserializado->getAncho()));
 					break;
 				}
-				case 2: {
-					s.erase(0, pos + delimitador.length());
-					pos = s.find(delimitador);
-					texto = s.substr(0,pos);
-					string nuevaBala = texto;
-					s.erase(0, pos + delimitador.length());
-					pos = s.find(delimitador);
-					texto = s.substr(0,pos);
-					int xBala = stringToInt(texto);
-					s.erase(0, pos + delimitador.length());
-					pos = s.find(delimitador);
-					texto = s.substr(0,pos);
-					int yBala = stringToInt(texto);
-					s.erase(0, pos + delimitador.length());
-					pos = s.find(delimitador);
-					texto = s.substr(0,pos);
-					string spriteBala = texto;
-					s.erase(0, pos + delimitador.length());
-					pos = s.find(delimitador);
-					texto = s.substr(0,pos);
-					int idBala = stringToInt(texto);
-					s.erase(0, pos + delimitador.length());
-					pos = s.find(delimitador);
-					texto = s.substr(0,pos);
-					string sentido = texto;
-					s.erase(0, pos + delimitador.length());
-					pos = s.find(delimitadorFinal);
-					texto = s.substr(0,pos);
-					double angulo = calcularAngulo(stringToInt(texto),sentido);
+				case 2:{
+					string nuevaBala = msjContenido.at(2);
+					int xBala = stringToInt(msjContenido.at(3));
+					int yBala = stringToInt(msjContenido.at(4));
+					string spriteBala = msjContenido.at(5);
+					int idBala = stringToInt(msjContenido.at(6));
+					string sentido = msjContenido.at(7);
+					double angulo = calcularAngulo(stringToInt(msjContenido.at(8)), sentido);
+
 					int cantFotogramas;
 					for (int i = 0; i < setsSprites.size(); i++) {
 						vector<SpriteDto*> listaSprites = setsSprites.at(i)->getSprites();
@@ -217,64 +184,25 @@ void procesarUltimosMensajes(string mensajes, Cliente* cliente, UpdateJugador* u
 					vista->actualizarProyectil(nuevaBala,xBala,yBala,spriteBala,idBala,cantFotogramas,sentido,angulo);
 					break;
 				}
-				case 3: {
-					s.erase(0, pos + delimitador.length());
-					pos = s.find(delimitador);
-					texto = s.substr(0,pos);
-					string borrarItem = texto;
-					s.erase(0,pos+delimitador.length());
-					pos = s.find(delimitador);
-					texto = s.substr(0,pos);
-					string spriteItem = texto;
-					s.erase(0,pos+delimitador.length());
-					pos = s.find(delimitador);
-					texto = s.substr(0,pos);
-					int xItem = stringToInt(texto);
-					s.erase(0,pos+delimitador.length());
-					pos = s.find(delimitadorFinal);
-					texto = s.substr(0,pos);
-					int yItem = stringToInt(texto);
+				case 3:{
+					string borrarItem = msjContenido.at(2);
+					string spriteItem = msjContenido.at(3);
+					int xItem = stringToInt(msjContenido.at(4));
+					int yItem = stringToInt(msjContenido.at(5));
 					vista->agregarVistaItem(borrarItem,spriteItem,xItem,yItem);
 					break;
 				}
-				case 4: {
-					s.erase(0, pos + delimitador.length());
-					pos = s.find(delimitador);
-					texto = s.substr(0,pos);
-					string nuevoEnemigo = texto;
-					s.erase(0, pos + delimitador.length());
-					pos = s.find(delimitador);
-					texto = s.substr(0,pos);
-					int xEnemigo = stringToInt(texto);
-					s.erase(0, pos + delimitador.length());
-					pos = s.find(delimitador);
-					texto = s.substr(0,pos);
-					int yEnemigo = stringToInt(texto);
-					s.erase(0, pos + delimitador.length());
-					pos = s.find(delimitador);
-					texto = s.substr(0,pos);
-					string spriteEnemigo = texto;
-					s.erase(0, pos + delimitador.length());
-					pos = s.find(delimitadorFinal);
-					texto = s.substr(0,pos);
-					int idEnemigo = stringToInt(texto);
+				case 4:{
+					string nuevoEnemigo = msjContenido.at(2);
+					int xEnemigo = stringToInt(msjContenido.at(3));
+					int yEnemigo = stringToInt(msjContenido.at(4));
+					string spriteEnemigo = msjContenido.at(5);
+					int idEnemigo = stringToInt(msjContenido.at(6));
 					int cantFotogramas = 7;
-					/*for (int i = 0; i < setsSprites.size(); i++) {
-						vector<SpriteDto*> listaSprites = setsSprites.at(i)->getSprites();
-						for (int i = 0; i < listaSprites.size(); i++) {
-							if (spriteBala == listaSprites.at(i)->getID()) {
-								cantFotogramas = stringToInt(listaSprites.at(i)->getCantidadDeFotogramas());
-							}
-						}
-					}*/
 					vista->actualizarEnemigo(nuevoEnemigo, xEnemigo, yEnemigo, spriteEnemigo, idEnemigo, cantFotogramas);
 					break;
 				}
 			}
-			vista->actualizarPosJugador(update,stringToInt(handshakeDeserializado->getAncho()),stringToInt(handshakeDeserializado->getImagenes().at(0)->getAncho()));
-			s.erase(0, pos + delimitador.length());
-			pos = s.find(delimitador);
-			texto = s.substr(0,pos);
 		}
 		vista->actualizarPantalla(stringToInt(handshakeDeserializado->getAncho()), stringToInt(handshakeDeserializado->getImagenes().at(0)->getAncho()));
 	}
