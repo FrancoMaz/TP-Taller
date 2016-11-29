@@ -15,7 +15,7 @@ Arma::~Arma() {
 	// TODO Auto-generated destructor stub
 }
 
-Proyectil* Arma::disparar(int posicionX,int posicionY, string condicion, int anguloBala, bool agachar, int disparadoPor) {
+Proyectil* Arma::disparar(int posicionX,int posicionY, string condicion, int anguloBala, bool agachar, int disparadoPor, string nombreJugador) {
 
 }
 

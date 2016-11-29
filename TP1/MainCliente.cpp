@@ -245,6 +245,9 @@ void procesarUltimosMensajes(string mensajes, Cliente* cliente, UpdateJugador* u
 					}
 					vista->actualizarBoss(nuevoBoss, xBoss, yBoss, spriteBoss, sentido, cantFotogramas);
 					break;
+					string jugador = msjContenido.at(2);
+					int puntaje = stringToInt(msjContenido.at(3));
+					vista->actualizarPuntaje(jugador,puntaje);
 				}
 			}
 		}

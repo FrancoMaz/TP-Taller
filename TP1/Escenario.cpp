@@ -82,6 +82,7 @@ void Escenario::agregarProyectil(Proyectil* proyectil, string nombreJugador) {
 
 bool Escenario::verificarColision(SDL_Rect camara, Proyectil* proyectil, bool disparando) {
 	if (this->verificarColisionConEnemigo(proyectil)) {
+		proyectil->colisionPersonaje = true;
 		return true;
 	} else {
 		if (!proyectil->cortoAlcance)

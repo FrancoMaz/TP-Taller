@@ -9,7 +9,7 @@
 #include <iostream>
 using namespace std;
 
-Proyectil::Proyectil(int danioEnPorcentaje, int puntosPorDisparo, string spriteBala,int posicionX, int posicionY, string sentido, int angulo, SDL_Rect boxCollider, bool cortoAlcance, int disparadoPor) {
+Proyectil::Proyectil(int danioEnPorcentaje, int puntosPorDisparo, string spriteBala,int posicionX, int posicionY, string sentido, int angulo, SDL_Rect boxCollider, bool cortoAlcance, int disparadoPor, string nombreJugador) {
 	this->danioEnPorcentaje = danioEnPorcentaje;
 	this->puntosPorDisparo = puntosPorDisparo;
 	this->spriteBala = spriteBala;
@@ -28,6 +28,8 @@ Proyectil::Proyectil(int danioEnPorcentaje, int puntosPorDisparo, string spriteB
 	this->cortoAlcance = cortoAlcance;
 	this->aumentoAncho = true;
 	this->disparadoPor = disparadoPor;
+	this->jugadorQueLoDisparo = nombreJugador;
+	this->colisionPersonaje = false;
 }
 
 Proyectil::~Proyectil() {
@@ -161,6 +163,10 @@ void Proyectil::mover()
 string Proyectil::getStringProyectil()
 {
 	return (to_string(this->posicion.first) + "|" + to_string(this->posicion.second) + "|" + this->spriteBala + "|" + to_string(this->id) + "|" + this->sentido + "|" + to_string(this->angulo) + "#");
+}
+
+int Proyectil::getPuntosPorImpacto() {
+	return this->puntosPorDisparo;
 }
 
 int Proyectil::getDanio() {

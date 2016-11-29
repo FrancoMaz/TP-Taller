@@ -93,5 +93,6 @@ public:
 	Proyectil* dispararProyectil();
 	//void daniarseCon(Proyectil* proyectil);
 	string getNombre();
+	int puntaje;
 };
 #endif /* JUGADOR_H_ */
