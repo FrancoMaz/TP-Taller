@@ -21,14 +21,13 @@ Escenario::Escenario(string rutaXml) {
 	int posX = 1000;
 	for(int i = 0; i < 15; i++) {
 		pair<int,int> lala(posX, 415);
-		cout << "Posicion x del enemigo: " << lala.first << endl;
 		this->enemigosPorNivel.push_back(lala);
 		posX += 350;
 	}
 	// estos enemigos son para las plataformas del nivel 1
 	pair<int,int> plataforma12(575, 354-106);
 	this->enemigosPorNivel.push_back(plataforma12);
-	pair<int,int> plataforma2(1650, 354-106);
+	pair<int,int> plataforma2(1630, 354-106);
 	this->enemigosPorNivel.push_back(plataforma2);
 	pair<int,int> plataforma3(2100, 354-106);
 	this->enemigosPorNivel.push_back(plataforma3);
@@ -76,15 +75,13 @@ void Escenario::ordenarEnemigos() {
 	}
 }
 
-void Escenario::agregarProyectil(Proyectil* proyectil, string nombreJugador, int idProyectil) {
-	proyectil->id = idProyectil;
+void Escenario::agregarProyectil(Proyectil* proyectil, string nombreJugador) {
 	this->proyectiles.push_back(proyectil);
 	//proyectil->fueDisparadoPor(nombreJugador);
 }
 
 bool Escenario::verificarColision(SDL_Rect camara, Proyectil* proyectil, bool disparando) {
 	if (this->verificarColisionConEnemigo(proyectil)) {
-		cout << "En verificar colision, ocurrio la colision" << endl;
 		return true;
 	} else {
 		if (!proyectil->cortoAlcance)
