@@ -166,6 +166,14 @@ void* disparoProyectil(void* arg)
 			servidor->encolarMensajeProcesadoParaCadaCliente(*mensajeProyectil,mensajeProyectilString);
 			mensajeProyectil->~Mensaje();
 		}
+		if (proyectil->colisionPersonaje)
+		{ //si colisiono con un personaje (un enemigo) y no contra un margen, sumo puntos
+			jugador->puntaje += proyectil->getPuntosPorImpacto();
+			string mensajePuntajeString = "5|" + jugador->getNombre() + "|" + to_string(jugador->puntaje) + "#";
+			Mensaje* mensajePuntaje = new Mensaje(jugador->getNombre(),"Todos", mensajePuntajeString);
+			servidor->encolarMensajeProcesadoParaCadaCliente(*mensajePuntaje,mensajePuntajeString); //envia mensaje de actualizar puntaje
+			mensajePuntaje->~Mensaje();
+		}
 	} else { // disparado por un enemigo
 	    bool disparando = personaje->estaDisparando();
 		while (!servidor->verificarColision(servidor->camara, proyectil, disparando)) {

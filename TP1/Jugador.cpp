@@ -29,6 +29,7 @@ Jugador::Jugador(string nombre, string equipo, int posicionX, vector<pair<string
 	this->vida = 100;
 	this->anguloBala = 0; //0 equivale al angulo 0, 1 al angulo PI/2, 2 al angulo PI/4
 	this->estaMuerto = false;
+	this->puntaje = 0;
 }
 
 Jugador::~Jugador() {

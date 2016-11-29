@@ -42,6 +42,8 @@ public:
 	SDL_Rect getBoxCollider();
 	bool cortoAlcance;
 	int disparadoPor;
+	int getPuntosPorImpacto();
+	bool colisionPersonaje;
 };
 
 #endif /* PROYECTIL_H_ */

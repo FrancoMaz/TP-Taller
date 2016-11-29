@@ -210,6 +210,11 @@ void procesarUltimosMensajes(string mensajes, Cliente* cliente, UpdateJugador* u
 					vista->actualizarEnemigo(nuevoEnemigo, xEnemigo, yEnemigo, spriteEnemigo, idEnemigo, cantFotogramas);
 					break;
 				}
+				case 5:{
+					string jugador = msjContenido.at(2);
+					int puntaje = stringToInt(msjContenido.at(3));
+					vista->actualizarPuntaje(jugador,puntaje);
+				}
 			}
 		}
 		vista->actualizarPantalla(stringToInt(handshakeDeserializado->getAncho()), stringToInt(handshakeDeserializado->getImagenes().at(0)->getAncho()));

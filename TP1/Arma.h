@@ -25,7 +25,7 @@ public:
 	virtual ~Arma();
 
 	//si disparadoPor es 1, recibe un nombre de jugador
-	virtual Proyectil* disparar(int posicionX,int posicionY, string condicion, int anguloBala, bool agachar, int disparadoPor, string nombreJugador = NULL);
+	virtual Proyectil* disparar(int posicionX,int posicionY, string condicion, int anguloBala, bool agachar, int disparadoPor, string nombreJugador = "");
 	virtual bool sinMuniciones();
 	virtual void sumarMuniciones();
 	string nombre;

@@ -462,6 +462,17 @@ void Vista::actualizarPosJugador(UpdateJugador* update, int anchoVentana, int an
 	}
 }
 
+void Vista::actualizarPuntaje(string jugador, int puntaje){
+	for (int i = 0; i < vistaJugadores.size(); i++){
+		VistaJugador* vistaJugador = vistaJugadores.at(i);
+		if (vistaJugador->nombre == jugador)
+		{
+			vistaJugador->valorPuntaje = puntaje;
+			break;
+		}
+	}
+}
+
 void Vista::actualizarPantalla(int anchoVentana, int anchoCapaPrincipal) {
 	this->ventana->limpiar();
 	for (int i=vectorCapas.size()-1; i>=0; i--)
