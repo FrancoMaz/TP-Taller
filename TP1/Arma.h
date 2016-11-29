@@ -17,7 +17,6 @@ class Arma {
 protected:
 	int municiones;
 	int municionesPorRepuesto;
-	Proyectil* proyectil;
 	SDL_Rect boxCollider;
 
 public:
@@ -28,10 +27,10 @@ public:
 	virtual Proyectil* disparar(int posicionX,int posicionY, string condicion, int anguloBala, bool agachar, int disparadoPor, string nombreJugador = "");
 	virtual bool sinMuniciones();
 	virtual void sumarMuniciones();
-	string nombre;
-	string nombreArma;
-	bool disparoDiagonal;
-	bool cortoAlcance;
+	string nombre = "lala gorsu";
+	string nombreArma = "miss";
+	bool disparoDiagonal = false;
+	bool cortoAlcance = false;
 };
 
 

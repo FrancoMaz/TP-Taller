@@ -154,7 +154,9 @@ void Escenario::despertarEnemigos(SDL_Rect* camara) {
 				int estado = rand() % 2;
 				if (this->enemigosPorNivel.at(0).first < camara->x + camara->w && this->enemigosPorNivel.at(0).first > camara->x) {
 					Enemigo* enemigo = new Enemigo(this->enemigosPorNivel.at(0).first,this->enemigosPorNivel.at(0).second,this->idEnemigo, estado);
+					pthread_mutex_lock(&mutexEnemigosActivos);
 					this->enemigosActivos.push_back(enemigo);
+					pthread_mutex_unlock(&mutexEnemigosActivos);
 					this->enemigosPorNivel.erase(this->enemigosPorNivel.begin() + 0);
 					this->idEnemigo++;
 				}
@@ -191,12 +193,15 @@ bool Escenario::enemigoPerdido(int id, SDL_Rect* camara) {
 }
 
 void Escenario::eliminarEnemigoActivo(int id) {
+	pthread_mutex_lock(&mutexEnemigosActivos);
 	for (int i = 0; i < this->enemigosActivos.size(); i++) {
 		Enemigo* enemigo = this->enemigosActivos.at(i);
 		if (enemigo->getId() == id) {
 			this->enemigosActivos.erase(this->enemigosActivos.begin() + i);
+			delete enemigo;
 		}
 	}
+	pthread_mutex_unlock(&mutexEnemigosActivos);
 }
 
 bool Escenario::despertarBoss(SDL_Rect camara)

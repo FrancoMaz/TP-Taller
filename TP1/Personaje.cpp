@@ -13,7 +13,10 @@ Personaje::Personaje() {
 }
 
 Personaje::~Personaje() {
-	// TODO Auto-generated destructor stub
+	for (int i = 0; i < this->armas.size(); i++) {
+ 		Arma* arma = this->armas.at(i);
+		delete arma;
+	}
 }
 
 void Personaje::daniarseCon(int danio) {
