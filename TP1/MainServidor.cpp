@@ -428,7 +428,6 @@ void* bossActivo(void* arg)
 		int tiempoTranscurrido = chrono::duration_cast<chrono::seconds>(chrono::high_resolution_clock::now() - start_time).count();
 		if (tiempoTranscurrido %2 == 0 && !bossNivel->disparando && !tieneQueDisparar)
 		{
-			cout << "Tiene que disparar" << endl;
 			tieneQueDisparar = true;
 		}
 		else if (tiempoTranscurrido %2 != 0)
@@ -443,7 +442,6 @@ void* bossActivo(void* arg)
 		mensaje->~Mensaje();
 		if (tieneQueDisparar)
 		{
-			cout << "Entra aca" << endl;
 			pthread_t threadDisparoBoss;
 			parametrosBoss->proyectil = bossNivel->proyectilADisparar;
 			parametrosBoss->personaje = bossNivel;
