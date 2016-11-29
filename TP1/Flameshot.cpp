@@ -21,7 +21,7 @@ Flameshot::~Flameshot() {
 	// TODO Auto-generated destructor stub
 }
 
-Proyectil* Flameshot::disparar(int posicionX,int posicionY, string condicion, int anguloBala, bool agachar, int disparadoPor) {
+Proyectil* Flameshot::disparar(int posicionX,int posicionY, string condicion, int anguloBala, bool agachar, int disparadoPor,string nombreJugador) {
 	int posX, posY;
 	switch (anguloBala){
 		case 0:
@@ -54,7 +54,7 @@ Proyectil* Flameshot::disparar(int posicionX,int posicionY, string condicion, in
 			break;
 	}
 	this->boxCollider = {posX,posY,91,80};
-	this->proyectil = new Proyectil(35, 40, this->nombreArma, posX, posY, condicion, anguloBala, this->boxCollider, this->cortoAlcance, disparadoPor);
+	this->proyectil = new Proyectil(35, 40, this->nombreArma, posX, posY, condicion, anguloBala, this->boxCollider, this->cortoAlcance, disparadoPor, nombreJugador);
 	this->municiones -= 1;
 	return this->proyectil;
 }

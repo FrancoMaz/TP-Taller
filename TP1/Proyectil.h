@@ -28,7 +28,7 @@ private:
 	SDL_Rect boxCollider;
 	bool aumentoAncho;
 public:
-	Proyectil(int danioEnPorcentaje, int puntosPorDisparo, string spriteBala,int posicionX,int posicionY,string sentido,int angulo,SDL_Rect boxCollider,bool cortoAlcance,int disparadoPor);
+	Proyectil(int danioEnPorcentaje, int puntosPorDisparo, string spriteBala,int posicionX,int posicionY,string sentido,int angulo,SDL_Rect boxCollider,bool cortoAlcance,int disparadoPor, string nombreJugador);
 	virtual ~Proyectil();
 	pthread_t getThreadDisparo();
 	void setThreadDisparo(pthread_t threadDisparo);

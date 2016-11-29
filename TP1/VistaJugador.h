@@ -18,11 +18,18 @@ class VistaJugador {
 public:
 	int x;
 	int y;
+	int valorPuntaje;
+	int valorEnergia;
 	string nombre;
+	TexturaSDL* texturaNombre;
 	TexturaSDL* texturaJugador;
+	TexturaSDL* energia;
+	TexturaSDL* imagenEnergia;
+	TexturaSDL* puntaje;
+	TexturaSDL* imagenPuntaje;
 	string sprite;
 	SDL_RendererFlip flip;
-	VistaJugador(string nomb, int x, int y, TexturaSDL* textura, SDL_RendererFlip flip);
+	VistaJugador(string nomb, int x, int y, TexturaSDL* textura, SDL_RendererFlip flip, TexturaSDL* energia, TexturaSDL* imagenEnergia, TexturaSDL* puntaje, TexturaSDL* imagenPuntaje, TexturaSDL* _texturaNombre);
 	VistaJugador();
 	virtual ~VistaJugador();
 };

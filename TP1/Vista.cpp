@@ -58,6 +58,7 @@ void Vista::cargarArchivos(){
 	textura.push_back(ventana->crearBoton("Recursos/Boton_Salir.png"));
 	textura.push_back(ventana->crearTexto("Recursos/msserif_bold.ttf",25));
 
+
 	//Defino constantes para cada textura (para evitar llamarlos por índices)
 	#define texturaMenuFondo textura[0]
 	#define texturaMenuMetalSlug textura[1]
@@ -79,6 +80,7 @@ void Vista::cargarArchivos(){
 	#define texturaBotonDesconectar textura[17]
 	#define textoEsperandoJugadores textura[18]
 }
+
 
 void Vista::cargarPrimeraPantalla(){
 	for (float y=-290; y<40; y=y+5){
@@ -377,7 +379,13 @@ void Vista::cargarVistaInicialJugador(string nombre, int x, int y, SpriteDto* sp
 {
 	string fotogramas = sprite->getCantidadDeFotogramas();
 	VistaJugador* vistaJugador;
-	vistaJugador = new VistaJugador(nombre,x,y,(ventana->crearTextura("Recursos/" + sprite->getPath() + ".png", atoi(fotogramas.c_str()))), SDL_FLIP_NONE);
+	TexturaSDL* imgEnergia = ventana->crearTextura("Recursos/energia.png",0);
+	TexturaSDL* energia = ventana->crearTexto("Recursos/msserif_bold.ttf",16);
+	TexturaSDL* imgPuntaje = ventana->crearTextura("Recursos/puntaje.png",0);
+	TexturaSDL* puntaje = ventana->crearTexto("Recursos/msserif_bold.ttf",16);
+	TexturaSDL* texturaNombre = ventana->crearTexto("Recursos/msserif_bold.ttf", 18);
+	vistaJugador = new VistaJugador(nombre,x,y,(ventana->crearTextura("Recursos/" + sprite->getPath() + ".png", atoi(fotogramas.c_str()))), SDL_FLIP_NONE,energia,imgEnergia,puntaje,imgPuntaje, texturaNombre);
+	vistaJugador->texturaNombre->actualizarTexto(vistaJugador->nombre,{255,255,255});
 	vistaJugadores.push_back(vistaJugador);
 }
 
@@ -490,6 +498,13 @@ void Vista::actualizarPantalla(int anchoVentana, int anchoCapaPrincipal) {
 			vistaJugador->x = vistaJugador->x - anchoCapaPrincipal;
 		}
 		texturaJugadorX->aplicarPosicion(vistaJugador->x - camara.x,vistaJugador->y - camara.y,0,vistaJugador->flip);
+		vistaJugador->imagenEnergia->aplicarPosicion(vistaJugador->x - camara.x + texturaJugadorX->getAnchoSprite()/2 - 40, vistaJugador->y + 80, 0, SDL_FLIP_NONE); //44 es la mitad del boxCollider
+		vistaJugador->energia->aplicarPosicion(vistaJugador->x - camara.x + texturaJugadorX->getAnchoSprite()/2 - 20, vistaJugador->y + 80, 0, SDL_FLIP_NONE);
+		vistaJugador->energia->actualizarTexto(to_string(vistaJugador->valorEnergia),{255,255,255});
+		vistaJugador->imagenPuntaje->aplicarPosicion(vistaJugador->x - camara.x + texturaJugadorX->getAnchoSprite()/2 + 15, vistaJugador->y + 80, 0, SDL_FLIP_NONE);
+		vistaJugador->puntaje->aplicarPosicion(vistaJugador->x - camara.x + texturaJugadorX->getAnchoSprite()/2 + 35, vistaJugador->y + 80, 0, SDL_FLIP_NONE);
+		vistaJugador->puntaje->actualizarTexto(to_string(vistaJugador->valorPuntaje),{255,255,255});
+		vistaJugador->texturaNombre->aplicarPosicion(vistaJugador->x - camara.x + texturaJugadorX->getAnchoSprite()/2 - vistaJugador->texturaNombre->getAncho()/2,vistaJugador->y + 60, 0, SDL_FLIP_NONE);
 	}
 
 	if (texturaBotonDesconectar->aplicarPosicionDeBoton(10,10,&evento)) {

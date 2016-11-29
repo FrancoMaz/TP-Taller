@@ -55,6 +55,7 @@ private:
 	SDL_Keycode ultimaTeclaPresionada = SDLK_RIGHT;
 	vector<pair<string,string>> vectorPlataforma;
 	int armaActual;
+
 public:
 	Jugador(string nombre, string equipo, int posicionX, vector<pair<string,string>>);
 	virtual ~Jugador();
