@@ -473,6 +473,17 @@ void Vista::actualizarPuntaje(string jugador, int puntaje){
 	}
 }
 
+void Vista::actualizarVida(string jugador, int vida){
+	for (int i = 0; i < vistaJugadores.size(); i++){
+		VistaJugador* vistaJugador = vistaJugadores.at(i);
+		if (vistaJugador->nombre == jugador)
+		{
+			vistaJugador->valorEnergia = vida;
+			break;
+		}
+	}
+}
+
 void Vista::actualizarPantalla(int anchoVentana, int anchoCapaPrincipal) {
 	this->ventana->limpiar();
 	for (int i=vectorCapas.size()-1; i>=0; i--)

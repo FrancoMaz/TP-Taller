@@ -234,6 +234,7 @@ void procesarUltimosMensajes(string mensajes, Cliente* cliente, UpdateJugador* u
 					vista->actualizarPuntaje(jugador,puntaje);
 					break;
 				}
+<<<<<<< HEAD
 				case 7:{
 					string nuevoBoss = msjContenido.at(2);
 					int xBoss = stringToInt(msjContenido.at(3));
@@ -250,6 +251,12 @@ void procesarUltimosMensajes(string mensajes, Cliente* cliente, UpdateJugador* u
 						}
 					}
 					vista->actualizarBoss(nuevoBoss, xBoss, yBoss, spriteBoss, sentido, cantFotogramas);
+=======
+				case 6:{
+					string jugador = msjContenido.at(2);
+					int vida = stringToInt(msjContenido.at(3));
+					vista->actualizarVida(jugador,vida);
+>>>>>>> e295cef767161e5d27dc929b74ca1d3c3ac2a477
 					break;
 				}
 			}
