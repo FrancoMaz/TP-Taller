@@ -27,6 +27,7 @@ public:
 	bool disparando;
 	Proyectil* proyectilADisparar;
 	string getNombre();
+	int armaADisparar;
 };
 
 #endif /* BOSS_H_ */

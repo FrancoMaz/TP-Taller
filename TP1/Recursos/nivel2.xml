@@ -141,7 +141,7 @@
 	</Enemigos>
 	
 	<Boss>
-		<Nombre>hi_do</Nombre>
+		<Nombre>tani_oh</Nombre>
 		<PosicionX>1000</PosicionX>
 		<PosicionY>300</PosicionY>
 	</Boss>
