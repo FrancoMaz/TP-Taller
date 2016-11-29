@@ -181,7 +181,6 @@ void* disparoProyectil(void* arg)
 			proyectil->mover();
 			mensajeProyectilString = "2|1|";
 			mensajeProyectilString += proyectil->getStringProyectil();
-			cout << "Mensaje: " << mensajeProyectilString << endl;
 			if (personaje != NULL) {
 				mensajeProyectil = new Mensaje(personaje->getNombre(),"Todos",mensajeProyectilString);
 				servidor->encolarMensajeProcesadoParaCadaCliente(*mensajeProyectil,mensajeProyectilString);
@@ -411,7 +410,7 @@ void* bossActivo(void* arg)
 	string nombre = parametrosBoss->jugador->getNombre();
 	Boss* bossNivel = parametrosBoss->boss;
 	srand(time(NULL));
-	string mensajeBoss = "5|0|";
+	string mensajeBoss = "7|0|";
 	mensajeBoss += bossNivel->getStringBoss();
 	Mensaje* mensaje = new Mensaje(nombre,"Todos",mensajeBoss);
 	servidor->encolarMensajeProcesadoParaCadaCliente(*mensaje,mensajeBoss);
@@ -430,7 +429,7 @@ void* bossActivo(void* arg)
 			bossNivel->disparando = false;
 		}
 		bossNivel->comportamiento(servidor->camara, tieneQueDisparar);
-		mensajeBoss = "5|1|";
+		mensajeBoss = "7|1|";
 		mensajeBoss += bossNivel->getStringBoss();
 		mensaje = new Mensaje(nombre,"Todos",mensajeBoss);
 		servidor->encolarMensajeProcesadoParaCadaCliente(*mensaje,mensajeBoss);
@@ -446,7 +445,7 @@ void* bossActivo(void* arg)
 			tieneQueDisparar = false;
 		}
 	}
-	mensajeBoss = "5|2|";
+	mensajeBoss = "7|2|";
 	mensajeBoss += bossNivel->getStringBoss();
 	mensaje = new Mensaje(nombre,"Todos",mensajeBoss);
 	servidor->encolarMensajeProcesadoParaCadaCliente(*mensaje,mensajeBoss);

@@ -50,19 +50,19 @@ void HiDo::comportamiento(SDL_Rect camara,  bool tieneQueDisparar)
 			case 0:
 			{
 				SDL_Rect box = {((this->boxCollider.x + this->boxCollider.w)/2)-25,((this->boxCollider.y + this->boxCollider.h)/2)+106,32,30};
-				this->proyectilADisparar = new Proyectil(20,0,"Boss_hi_do_disparo",((this->boxCollider.x + this->boxCollider.w)/2)-25,((this->boxCollider.y + this->boxCollider.h)/2)+106, this->sentido, 3, box, false,2);
+				this->proyectilADisparar = new Proyectil(20,0,"Boss_hi_do_disparo",((this->boxCollider.x + this->boxCollider.w)/2)-25,((this->boxCollider.y + this->boxCollider.h)/2)+106, this->sentido, 3, box, false,2,"");
 				break;
 			}
 			case 1:
 			{
 				SDL_Rect box = {((this->boxCollider.x + this->boxCollider.w)/2)-25,((this->boxCollider.y + this->boxCollider.h)/2)+106,32,30};
-				this->proyectilADisparar = new Proyectil(20,0,"Boss_hi_do_disparo",((this->boxCollider.x + this->boxCollider.w)/2)-25,((this->boxCollider.y + this->boxCollider.h)/2)+106, this->sentido, 3, box, false,2);
+				this->proyectilADisparar = new Proyectil(20,0,"Boss_hi_do_disparo",((this->boxCollider.x + this->boxCollider.w)/2)-25,((this->boxCollider.y + this->boxCollider.h)/2)+106, this->sentido, 3, box, false,2,"");
 				break;
 			}
 			case 2:
 			{
 				SDL_Rect box = {((this->boxCollider.x + this->boxCollider.w)/2)-25,(this->boxCollider.y+this->boxCollider.h)+106,24,50};
-				this->proyectilADisparar = new Proyectil(20,0,"Boss_hi_do_bomba",((this->boxCollider.x + this->boxCollider.w)/2)-25,(this->boxCollider.y+this->boxCollider.h)+106, this->sentido, 4, box, false,2);
+				this->proyectilADisparar = new Proyectil(20,0,"Boss_hi_do_bomba",((this->boxCollider.x + this->boxCollider.w)/2)-25,(this->boxCollider.y+this->boxCollider.h)+106, this->sentido, 4, box, false,2,"");
 				break;
 			}
 		}

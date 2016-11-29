@@ -64,7 +64,7 @@
 	</ItemArmas>
 	<Boss>
 		<Nombre>hi_do</Nombre>
-		<PosicionX>1000</PosicionX>
+		<PosicionX>4080</PosicionX>
 		<PosicionY>100</PosicionY>
 	</Boss>
 </Configuracion>

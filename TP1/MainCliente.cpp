@@ -228,7 +228,13 @@ void procesarUltimosMensajes(string mensajes, Cliente* cliente, UpdateJugador* u
 					vista->actualizarEnemigo(nuevoEnemigo, xEnemigo, yEnemigo, spriteEnemigo, idEnemigo, cantFotogramas);
 					break;
 				}
-				case 5:{
+				case 5: {
+					string jugador = msjContenido.at(2);
+					int puntaje = stringToInt(msjContenido.at(3));
+					vista->actualizarPuntaje(jugador,puntaje);
+					break;
+				}
+				case 7:{
 					string nuevoBoss = msjContenido.at(2);
 					int xBoss = stringToInt(msjContenido.at(3));
 					int yBoss = stringToInt(msjContenido.at(4));
@@ -245,9 +251,6 @@ void procesarUltimosMensajes(string mensajes, Cliente* cliente, UpdateJugador* u
 					}
 					vista->actualizarBoss(nuevoBoss, xBoss, yBoss, spriteBoss, sentido, cantFotogramas);
 					break;
-					string jugador = msjContenido.at(2);
-					int puntaje = stringToInt(msjContenido.at(3));
-					vista->actualizarPuntaje(jugador,puntaje);
 				}
 			}
 		}
