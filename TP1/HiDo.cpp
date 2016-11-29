@@ -50,13 +50,13 @@ void HiDo::comportamiento(SDL_Rect camara,  bool tieneQueDisparar)
 			case 0:
 			{
 				SDL_Rect box = {this->boxCollider.x + 27,this->boxCollider.y + 142,32,30};
-				this->proyectilADisparar = new Proyectil(20,0,"Boss_hi_do_disparo",box.x,box.y, this->sentido, 3, box, false,2,"");
+				this->proyectilADisparar = new Proyectil(20,0,"HeavyMachineGun",box.x,box.y, this->sentido, 3, box, false,2,"");
 				break;
 			}
 			case 1:
 			{
 				SDL_Rect box = {this->boxCollider.x + 27,this->boxCollider.y + 142,32,30};
-				this->proyectilADisparar = new Proyectil(20,0,"Boss_hi_do_disparo",box.x,box.y, this->sentido, 3, box, false,2,"");
+				this->proyectilADisparar = new Proyectil(20,0,"HeavyMachineGun",box.x,box.y, this->sentido, 3, box, false,2,"");
 				break;
 			}
 			case 2:

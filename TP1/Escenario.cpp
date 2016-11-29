@@ -121,7 +121,6 @@ bool Escenario::verificarColisionConEnemigo(Proyectil* proyectil) {
 		else if (this->colisionaronObjetos(proyectil->getBoxCollider(),this->boss->boxCollider))
 		{
 			this->boss->daniarseCon(proyectil->getDanio());
-			cout << "Boss colisiono von bala" << endl;
 			return true;
 		}
 	}

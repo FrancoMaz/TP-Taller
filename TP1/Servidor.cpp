@@ -309,7 +309,6 @@ string Servidor::serializarCapas()
 	for (int i = 0; i < abscisasCapas.size(); i++)
 	{
 		capas += this->vectorNiveles.at(nivelActual)->capas.at(i);
-		cout << "Capa: " << this->vectorNiveles.at(nivelActual)->capas.at(i) << endl;
 		capas += ",";
 		capas += to_string(abscisasCapas.at(i).first);
 		capas += ",";
