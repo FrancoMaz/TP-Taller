@@ -45,6 +45,7 @@ public:
 	bool enemigoPerdido(int id, SDL_Rect* camara);
 	void eliminarEnemigoActivo(int id);
 	Boss* boss;
+	vector<string> capas;
 };
 
 #endif /* ESCENARIO_H_ */

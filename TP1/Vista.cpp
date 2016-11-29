@@ -401,14 +401,20 @@ void Vista::actualizarCamara(int x, int y, vector<pair<int,int>> abscisasCapas, 
 	camara.y = vectorCapas.at(0)->rectangulo.y;
 }
 
-void Vista::inicializarCamara(int camaraX, int camaraY, int anchoVentana, int altoVentana, vector<pair<int,int>> abscisasCapas, vector<ImagenDto*> imagenes)
+void Vista::inicializarCamara(int camaraX, int camaraY, int anchoVentana, int altoVentana, vector<pair<int,int>> abscisasCapas, vector<ImagenDto*> imagenes, vector<string> nombreCapas)
 {
 	camara = {camaraX,camaraY,anchoVentana,altoVentana};
 	for (int i=0; i<abscisasCapas.size(); i++)
 	{
 		SDL_Rect rectangulo = {abscisasCapas.at(i).first,0,anchoVentana,altoVentana};
-		Capa* capa = new Capa(imagenes.at(i), rectangulo, ventana->crearTextura("Recursos/" + imagenes.at(i)->getPath() + ".png",0));
-		vectorCapas.push_back(capa);
+		for (int j = 0; j < imagenes.size(); j++)
+		{
+			if (imagenes.at(j)->getPath() == nombreCapas.at(i))
+			{
+				Capa* capa = new Capa(imagenes.at(j), rectangulo, ventana->crearTextura("Recursos/" + imagenes.at(j)->getPath() + ".png",0));
+				vectorCapas.push_back(capa);
+			}
+		}
 	}
 }
 
@@ -634,6 +640,6 @@ void Vista::actualizarBoss(string boss, int x, int y, string sprite, string sent
 	}
 	else if (boss == "2")
 	{
-		delete(vistaBoss);
+		vistaBoss->~VistaEnemigo();
 	}
 }

@@ -55,6 +55,7 @@ public:
 	bool stringTerminaCon(string const &fullString, string const &ending);
 	Boss* getBoss();
 	Boss* devolverBoss(string nombre, string x, string y);
+	vector<string> getCapas();
 };
 
 #endif /* XMLPARSER_H_ */
