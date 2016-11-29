@@ -182,7 +182,7 @@ void* disparoProyectil(void* arg)
 			mensajeProyectilString = "2|1|";
 			mensajeProyectilString += proyectil->getStringProyectil();
 			if (personaje != NULL) {
-				mensajeProyectil = new Mensaje(personaje->getNombre(),"Todos",mensajeProyectilString);
+				mensajeProyectil = new Mensaje(jugador->getNombre(),"Todos",mensajeProyectilString);
 				servidor->encolarMensajeProcesadoParaCadaCliente(*mensajeProyectil,mensajeProyectilString);
 				mensajeProyectil->~Mensaje();
 			} else {
@@ -202,7 +202,7 @@ void* disparoProyectil(void* arg)
 	 * cuando invocamos al destructor de proyectil sin haberlo sacado del vector previamente.
 	 */
 	mensajeProyectilString += proyectil->getStringProyectil();
-	mensajeProyectil = new Mensaje(personaje->getNombre(),"Todos",mensajeProyectilString);
+	mensajeProyectil = new Mensaje(jugador->getNombre(),"Todos",mensajeProyectilString);
 	servidor->encolarMensajeProcesadoParaCadaCliente(*mensajeProyectil,mensajeProyectilString);
 	mensajeProyectil->~Mensaje();
 	proyectil->~Proyectil();
