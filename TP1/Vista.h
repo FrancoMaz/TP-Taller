@@ -81,6 +81,7 @@ public:
 	void actualizarProyectil(string nuevaBala, int x, int y, string sprite, int id, int cantFotogramas, string sentido, double angulo);
 	void agregarVistaItem(string borrarItem, string sprite, int x, int y);
 	void actualizarPuntaje(string jugador, int puntaje);
+	void actualizarVida(string jugador, int vida);
 };
 
 #endif /* TP2_VISTA_H_ */

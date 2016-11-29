@@ -37,6 +37,10 @@ Proyectil* Personaje::dispararProyectil() {
 
 }
 
+int Personaje::getVida(){
+	return this->vida;
+}
+
 string Personaje::getNombre() {
 
 }

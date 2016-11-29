@@ -658,6 +658,7 @@ bool Servidor::verificarColisionConJugadores(Proyectil* proyectil) {
 	for (int i = 0; i < this->jugadores->size(); i++) {
 		if (this->getNivelActual()->colisionaronObjetos(proyectil->getBoxCollider(),this->jugadores->at(i)->boxCollider)) {
 			this->jugadores->at(i)->daniarseCon(proyectil->getDanio());
+			proyectil->jugadorQueRecibioDisparo = this->jugadores->at(i)->getNombre();
 			cout << "Jugador colisiono con bala" << endl;
 			pthread_mutex_unlock(&mutexVectorJugadores);
 			return true;
@@ -669,6 +670,7 @@ bool Servidor::verificarColisionConJugadores(Proyectil* proyectil) {
 
 bool Servidor::verificarColision(SDL_Rect camara, Proyectil* proyectil, bool estaDisparando) {
 	if (this->verificarColisionConJugadores(proyectil)) {
+		proyectil->colisionPersonaje = true;
 		return true;
 	} else {
 		if (!proyectil->cortoAlcance) {

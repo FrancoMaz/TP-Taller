@@ -214,6 +214,13 @@ void procesarUltimosMensajes(string mensajes, Cliente* cliente, UpdateJugador* u
 					string jugador = msjContenido.at(2);
 					int puntaje = stringToInt(msjContenido.at(3));
 					vista->actualizarPuntaje(jugador,puntaje);
+					break;
+				}
+				case 6:{
+					string jugador = msjContenido.at(2);
+					int vida = stringToInt(msjContenido.at(3));
+					vista->actualizarVida(jugador,vida);
+					break;
 				}
 			}
 		}

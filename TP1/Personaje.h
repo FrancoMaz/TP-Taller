@@ -26,6 +26,7 @@ public:
 	virtual bool estaDisparando();
 	virtual Proyectil* dispararProyectil();
 	virtual string getNombre();
+	virtual int getVida();
 };
 
 #endif /* PERSONAJE_H_ */

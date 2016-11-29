@@ -167,7 +167,7 @@ void* disparoProyectil(void* arg)
 			mensajeProyectil->~Mensaje();
 		}
 		if (proyectil->colisionPersonaje)
-		{ //si colisiono con un personaje (un enemigo) y no contra un margen, sumo puntos
+		{ //si colisiono con un personaje (un enemigo) y no contra un margen, sumo puntos.
 			jugador->puntaje += proyectil->getPuntosPorImpacto();
 			string mensajePuntajeString = "5|" + jugador->getNombre() + "|" + to_string(jugador->puntaje) + "#";
 			Mensaje* mensajePuntaje = new Mensaje(jugador->getNombre(),"Todos", mensajePuntajeString);
@@ -188,6 +188,13 @@ void* disparoProyectil(void* arg)
 			} else {
 				break;
 			}
+		}
+		if (proyectil->colisionPersonaje)
+		{ //si colisiono con un personaje (jugador) y no contra un margen, resto la vida.
+			string mensajeVidaString = "6|" + proyectil->jugadorQueRecibioDisparo + "|" + to_string(jugador->getVida()) + "#";
+			Mensaje* mensajeVida = new Mensaje(personaje->getNombre(),"Todos", mensajeVidaString);
+			servidor->encolarMensajeProcesadoParaCadaCliente(*mensajeVida,mensajeVidaString);
+			mensajeVida->~Mensaje();
 		}
 	}
 	mensajeProyectilString = "2|2|";
