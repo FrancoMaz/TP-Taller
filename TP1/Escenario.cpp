@@ -190,7 +190,7 @@ void Escenario::eliminarEnemigoActivo(int id) {
 	}
 }
 
-void Escenario::despertarBoss(SDL_Rect camara)
+bool Escenario::despertarBoss(SDL_Rect camara)
 {
 	if (this->boss != NULL)
 	{

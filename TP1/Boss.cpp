@@ -18,7 +18,7 @@ Boss::~Boss() {
 	// TODO Auto-generated destructor stub
 }
 
-void Boss::comportamiento(SDL_Rect camara)
+void Boss::comportamiento(SDL_Rect camara,  bool tieneQueDisparar)
 {
 
 }

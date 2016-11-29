@@ -13,7 +13,7 @@
 #include <arpa/inet.h>
 #include <stdlib.h>
 #include <unistd.h>
-#include <time.h>
+#include <chrono>
 #include "Servidor.h"
 #include <pthread.h>
 #include "ParametrosMovimiento.h"
@@ -420,22 +420,35 @@ void* bossActivo(void* arg)
 	mensajeBoss += bossNivel->getStringBoss();
 	Mensaje* mensaje = new Mensaje(nombre,"Todos",mensajeBoss);
 	servidor->encolarMensajeProcesadoParaCadaCliente(*mensaje,mensajeBoss);
-	clock_t tiempoInicio = clock();
+	bool tieneQueDisparar = false;
+	auto start_time = chrono::high_resolution_clock::now();
 	while (!bossNivel->getEstaMuerto()) {
-		usleep(500000);
-		bossNivel->comportamiento(servidor->camara, clock()-tiempoInicio);
+		usleep(50000);
+		int tiempoTranscurrido = chrono::duration_cast<chrono::seconds>(chrono::high_resolution_clock::now() - start_time).count();
+		if (tiempoTranscurrido %2 == 0 && !bossNivel->disparando && !tieneQueDisparar)
+		{
+			cout << "Tiene que disparar" << endl;
+			tieneQueDisparar = true;
+		}
+		else if (tiempoTranscurrido %2 != 0)
+		{
+			cout << "Entra" << endl;
+			bossNivel->disparando = false;
+		}
+		bossNivel->comportamiento(servidor->camara, tieneQueDisparar);
 		mensajeBoss = "5|1|";
 		mensajeBoss += bossNivel->getStringBoss();
 		mensaje = new Mensaje(nombre,"Todos",mensajeBoss);
 		servidor->encolarMensajeProcesadoParaCadaCliente(*mensaje,mensajeBoss);
 		mensaje->~Mensaje();
-		if (bossNivel->disparando)
+		if (tieneQueDisparar)
 		{
 			pthread_t threadDisparoBoss;
 			parametrosBoss->proyectil = bossNivel->proyectilADisparar;
+			parametrosBoss->personaje = bossNivel;
 			pthread_create(&threadDisparoBoss, NULL, &disparoProyectil, parametrosBoss);
 			pthread_detach(threadDisparoBoss);
-			bossNivel->disparando = false;
+			tieneQueDisparar = false;
 		}
 	}
 	mensajeBoss = "5|2|";
@@ -452,15 +465,16 @@ void* verificarBossEnCamara(void* arg)
 	ParametrosMovimiento* parametroRecibido= (ParametrosMovimiento*) arg;
 	Servidor* servidor = parametroRecibido->servidor;
 	Jugador* jugador = parametroRecibido->jugador;
+	Boss* bossNivel = servidor->getNivelActual()->boss;
 	ParametrosMovimiento* parametrosBoss = new ParametrosMovimiento(servidor, jugador);
 	while (servidor->escuchando) {
-		servidor->getNivelActual()->despertarBoss(servidor->camara);
-		Boss* bossNivel = servidor->getNivelActual()->boss;
-		if (bossNivel != NULL && bossNivel->visto) {
+		//servidor->getNivelActual()->despertarBoss(servidor->camara);
+		if (bossNivel != NULL && bossNivel->boxCollider.x <= (servidor->camara.x + servidor->camara.w) && !bossNivel->visto) {
 			parametrosBoss->boss = bossNivel;
 			pthread_t threadBoss;
 			pthread_create(&threadBoss, NULL, &bossActivo, parametrosBoss);
 			pthread_detach(threadBoss);
+			bossNivel->visto = true;
 		}
 		usleep(50000);
 	}

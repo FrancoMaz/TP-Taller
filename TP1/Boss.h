@@ -8,6 +8,7 @@
 #ifndef BOSS_H_
 #define BOSS_H_
 #include "Personaje.h"
+#include <time.h>
 
 class Boss: public Personaje {
 protected:
@@ -17,12 +18,14 @@ protected:
 public:
 	Boss();
 	virtual ~Boss();
-	virtual void comportamiento(SDL_Rect camara);
+	virtual void comportamiento(SDL_Rect camara, bool tieneQueDisparar);
 	bool visto;
 	int posX;
 	int posY;
 	string getStringBoss();
 	SDL_Rect boxCollider;
+	bool disparando;
+	Proyectil* proyectilADisparar;
 };
 
 #endif /* BOSS_H_ */
