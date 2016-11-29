@@ -117,11 +117,12 @@ double calcularAngulo(int numero, string sentido)
 		}
 		case 4:
 		{
-			if (sentido == "Normal"){
+			angulo = 0;
+			/*if (sentido == "Normal"){
 				angulo = 90;
 			} else {
 				angulo = -90;
-			}
+			}*/
 			break;
 		}
 	}
@@ -174,8 +175,9 @@ void procesarUltimosMensajes(string mensajes, Cliente* cliente, UpdateJugador* u
 					for (int i = 4; i < msjContenido.size(); i++){
 						pair<int,int> abscisas;
 						vector<string> capa = splitToVec(msjContenido.at(i), delimitadorCapas);
-						abscisas.first = stringToInt(capa.at(0));
-						abscisas.second = stringToInt(capa.at(1));
+						string nombreCapa = capa.at(0);
+						abscisas.first = stringToInt(capa.at(1));
+						abscisas.second = stringToInt(capa.at(2));
 						abscisasCapas.push_back(abscisas);
 					}
 					vista->actualizarCamara(x,y,abscisasCapas,stringToInt(handshakeDeserializado->getAncho()));

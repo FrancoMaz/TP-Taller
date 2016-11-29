@@ -17,6 +17,7 @@ Escenario::Escenario(string rutaXml) {
 	this->plataformas = parserNivel->getPlataformas();
 	this->itemArmas = parserNivel->getItemArmas();
 	this->boss = parserNivel->getBoss();
+	this->capas = parserNivel->getCapas();
 	this->levelClear = false;
 	int posX = 1000;
 	for(int i = 0; i < 15; i++) {

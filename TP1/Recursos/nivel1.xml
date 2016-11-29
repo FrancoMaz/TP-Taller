@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <Configuracion>
+	<Capas>
+		<Capa1>Fondo_Escenario_capa_1</Capa1>
+		<Capa2>Fondo_Escenario_capa_2</Capa2>
+		<Capa3>Fondo_Escenario_capa_3</Capa3>
+		<Capa4>Fondo_Escenario_capa_4</Capa4>
+	</Capas>
 	<Plataformas>
 		<Plataforma1>
 			<Comienzo>402</Comienzo>

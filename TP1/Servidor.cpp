@@ -44,7 +44,7 @@ Servidor::Servidor(char* nombreArchivoDeUsuarios, int puerto, Logger* logger) {
 	posicionVector = 0;
 	camara.x = 0;
 	camara.y = 0;
-	for (int i = 0; i < handshake->getImagenes().size(); i++)
+	for (int i = 0; i <= 3; i++)
 	{
 		pair<int,int> abscisas;
 		abscisas.first = 0;
@@ -308,6 +308,9 @@ string Servidor::serializarCapas()
 	string capas = "";
 	for (int i = 0; i < abscisasCapas.size(); i++)
 	{
+		capas += this->vectorNiveles.at(nivelActual)->capas.at(i);
+		cout << "Capa: " << this->vectorNiveles.at(nivelActual)->capas.at(i) << endl;
+		capas += ",";
 		capas += to_string(abscisasCapas.at(i).first);
 		capas += ",";
 		capas += to_string(abscisasCapas.at(i).second);

@@ -313,6 +313,7 @@ void* verificarPasarDeNivel(void* arg)
 		usleep(50000);
 		if (servidor->getNivelActual()->levelClear)
 		{
+			cout << "Level clear" << endl;
 			//servidor->getNivelActual()->~Escenario();
 			servidor->avanzarDeNivel();
 		}
@@ -454,6 +455,7 @@ void* bossActivo(void* arg)
 	mensajeBoss += bossNivel->getStringBoss();
 	mensaje = new Mensaje(nombre,"Todos",mensajeBoss);
 	servidor->encolarMensajeProcesadoParaCadaCliente(*mensaje,mensajeBoss);
+	servidor->getNivelActual()->levelClear = true;
 	bossNivel->~Boss();
 	mensaje->~Mensaje();
 	pthread_exit(NULL);

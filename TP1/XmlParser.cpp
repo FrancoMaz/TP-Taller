@@ -215,3 +215,13 @@ Boss* XmlParser::getBoss()
 	this->boss = boss;
 	return this->boss;
 }
+
+vector<string> XmlParser::getCapas()
+{
+	vector<string> capas;
+	capas.push_back(string(this->rootNode.child("Capas").child_value("Capa1")));
+	capas.push_back(string(this->rootNode.child("Capas").child_value("Capa2")));
+	capas.push_back(string(this->rootNode.child("Capas").child_value("Capa3")));
+	capas.push_back(string(this->rootNode.child("Capas").child_value("Capa4")));
+	return capas;
+}
