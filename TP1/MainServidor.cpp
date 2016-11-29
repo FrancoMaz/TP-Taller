@@ -414,7 +414,6 @@ void* bossActivo(void* arg)
 		}
 		else if (tiempoTranscurrido %2 != 0)
 		{
-			cout << "Entra" << endl;
 			bossNivel->disparando = false;
 		}
 		bossNivel->comportamiento(servidor->camara, tieneQueDisparar);
@@ -425,6 +424,7 @@ void* bossActivo(void* arg)
 		mensaje->~Mensaje();
 		if (tieneQueDisparar)
 		{
+			cout << "Entra aca" << endl;
 			pthread_t threadDisparoBoss;
 			parametrosBoss->proyectil = bossNivel->proyectilADisparar;
 			parametrosBoss->personaje = bossNivel;
