@@ -110,13 +110,17 @@ bool Escenario::verificarColisionConItem(Jugador* jugador)
 }
 
 bool Escenario::verificarColisionConEnemigo(Proyectil* proyectil) {
+	//pthread_mutex_lock(&mutexEnemigosActivos);
 	for (int i = 0; i < this->enemigosActivos.size(); i++) {
-		if (this->colisionaronObjetos(proyectil->getBoxCollider(),this->enemigosActivos.at(i)->getBoxCollider())) {
-			this->enemigosActivos.at(i)->daniarseCon(proyectil->getDanio());
-			cout << "Enemigo colisiono con bala" << endl;
-			return true;
+		if(!this->enemigosActivos.at(i)->getEstaMuerto()){
+			if (this->colisionaronObjetos(proyectil->getBoxCollider(),this->enemigosActivos.at(i)->getBoxCollider())) {
+				this->enemigosActivos.at(i)->daniarseCon(proyectil->getDanio());
+				cout << "Enemigo colisiono con bala" << endl;
+				return true;
+			}
 		}
 	}
+	//pthread_mutex_unlock(&mutexEnemigosActivos);
 	return false;
 }
 

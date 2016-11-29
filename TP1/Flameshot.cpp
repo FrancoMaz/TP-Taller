@@ -54,9 +54,10 @@ Proyectil* Flameshot::disparar(int posicionX,int posicionY, string condicion, in
 			break;
 	}
 	this->boxCollider = {posX,posY,91,80};
-	this->proyectil = new Proyectil(35, 40, this->nombreArma, posX, posY, condicion, anguloBala, this->boxCollider, this->cortoAlcance, disparadoPor, nombreJugador);
+	//this->proyectil = new Proyectil(35, 40, this->nombreArma, posX, posY, condicion, anguloBala, this->boxCollider, this->cortoAlcance, disparadoPor, nombreJugador);
 	this->municiones -= 1;
-	return this->proyectil;
+	//return this->proyectil;
+	return new Proyectil(35, 40, this->nombreArma, posX, posY, condicion, anguloBala, this->boxCollider, this->cortoAlcance, disparadoPor, nombreJugador);
 }
 
 bool Flameshot::sinMuniciones()

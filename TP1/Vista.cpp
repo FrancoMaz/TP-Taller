@@ -554,6 +554,7 @@ void Vista::actualizarProyectil(string nuevaBala, int x, int y, string sprite, i
 					VistaBala* vistaBala = vistaBalas.at(i);
 					if (vistaBala->id == id) {
 						vistaBalas.erase(vistaBalas.begin() + i);
+						vistaBala->~VistaBala();
 						break;
 					}
 				}

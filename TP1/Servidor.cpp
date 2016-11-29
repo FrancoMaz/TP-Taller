@@ -378,6 +378,7 @@ void Servidor::encolarMensajeProcesadoParaCadaCliente(Mensaje mensajeAProcesar, 
 				pthread_mutex_lock(&mutexListaProcesados);
 				listaMensajes.mensajes->push(*mensajePosicionActualizada);
 				pthread_mutex_unlock(&mutexListaProcesados);
+				mensajePosicionActualizada->~Mensaje();
 			}
 			pthread_mutex_unlock(&mutexVectorJugadores);
 		}
@@ -659,7 +660,7 @@ bool Servidor::verificarColisionConJugadores(Proyectil* proyectil) {
 		if (this->getNivelActual()->colisionaronObjetos(proyectil->getBoxCollider(),this->jugadores->at(i)->boxCollider)) {
 			this->jugadores->at(i)->daniarseCon(proyectil->getDanio());
 			proyectil->jugadorQueRecibioDisparo = this->jugadores->at(i)->getNombre();
-			cout << "Jugador colisiono con bala" << endl;
+			cout << "Bala colisiona con jugador" << endl;
 			pthread_mutex_unlock(&mutexVectorJugadores);
 			return true;
 		}

@@ -146,11 +146,11 @@ void* disparoProyectil(void* arg)
 	Proyectil* proyectil = parametros->proyectil;
 	Mensaje* mensajeProyectil;
 	//servidor->getNivelActual()->agregarProyectil(proyectil,jugador->getNombre(),idProyectil);
-	pthread_mutex_lock(&mutexIdProyectil);
-	proyectil->id = idProyectil;
-	servidor->getNivelActual()->agregarProyectil(proyectil,"random");
-	idProyectil += 1;
-	pthread_mutex_unlock(&mutexIdProyectil);
+	//pthread_mutex_lock(&mutexIdProyectil);
+	//proyectil->id = idProyectil;
+	//servidor->getNivelActual()->agregarProyectil(proyectil,"random");
+	//idProyectil += 1;
+	//pthread_mutex_unlock(&mutexIdProyectil);
 	string mensajeProyectilString = "2|0|";
 	mensajeProyectilString += proyectil->getStringProyectil();
 	mensajeProyectil = new Mensaje(personaje->getNombre(),"Todos",mensajeProyectilString);
@@ -176,18 +176,15 @@ void* disparoProyectil(void* arg)
 		}
 	} else { // disparado por un enemigo
 	    bool disparando = personaje->estaDisparando();
+	    cout << "entro al segundo while del enemigo" << endl;
 		while (!servidor->verificarColision(servidor->camara, proyectil, disparando)) {
 			usleep(50000);
 			proyectil->mover();
 			mensajeProyectilString = "2|1|";
 			mensajeProyectilString += proyectil->getStringProyectil();
-			if (personaje != NULL) {
-				mensajeProyectil = new Mensaje(jugador->getNombre(),"Todos",mensajeProyectilString);
-				servidor->encolarMensajeProcesadoParaCadaCliente(*mensajeProyectil,mensajeProyectilString);
-				mensajeProyectil->~Mensaje();
-			} else {
-				break;
-			}
+			mensajeProyectil = new Mensaje(jugador->getNombre(),"Todos",mensajeProyectilString);
+			servidor->encolarMensajeProcesadoParaCadaCliente(*mensajeProyectil,mensajeProyectilString);
+			mensajeProyectil->~Mensaje();
 		}
 		if (proyectil->colisionPersonaje)
 		{ //si colisiono con un personaje (jugador) y no contra un margen, resto la vida.
@@ -202,6 +199,7 @@ void* disparoProyectil(void* arg)
 	 * cuando invocamos al destructor de proyectil sin haberlo sacado del vector previamente.
 	 */
 	mensajeProyectilString += proyectil->getStringProyectil();
+	cout << "info proyectil: " << mensajeProyectilString << endl;
 	mensajeProyectil = new Mensaje(jugador->getNombre(),"Todos",mensajeProyectilString);
 	servidor->encolarMensajeProcesadoParaCadaCliente(*mensajeProyectil,mensajeProyectilString);
 	mensajeProyectil->~Mensaje();
@@ -214,8 +212,14 @@ void* disparoProyectil(void* arg)
 void actualizarPosicionProyectil(ParametrosMovimiento* paramDisparo) {
 
 	if (paramDisparo->personaje->estaDisparando()) {
-		Proyectil* proyectil = paramDisparo->personaje->dispararProyectil();
+		Proyectil* proyectil = NULL;
+		proyectil = paramDisparo->personaje->dispararProyectil();
 		if (proyectil != NULL) {
+			pthread_mutex_lock(&mutexIdProyectil);
+			proyectil->id = idProyectil;
+			paramDisparo->servidor->getNivelActual()->agregarProyectil(proyectil,"random");
+			idProyectil += 1;
+			pthread_mutex_unlock(&mutexIdProyectil);
 			paramDisparo->proyectil = proyectil;
 			pthread_t threadDisparo = proyectil->getThreadDisparo();
 			if (proyectil->disparadoPor == 2) {
@@ -225,7 +229,7 @@ void actualizarPosicionProyectil(ParametrosMovimiento* paramDisparo) {
 			pthread_detach(threadDisparo);
 			//proyectil->setThreadDisparo(threadDisparo);
 		}
-		usleep(50000);
+		//usleep(50000);
 	}
 }
 
@@ -366,6 +370,7 @@ void* enemigoActivo(void* arg) {
 	Mensaje* mensaje = new Mensaje(nombre,"Todos",mensajeEnemigo);
 	parametrosEnemigo->servidor->encolarMensajeProcesadoParaCadaCliente(*mensaje,mensajeEnemigo);
 	Enemigo* enemigo = parametrosEnemigo->enemigo;
+	mensaje->~Mensaje();
 	while (!enemigo->getEstaMuerto() && (!parametrosEnemigo->servidor->getNivelActual()->enemigoPerdido(enemigo->getId(),&servidor->camara))) {
 		usleep(50000);
 		mensajeEnemigo = "4|1|";
