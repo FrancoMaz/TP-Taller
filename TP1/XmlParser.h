@@ -56,6 +56,7 @@ public:
 	Boss* getBoss();
 	Boss* devolverBoss(string nombre, string x, string y);
 	vector<string> getCapas();
+	vector<pair<int,int>> getEnemigos();
 };
 
 #endif /* XMLPARSER_H_ */

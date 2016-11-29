@@ -18,8 +18,9 @@ Escenario::Escenario(string rutaXml) {
 	this->itemArmas = parserNivel->getItemArmas();
 	this->boss = parserNivel->getBoss();
 	this->capas = parserNivel->getCapas();
+	this->enemigosPorNivel = parserNivel->getEnemigos();
 	this->levelClear = false;
-	int posX = 1000;
+	/*int posX = 1000;
 	for(int i = 0; i < 15; i++) {
 		pair<int,int> lala(posX, 415);
 		this->enemigosPorNivel.push_back(lala);
@@ -47,7 +48,7 @@ Escenario::Escenario(string rutaXml) {
 	pair<int,int> plataforma8(5900, 354-106);
 	this->enemigosPorNivel.push_back(plataforma8);
 	pair<int,int> plataforma9(6950, 354-106);
-	this->enemigosPorNivel.push_back(plataforma9);
+	this->enemigosPorNivel.push_back(plataforma9);*/
 	this->ordenarEnemigos();
 }
 

@@ -225,3 +225,18 @@ vector<string> XmlParser::getCapas()
 	capas.push_back(string(this->rootNode.child("Capas").child_value("Capa4")));
 	return capas;
 }
+
+vector<pair<int,int>> XmlParser::getEnemigos()
+{
+	vector<pair<int,int>> enemigos;
+	for (pugi::xml_node enemy = this->rootNode.child("Enemigos").first_child(); enemy; enemy = enemy.next_sibling())
+	{
+		pair<int,int> coordenadas;
+		const char* x = enemy.child_value("PosicionX");
+		const char* y = enemy.child_value("PosicionY");
+		coordenadas.first = atoi(x);
+		coordenadas.second = atoi(y);
+		enemigos.push_back(coordenadas);
+	}
+	return enemigos;
+}
