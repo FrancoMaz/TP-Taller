@@ -77,6 +77,9 @@ public:
 	//Resetea el fotograma del sprite a cero
 	void frameReset();
 
+	//Establece la velocidad del sprite (cuanto mayor sea el valor, menor será la velocidad de los fotogramas)
+	void setVelocidadDisminuida(int valor);
+
 	//Obtengo el ancho y el alto
 	int getAncho();
 	int getAlto();
