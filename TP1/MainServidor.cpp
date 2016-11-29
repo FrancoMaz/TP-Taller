@@ -167,14 +167,19 @@ void* disparoProyectil(void* arg)
 			mensajeProyectil->~Mensaje();
 		}
 	} else { // disparado por un enemigo
-		while (!servidor->verificarColision(servidor->camara, proyectil, personaje->estaDisparando())) {
+	    bool disparando = personaje->estaDisparando();
+		while (!servidor->verificarColision(servidor->camara, proyectil, disparando)) {
 			usleep(50000);
 			proyectil->mover();
 			mensajeProyectilString = "2|1|";
 			mensajeProyectilString += proyectil->getStringProyectil();
-			mensajeProyectil = new Mensaje(personaje->getNombre(),"Todos",mensajeProyectilString);
-			servidor->encolarMensajeProcesadoParaCadaCliente(*mensajeProyectil,mensajeProyectilString);
-			mensajeProyectil->~Mensaje();
+			if (personaje != NULL) {
+				mensajeProyectil = new Mensaje(personaje->getNombre(),"Todos",mensajeProyectilString);
+				servidor->encolarMensajeProcesadoParaCadaCliente(*mensajeProyectil,mensajeProyectilString);
+				mensajeProyectil->~Mensaje();
+			} else {
+				break;
+			}
 		}
 	}
 	mensajeProyectilString = "2|2|";
@@ -203,7 +208,7 @@ void actualizarPosicionProyectil(ParametrosMovimiento* paramDisparo) {
 			}
 			pthread_create(&threadDisparo, NULL, &disparoProyectil, paramDisparo);
 			pthread_detach(threadDisparo);
-			proyectil->setThreadDisparo(threadDisparo);
+			//proyectil->setThreadDisparo(threadDisparo);
 		}
 		usleep(50000);
 	}

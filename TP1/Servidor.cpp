@@ -40,7 +40,7 @@ Servidor::Servidor(char* nombreArchivoDeUsuarios, int puerto, Logger* logger) {
 	this->guardarLog(mensaje, DEBUG);
 	this->guardarDatosDeUsuarios();
 	this->guardarDatosDeConfiguracion();
-	posicionXInicial = 20;
+	posicionXInicial = 23;
 	posicionVector = 0;
 	camara.x = 0;
 	camara.y = 0;
