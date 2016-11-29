@@ -154,15 +154,16 @@ void* disparoProyectil(void* arg)
 	//pthread_mutex_unlock(&mutexIdProyectil);
 	string mensajeProyectilString = "2|0|";
 	mensajeProyectilString += proyectil->getStringProyectil();
-	mensajeProyectil = new Mensaje(personaje->getNombre(),"Todos",mensajeProyectilString);
+	mensajeProyectil = new Mensaje(jugador->getNombre(),"Todos",mensajeProyectilString);
 	servidor->encolarMensajeProcesadoParaCadaCliente(*mensajeProyectil,mensajeProyectilString);
+	cout << "proyectil disparado por: " << proyectil->disparadoPor<< endl;
 	if (proyectil->disparadoPor == 1) { // disparado por un jugador
 		while (!servidor->getNivelActual()->verificarColision(servidor->camara, proyectil, personaje->estaDisparando())) {
 			usleep(50000);
 			proyectil->mover();
 			mensajeProyectilString = "2|1|";
 			mensajeProyectilString += proyectil->getStringProyectil();
-			mensajeProyectil = new Mensaje(personaje->getNombre(),"Todos",mensajeProyectilString);
+			mensajeProyectil = new Mensaje(jugador->getNombre(),"Todos",mensajeProyectilString);
 			servidor->encolarMensajeProcesadoParaCadaCliente(*mensajeProyectil,mensajeProyectilString);
 			mensajeProyectil->~Mensaje();
 		}
@@ -176,6 +177,7 @@ void* disparoProyectil(void* arg)
 		}
 	} else { // disparado por un enemigo
 	    bool disparando = personaje->estaDisparando();
+	    cout << "proyectil disparado por el enemigo" << endl;
 		while (!servidor->verificarColision(servidor->camara, proyectil, disparando)) {
 			usleep(50000);
 			proyectil->mover();
@@ -198,6 +200,7 @@ void* disparoProyectil(void* arg)
 	 * cuando invocamos al destructor de proyectil sin haberlo sacado del vector previamente.
 	 */
 	mensajeProyectilString += proyectil->getStringProyectil();
+	cout << "Proyectil muerto: " << mensajeProyectilString << endl;
 	mensajeProyectil = new Mensaje(jugador->getNombre(),"Todos",mensajeProyectilString);
 	servidor->encolarMensajeProcesadoParaCadaCliente(*mensajeProyectil,mensajeProyectilString);
 	mensajeProyectil->~Mensaje();
@@ -209,8 +212,7 @@ void* disparoProyectil(void* arg)
 
 void actualizarPosicionProyectil(ParametrosMovimiento* paramDisparo) {
 	if (paramDisparo->personaje->estaDisparando()) {
-		Proyectil* proyectil = NULL;
-		proyectil = paramDisparo->personaje->dispararProyectil();
+		Proyectil* proyectil = paramDisparo->personaje->dispararProyectil();
 		if (proyectil != NULL) {
 			pthread_mutex_lock(&mutexIdProyectil);
 			proyectil->id = idProyectil;
@@ -226,7 +228,7 @@ void actualizarPosicionProyectil(ParametrosMovimiento* paramDisparo) {
 			pthread_detach(threadDisparo);
 			//proyectil->setThreadDisparo(threadDisparo);
 		}
-		//usleep(50000);
+		usleep(50000);
 	}
 }
 

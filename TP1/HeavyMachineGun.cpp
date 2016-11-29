@@ -21,7 +21,8 @@ HeavyMachineGun::~HeavyMachineGun() {
 }
 
 Proyectil* HeavyMachineGun::disparar(int posicionX,int posicionY, string condicion, int anguloBala, bool agachar, int disparadoPor, string nombreJugador) {
-	int posX, posY;
+	int posX = posicionX;
+	int posY = posicionY;
 	if (disparadoPor == 1)
 	{
 		switch (anguloBala){

@@ -660,9 +660,9 @@ bool Servidor::verificarColisionConJugadores(Proyectil* proyectil) {
 	pthread_mutex_lock(&mutexVectorJugadores);
 	for (int i = 0; i < this->jugadores->size(); i++) {
 		if (this->getNivelActual()->colisionaronObjetos(proyectil->getBoxCollider(),this->jugadores->at(i)->boxCollider)) {
+			cout << "Se impacto al jugador" << endl;
 			this->jugadores->at(i)->daniarseCon(proyectil->getDanio());
 			proyectil->jugadorQueRecibioDisparo = this->jugadores->at(i)->getNombre();
-			cout << "Bala colisiona con jugador" << endl;
 			pthread_mutex_unlock(&mutexVectorJugadores);
 			return true;
 		}
