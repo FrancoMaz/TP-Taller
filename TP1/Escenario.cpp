@@ -121,11 +121,11 @@ bool Escenario::verificarColisionConEnemigo(Proyectil* proyectil) {
 				return true;
 			}
 		}
-		else if (this->colisionaronObjetos(proyectil->getBoxCollider(),this->boss->boxCollider))
-		{
-			this->boss->daniarseCon(proyectil->getDanio());
-			return true;
-		}
+	}
+	if (this->colisionaronObjetos(proyectil->getBoxCollider(),this->boss->boxCollider))
+	{
+		this->boss->daniarseCon(proyectil->getDanio());
+		return true;
 	}
 	//pthread_mutex_unlock(&mutexEnemigosActivos);
 	return false;

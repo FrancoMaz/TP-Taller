@@ -176,7 +176,6 @@ void* disparoProyectil(void* arg)
 		}
 	} else { // disparado por un enemigo
 	    bool disparando = personaje->estaDisparando();
-	    cout << "entro al segundo while del enemigo" << endl;
 		while (!servidor->verificarColision(servidor->camara, proyectil, disparando)) {
 			usleep(50000);
 			proyectil->mover();
@@ -199,7 +198,6 @@ void* disparoProyectil(void* arg)
 	 * cuando invocamos al destructor de proyectil sin haberlo sacado del vector previamente.
 	 */
 	mensajeProyectilString += proyectil->getStringProyectil();
-	cout << "info proyectil: " << mensajeProyectilString << endl;
 	mensajeProyectil = new Mensaje(jugador->getNombre(),"Todos",mensajeProyectilString);
 	servidor->encolarMensajeProcesadoParaCadaCliente(*mensajeProyectil,mensajeProyectilString);
 	mensajeProyectil->~Mensaje();
