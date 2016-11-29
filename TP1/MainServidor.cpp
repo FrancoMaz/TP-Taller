@@ -156,7 +156,6 @@ void* disparoProyectil(void* arg)
 	mensajeProyectilString += proyectil->getStringProyectil();
 	mensajeProyectil = new Mensaje(personaje->getNombre(),"Todos",mensajeProyectilString);
 	servidor->encolarMensajeProcesadoParaCadaCliente(*mensajeProyectil,mensajeProyectilString);
-	cout << "Disparado por: " << proyectil->disparadoPor << endl;
 	if (proyectil->disparadoPor == 1) { // disparado por un jugador
 		while (!servidor->getNivelActual()->verificarColision(servidor->camara, proyectil, personaje->estaDisparando())) {
 			usleep(50000);
@@ -174,6 +173,7 @@ void* disparoProyectil(void* arg)
 			proyectil->mover();
 			mensajeProyectilString = "2|1|";
 			mensajeProyectilString += proyectil->getStringProyectil();
+			cout << "Mensaje: " << mensajeProyectilString << endl;
 			if (personaje != NULL) {
 				mensajeProyectil = new Mensaje(personaje->getNombre(),"Todos",mensajeProyectilString);
 				servidor->encolarMensajeProcesadoParaCadaCliente(*mensajeProyectil,mensajeProyectilString);

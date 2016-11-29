@@ -26,6 +26,7 @@ public:
 	SDL_Rect boxCollider;
 	bool disparando;
 	Proyectil* proyectilADisparar;
+	string getNombre();
 };
 
 #endif /* BOSS_H_ */

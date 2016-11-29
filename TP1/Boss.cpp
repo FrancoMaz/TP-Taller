@@ -27,3 +27,8 @@ string Boss::getStringBoss()
 {
 	return (to_string(this->posX) + "|" + to_string(this->posY) + "|Boss_" + this->nombre + "|" + this->sentido + "#");
 }
+
+string Boss::getNombre()
+{
+	return "Boss";
+}
