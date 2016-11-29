@@ -291,3 +291,7 @@ int TexturaSDL::getAltoSprite(){
 		return this->alto;
 	}
 }
+
+void TexturaSDL::setVelocidadDisminuida(int valor){
+	this->velocidadFrameDisminuida = valor;
+}
