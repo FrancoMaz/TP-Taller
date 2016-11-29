@@ -16,6 +16,8 @@ Escenario::Escenario(string rutaXml) {
 	this->idEnemigo = 0;
 	this->plataformas = parserNivel->getPlataformas();
 	this->itemArmas = parserNivel->getItemArmas();
+	this->boss = parserNivel->getBoss();
+	this->capas = parserNivel->getCapas();
 	this->levelClear = false;
 	int posX = 1000;
 	for(int i = 0; i < 15; i++) {
@@ -119,6 +121,11 @@ bool Escenario::verificarColisionConEnemigo(Proyectil* proyectil) {
 				return true;
 			}
 		}
+		else if (this->colisionaronObjetos(proyectil->getBoxCollider(),this->boss->boxCollider))
+		{
+			this->boss->daniarseCon(proyectil->getDanio());
+			return true;
+		}
 	}
 	//pthread_mutex_unlock(&mutexEnemigosActivos);
 	return false;
@@ -187,6 +194,17 @@ void Escenario::eliminarEnemigoActivo(int id) {
 		Enemigo* enemigo = this->enemigosActivos.at(i);
 		if (enemigo->getId() == id) {
 			this->enemigosActivos.erase(this->enemigosActivos.begin() + i);
+		}
+	}
+}
+
+bool Escenario::despertarBoss(SDL_Rect camara)
+{
+	if (this->boss != NULL)
+	{
+		if (this->boss->posX < camara.x + camara.w && this->boss->posX > camara.x)
+		{
+			boss->visto = true;
 		}
 	}
 }

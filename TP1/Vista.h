@@ -53,6 +53,7 @@ private:
 	vector<VistaBala*> vistaBalas;
 	vector<VistaEnemigo*> vistaEnemigos;
 	vector<Item*> vistaItems;
+	VistaEnemigo* vistaBoss;
 
 public:
 	Vista();
@@ -73,13 +74,14 @@ public:
 	void cargarVistaInicialJugador(string nombre, int x, int y, SpriteDto* sprite);
 	void actualizarCamara(int x, int y, vector<pair<int,int>> abscisasCapas, int anchoVentana);
 	SDL_Rect camara;
-	void inicializarCamara(int camaraX, int camaraY, int anchoVentana, int altoVentana, vector<pair<int,int>> abscisasCapas, vector<ImagenDto*> imagenes);
+	void inicializarCamara(int camaraX, int camaraY, int anchoVentana, int altoVentana, vector<pair<int,int>> abscisasCapas, vector<ImagenDto*> imagenes, vector<string> nombreCapas);
 	void resetearVistas(int anchoCapaPrincipal);
 	Controlador* controlador;
 	bool salto;
 	void actualizarEnemigo(string enemigo, int x, int y, string sprite, int id, int cantFotogramas);
 	void actualizarProyectil(string nuevaBala, int x, int y, string sprite, int id, int cantFotogramas, string sentido, double angulo);
 	void agregarVistaItem(string borrarItem, string sprite, int x, int y);
+	void actualizarBoss(string boss, int x, int y, string sprite, string sentido, int cantFotogramas);
 	void actualizarPuntaje(string jugador, int puntaje);
 	void actualizarVida(string jugador, int vida);
 };

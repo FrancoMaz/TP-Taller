@@ -12,11 +12,13 @@
 
 class VistaEnemigo {
 public:
-	VistaEnemigo(int x, int y, TexturaSDL* textura, int id);
+	VistaEnemigo(int x, int y, TexturaSDL* textura, int id, string sentido);
 	int x;
 	int y;
 	TexturaSDL* textura;
 	int id;
+	SDL_RendererFlip flip;
+	void verificarSentido(string sentido);
 	virtual ~VistaEnemigo();
 };
 

@@ -10,6 +10,7 @@
 #include "Jugador.h"
 #include "Servidor.h"
 #include "Enemigo.h"
+#include "Boss.h"
 
 using namespace std;
 
@@ -20,6 +21,7 @@ public:
 	Jugador* jugador;
 	Proyectil* proyectil;
 	Enemigo* enemigo;
+	Boss* boss;
 	Personaje * personaje;
 	ParametrosMovimiento(Servidor* servidorActual, Jugador* jugadorActual);
 	virtual ~ParametrosMovimiento();

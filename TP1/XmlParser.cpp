@@ -168,8 +168,8 @@ vector<Item*> XmlParser::getItemArmas()
 			Item* itemArma = new Item(string(item.child_value("Arma")), string(item.child_value("PosicionX")), string(item.child_value("PosicionY")));
 			this->itemArmas.push_back(itemArma);
 		}
-		return this->itemArmas;
 	}
+	return this->itemArmas;
 }
 
 XmlParser::~XmlParser() {
@@ -185,6 +185,43 @@ vector<pair<string,string>> XmlParser::getPlataformas()
 			plat.second = string(plataforma.child_value("Final"));
 			this->plataformas.push_back(plat);
 		}
-		return this->plataformas;
 	}
+	return this->plataformas;
+}
+
+Boss* XmlParser::devolverBoss(string nombre, string x, string y)
+{
+	if (nombre == "hi_do")
+	{
+		return new HiDo(nombre, x, y);
+	}
+	else if (nombre == "tani_oh")
+	{
+		return new TaniOh(nombre, x, y);
+	}
+	else if (nombre == "airbuster_rivers")
+	{
+		return new AirbusterRiberts(nombre, x, y);
+	}
+	return NULL;
+}
+
+Boss* XmlParser::getBoss()
+{
+	string nombre = string(this->rootNode.child("Boss").child_value("Nombre"));
+	string x = string(this->rootNode.child("Boss").child_value("PosicionX"));
+	string y = string(string(this->rootNode.child("Boss").child_value("PosicionY")));
+	Boss* boss = devolverBoss(nombre, x, y);
+	this->boss = boss;
+	return this->boss;
+}
+
+vector<string> XmlParser::getCapas()
+{
+	vector<string> capas;
+	capas.push_back(string(this->rootNode.child("Capas").child_value("Capa1")));
+	capas.push_back(string(this->rootNode.child("Capas").child_value("Capa2")));
+	capas.push_back(string(this->rootNode.child("Capas").child_value("Capa3")));
+	capas.push_back(string(this->rootNode.child("Capas").child_value("Capa4")));
+	return capas;
 }

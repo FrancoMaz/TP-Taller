@@ -574,9 +574,13 @@ bool Cliente::checkearInicioJuego(Vista* vista)
 		pos = s.find(delimitadorFinal);
 		texto = s.substr(0,pos);
 		vector<pair<int,int>> abscisasCapas;
+		vector<string> nombreCapas;
 		while ((posAux = texto.find(delimitador)) != string::npos)
 		{
 			pair<int,int> abscisas;
+			posAux = texto.find(delimitadorCapas);
+			nombreCapas.push_back(texto.substr(0,posAux));
+			texto.erase(0,posAux+delimitadorCapas.length());
 			posAux = texto.find(delimitadorCapas);
 			abscisas.first = atoi(texto.substr(0,posAux).c_str());
 			texto.erase(0,posAux+delimitadorCapas.length());
@@ -586,7 +590,7 @@ bool Cliente::checkearInicioJuego(Vista* vista)
 			texto.erase(0,posAux+delimitador.length());
 		}
 		s.erase(0,pos+delimitadorFinal.length());
-		vista->inicializarCamara(atoi(camaraX.c_str()),atoi(camaraY.c_str()),atoi(handshake->getAncho().c_str()), atoi(handshake->getAlto().c_str()), abscisasCapas, handshake->getImagenes());
+		vista->inicializarCamara(atoi(camaraX.c_str()),atoi(camaraY.c_str()),atoi(handshake->getAncho().c_str()), atoi(handshake->getAlto().c_str()), abscisasCapas, handshake->getImagenes(), nombreCapas);
 	}
 	return true;
 }

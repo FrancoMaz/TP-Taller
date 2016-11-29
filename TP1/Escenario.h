@@ -31,6 +31,7 @@ public:
 	void agregarProyectil(Proyectil* proyectil, string nombre);
 	bool verificarColision(SDL_Rect camara, Proyectil* proyectil, bool disparando);
 	void despertarEnemigos(SDL_Rect* camara);
+	bool despertarBoss(SDL_Rect camara);
 	Enemigo* getEnemigoActivo(int posicion);
 	bool verificarColisionConItem(Jugador* jugador);
 	bool colisionaronObjetos(SDL_Rect boxCollider1, SDL_Rect boxCollider2);
@@ -44,6 +45,8 @@ public:
 	bool enemigoPerdido(int id, SDL_Rect* camara);
 	void eliminarEnemigoActivo(int id);
 	pthread_mutex_t mutexEnemigosActivos = PTHREAD_MUTEX_INITIALIZER;
+	Boss* boss;
+	vector<string> capas;
 };
 
 #endif /* ESCENARIO_H_ */

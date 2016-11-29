@@ -14,15 +14,15 @@ Proyectil::Proyectil(int danioEnPorcentaje, int puntosPorDisparo, string spriteB
 	this->puntosPorDisparo = puntosPorDisparo;
 	this->spriteBala = spriteBala;
 	this->boxCollider = boxCollider;
-	if (disparadoPor == 2) {
+	/*if (disparadoPor == 2) {
 		this->posicion.first = posicionX+25;
 		this->posicion.second = posicionY-106;
 		this->boxCollider.x += 25;
 		this->boxCollider.y -= 106;
-	} else {
+	} else {*/
 		this->posicion.first = posicionX;
 		this->posicion.second = posicionY;
-	}
+	//}
 	this->sentido = sentido;
 	this->angulo = angulo;
 	this->cortoAlcance = cortoAlcance;
@@ -80,6 +80,22 @@ void Proyectil::mover()
 					this->boxCollider.y -= (velocidad_Y/2);
 					break;
 				}
+				case 3:
+				{
+					int velocidad_Y = VELOCIDAD;
+					this->posicion.first -= VELOCIDAD;
+					this->boxCollider.x -= VELOCIDAD;
+					this->posicion.second += VELOCIDAD;
+					this->boxCollider.y += VELOCIDAD;
+					break;
+				}
+				case 4:
+				{
+					int velocidad_Y = VELOCIDAD;
+					this->posicion.second += VELOCIDAD;
+					this->boxCollider.y += VELOCIDAD;
+					break;
+				}
 			}
 		}
 		else
@@ -105,6 +121,22 @@ void Proyectil::mover()
 					this->boxCollider.x -= VELOCIDAD;
 					this->posicion.second -= (velocidad_Y/2);
 					this->boxCollider.y -= (velocidad_Y/2);
+					break;
+				}
+				case 3:
+				{
+					int velocidad_Y = VELOCIDAD;
+					this->posicion.first += VELOCIDAD;
+					this->boxCollider.x += VELOCIDAD;
+					this->posicion.second += VELOCIDAD;
+					this->boxCollider.y += VELOCIDAD;
+					break;
+				}
+				case 4:
+				{
+					int velocidad_Y = VELOCIDAD;
+					this->posicion.second += VELOCIDAD;
+					this->boxCollider.y += VELOCIDAD;
 					break;
 				}
 			}

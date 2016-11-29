@@ -106,6 +106,25 @@ double calcularAngulo(int numero, string sentido)
 			}
 			break;
 		}
+		case 3:
+		{
+			if (sentido == "Normal"){
+				angulo = 45;
+			} else {
+				angulo = -45;
+			}
+			break;
+		}
+		case 4:
+		{
+			angulo = 0;
+			/*if (sentido == "Normal"){
+				angulo = 90;
+			} else {
+				angulo = -90;
+			}*/
+			break;
+		}
 	}
 	return angulo;
 }
@@ -156,8 +175,9 @@ void procesarUltimosMensajes(string mensajes, Cliente* cliente, UpdateJugador* u
 					for (int i = 4; i < msjContenido.size(); i++){
 						pair<int,int> abscisas;
 						vector<string> capa = splitToVec(msjContenido.at(i), delimitadorCapas);
-						abscisas.first = stringToInt(capa.at(0));
-						abscisas.second = stringToInt(capa.at(1));
+						string nombreCapa = capa.at(0);
+						abscisas.first = stringToInt(capa.at(1));
+						abscisas.second = stringToInt(capa.at(2));
 						abscisasCapas.push_back(abscisas);
 					}
 					vista->actualizarCamara(x,y,abscisasCapas,stringToInt(handshakeDeserializado->getAncho()));
@@ -210,7 +230,7 @@ void procesarUltimosMensajes(string mensajes, Cliente* cliente, UpdateJugador* u
 					vista->actualizarEnemigo(nuevoEnemigo, xEnemigo, yEnemigo, spriteEnemigo, idEnemigo, cantFotogramas);
 					break;
 				}
-				case 5:{
+				case 5: {
 					string jugador = msjContenido.at(2);
 					int puntaje = stringToInt(msjContenido.at(3));
 					vista->actualizarPuntaje(jugador,puntaje);
@@ -220,6 +240,24 @@ void procesarUltimosMensajes(string mensajes, Cliente* cliente, UpdateJugador* u
 					string jugador = msjContenido.at(2);
 					int vida = stringToInt(msjContenido.at(3));
 					vista->actualizarVida(jugador,vida);
+					break;
+				}
+				case 7:{
+					string nuevoBoss = msjContenido.at(2);
+					int xBoss = stringToInt(msjContenido.at(3));
+					int yBoss = stringToInt(msjContenido.at(4));
+					string spriteBoss = msjContenido.at(5);
+					string sentido = msjContenido.at(6);
+					int cantFotogramas;
+					for (int i = 0; i < setsSprites.size(); i++) {
+						vector<SpriteDto*> listaSprites = setsSprites.at(i)->getSprites();
+						for (int i = 0; i < listaSprites.size(); i++) {
+							if (spriteBoss == listaSprites.at(i)->getID()) {
+								cantFotogramas = stringToInt(listaSprites.at(i)->getCantidadDeFotogramas());
+							}
+						}
+					}
+					vista->actualizarBoss(nuevoBoss, xBoss, yBoss, spriteBoss, sentido, cantFotogramas);
 					break;
 				}
 			}
