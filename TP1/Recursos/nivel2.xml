@@ -3,40 +3,40 @@
 <Configuracion>
 	<Plataformas>
 		<Plataforma1>
-			<Comienzo>402</Comienzo>
-			<Final>761</Final>
+			<Comienzo>778</Comienzo>
+			<Final>1068</Final>
 		</Plataforma1>
 		<Plataforma2>
-			<Comienzo>1547</Comienzo>
-			<Final>1786</Final>
+			<Comienzo>1393</Comienzo>
+			<Final>1820</Final>
 		</Plataforma2>
 		<Plataforma3>
-			<Comienzo>2087</Comienzo>
-			<Final>2326</Final>
+			<Comienzo>2168</Comienzo>
+			<Final>2393</Final>
 		</Plataforma3>
 		<Plataforma4>
-			<Comienzo>2453</Comienzo>
-			<Final>2573</Final>
+			<Comienzo>2839</Comienzo>
+			<Final>3253</Final>
 		</Plataforma4>
 		<Plataforma5>
-			<Comienzo>2708</Comienzo>
-			<Final>2828</Final>
+			<Comienzo>3913</Comienzo>
+			<Final>4226</Final>
 		</Plataforma5>
 		<Plataforma6>
-			<Comienzo>3369</Comienzo>
-			<Final>3848</Final>
+			<Comienzo>4683</Comienzo>
+			<Final>5257</Final>
 		</Plataforma6>
 		<Plataforma7>
-			<Comienzo>4590</Comienzo>
-			<Final>5308</Final>
+			<Comienzo>5757</Comienzo>
+			<Final>5972</Final>
 		</Plataforma7>
 		<Plataforma8>
 			<Comienzo>5795</Comienzo>
 			<Final>6154</Final>
 		</Plataforma8>
 		<Plataforma9>
-			<Comienzo>6878</Comienzo>
-			<Final>7117</Final>
+			<Comienzo>6412</Comienzo>
+			<Final>7029</Final>
 		</Plataforma9>
 	</Plataformas>
 	
