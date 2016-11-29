@@ -28,7 +28,7 @@ public:
 	Escenario(string rutaXml);
 	virtual ~Escenario();
 	int idEnemigo;
-	void agregarProyectil(Proyectil* proyectil, string nombre, int idProyectil);
+	void agregarProyectil(Proyectil* proyectil, string nombre);
 	bool verificarColision(SDL_Rect camara, Proyectil* proyectil, bool disparando);
 	void despertarEnemigos(SDL_Rect* camara);
 	Enemigo* getEnemigoActivo(int posicion);

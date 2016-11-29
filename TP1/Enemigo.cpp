@@ -7,20 +7,26 @@
 
 #include "Enemigo.h"
 
-Enemigo::Enemigo(int posX, int posY, int id) {
+Enemigo::Enemigo(int posX, int posY, int id, int estado) {
 	this->vida = 100;
 	this->armas.push_back(new HeavyMachineGun());
 	this->estaMuerto = false;
 	this->posX = posX;
 	this->posY = posY;
-	this->spriteEnemigo = "Enemigo_quieto";
 	this->id = id;
 	this->boxCollider = {posX+86,posY,49,106};
 	this->threadAsociado = false;
-	this->disparar = false;
 	this->condicionSprite = "Espejado";
 	this->anguloBala = 0;
 	this->agachado = false;
+	if (estado == 1) {
+		this->spriteEnemigo = "Enemigo_disparando";
+		this->disparar = true;
+	} else {
+		this->spriteEnemigo = "Enemigo_quieto";
+		this->disparar = false;
+	}
+	this->estado = estado;
 }
 
 Enemigo::~Enemigo() {

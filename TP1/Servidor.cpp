@@ -40,7 +40,7 @@ Servidor::Servidor(char* nombreArchivoDeUsuarios, int puerto, Logger* logger) {
 	this->guardarLog(mensaje, DEBUG);
 	this->guardarDatosDeUsuarios();
 	this->guardarDatosDeConfiguracion();
-	posicionXInicial = 20;
+	posicionXInicial = 23;
 	posicionVector = 0;
 	camara.x = 0;
 	camara.y = 0;
@@ -669,7 +669,6 @@ bool Servidor::verificarColisionConJugadores(Proyectil* proyectil) {
 
 bool Servidor::verificarColision(SDL_Rect camara, Proyectil* proyectil, bool estaDisparando) {
 	if (this->verificarColisionConJugadores(proyectil)) {
-		cout << "En verificar colision, ocurrio la colision" << endl;
 		return true;
 	} else {
 		if (!proyectil->cortoAlcance) {
