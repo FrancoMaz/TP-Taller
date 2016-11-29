@@ -37,13 +37,9 @@
 			<Final>5972</Final>
 		</Plataforma7>
 		<Plataforma8>
-			<Comienzo>5795</Comienzo>
-			<Final>6154</Final>
-		</Plataforma8>
-		<Plataforma9>
 			<Comienzo>6412</Comienzo>
 			<Final>7029</Final>
-		</Plataforma9>
+		</Plataforma8>
 	</Plataformas>
 	
 	<ItemArmas>
