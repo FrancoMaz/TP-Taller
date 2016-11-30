@@ -497,3 +497,12 @@ void Jugador::obtenerMuniciones(string arma)
 		}
 	}
 }
+
+void Jugador::resetMov(){
+	this->saltar = false;
+	this->agachar = false;
+	this->caer = false;
+	this->movDerecha = false;
+	this->movIzquierda = false;
+	this->disparar = false;
+}

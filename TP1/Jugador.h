@@ -94,5 +94,6 @@ public:
 	//void daniarseCon(Proyectil* proyectil);
 	string getNombre();
 	int puntaje;
+	void resetMov();
 };
 #endif /* JUGADOR_H_ */

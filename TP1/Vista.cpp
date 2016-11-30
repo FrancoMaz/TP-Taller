@@ -31,6 +31,7 @@ Vista::Vista(){
 	this->datos.ip = " ";
 	this->datos.nombre = " ";
 	this->datos.contrasenia = " ";
+	this->pantallaPuntajes = false;
 }
 
 bool Vista::inicializar(){
@@ -57,7 +58,12 @@ void Vista::cargarArchivos(){
 	textura.push_back(ventana->crearTextura("Recursos/Fondo_Escenario_capa_1.png",0));
 	textura.push_back(ventana->crearBoton("Recursos/Boton_Salir.png"));
 	textura.push_back(ventana->crearTexto("Recursos/msserif_bold.ttf",25));
-
+	textura.push_back(ventana->crearTexto("Recursos/font_puntajes.ttf",22));
+	textura.push_back(ventana->crearTexto("Recursos/font_puntajes.ttf",22));
+	textura.push_back(ventana->crearTexto("Recursos/font_puntajes.ttf",22));
+	textura.push_back(ventana->crearTexto("Recursos/font_puntajes.ttf",22));
+	textura.push_back(ventana->crearTextura("Recursos/Puntajes_fondo.png",0));
+	textura.push_back(ventana->crearTexto("Recursos/msserif_bold.ttf",25));
 
 	//Defino constantes para cada textura (para evitar llamarlos por índices)
 	#define texturaMenuFondo textura[0]
@@ -79,6 +85,8 @@ void Vista::cargarArchivos(){
 	#define texturaFondoEscenario textura[16]
 	#define texturaBotonDesconectar textura[17]
 	#define textoEsperandoJugadores textura[18]
+	#define texturaPuntajesFondo textura[23]
+	#define textoPuntajes textura[24]
 }
 
 
@@ -492,6 +500,7 @@ void Vista::actualizarVida(string jugador, int vida){
 
 void Vista::actualizarPantalla(int anchoVentana, int anchoCapaPrincipal) {
 	this->ventana->limpiar();
+
 	for (int i=vectorCapas.size()-1; i>=0; i--)
 	{
 		vectorCapas.at(i)->paralajeInfinito(anchoVentana, i);
@@ -541,9 +550,23 @@ void Vista::actualizarPantalla(int anchoVentana, int anchoCapaPrincipal) {
 		vistaJugador->texturaNombre->aplicarPosicion(vistaJugador->x - camara.x + texturaJugadorX->getAnchoSprite()/2 - vistaJugador->texturaNombre->getAncho()/2,vistaJugador->y + 60, 0, SDL_FLIP_NONE);
 	}
 
+	if (pantallaPuntajes){
+		texturaPuntajesFondo->aplicarPosicion(0,0,0,SDL_FLIP_NONE);
+
+		textoPuntajes->actualizarTexto("SCOREBOARD", {0,0,0});
+		textoPuntajes->aplicarPosicion(ANCHO_VENTANA/2 - textoPuntajes->getAncho()/2 ,40,0,SDL_FLIP_NONE);
+
+		for (int i = 0; i < vistaJugadores.size(); i++){
+			VistaJugador* jugador = vistaJugadores.at(i);
+			textura[i + 19]->actualizarTexto(jugador->nombre + "                " + to_string(jugador->valorPuntaje), {0,0,0});
+			textura[i + 19]->aplicarPosicion(ANCHO_VENTANA/2 - textura[i+19]->getAncho()/2, 120 + i * 80,0,SDL_FLIP_NONE);
+		}
+	}
+
 	if (texturaBotonDesconectar->aplicarPosicionDeBoton(10,10,&evento)) {
 		controlador->setCerrarVentana();
 	}
+
 	this->ventana->actualizar();
 }
 

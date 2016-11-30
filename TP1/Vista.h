@@ -84,6 +84,7 @@ public:
 	void actualizarBoss(string boss, int x, int y, string sprite, string sentido, int cantFotogramas);
 	void actualizarPuntaje(string jugador, int puntaje);
 	void actualizarVida(string jugador, int vida);
+	bool pantallaPuntajes;
 };
 
 #endif /* TP2_VISTA_H_ */

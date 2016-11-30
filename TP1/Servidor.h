@@ -82,6 +82,7 @@ public:
 	Servidor();
 	Servidor(char* nombreArchivoDeUsuarios, int puerto, Logger* logger);
 	virtual ~Servidor();
+	void guardarModoDeJuego();
 	void guardarDatosDeUsuarios();
 	bool existeArchivo(string fileName);
 	bool escuchando = false; //representa si el servidor esta disponible para escuchar pedidos
@@ -146,6 +147,9 @@ public:
 	void avanzarDeNivel();
 	bool verificarColision(SDL_Rect camara, Proyectil* proyectil, bool estaDisparando);
 	bool verificarColisionConJugadores(Proyectil* proyectil);
+	pair<int,bool> modoJuegoElegido; //el primero es el modo de juego elegido, el segundo es si es modo prueba o no
+	vector<string> equipoAlfa;
+	vector<string> equipoBeta;
 };
 
 #endif /* TP1_SERVIDOR_H_ */
