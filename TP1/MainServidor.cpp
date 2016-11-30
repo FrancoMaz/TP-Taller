@@ -172,7 +172,6 @@ void* disparoProyectil(void* arg)
 		}
 	} else {
 		// disparado por un enemigo
-	    //bool disparando = personaje->estaDisparando();
 		while (!servidor->verificarColision(servidor->camara, proyectil, true)) {
 			usleep(50000);
 			proyectil->mover();
@@ -184,7 +183,6 @@ void* disparoProyectil(void* arg)
 		}
 		if (proyectil->colisionPersonaje)
 		{ //si colisiono con un personaje (jugador) y no contra un margen, resto la vida.
-			//ver despues lo del jugador->getVida(), seria mejor hacer un atributo en el proyectil que me diga la vida que le quedo;
 			string mensajeVidaString = "6|" + proyectil->jugadorQueRecibioDisparo + "|" + to_string(proyectil->vidaDelJugadorImpactado) + "#";
 			Mensaje* mensajeVida = new Mensaje(parametros->nombrePersonaje,"Todos", mensajeVidaString);
 			servidor->encolarMensajeProcesadoParaCadaCliente(*mensajeVida,mensajeVidaString);
@@ -192,9 +190,6 @@ void* disparoProyectil(void* arg)
 		}
 	}
 	mensajeProyectilString = "2|2|";
-	/*Nunca se elemina el proyectil que ya murio del vector de proyectiles, y no sabemos como influye esto
-	 * cuando invocamos al destructor de proyectil sin haberlo sacado del vector previamente.
-	 */
 	mensajeProyectilString += proyectil->getStringProyectil();
 	mensajeProyectil = new Mensaje(parametros->nombrePersonaje,"Todos",mensajeProyectilString);
 	servidor->encolarMensajeProcesadoParaCadaCliente(*mensajeProyectil,mensajeProyectilString);
@@ -213,7 +208,6 @@ void actualizarPosicionProyectil(ParametrosMovimiento* paramDisparo) {
 
 			pthread_mutex_lock(&mutexIdProyectil);
 			proyectil->id = idProyectil;
-			//paramDisparo->servidor->getNivelActual()->agregarProyectil(proyectil,"random");
 			idProyectil += 1;
 			pthread_mutex_unlock(&mutexIdProyectil);
 
@@ -221,8 +215,6 @@ void actualizarPosicionProyectil(ParametrosMovimiento* paramDisparo) {
 			pthread_t threadDisparo = proyectil->getThreadDisparo();
 			pthread_create(&threadDisparo, NULL, &disparoProyectil, paramDisparo);
 			pthread_detach(threadDisparo);
-			//proyectil->setThreadDisparo(threadDisparo);
-			//aca deberiamos llamar al destructor de proyectil
 		}
 		usleep(50000);//no se si tiene sentido este usleep
 	}
@@ -324,10 +316,7 @@ void* actualizarPosicionesJugador(void* arg)
 	ParametrosMovimiento* parametros = (ParametrosMovimiento*)arg;
 	Servidor* servidor = parametros->servidor;
 	Jugador* jugador = parametros->jugador;
-	//parametros->personaje = jugador;
 	parametros->nombrePersonaje = jugador->getNombre();
-	//Mensaje* mensajeCamara;
-	//string mensajeCamaraString;
 	string mensajeJugadorPosActualizada = "";
 	pthread_t threadObjetos;
 	pthread_t threadNiveles;
@@ -361,10 +350,7 @@ void* enemigoActivo(void* arg) {
 	ParametrosMovimiento* parametrosEnemigo = (ParametrosMovimiento*) arg;
 	Servidor* servidor = parametrosEnemigo->servidor;
 	Enemigo* enemigo = parametrosEnemigo->enemigo;
-	//string nombre = parametrosEnemigo->jugador->getNombre();
 	string nombre = "Enemigo";
-	//parametrosEnemigo->personaje = parametrosEnemigo->enemigo;
-
 	string mensajeEnemigo = "4|0|";
 	mensajeEnemigo += parametrosEnemigo->enemigo->getInformacionDelEnemigo();
 	Mensaje* mensaje = new Mensaje(nombre,"Todos",mensajeEnemigo);
@@ -404,20 +390,14 @@ void* enemigoActivo(void* arg) {
 	mensaje = new Mensaje(nombre,"Todos",mensajeEnemigo);
 	parametrosEnemigo->servidor->getNivelActual()->eliminarEnemigoActivo(enemigo->getId());
 	parametrosEnemigo->servidor->encolarMensajeProcesadoParaCadaCliente(*mensaje,mensajeEnemigo);
-	//delete enemigo;
-	//enemigo->~Enemigo();
 	mensaje->~Mensaje();
 	pthread_exit(NULL);
 }
 
 void* controlDeEnemigos(void* arg) {
+
 	ParametrosMovimiento* parametroRecibido= (ParametrosMovimiento*) arg;
 	Servidor* servidor = parametroRecibido->servidor;
-	//Jugador* jugador = parametroRecibido->jugador;
-	//Creo que esta mal crear aca el parametrosEnemigo, esta misma variable lo van a usar todos los enemigos que se
-	//vayan creando.
-	//ParametrosMovimiento* parametrosEnemigo = new ParametrosMovimiento(servidor, jugador);
-	//usleep(4000000);
 	while (servidor->escuchando) {
 		servidor->getNivelActual()->despertarEnemigos(&servidor->camara);
 		for (int i = 0; i < servidor->getNivelActual()->getEnemigosActivos().size(); i++) {
@@ -426,7 +406,6 @@ void* controlDeEnemigos(void* arg) {
 				enemigo->threadAsociado = true;
 				pthread_t threadEnemigo;
 				ParametrosMovimiento* parametrosEnemigo = new ParametrosMovimiento(servidor,NULL);
-				//parametrosEnemigo->servidor = servidor;
 				parametrosEnemigo->enemigo = enemigo;
 				pthread_create(&threadEnemigo, NULL, &enemigoActivo, parametrosEnemigo);
 				pthread_detach(threadEnemigo);
