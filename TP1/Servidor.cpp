@@ -22,8 +22,8 @@ Servidor::Servidor(char* nombreArchivoDeUsuarios, int puerto, Logger* logger) {
 	/* Set port number, using htons function to use proper byte order */
 	this->serverAddr.sin_port = htons(puerto);
 	/* Set IP address to localhost */
-	//this->serverAddr.sin_addr.s_addr = inet_addr("192.168.1.12");
-	this->serverAddr.sin_addr.s_addr = inet_addr("127.0.0.1");
+	this->serverAddr.sin_addr.s_addr = inet_addr("192.168.1.12");
+	//this->serverAddr.sin_addr.s_addr = inet_addr("127.0.0.1");
 
 	//this->serverAddr.sin_addr.s_addr = inet_addr("10.1.77.13");
 	/* Set all bits of the padding field to 0 */
@@ -319,13 +319,16 @@ pair<int,int> Servidor::obtenerPosicionesExtremos()
 	for (int i = 0; i < jugadores->size(); i++)
 	{
 		Jugador* jugador = jugadores->at(i);
-		if (jugador->getPosicion().first <= posicionMasAtras && jugador->getConectado())
+		if (!jugador->getEstaMuerto())
 		{
-			posicionMasAtras = jugadores->at(i)->getPosicion().first;
-		}
-		else if (jugador->getPosicion().first >= posicionMasAdelante && jugador->getConectado())
-		{
-			posicionMasAdelante = jugadores->at(i)->getPosicion().first;
+			if (jugador->getPosicion().first <= posicionMasAtras && jugador->getConectado())
+			{
+				posicionMasAtras = jugadores->at(i)->getPosicion().first;
+			}
+			else if (jugador->getPosicion().first >= posicionMasAdelante && jugador->getConectado())
+			{
+				posicionMasAdelante = jugadores->at(i)->getPosicion().first;
+			}
 		}
 	}
 	pair<int,int> posiciones;
@@ -731,19 +734,22 @@ void Servidor::avanzarDeNivel()
 bool Servidor::verificarColisionConJugadores(Proyectil* proyectil) {
 	pthread_mutex_lock(&mutexVectorJugadores);
 	for (int i = 0; i < this->jugadores->size(); i++) {
-		if (this->getNivelActual()->colisionaronObjetos(proyectil->getBoxCollider(),this->jugadores->at(i)->boxCollider)) {
-			if (this->modoJuegoElegido.second == true)
-			{
-				//si el modo de juego es prueba, verifico colision pero no hago daño.
+		if (!this->jugadores->at(i)->getEstaMuerto())
+		{
+			if (this->getNivelActual()->colisionaronObjetos(proyectil->getBoxCollider(),this->jugadores->at(i)->boxCollider)) {
+				if (this->modoJuegoElegido.second == true)
+				{
+					//si el modo de juego es prueba, verifico colision pero no hago daño.
+					pthread_mutex_unlock(&mutexVectorJugadores);
+					return true;
+				}
+				cout << "Se impacto al jugador" << endl;
+				this->jugadores->at(i)->daniarseCon(proyectil->getDanio());
+				proyectil->jugadorQueRecibioDisparo = this->jugadores->at(i)->getNombre();
+				proyectil->vidaDelJugadorImpactado = this->jugadores->at(i)->getVida();
 				pthread_mutex_unlock(&mutexVectorJugadores);
 				return true;
 			}
-			cout << "Se impacto al jugador" << endl;
-			this->jugadores->at(i)->daniarseCon(proyectil->getDanio());
-			proyectil->jugadorQueRecibioDisparo = this->jugadores->at(i)->getNombre();
-			proyectil->vidaDelJugadorImpactado = this->jugadores->at(i)->getVida();
-			pthread_mutex_unlock(&mutexVectorJugadores);
-			return true;
 		}
 	}
 	pthread_mutex_unlock(&mutexVectorJugadores);

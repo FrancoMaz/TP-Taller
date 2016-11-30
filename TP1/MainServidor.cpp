@@ -324,7 +324,7 @@ void* actualizarPosicionesJugador(void* arg)
 	pthread_detach(threadNiveles);
 	pthread_create(&threadObjetos, NULL, &enviarObjetosEnCamara, parametros);
 	pthread_detach(threadObjetos);
-	while (jugador->getConectado()){
+	while (jugador->getConectado() && !jugador->getEstaMuerto()){
 		pthread_mutex_lock(&servidor->mutexVectorJugadores);
 		jugador->mover(servidor->camara);
 		//se controla la vida de los proyectiles
