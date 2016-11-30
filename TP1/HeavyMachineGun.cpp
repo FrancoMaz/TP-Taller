@@ -21,7 +21,8 @@ HeavyMachineGun::~HeavyMachineGun() {
 }
 
 Proyectil* HeavyMachineGun::disparar(int posicionX,int posicionY, string condicion, int anguloBala, bool agachar, int disparadoPor, string nombreJugador) {
-	int posX, posY;
+	int posX = posicionX;
+	int posY = posicionY;
 	if (disparadoPor == 1)
 	{
 		switch (anguloBala){
@@ -65,9 +66,10 @@ Proyectil* HeavyMachineGun::disparar(int posicionX,int posicionY, string condici
 		}
 	}
 	this->boxCollider = {posX,posY,22,13};
-	this->proyectil = new Proyectil(20, 15, this->nombreArma,posX,posY, condicion, anguloBala, this->boxCollider, this->cortoAlcance, disparadoPor, nombreJugador);
+	//this->proyectil = new Proyectil(20, 15, this->nombreArma,posX,posY, condicion, anguloBala, this->boxCollider, this->cortoAlcance, disparadoPor, nombreJugador);
 	this->municiones -= 1;
-	return this->proyectil;
+	//return this->proyectil;
+	return new Proyectil(20, 15, this->nombreArma,posX,posY, condicion, anguloBala, this->boxCollider, this->cortoAlcance, disparadoPor, nombreJugador);
 }
 
 bool HeavyMachineGun::sinMuniciones()

@@ -18,7 +18,6 @@ public:
 	virtual ~HiDo();
 	void comportamiento(SDL_Rect camara,  bool tieneQueDisparar);
 	vector<int> armas;
-	int armaADisparar;
 };
 
 #endif /* HIDO_H_ */

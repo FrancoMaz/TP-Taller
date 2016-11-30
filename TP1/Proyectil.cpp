@@ -96,6 +96,10 @@ void Proyectil::mover()
 					this->boxCollider.y += VELOCIDAD;
 					break;
 				}
+				case 5:
+				{
+					break;
+				}
 			}
 		}
 		else
@@ -137,6 +141,10 @@ void Proyectil::mover()
 					int velocidad_Y = VELOCIDAD;
 					this->posicion.second += VELOCIDAD;
 					this->boxCollider.y += VELOCIDAD;
+					break;
+				}
+				case 5:
+				{
 					break;
 				}
 			}

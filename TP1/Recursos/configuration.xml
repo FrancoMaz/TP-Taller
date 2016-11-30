@@ -486,6 +486,62 @@
 		    <Imagen>Boss_hi_do_disparo</Imagen>
 		    <z-index>1</z-index>
 		</Sprite3>
+		<Sprite4>
+	  		<Id>Boss_hi_do_colisionado</Id>
+		    <CantFotogramas>3</CantFotogramas>
+		    <Ancho>600</Ancho>
+		    <Alto>172</Alto>
+		    <Imagen>Boss_hi_do_colisionado</Imagen>
+		    <z-index>1</z-index>
+		</Sprite4>
+		<Sprite5>
+	  		<Id>Boss_hi_do_destruido</Id>
+		    <CantFotogramas>3</CantFotogramas>
+		    <Ancho>600</Ancho>
+		    <Alto>172</Alto>
+		    <Imagen>Boss_hi_do_destruido</Imagen>
+		    <z-index>1</z-index>
+		</Sprite5>
+		<Sprite6>
+	  		<Id>Boss_tani_oh</Id>
+		    <CantFotogramas>4</CantFotogramas>
+		    <Ancho>1468</Ancho>
+		    <Alto>182</Alto>
+		    <Imagen>Boss_tani_oh</Imagen>
+		    <z-index>1</z-index>
+		</Sprite6>
+		<Sprite7>
+	  		<Id>Boss_tani_oh_colisionado</Id>
+		    <CantFotogramas>4</CantFotogramas>
+		    <Ancho>1468</Ancho>
+		    <Alto>182</Alto>
+		    <Imagen>Boss_tani_oh_colisionado</Imagen>
+		    <z-index>1</z-index>
+		</Sprite7>
+		<Sprite8>
+	  		<Id>Boss_tani_oh_destruido</Id>
+		    <CantFotogramas>4</CantFotogramas>
+		    <Ancho>1468</Ancho>
+		    <Alto>182</Alto>
+		    <Imagen>Boss_tani_oh_destruido</Imagen>
+		    <z-index>1</z-index>
+		</Sprite8>
+		<Sprite9>
+	  		<Id>Boss_tani_oh_disparo_laser</Id>
+		    <CantFotogramas>1</CantFotogramas>
+		    <Ancho>70</Ancho>
+		    <Alto>425</Alto>
+		    <Imagen>Boss_tani_oh_disparo_laser</Imagen>
+		    <z-index>1</z-index>
+		</Sprite9>
+		<Sprite10>
+	  		<Id>Boss_tani_oh_disparo_laser</Id>
+		    <CantFotogramas>1</CantFotogramas>
+		    <Ancho>70</Ancho>
+		    <Alto>425</Alto>
+		    <Imagen>Boss_tani_oh_disparo_laser</Imagen>
+		    <z-index>1</z-index>
+		</Sprite10>
 	  </SetBosses>
 	</Sprites>
 

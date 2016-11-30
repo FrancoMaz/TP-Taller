@@ -44,6 +44,7 @@ public:
 	vector<Enemigo*> getEnemigosActivos();
 	bool enemigoPerdido(int id, SDL_Rect* camara);
 	void eliminarEnemigoActivo(int id);
+	pthread_mutex_t mutexEnemigosActivos = PTHREAD_MUTEX_INITIALIZER;
 	Boss* boss;
 	vector<string> capas;
 };

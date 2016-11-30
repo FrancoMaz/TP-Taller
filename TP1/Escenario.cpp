@@ -18,8 +18,9 @@ Escenario::Escenario(string rutaXml) {
 	this->itemArmas = parserNivel->getItemArmas();
 	this->boss = parserNivel->getBoss();
 	this->capas = parserNivel->getCapas();
+	this->enemigosPorNivel = parserNivel->getEnemigos();
 	this->levelClear = false;
-	int posX = 1000;
+	/*int posX = 1000;
 	for(int i = 0; i < 15; i++) {
 		pair<int,int> lala(posX, 415);
 		this->enemigosPorNivel.push_back(lala);
@@ -47,7 +48,7 @@ Escenario::Escenario(string rutaXml) {
 	pair<int,int> plataforma8(5900, 354-106);
 	this->enemigosPorNivel.push_back(plataforma8);
 	pair<int,int> plataforma9(6950, 354-106);
-	this->enemigosPorNivel.push_back(plataforma9);
+	this->enemigosPorNivel.push_back(plataforma9);*/
 	this->ordenarEnemigos();
 }
 
@@ -112,19 +113,22 @@ bool Escenario::verificarColisionConItem(Jugador* jugador)
 }
 
 bool Escenario::verificarColisionConEnemigo(Proyectil* proyectil) {
+	//pthread_mutex_lock(&mutexEnemigosActivos);
 	for (int i = 0; i < this->enemigosActivos.size(); i++) {
-		if (this->colisionaronObjetos(proyectil->getBoxCollider(),this->enemigosActivos.at(i)->getBoxCollider())) {
-			this->enemigosActivos.at(i)->daniarseCon(proyectil->getDanio());
-			cout << "Enemigo colisiono con bala" << endl;
-			return true;
-		}
-		else if (this->colisionaronObjetos(proyectil->getBoxCollider(),this->boss->boxCollider))
-		{
-			this->boss->daniarseCon(proyectil->getDanio());
-			cout << "Boss colisiono von bala" << endl;
-			return true;
+		if(!this->enemigosActivos.at(i)->getEstaMuerto()){
+			if (this->colisionaronObjetos(proyectil->getBoxCollider(),this->enemigosActivos.at(i)->getBoxCollider())) {
+				this->enemigosActivos.at(i)->daniarseCon(proyectil->getDanio());
+				cout << "Enemigo colisiono con bala" << endl;
+				return true;
+			}
 		}
 	}
+	if (this->colisionaronObjetos(proyectil->getBoxCollider(),this->boss->boxCollider))
+	{
+		this->boss->daniarseCon(proyectil->getDanio());
+		return true;
+	}
+	//pthread_mutex_unlock(&mutexEnemigosActivos);
 	return false;
 }
 
@@ -150,7 +154,9 @@ void Escenario::despertarEnemigos(SDL_Rect* camara) {
 				int estado = rand() % 2;
 				if (this->enemigosPorNivel.at(0).first < camara->x + camara->w && this->enemigosPorNivel.at(0).first > camara->x) {
 					Enemigo* enemigo = new Enemigo(this->enemigosPorNivel.at(0).first,this->enemigosPorNivel.at(0).second,this->idEnemigo, estado);
+					pthread_mutex_lock(&mutexEnemigosActivos);
 					this->enemigosActivos.push_back(enemigo);
+					pthread_mutex_unlock(&mutexEnemigosActivos);
 					this->enemigosPorNivel.erase(this->enemigosPorNivel.begin() + 0);
 					this->idEnemigo++;
 				}
@@ -187,12 +193,15 @@ bool Escenario::enemigoPerdido(int id, SDL_Rect* camara) {
 }
 
 void Escenario::eliminarEnemigoActivo(int id) {
+	pthread_mutex_lock(&mutexEnemigosActivos);
 	for (int i = 0; i < this->enemigosActivos.size(); i++) {
 		Enemigo* enemigo = this->enemigosActivos.at(i);
 		if (enemigo->getId() == id) {
 			this->enemigosActivos.erase(this->enemigosActivos.begin() + i);
+			delete enemigo;
 		}
 	}
+	pthread_mutex_unlock(&mutexEnemigosActivos);
 }
 
 bool Escenario::despertarBoss(SDL_Rect camara)

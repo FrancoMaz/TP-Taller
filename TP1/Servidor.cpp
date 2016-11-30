@@ -357,7 +357,6 @@ string Servidor::serializarCapas()
 	for (int i = 0; i < abscisasCapas.size(); i++)
 	{
 		capas += this->vectorNiveles.at(nivelActual)->capas.at(i);
-		cout << "Capa: " << this->vectorNiveles.at(nivelActual)->capas.at(i) << endl;
 		capas += ",";
 		capas += to_string(abscisasCapas.at(i).first);
 		capas += ",";
@@ -429,6 +428,7 @@ void Servidor::encolarMensajeProcesadoParaCadaCliente(Mensaje mensajeAProcesar, 
 				pthread_mutex_lock(&mutexListaProcesados);
 				listaMensajes.mensajes->push(*mensajePosicionActualizada);
 				pthread_mutex_unlock(&mutexListaProcesados);
+				mensajePosicionActualizada->~Mensaje();
 			}
 			pthread_mutex_unlock(&mutexVectorJugadores);
 		}
@@ -726,11 +726,12 @@ bool Servidor::verificarColisionConJugadores(Proyectil* proyectil) {
 			if (this->modoJuegoElegido.second == true)
 			{
 				//si el modo de juego es prueba, verifico colision pero no hago daño.
+				pthread_mutex_unlock(&mutexVectorJugadores);
 				return true;
 			}
+			cout << "Se impacto al jugador" << endl;
 			this->jugadores->at(i)->daniarseCon(proyectil->getDanio());
 			proyectil->jugadorQueRecibioDisparo = this->jugadores->at(i)->getNombre();
-			cout << "Jugador colisiono con bala" << endl;
 			pthread_mutex_unlock(&mutexVectorJugadores);
 			return true;
 		}
