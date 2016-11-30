@@ -21,6 +21,7 @@ public:
 	Jugador* jugador;
 	Proyectil* proyectil;
 	Enemigo* enemigo;
+	string nombrePersonaje;
 	Boss* boss;
 	Personaje * personaje;
 	ParametrosMovimiento(Servidor* servidorActual, Jugador* jugadorActual);

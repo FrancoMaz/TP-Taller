@@ -35,6 +35,7 @@ public:
 	void fueDisparadoPor(string nombre);
 	string jugadorQueLoDisparo;
 	string jugadorQueRecibioDisparo;
+	int vidaDelJugadorImpactado;
 	int id;
 	pair<int,int> posicion;
 	void mover();
