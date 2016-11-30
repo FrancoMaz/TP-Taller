@@ -84,6 +84,18 @@ public:
 	void actualizarBoss(string boss, int x, int y, string sprite, string sentido, int cantFotogramas);
 	void actualizarPuntaje(string jugador, int puntaje);
 	void actualizarVida(string jugador, int vida);
+	bool pantallaPuntajes;
+	void actualizarPuntajesFinNivel(int modoJuego, vector<string> jugadoresPuntajes);
+	int puntajeEquipoAlfa;
+	int puntajeTotalEquipoAlfa;
+	int puntajeEquipoBeta;
+	int puntajeTotalEquipoBeta;
+	int puntajeSumadoNivel;
+	int puntajeSumadoTotal;
+	int modoJuego;
+	int stringToInt(string atributo);
+	std::vector<std::string> splitToVec(const std::string &s, char delim);
+	void split(const std::string &s, char delim, std::vector<std::string> &elems);
 };
 
 #endif /* TP2_VISTA_H_ */

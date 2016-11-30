@@ -260,6 +260,14 @@ void procesarUltimosMensajes(string mensajes, Cliente* cliente, UpdateJugador* u
 					vista->actualizarBoss(nuevoBoss, xBoss, yBoss, spriteBoss, sentido, cantFotogramas);
 					break;
 				}
+				case 8:{
+					int modoJuego = stringToInt(msjContenido.at(2));
+					vector<string> jugadoresPuntajes = splitToVec(msjContenido.at(3),';');
+					vista->actualizarPuntajesFinNivel(modoJuego, jugadoresPuntajes);
+
+					vista->pantallaPuntajes = true;
+					break;
+				}
 			}
 		}
 		vista->actualizarPantalla(stringToInt(handshakeDeserializado->getAncho()), stringToInt(handshakeDeserializado->getImagenes().at(0)->getAncho()));
@@ -308,6 +316,10 @@ void* enviarEventos(void* arg) {
 	fpsTimer.start();
 	while(!vista->controlador->comprobarCierreVentana()){
 		while(SDL_PollEvent(&evento)){
+			if (vista->pantallaPuntajes){
+				//si estoy en la pantalla de puntajes no envio nada mas
+				break;
+			}
 			if (evento.type == SDL_QUIT){
 				vista->controlador->setCerrarVentana();
 			}

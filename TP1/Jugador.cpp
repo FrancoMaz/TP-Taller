@@ -30,6 +30,7 @@ Jugador::Jugador(string nombre, string equipo, int posicionX, vector<pair<string
 	this->anguloBala = 0; //0 equivale al angulo 0, 1 al angulo PI/2, 2 al angulo PI/4
 	this->estaMuerto = false;
 	this->puntaje = 0;
+	this->puntajeTotal = 0;
 }
 
 Jugador::~Jugador() {
@@ -496,4 +497,13 @@ void Jugador::obtenerMuniciones(string arma)
 			break;
 		}
 	}
+}
+
+void Jugador::resetMov(){
+	this->saltar = false;
+	this->agachar = false;
+	this->caer = false;
+	this->movDerecha = false;
+	this->movIzquierda = false;
+	this->disparar = false;
 }

@@ -40,6 +40,7 @@ Servidor::Servidor(char* nombreArchivoDeUsuarios, int puerto, Logger* logger) {
 	this->guardarLog(mensaje, DEBUG);
 	this->guardarDatosDeUsuarios();
 	this->guardarDatosDeConfiguracion();
+	this->guardarModoDeJuego();
 	posicionXInicial = 23;
 	posicionVector = 0;
 	camara.x = 0;
@@ -59,6 +60,45 @@ Servidor::Servidor(char* nombreArchivoDeUsuarios, int puerto, Logger* logger) {
 Servidor::~Servidor() {
 }
 
+void Servidor::guardarModoDeJuego(){
+	bool modoJuego = false;
+	do {
+		cout << "Elija el modo de juego: " << endl;
+		cout << "1) Individual Multijugador" << endl;
+		cout << "2) Colaborativo Multijugador" << endl;
+		cout << "3) Grupal Multijugador" << endl;
+		cin >> this->modoJuegoElegido.first;
+		if (cin.good() && (this->modoJuegoElegido.first == 1 || this->modoJuegoElegido.first == 2 || this->modoJuegoElegido.first == 3)) {
+			modoJuego = true;
+		} else {
+			cin.clear();
+			cin.ignore();
+			cout << "Error: la opcion ingresada no es valida" << endl;
+		}
+	} while (!modoJuego);
+	modoJuego = false;
+	int modoPrueba;
+	do{
+		cout << "Elija modo normal o prueba:" << endl;
+		cout << "1) Normal" << endl;
+		cout << "2) Prueba" << endl;
+		cin >> modoPrueba;
+		if (cin.good() && (modoPrueba == 1 || modoPrueba == 2)){
+			modoJuego = true;
+			if (modoPrueba == 1){
+				this->modoJuegoElegido.second = false;
+			}
+			else{
+				this->modoJuegoElegido.second = true;
+			}
+		}
+		else{
+			cin.clear();
+			cin.ignore();
+			cout << "Error: la opcion ingresada no es valida";
+		}
+	} while(!modoJuego);
+}
 
 void Servidor::inicializarDatosNiveles()
 {
@@ -199,6 +239,14 @@ void Servidor::autenticar(string nombre, string contrasenia, list<string>& usuar
 			{
 				Jugador* jugador = new Jugador(usuario.nombre, this->vectorEquipos.at(posicionVector), posicionXInicial, this->vectorNiveles.at(this->nivelActual)->plataformas);
 				jugador->setConectado();
+				if (this->modoJuegoElegido.first == 3){
+					if (! (this->equipoAlfa.size() == 2)){
+						this->equipoAlfa.push_back(jugador->getNombre());
+					}
+					else{
+						this->equipoBeta.push_back(jugador->getNombre());
+					}
+				}
 				pthread_mutex_lock(&mutexVectorJugadores);
 				jugadores->push_back(jugador);
 				pthread_mutex_unlock(&mutexVectorJugadores);
@@ -649,6 +697,30 @@ Escenario* Servidor::getNivelActual()
 
 void Servidor::avanzarDeNivel()
 {
+	string mensajeJugador = "";
+	string mensajePuntajesString = "8|" + to_string(modoJuegoElegido.first) + "|";
+	for (int i = 0; i < jugadores->size(); i++){
+		Jugador* jugador = jugadores->at(i);
+		jugador->resetMov();
+		jugador->puntajeTotal += jugador->puntaje;
+		mensajePuntajesString += jugador->getNombre() + "," + to_string(jugador->puntaje) + "," + to_string(jugador->puntajeTotal);
+		if (modoJuegoElegido.first == 3){
+			if (equipoAlfa.at(0) == jugador->getNombre() || equipoAlfa.at(1) == jugador->getNombre()){
+				mensajePuntajesString += ",alfa";
+			}
+			else{
+				mensajePuntajesString += ",beta";
+			}
+		}
+		if (i < jugadores->size() - 1){
+			mensajePuntajesString += ";";
+		}
+	}
+	mensajePuntajesString += "#";
+	Mensaje* mensajePuntajes = new Mensaje("Servidor","Todos",mensajePuntajesString);
+	encolarMensajeProcesadoParaCadaCliente(*mensajePuntajes,mensajePuntajesString);
+	mensajePuntajes->~Mensaje();
+	usleep(9000000); //tiempo para mostrar la pantalla de puntajes antes de pasar al proximo nivel
 	this->nivelActual++;
 	if (this->nivelActual > CANTIDADNIVELES)
 	{
@@ -660,6 +732,12 @@ bool Servidor::verificarColisionConJugadores(Proyectil* proyectil) {
 	pthread_mutex_lock(&mutexVectorJugadores);
 	for (int i = 0; i < this->jugadores->size(); i++) {
 		if (this->getNivelActual()->colisionaronObjetos(proyectil->getBoxCollider(),this->jugadores->at(i)->boxCollider)) {
+			if (this->modoJuegoElegido.second == true)
+			{
+				//si el modo de juego es prueba, verifico colision pero no hago daño.
+				pthread_mutex_unlock(&mutexVectorJugadores);
+				return true;
+			}
 			cout << "Se impacto al jugador" << endl;
 			this->jugadores->at(i)->daniarseCon(proyectil->getDanio());
 			proyectil->jugadorQueRecibioDisparo = this->jugadores->at(i)->getNombre();
