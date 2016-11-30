@@ -71,6 +71,7 @@ void Vista::cargarArchivos(){
 	textura.push_back(ventana->crearTexto("Recursos/font_puntajes.ttf",22));
 	textura.push_back(ventana->crearTexto("Recursos/font_puntajes.ttf",22));
 	textura.push_back(ventana->crearTexto("Recursos/font_puntajes.ttf",22));
+	textura.push_back(ventana->crearTexto("Recursos/msserif_bold.ttf",30));
 
 	//Defino constantes para cada textura (para evitar llamarlos por índices)
 	#define texturaMenuFondo textura[0]
@@ -96,6 +97,7 @@ void Vista::cargarArchivos(){
 	#define textoPuntajesNivel textura[24]
 	#define textoMisionCompleta textura[25]
 	#define textoPuntajesGlobal textura[26]
+	#define textoGameOver textura[32]
 }
 
 
@@ -605,6 +607,13 @@ void Vista::actualizarPantalla(int anchoVentana, int anchoCapaPrincipal) {
 			textoTotal->actualizarTexto("Puntaje Equipo Beta Nivel: " + to_string(puntajeEquipoBeta) + ". Acumulado: " + to_string(puntajeTotalEquipoBeta), {255,255,255});
 			textoTotal->aplicarPosicion(ANCHO_VENTANA/2 - textoTotal->getAncho()/2, 520,0,SDL_FLIP_NONE);
 		}
+	}
+
+	if (vistaJugadores.empty())
+	{
+		texturaPuntajesFondo->aplicarPosicion(0,0,0,SDL_FLIP_NONE);
+		textoGameOver->actualizarTexto("GAME OVER",{255,255,255});
+		textoGameOver->aplicarPosicion(ANCHO_VENTANA/2 - textoGameOver->getAncho()/2, ALTO_VENTANA/2, 0, SDL_FLIP_NONE);
 	}
 
 	if (texturaBotonDesconectar->aplicarPosicionDeBoton(10,10,&evento)) {
