@@ -17,7 +17,7 @@
 #include <vector>
 #include <unistd.h>
 #include <iostream>
-
+#include <sstream>
 #define PI 3.14159265
 
 using namespace std;
@@ -64,6 +64,13 @@ void Vista::cargarArchivos(){
 	textura.push_back(ventana->crearTexto("Recursos/font_puntajes.ttf",22));
 	textura.push_back(ventana->crearTextura("Recursos/Puntajes_fondo.png",0));
 	textura.push_back(ventana->crearTexto("Recursos/msserif_bold.ttf",25));
+	textura.push_back(ventana->crearTexto("Recursos/msserif_bold.ttf",25));
+	textura.push_back(ventana->crearTexto("Recursos/msserif_bold.ttf",25));
+	textura.push_back(ventana->crearTexto("Recursos/msserif_bold.ttf",25));
+	textura.push_back(ventana->crearTexto("Recursos/font_puntajes.ttf",22));
+	textura.push_back(ventana->crearTexto("Recursos/font_puntajes.ttf",22));
+	textura.push_back(ventana->crearTexto("Recursos/font_puntajes.ttf",22));
+	textura.push_back(ventana->crearTexto("Recursos/font_puntajes.ttf",22));
 
 	//Defino constantes para cada textura (para evitar llamarlos por índices)
 	#define texturaMenuFondo textura[0]
@@ -86,7 +93,9 @@ void Vista::cargarArchivos(){
 	#define texturaBotonDesconectar textura[17]
 	#define textoEsperandoJugadores textura[18]
 	#define texturaPuntajesFondo textura[23]
-	#define textoPuntajes textura[24]
+	#define textoPuntajesNivel textura[24]
+	#define textoMisionCompleta textura[25]
+	#define textoPuntajesGlobal textura[26]
 }
 
 
@@ -553,13 +562,43 @@ void Vista::actualizarPantalla(int anchoVentana, int anchoCapaPrincipal) {
 	if (pantallaPuntajes){
 		texturaPuntajesFondo->aplicarPosicion(0,0,0,SDL_FLIP_NONE);
 
-		textoPuntajes->actualizarTexto("SCOREBOARD", {0,0,0});
-		textoPuntajes->aplicarPosicion(ANCHO_VENTANA/2 - textoPuntajes->getAncho()/2 ,40,0,SDL_FLIP_NONE);
+		textoMisionCompleta->actualizarTexto("MISIÓN COMPLETADA", {255,255,255});
+		textoMisionCompleta->aplicarPosicion(ANCHO_VENTANA/2 - textoMisionCompleta->getAncho()/2 ,40,0,SDL_FLIP_NONE);
+
+		textoPuntajesNivel->actualizarTexto("SCOREBOARD NIVEL", {255,255,255});
+		textoPuntajesNivel->aplicarPosicion(ANCHO_VENTANA/2 - textoPuntajesNivel->getAncho()/2 ,80,0,SDL_FLIP_NONE);
+
+		textoPuntajesGlobal->actualizarTexto("SCOREBOARD GLOBAL", {255,255,255});
+		textoPuntajesGlobal->aplicarPosicion(ANCHO_VENTANA/2 - textoPuntajesGlobal->getAncho()/2 ,280,0,SDL_FLIP_NONE);
 
 		for (int i = 0; i < vistaJugadores.size(); i++){
 			VistaJugador* jugador = vistaJugadores.at(i);
-			textura[i + 19]->actualizarTexto(jugador->nombre + "                " + to_string(jugador->valorPuntaje), {0,0,0});
-			textura[i + 19]->aplicarPosicion(ANCHO_VENTANA/2 - textura[i+19]->getAncho()/2, 120 + i * 80,0,SDL_FLIP_NONE);
+			string nombre = jugador->nombre;
+			if (modoJuego == 3){
+				nombre += "(Equipo " + jugador->equipo + ")";
+			}
+			textura[i + 19]->actualizarTexto(nombre + "                " + to_string(jugador->valorPuntaje), {255,255,255});
+			textura[i + 19]->aplicarPosicion(ANCHO_VENTANA/2 - textura[i+19]->getAncho()/2, 120 + i * 40,0,SDL_FLIP_NONE);
+			textura[i + 28]->actualizarTexto(nombre + "                " + to_string(jugador->puntajeTotal), {255,255,255});
+			textura[i + 28]->aplicarPosicion(ANCHO_VENTANA/2 - textura[i+28]->getAncho()/2, 320 + i * 40,0,SDL_FLIP_NONE);
+		}
+
+		TexturaSDL* textoNivel = ventana->crearTexto("Recursos/msserif_bold.ttf",25);
+		TexturaSDL* textoTotal = ventana->crearTexto("Recursos/msserif_bold.ttf",25);
+
+		if (this->modoJuego == 2){
+			textoNivel->actualizarTexto("Puntaje Acumulado Nivel: " + to_string(puntajeSumadoNivel), {255,255,255});
+			textoNivel->aplicarPosicion(ANCHO_VENTANA/2 - textoNivel->getAncho()/2, 480,0,SDL_FLIP_NONE);
+			textoTotal->actualizarTexto("Puntaje Acumulado Total: " + to_string(puntajeSumadoTotal), {255,255,255});
+			textoTotal->aplicarPosicion(ANCHO_VENTANA/2 - textoTotal->getAncho()/2, 520,0,SDL_FLIP_NONE);
+		}
+		else if (this->modoJuego == 3){
+			TexturaSDL* textoNivel = ventana->crearTexto("Recursos/msserif_bold.ttf",25);
+			TexturaSDL* textoTotal = ventana->crearTexto("Recursos/msserif_bold.ttf",25);
+			textoNivel->actualizarTexto("Puntaje Equipo Alfa Nivel: " + to_string(puntajeEquipoAlfa)+ ". Acumulado: " + to_string(puntajeTotalEquipoAlfa), {255,255,255});
+			textoNivel->aplicarPosicion(ANCHO_VENTANA/2 - textoNivel->getAncho()/2, 480,0,SDL_FLIP_NONE);
+			textoTotal->actualizarTexto("Puntaje Equipo Beta Nivel: " + to_string(puntajeEquipoBeta) + ". Acumulado: " + to_string(puntajeTotalEquipoBeta), {255,255,255});
+			textoTotal->aplicarPosicion(ANCHO_VENTANA/2 - textoTotal->getAncho()/2, 520,0,SDL_FLIP_NONE);
 		}
 	}
 
@@ -649,6 +688,44 @@ void Vista::agregarVistaItem(string borrarItem, string sprite, int x, int y)
 	}
 }
 
+void Vista::actualizarPuntajesFinNivel(int modoJuego, vector<string> jugadoresPuntajes){
+	this->modoJuego = modoJuego;
+	puntajeSumadoNivel = 0;
+	puntajeSumadoTotal = 0;
+	puntajeEquipoAlfa = 0;
+	puntajeEquipoBeta = 0;
+	puntajeTotalEquipoAlfa = 0;
+	puntajeTotalEquipoBeta = 0;
+	for (int i = 0; i < jugadoresPuntajes.size(); i++){
+		vector<string> puntajeJugador = splitToVec(jugadoresPuntajes.at(i), ',');
+		string nombreJugador = puntajeJugador.at(0);
+		for (int i = 0; i < vistaJugadores.size(); i++){
+			int puntajeNivel = stringToInt(puntajeJugador.at(1));
+			int puntajeTotal = stringToInt(puntajeJugador.at(2));
+			VistaJugador* jugador = vistaJugadores.at(i);
+			if (jugador->nombre == nombreJugador){
+				jugador->valorPuntaje = puntajeNivel;
+				jugador->puntajeTotal = puntajeTotal;
+				if (modoJuego == 3){
+					jugador->equipo = puntajeJugador.at(3);
+					if (jugador->equipo == "alfa"){
+						puntajeEquipoAlfa += jugador->valorPuntaje;
+						puntajeTotalEquipoAlfa += jugador->puntajeTotal;
+					}
+					else{
+						puntajeEquipoBeta += jugador->valorPuntaje;
+						puntajeTotalEquipoBeta += jugador->puntajeTotal;
+					}
+				}
+				if (modoJuego == 2){
+					puntajeSumadoNivel += jugador->valorPuntaje;
+					puntajeSumadoTotal += jugador->puntajeTotal;
+				}
+			}
+		}
+	}
+}
+
 void Vista::actualizarBoss(string boss, int x, int y, string sprite, string sentido, int cantFotogramas)
 {
 	if (boss == "0")
@@ -666,4 +743,31 @@ void Vista::actualizarBoss(string boss, int x, int y, string sprite, string sent
 	{
 		vistaBoss->~VistaEnemigo();
 	}
+}
+
+void Vista::split(const std::string &s, char delim, std::vector<std::string> &elems) {
+	//splitea un string segun un delim y lo guarda en elems
+    std::stringstream ss;
+    ss.str(s);
+    std::string item;
+    while (std::getline(ss, item, delim)) {
+        elems.push_back(item);
+    }
+}
+
+
+std::vector<std::string> Vista::splitToVec(const std::string &s, char delim) {
+	//devuelve un vector de elementos que representan al string spliteado segun delim
+    std::vector<std::string> elems;
+    split(s, delim, elems);
+    return elems;
+}
+
+
+int Vista::stringToInt(string atributo) {
+	istringstream atributoStream(atributo);
+	int atributoInt;
+	atributoStream >> atributoInt;
+
+	return atributoInt;
 }

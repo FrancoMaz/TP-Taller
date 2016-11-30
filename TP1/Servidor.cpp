@@ -698,20 +698,29 @@ Escenario* Servidor::getNivelActual()
 void Servidor::avanzarDeNivel()
 {
 	string mensajeJugador = "";
-	string mensajePuntajesString = "8|";
+	string mensajePuntajesString = "8|" + to_string(modoJuegoElegido.first) + "|";
 	for (int i = 0; i < jugadores->size(); i++){
 		Jugador* jugador = jugadores->at(i);
 		jugador->resetMov();
-		mensajePuntajesString += jugador->getNombre() + "," + to_string(jugador->puntaje);
+		jugador->puntajeTotal += jugador->puntaje;
+		mensajePuntajesString += jugador->getNombre() + "," + to_string(jugador->puntaje) + "," + to_string(jugador->puntajeTotal);
+		if (modoJuegoElegido.first == 3){
+			if (equipoAlfa.at(0) == jugador->getNombre() || equipoAlfa.at(1) == jugador->getNombre()){
+				mensajePuntajesString += ",alfa";
+			}
+			else{
+				mensajePuntajesString += ",beta";
+			}
+		}
 		if (i < jugadores->size() - 1){
-			mensajePuntajesString += "|";
+			mensajePuntajesString += ";";
 		}
 	}
 	mensajePuntajesString += "#";
 	Mensaje* mensajePuntajes = new Mensaje("Servidor","Todos",mensajePuntajesString);
 	encolarMensajeProcesadoParaCadaCliente(*mensajePuntajes,mensajePuntajesString);
 	mensajePuntajes->~Mensaje();
-	usleep(10000000); //muestro durante 10 segundos la pantalla de puntajes
+	usleep(9000000); //tiempo para mostrar la pantalla de puntajes antes de pasar al proximo nivel
 	this->nivelActual++;
 	if (this->nivelActual > CANTIDADNIVELES)
 	{

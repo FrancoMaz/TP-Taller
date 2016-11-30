@@ -19,7 +19,9 @@ public:
 	int x;
 	int y;
 	int valorPuntaje;
+	int puntajeTotal;
 	int valorEnergia;
+	string equipo;
 	string nombre;
 	TexturaSDL* texturaNombre;
 	TexturaSDL* texturaJugador;

@@ -261,7 +261,11 @@ void procesarUltimosMensajes(string mensajes, Cliente* cliente, UpdateJugador* u
 					break;
 				}
 				case 8:{
-					vista->pantallaPuntajes= true;
+					int modoJuego = stringToInt(msjContenido.at(2));
+					vector<string> jugadoresPuntajes = splitToVec(msjContenido.at(3),';');
+					vista->actualizarPuntajesFinNivel(modoJuego, jugadoresPuntajes);
+
+					vista->pantallaPuntajes = true;
 					break;
 				}
 			}
