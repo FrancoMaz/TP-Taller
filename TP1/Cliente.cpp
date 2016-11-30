@@ -384,6 +384,7 @@ string Cliente::recibir() {
 	int largoRequest;
 	do {
 		largoRequest = recv(this->socketCliente, colaMensajes, BUFFER_MAX_SIZE, 0);
+		//cout << "Largo request: " << largoRequest << endl;
 	} while (largoRequest == 0);
 
 	datosRecibidos += string(colaMensajes);
