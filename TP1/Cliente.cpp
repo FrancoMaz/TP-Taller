@@ -253,17 +253,7 @@ void Cliente::corroborarConexion() {
 		pthread_mutex_unlock(&mutexSocket);
  	}
 	cout << "Se cerro la conexion con el servidor" << endl;
-	/*if (this->opcionMenu != 4) {
-		this->terminoComunicacion = true;
-		int opcion = 1;
-		while (opcion != 5) {
-			cout << endl;
-			cout << "Se cerro la conexion con el servidor" << endl;
-			cin >> opcion; }
-		if (opcion == 5) {
-			this->salir();
-		}
-	}*/
+	this->terminoComunicacion = true;
  }
 
 bool Cliente::conectar(string nombre, string contrasenia) {
@@ -346,9 +336,7 @@ void Cliente::desconectar() {
 }
 
 void Cliente::salir() {
-	//Se termina la ejecucion del programa
-	this->opcionMenu = 5;
-	this->desconectar();
+	close(socketCliente);
 }
 
 void Cliente::enviar(string mensaje, string destinatario) {
@@ -382,28 +370,30 @@ string Cliente::recibir() {
 	send(this->socketCliente, recibir, strlen(recibir), 0);
 	string datosRecibidos = "";
 	int largoRequest;
-	do {
-		largoRequest = recv(this->socketCliente, colaMensajes, BUFFER_MAX_SIZE, 0);
-	} while (largoRequest == 0);
+	largoRequest = recv(this->socketCliente, colaMensajes, BUFFER_MAX_SIZE, 0);
 
 	datosRecibidos += string(colaMensajes);
 	memset(colaMensajes, '\0', strlen(colaMensajes));
-	while (largoRequest >= BUFFER_MAX_SIZE and !stringTerminaCon(datosRecibidos, "@")) //mientras el largoRequest sea del tamaño del max size, sigo pidiendo
-	{
-		int largo;
-		//mientras haya cosas que leer, sigo recibiendo.
-		//do {
-			//sigue aca mientras no recibe nada, cuando recibe algo sale de este do while
-			largo = recv(socketCliente, colaMensajes, BUFFER_MAX_SIZE, 0);
-			largoRequest += largo;
-		//} while (largoRequest < BUFFER_MAX_SIZE);
-		if (largo > 0){
-			datosRecibidos += string(colaMensajes);
+	if (largoRequest > 0) {
+		while (largoRequest >= BUFFER_MAX_SIZE and !stringTerminaCon(datosRecibidos, "@")) //mientras el largoRequest sea del tamaño del max size, sigo pidiendo
+		{
+			int largo;
+			//mientras haya cosas que leer, sigo recibiendo.
+			//do {
+				//sigue aca mientras no recibe nada, cuando recibe algo sale de este do while
+				largo = recv(socketCliente, colaMensajes, BUFFER_MAX_SIZE, 0);
+				largoRequest += largo;
+			//} while (largoRequest < BUFFER_MAX_SIZE);
+			if (largo > 0){
+				datosRecibidos += string(colaMensajes);
+			}
+			memset(colaMensajes, '\0', strlen(colaMensajes));
 		}
-		memset(colaMensajes, '\0', strlen(colaMensajes));
+		pthread_mutex_unlock(&mutexSocket);
+		return datosRecibidos;
+	} else {
+		return "0";
 	}
-	pthread_mutex_unlock(&mutexSocket);
-	return datosRecibidos;
 }
 
 bool Cliente::stringTerminaCon(std::string const &fullString, std::string const &ending) {
