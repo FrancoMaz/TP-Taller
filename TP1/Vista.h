@@ -80,7 +80,7 @@ public:
 	bool salto;
 	void actualizarEnemigo(string enemigo, int x, int y, string sprite, int id, int cantFotogramas);
 	void actualizarProyectil(string nuevaBala, int x, int y, string sprite, int id, int cantFotogramas, string sentido, double angulo);
-	void agregarVistaItem(string borrarItem, string sprite, int x, int y);
+	void agregarVistaItem(string borrarItem, string sprite, int x, int y, int cantFotogramas);
 	void actualizarBoss(string boss, int x, int y, string sprite, string sentido, int cantFotogramas);
 	void actualizarPuntaje(string jugador, int puntaje);
 	void actualizarVida(string jugador, int vida);

@@ -17,15 +17,16 @@ class Item {
 private:
 	string sprite;
 public:
-	Item(string arma, string x, string y);
+	Item(string nombre, string x, string y, int idItem);
 	Item(int x, int y, TexturaSDL* textura);
 	virtual ~Item();
 	string getStringItem();
 	bool visto;
 	SDL_Rect boxCollider;
 	TexturaSDL* textura;
-	string arma;
+	string nombre;
 	bool fueObtenido;
+	int idItem;
 };
 
 #endif /* ITEM_H_ */

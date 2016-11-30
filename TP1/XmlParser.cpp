@@ -165,7 +165,7 @@ vector<Item*> XmlParser::getItemArmas()
 {
 	if (this->itemArmas.empty()) {
 		for (pugi::xml_node item = this->rootNode.child("ItemArmas").first_child(); item; item = item.next_sibling()) {
-			Item* itemArma = new Item(string(item.child_value("Arma")), string(item.child_value("PosicionX")), string(item.child_value("PosicionY")));
+			Item* itemArma = new Item(string(item.child_value("Arma")), string(item.child_value("PosicionX")), string(item.child_value("PosicionY")),0);
 			this->itemArmas.push_back(itemArma);
 		}
 	}

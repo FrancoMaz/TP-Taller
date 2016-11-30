@@ -59,3 +59,8 @@ Proyectil* Enemigo::dispararProyectil() {
 string Enemigo::getNombre() {
 	return "Enemigo";
 }
+
+int Enemigo::getPosY()
+{
+	return this->posY;
+}

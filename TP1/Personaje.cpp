@@ -48,3 +48,12 @@ string Personaje::getNombre() {
 
 }
 
+void Personaje::setEstaMuerto()
+{
+	this->estaMuerto = true;
+}
+
+void Personaje::vidaCompleta()
+{
+	this->vida = 100;
+}

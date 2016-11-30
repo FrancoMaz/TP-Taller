@@ -30,6 +30,7 @@ public:
 	string getInformacionDelEnemigo();
 	SDL_Rect getBoxCollider();
 	int getPosX();
+	int getPosY();
 	bool threadAsociado;
 	Proyectil* dispararProyectil();
 	string getNombre();

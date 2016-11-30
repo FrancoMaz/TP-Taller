@@ -15,7 +15,7 @@ Escenario::Escenario(string rutaXml) {
 	XmlParser* parserNivel = new XmlParser(rutaXml);
 	this->idEnemigo = 0;
 	this->plataformas = parserNivel->getPlataformas();
-	this->itemArmas = parserNivel->getItemArmas();
+	this->items = parserNivel->getItemArmas();
 	this->boss = parserNivel->getBoss();
 	this->capas = parserNivel->getCapas();
 	this->enemigosPorNivel = parserNivel->getEnemigos();
@@ -100,16 +100,44 @@ bool Escenario::verificarColision(SDL_Rect camara, Proyectil* proyectil, bool di
 
 bool Escenario::verificarColisionConItem(Jugador* jugador)
 {
-	for (int i = 0; i < itemArmas.size(); i++)
+	for (int i = 0; i < items.size(); i++)
 	{
-		if (this->colisionaronObjetos(jugador->boxCollider, itemArmas.at(i)->boxCollider))
+		if (this->colisionaronObjetos(jugador->boxCollider, items.at(i)->boxCollider))
 		{
-			jugador->obtenerMuniciones(itemArmas.at(i)->arma);
-			itemArmas.at(i)->fueObtenido = true;
+			switch (items.at(i)->idItem)
+			{
+				case 0:
+				{
+					jugador->obtenerMuniciones(items.at(i)->nombre);
+					items.at(i)->fueObtenido = true;
+					break;
+				}
+				case 1:
+				{
+					for (int j = 0; j < this->enemigosActivos.size(); j++)
+					{
+						usleep(200);
+						this->enemigosActivos.at(j)->setEstaMuerto();
+					}
+					break;
+				}
+				case 2:
+				{
+					jugador->vidaCompleta();
+					break;
+				}
+			}
+			this->bonusColisionado = items.at(i)->idItem;
+			items.at(i)->fueObtenido = true;
 			return true;
 		}
 	}
 	return false;
+}
+
+void Escenario::agregarItemBonus(Item* item)
+{
+	this->items.push_back(item);
 }
 
 bool Escenario::verificarColisionConEnemigo(Proyectil* proyectil) {

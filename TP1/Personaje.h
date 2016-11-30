@@ -27,6 +27,8 @@ public:
 	virtual Proyectil* dispararProyectil();
 	virtual string getNombre();
 	virtual int getVida();
+	virtual void setEstaMuerto();
+	virtual void vidaCompleta();
 };
 
 #endif /* PERSONAJE_H_ */

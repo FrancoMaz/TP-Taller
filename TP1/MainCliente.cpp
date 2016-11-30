@@ -209,7 +209,16 @@ void procesarUltimosMensajes(string mensajes, Cliente* cliente, UpdateJugador* u
 					string spriteItem = msjContenido.at(3);
 					int xItem = stringToInt(msjContenido.at(4));
 					int yItem = stringToInt(msjContenido.at(5));
-					vista->agregarVistaItem(borrarItem,spriteItem,xItem,yItem);
+					int cantFotogramas;
+					for (int i = 0; i < setsSprites.size(); i++) {
+						vector<SpriteDto*> listaSprites = setsSprites.at(i)->getSprites();
+						for (int i = 0; i < listaSprites.size(); i++) {
+							if (spriteItem == listaSprites.at(i)->getID()) {
+								cantFotogramas = stringToInt(listaSprites.at(i)->getCantidadDeFotogramas());
+							}
+						}
+					}
+					vista->agregarVistaItem(borrarItem,spriteItem,xItem,yItem,cantFotogramas);
 					break;
 				}
 				case 4:{

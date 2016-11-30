@@ -7,12 +7,13 @@
 
 #include "Item.h"
 
-Item::Item(string arma, string x, string y) {
-	this->arma = arma;
+Item::Item(string nombre, string x, string y, int idItem) {
+	this->nombre = nombre;
 	this->boxCollider = {atoi(x.c_str()),atoi(y.c_str()),48,44};
-	this->sprite = "Item_" + this->arma;
+	this->sprite = "Item_" + this->nombre;
 	visto = false;
 	fueObtenido = false;
+	this->idItem = idItem;
 }
 
 

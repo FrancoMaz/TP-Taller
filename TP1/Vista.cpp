@@ -667,11 +667,11 @@ void Vista::actualizarEnemigo(string enemigo, int x, int y, string sprite, int i
 	}
 }
 
-void Vista::agregarVistaItem(string borrarItem, string sprite, int x, int y)
+void Vista::agregarVistaItem(string borrarItem, string sprite, int x, int y, int cantFotogramas)
 {
 	if (borrarItem == "0")
 	{
-		Item* vistaItem = new Item(x,y,(ventana->crearTextura("Recursos/" + sprite + ".png", 0)));
+		Item* vistaItem = new Item(x,y,(ventana->crearTextura("Recursos/" + sprite + ".png", cantFotogramas)));
 		vistaItems.push_back(vistaItem);
 	}
 	else if (borrarItem == "1")

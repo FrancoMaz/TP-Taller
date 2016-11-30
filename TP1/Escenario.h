@@ -16,6 +16,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "XmlParser.h"
+#include <unistd.h>
 
 using namespace std;
 
@@ -35,7 +36,7 @@ public:
 	Enemigo* getEnemigoActivo(int posicion);
 	bool verificarColisionConItem(Jugador* jugador);
 	bool colisionaronObjetos(SDL_Rect boxCollider1, SDL_Rect boxCollider2);
-	vector<Item*> itemArmas;
+	vector<Item*> items;
 	vector<pair<string,string>> plataformas;
 	uint64_t rdtsc();
 	bool levelClear;
@@ -47,6 +48,8 @@ public:
 	pthread_mutex_t mutexEnemigosActivos = PTHREAD_MUTEX_INITIALIZER;
 	Boss* boss;
 	vector<string> capas;
+	void agregarItemBonus(Item* item);
+	int bonusColisionado;
 };
 
 #endif /* ESCENARIO_H_ */
