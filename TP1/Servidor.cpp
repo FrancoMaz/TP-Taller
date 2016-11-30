@@ -663,6 +663,7 @@ bool Servidor::verificarColisionConJugadores(Proyectil* proyectil) {
 			cout << "Se impacto al jugador" << endl;
 			this->jugadores->at(i)->daniarseCon(proyectil->getDanio());
 			proyectil->jugadorQueRecibioDisparo = this->jugadores->at(i)->getNombre();
+			proyectil->vidaDelJugadorImpactado = this->jugadores->at(i)->getVida();
 			pthread_mutex_unlock(&mutexVectorJugadores);
 			return true;
 		}
