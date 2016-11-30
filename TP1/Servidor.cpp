@@ -22,8 +22,8 @@ Servidor::Servidor(char* nombreArchivoDeUsuarios, int puerto, Logger* logger) {
 	/* Set port number, using htons function to use proper byte order */
 	this->serverAddr.sin_port = htons(puerto);
 	/* Set IP address to localhost */
-	this->serverAddr.sin_addr.s_addr = inet_addr("192.168.1.12");
-	//this->serverAddr.sin_addr.s_addr = inet_addr("127.0.0.1");
+	//this->serverAddr.sin_addr.s_addr = inet_addr("192.168.1.12");
+	this->serverAddr.sin_addr.s_addr = inet_addr("127.0.0.1");
 
 	//this->serverAddr.sin_addr.s_addr = inet_addr("10.1.77.13");
 	/* Set all bits of the padding field to 0 */
@@ -415,6 +415,27 @@ void Servidor::procesarMensajes() {
 	}
 }
 
+void Servidor::resetearPosiciones()
+{
+	camara.x = 0;
+	camara.y = 0;
+	for (int i = 0; i < abscisasCapas.size(); i++)
+	{
+		abscisasCapas.at(i).first = 0;
+		abscisasCapas.at(i).second = 0;
+	}
+	int xInicial = 20;
+	for (int i=0; i < jugadores->size(); i++)
+	{
+		Jugador* jugador = jugadores->at(i);
+		jugador->setPosicion(xInicial);
+		xInicial += 84;
+		jugador->setSprite("Jugador",true,"Normal");
+		jugador->revivir();
+	}
+}
+
+
 void Servidor::encolarMensajeProcesadoParaCadaCliente(Mensaje mensajeAProcesar, string mensajeJugadorPosActualizada){
 	Mensaje* mensajePosicionActualizada;
 	for (list<MensajesProcesados>::iterator usuarioActual = listaMensajesProcesados->begin();usuarioActual != listaMensajesProcesados->end();usuarioActual++)
@@ -645,7 +666,7 @@ string Servidor::getEstadoInicialSerializado()
 	vector<Jugador*>* jugadoresConectados = getJugadoresConectados();
 	for (int i = 0; i < jugadoresConectados->size(); i++)
 	{
-		estadoInicial += jugadoresConectados->at(i)->serializarInicio() + "#";
+		estadoInicial += jugadoresConectados->at(i)->serializarInicio() + "$";
 	}
 	estadoInicial = estadoInicial + "camara|" + to_string(camara.x) + "|" + to_string(camara.y) + "|" + this->serializarCapas() + "#";
 	return estadoInicial;
@@ -702,6 +723,7 @@ void Servidor::avanzarDeNivel()
 {
 	string mensajeJugador = "";
 	string mensajePuntajesString = "8|" + to_string(modoJuegoElegido.first) + "|";
+	usleep (1000000);
 	for (int i = 0; i < jugadores->size(); i++){
 		Jugador* jugador = jugadores->at(i);
 		jugador->resetMov();
@@ -723,11 +745,19 @@ void Servidor::avanzarDeNivel()
 	Mensaje* mensajePuntajes = new Mensaje("Servidor","Todos",mensajePuntajesString);
 	encolarMensajeProcesadoParaCadaCliente(*mensajePuntajes,mensajePuntajesString);
 	mensajePuntajes->~Mensaje();
-	usleep(9000000); //tiempo para mostrar la pantalla de puntajes antes de pasar al proximo nivel
+	usleep(5000000); //tiempo para mostrar la pantalla de puntajes antes de pasar al proximo nivel
 	this->nivelActual++;
 	if (this->nivelActual > CANTIDADNIVELES)
 	{
 		this->gameComplete = true;
+	}
+	if (!this->gameComplete)
+	{
+		this->resetearPosiciones();
+		string mensajeAvanzarNivel = "9|0|0|" + serializarCapas() + "#";
+		Mensaje* mensajeNivel = new Mensaje("Servidor","Todos",mensajeAvanzarNivel);
+		encolarMensajeProcesadoParaCadaCliente(*mensajeNivel,mensajeAvanzarNivel);
+		mensajeNivel->~Mensaje();
 	}
 }
 

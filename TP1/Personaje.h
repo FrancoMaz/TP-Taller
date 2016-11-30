@@ -29,6 +29,7 @@ public:
 	virtual int getVida();
 	virtual void setEstaMuerto();
 	virtual void vidaCompleta();
+	virtual void revivir();
 };
 
 #endif /* PERSONAJE_H_ */

@@ -63,8 +63,8 @@ int stringToInt(string atributo) {
 bool chequearSocket(string ip, int puerto) {
 	//string ipServer = "192.168.1.11";
 
-	//string ipServer = "127.0.0.1";
-	string ipServer = "192.168.1.12";
+	string ipServer = "127.0.0.1";
+	//string ipServer = "192.168.1.12";
 	int puertoDeEscucha = 7891;
 
 	return (ip == ipServer && puerto == puertoDeEscucha);
@@ -275,6 +275,24 @@ void procesarUltimosMensajes(string mensajes, Cliente* cliente, UpdateJugador* u
 					vista->actualizarPuntajesFinNivel(modoJuego, jugadoresPuntajes);
 
 					vista->pantallaPuntajes = true;
+					break;
+				}
+				case 9:
+				{
+					vista->pantallaPuntajes = false;
+					int xCamara = stringToInt(msjContenido.at(2));
+					int yCamara = stringToInt(msjContenido.at(3));
+					vector<pair<int,int>> abscisasCapas;
+					vector<string> nombreCapas;
+					for (int i = 4; i < msjContenido.size(); i++){
+						pair<int,int> abscisas;
+						vector<string> capa = splitToVec(msjContenido.at(i), delimitadorCapas);
+						nombreCapas.push_back(capa.at(0));
+						abscisas.first = stringToInt(capa.at(1));
+						abscisas.second = stringToInt(capa.at(2));
+						abscisasCapas.push_back(abscisas);
+					}
+					vista->inicializarCamara(xCamara,yCamara,atoi(handshakeDeserializado->getAncho().c_str()), atoi(handshakeDeserializado->getAlto().c_str()), abscisasCapas, handshakeDeserializado->getImagenes(), nombreCapas);
 					break;
 				}
 			}

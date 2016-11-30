@@ -516,6 +516,7 @@ bool Cliente::checkearInicioJuego(Vista* vista)
 	string s = response;
 	string delimitador = "|";
 	string delimitadorFinal = "#";
+	string delimitadorJugadores = "$";
 	string delimitadorCapas = ",";
 	string texto;
 	string strAux;
@@ -540,7 +541,7 @@ bool Cliente::checkearInicioJuego(Vista* vista)
 		string del = "camara|";
 		pos = s.find(del);
 		texto = s.substr(0,pos);
-		while ((posAux = texto.find(delimitadorFinal)) != string::npos)
+		while ((posAux = texto.find(delimitadorJugadores)) != string::npos)
 		{
 			posAux = texto.find(delimitador);
 			nombreJugador = texto.substr(0,posAux);
@@ -551,9 +552,9 @@ bool Cliente::checkearInicioJuego(Vista* vista)
 			posAux = texto.find(delimitador);
 			y = texto.substr(0,posAux);
 			texto.erase(0,posAux+delimitador.length());
-			posAux = texto.find(delimitadorFinal);
+			posAux = texto.find(delimitadorJugadores);
 			sprite = texto.substr(0,posAux);
-			texto.erase(0,posAux+delimitadorFinal.length());
+			texto.erase(0,posAux+delimitadorJugadores.length());
 			if(this->nombre == nombreJugador){
 				xJugador = x;
 				yJugador = y;

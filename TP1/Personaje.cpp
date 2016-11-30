@@ -58,3 +58,8 @@ void Personaje::vidaCompleta()
 {
 	this->vida = 100;
 }
+
+void Personaje::revivir()
+{
+	this->estaMuerto = false;
+}

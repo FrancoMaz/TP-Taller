@@ -31,6 +31,7 @@ Jugador::Jugador(string nombre, string equipo, int posicionX, vector<pair<string
 	this->estaMuerto = false;
 	this->puntaje = 0;
 	this->puntajeTotal = 0;
+	this->subirPlataforma = false;
 }
 
 Jugador::~Jugador() {
@@ -214,7 +215,16 @@ void Jugador::mover(SDL_Rect camara){
 	{
 		velocidades.second = -21*cos(angulo);
 		angulo += PI/25;
-		if (angulo > (PI + (PI/25)) || (posicion.second == PLATAFORMA && this->esPlataforma(boxCollider.x) && angulo > PI/2)){
+		if (posicion.second <= PLATAFORMA + ((PISO+PLATAFORMA)/4) && !this->esPlataforma(boxCollider.x))
+		{
+			this->subirPlataforma = true;
+		}
+		if (angulo > (PI + (PI/25)) || (posicion.second == PLATAFORMA && this->esPlataforma(boxCollider.x) && angulo > PI/2 && subirPlataforma)){
+			if (angulo > (PI + (PI/25)))
+			{
+				cout << "Entra" << endl;
+				subirPlataforma = false;
+			}
 			angulo = 0;
 			saltar = false;
 			if(!agachar){
@@ -237,6 +247,7 @@ void Jugador::mover(SDL_Rect camara){
 		if (posicion.second == PISO)
 		{
 			caer = false;
+			subirPlataforma = false;
 			velocidades.second = 0;
 			if (velocidades.first != 0) {
 				spriteAEjecutar = "Jugador" + this->armas.at(armaActual)->nombre + "corriendo_" + this->equipo;

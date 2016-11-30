@@ -150,6 +150,7 @@ public:
 	pair<int,bool> modoJuegoElegido; //el primero es el modo de juego elegido, el segundo es si es modo prueba o no
 	vector<string> equipoAlfa;
 	vector<string> equipoBeta;
+	void resetearPosiciones();
 };
 
 #endif /* TP1_SERVIDOR_H_ */

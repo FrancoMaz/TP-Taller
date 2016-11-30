@@ -299,7 +299,7 @@ void* verificarPasarDeNivel(void* arg)
 	ParametrosMovimiento* parametros = (ParametrosMovimiento*)arg;
 	Servidor* servidor = parametros->servidor;
 	Jugador* jugador = parametros->jugador;
-	while(jugador->getConectado())
+	while(servidor->escuchando)
 	{
 		usleep(50000);
 		if (servidor->getNivelActual()->levelClear)

@@ -176,8 +176,8 @@ datosConexion Vista::cargarPantallaIngresoDatos(bool aviso, int numeroPantalla){
 			//campoUno = this->datos.puerto;
 			campoUno = "7891";
 			//campoDos = this->datos.ip;
-			//campoDos = "127.0.0.1";
-			campoDos = "192.168.1.12";
+			campoDos = "127.0.0.1";
+			//campoDos = "192.168.1.12";
 			textoIngresePuerto->actualizarTexto("Ingrese el puerto:",colorTexto);
 			textoIngreseIP->actualizarTexto("Ingrese la IP del servidor:",colorTexto);
 			textoDatosNoCoinciden->actualizarTexto("La dirección de ip o el puerto no permiten esta conexión",colorTextoAmarillo);
@@ -420,6 +420,7 @@ void Vista::actualizarCamara(int x, int y, vector<pair<int,int>> abscisasCapas, 
 
 void Vista::inicializarCamara(int camaraX, int camaraY, int anchoVentana, int altoVentana, vector<pair<int,int>> abscisasCapas, vector<ImagenDto*> imagenes, vector<string> nombreCapas)
 {
+	vectorCapas.clear();
 	camara = {camaraX,camaraY,anchoVentana,altoVentana};
 	for (int i=0; i<abscisasCapas.size(); i++)
 	{

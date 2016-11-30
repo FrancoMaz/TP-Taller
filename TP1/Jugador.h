@@ -95,6 +95,7 @@ public:
 	string getNombre();
 	int puntaje;
 	int puntajeTotal;
+	bool subirPlataforma;
 	void resetMov();
 };
 #endif /* JUGADOR_H_ */
