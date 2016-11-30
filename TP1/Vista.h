@@ -96,6 +96,8 @@ public:
 	int stringToInt(string atributo);
 	std::vector<std::string> splitToVec(const std::string &s, char delim);
 	void split(const std::string &s, char delim, std::vector<std::string> &elems);
+	void vaciarDatos();
+	void vaciarVectores();
 };
 
 #endif /* TP2_VISTA_H_ */
