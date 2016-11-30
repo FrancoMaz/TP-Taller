@@ -785,3 +785,12 @@ int Vista::stringToInt(string atributo) {
 
 	return atributoInt;
 }
+
+void Vista::vaciarDatos() {
+	this->datos.nombre = " ";
+}
+
+void Vista::vaciarVectores() {
+	this->vistaJugadores.clear();
+	this->vectorCapas.clear();
+}

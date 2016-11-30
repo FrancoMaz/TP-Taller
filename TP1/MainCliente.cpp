@@ -27,6 +27,8 @@ datosConexion datosCliente;
 Vista * vista = new Vista();
 Handshake* handshakeDeserializado;
 queue<string> colaMensajes;
+bool terminoConQ = false;
+bool terminoComunicacion = false;
 
 struct ComunicacionCliente{
 			Cliente* cliente;
@@ -73,8 +75,7 @@ void* verificarConexion(void * arg){
 	ComunicacionCliente* comunicacion = (ComunicacionCliente*)arg;
 	Cliente* cliente = comunicacion->cliente;
 	cliente->corroborarConexion();
-	vista->controlador->setCerrarVentana();
-    //comunicacion->termino = cliente->corroborarConexion();
+	terminoComunicacion = true;
 }
 
 
@@ -314,14 +315,19 @@ void* recibirPosicionJugadores(void* arg) {
 		 //Start cap timer
 		capTimer.start();
 		datosRecibidos = cliente->recibir();
-		procesarUltimosMensajes(datosRecibidos, cliente, update, &primeraVez);
-
-		//si se procesa antes, espero lo que tengo que resta.
-		int frameTicks = capTimer.getTicks();
-		if( frameTicks < SCREEN_TICKS_PER_FRAME )
-		{
-			//Wait remaining time
-			SDL_Delay( SCREEN_TICKS_PER_FRAME - frameTicks );
+		if(datosRecibidos != "0"){
+			procesarUltimosMensajes(datosRecibidos, cliente, update, &primeraVez);
+			//si se procesa antes, espero lo que tengo que resta.
+			int frameTicks = capTimer.getTicks();
+			if( frameTicks < SCREEN_TICKS_PER_FRAME ) {
+				//Wait remaining time
+				SDL_Delay( SCREEN_TICKS_PER_FRAME - frameTicks );
+			}
+		} else {
+			usleep(5000000);
+			//vista->controlador->setCerrarVentana();
+			terminoConQ = true;
+			terminoComunicacion = true;
 		}
 	}
 }
@@ -425,6 +431,7 @@ void* cicloConexion(void* arg) {
 	bool termino = false;
 	bool datosIncorrectos = false;
 	bool conexion = false;
+	terminoComunicacion = false;
 	while ((!conexion)&&(!vista->ventanaCerrada())) {
 		datosCliente = vista->cargarTerceraPantalla(datosIncorrectos);
 		if((datosCliente.nombre != " ")&&(datosCliente.contrasenia != " ")){
@@ -433,6 +440,7 @@ void* cicloConexion(void* arg) {
 		//datosIncorrectos = true;
 	}
 
+	vista->vaciarDatos();
 	if (!vista->ventanaCerrada()) {
 		//se crea esta hilo para poder verificar la conexion con el servidor
 		pthread_create(&threadVerificarConexion, NULL,&verificarConexion,&comunicacion);
@@ -452,26 +460,29 @@ void* cicloConexion(void* arg) {
 			pthread_detach(threadRecibirPosicionJugadores);
 			vector<ImagenDto*> imagenes = handshakeDeserializado->getImagenes();
 			vista->cargarEscenario(imagenes, stringToInt(handshakeDeserializado->getAncho()), stringToInt(handshakeDeserializado->getAlto()));
-			while(!vista->controlador->comprobarCierreVentana()){
-				//recibirPosicionJugadores((void*)&cliente);
-				usleep(1000000);
+			while(!terminoComunicacion) {
+				usleep(100);
 			}
 		}
-		cliente->desconectar();
+		if (!terminoConQ) {
+		 	cliente->desconectar();
+		}
 	}
 }
 
 int main() {
+	bool primeraVez = true;
+	while (!vista->ventanaCerrada()) {
 	bool esValido = false;
 	bool socketOk = false;
 	pthread_t thrComu;
-
-	if (!vista->inicializar()){
-		cout << "El programa no pudo ejecutarse." << endl;
-	} else {
+	if (primeraVez) {
+		while (!vista->inicializar()) {
+			cout << "El programa no pudo ejecutarse." << endl;
+		}
 		vista->cargarArchivos();
 		vista->cargarPrimeraPantalla();
-
+	}
 		bool datosIncorrectos = false;
 		while ((!socketOk)&&(!vista->ventanaCerrada())) {
 			datosCliente = vista->cargarSegundaPantalla(datosIncorrectos);
@@ -497,12 +508,13 @@ int main() {
 				//if (accion == 1) { //si es 1, es desconectar y vuelve a ingresar al loop que ofrece conectar y desconectar
 				cout << "Desconectado del servidor.." << endl;
 				cliente->vaciarClientesDisponibles();
+				primeraVez = false;
+				vista->vaciarVectores();
+				cliente->salir();
 				//}
 			}
-
-			cliente->salir(); //cierra el socket y realiza trabajos de limpieza de memoria
-			cout << "Saliendo del programa..." << endl;
 		}
 	}
+	cout << "Saliendo del programa..." << endl;
 	return 0;
 }
