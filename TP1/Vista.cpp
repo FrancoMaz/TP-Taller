@@ -502,6 +502,10 @@ void Vista::actualizarVida(string jugador, int vida){
 		if (vistaJugador->nombre == jugador)
 		{
 			vistaJugador->valorEnergia = vida;
+			if (vida == 0)
+			{
+				vistaJugadores.erase(vistaJugadores.begin()+i);
+			}
 			break;
 		}
 	}

@@ -412,7 +412,6 @@ void* enemigoActivo(void* arg) {
 				pthread_create(&threadDisparo, NULL, &disparoProyectil, parametrosProyectil);
 				pthread_detach(threadDisparo);
 				parametrosProyectil->~ParametrosMovimiento();
-				cout << "entraaaa" << endl;
 			}
 
 			else if (tiempoTranscurrido %2 != 0) {
