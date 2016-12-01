@@ -76,7 +76,7 @@ bool Escenario::verificarColision(SDL_Rect camara, Proyectil* proyectil, bool di
 }
 
 bool Escenario::verificarColisionConItem(Jugador* jugador)
-{
+{	//pthread_mutex_lock(&mutexItems);
 	for (int i = 0; i < items.size(); i++)
 	{
 		if (this->colisionaronObjetos(jugador->boxCollider, items.at(i)->boxCollider))
@@ -90,12 +90,13 @@ bool Escenario::verificarColisionConItem(Jugador* jugador)
 					break;
 				}
 				case 1:
-				{
+				{	pthread_mutex_lock(&mutexEnemigosActivos);
 					for (int j = 0; j < this->enemigosActivos.size(); j++)
 					{
 						usleep(200);
 						this->enemigosActivos.at(j)->setEstaMuerto();
 					}
+					pthread_mutex_unlock(&mutexEnemigosActivos);
 					break;
 				}
 				case 2:
@@ -106,15 +107,20 @@ bool Escenario::verificarColisionConItem(Jugador* jugador)
 			}
 			this->bonusColisionado = items.at(i)->idItem;
 			items.at(i)->fueObtenido = true;
+			//pthread_mutex_unlock(&mutexItems);
 			return true;
+
 		}
 	}
+	//pthread_mutex_unlock(&mutexItems);
 	return false;
+
 }
 
 void Escenario::agregarItemBonus(Item* item)
-{
+{	//pthread_mutex_lock(&mutexItems);
 	this->items.push_back(item);
+	//pthread_mutex_unlock(&mutexItems);
 }
 
 bool Escenario::verificarColisionConEnemigo(Proyectil* proyectil) {
@@ -124,16 +130,18 @@ bool Escenario::verificarColisionConEnemigo(Proyectil* proyectil) {
 			if (this->colisionaronObjetos(proyectil->getBoxCollider(),this->enemigosActivos.at(i)->getBoxCollider())) {
 				this->enemigosActivos.at(i)->daniarseCon(proyectil->getDanio());
 				cout << "Enemigo colisiono con bala" << endl;
+				//pthread_mutex_unlock(&mutexEnemigosActivos);
 				return true;
 			}
 		}
 	}
+	//no se si falta poner mutex para el vector de boss
 	if (this->colisionaronObjetos(proyectil->getBoxCollider(),this->boss.at(0)->boxCollider))
 	{
 		this->boss.at(0)->daniarseCon(proyectil->getDanio());
 		return true;
 	}
-	//pthread_mutex_unlock(&mutexEnemigosActivos);
+	//
 	return false;
 }
 

@@ -65,8 +65,8 @@ int stringToInt(string atributo) {
 bool chequearSocket(string ip, int puerto) {
 	//string ipServer = "192.168.1.11";
 
-	string ipServer = "127.0.0.1";
-	//string ipServer = "192.168.1.12";
+	//string ipServer = "127.0.0.1";
+	string ipServer = "192.168.1.11";
 	int puertoDeEscucha = 7891;
 
 	return (ip == ipServer && puerto == puertoDeEscucha);
@@ -231,12 +231,13 @@ void procesarUltimosMensajes(string mensajes, Cliente* cliente, UpdateJugador* u
 					int cantFotogramas;
 					for (int i = 0; i < setsSprites.size(); i++) {
 						vector<SpriteDto*> listaSprites = setsSprites.at(i)->getSprites();
-						for (int i = 0; i < listaSprites.size(); i++) {
-							if (spriteEnemigo == listaSprites.at(i)->getID()) {
-								cantFotogramas = stringToInt(listaSprites.at(i)->getCantidadDeFotogramas());
+						for (int j = 0; j < listaSprites.size(); j++) {
+							if (spriteEnemigo == listaSprites.at(j)->getID()) {
+								cantFotogramas = stringToInt(listaSprites.at(j)->getCantidadDeFotogramas());
 							}
 						}
 					}
+					cout<<endl;
 					vista->actualizarEnemigo(nuevoEnemigo, xEnemigo, yEnemigo, spriteEnemigo, idEnemigo, cantFotogramas);
 					break;
 				}

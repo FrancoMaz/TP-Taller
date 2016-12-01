@@ -179,7 +179,7 @@ datosConexion Vista::cargarPantallaIngresoDatos(bool aviso, int numeroPantalla){
 			campoUno = "7891";
 			//campoDos = this->datos.ip;
 			campoDos = "127.0.0.1";
-			//campoDos = "192.168.1.12";
+			campoDos = "192.168.1.11";
 			textoIngresePuerto->actualizarTexto("Ingrese el puerto:",colorTexto);
 			textoIngreseIP->actualizarTexto("Ingrese la IP del servidor:",colorTexto);
 			textoDatosNoCoinciden->actualizarTexto("La dirección de ip o el puerto no permiten esta conexión",colorTextoAmarillo);
