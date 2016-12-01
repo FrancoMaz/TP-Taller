@@ -55,6 +55,7 @@ Servidor::Servidor(char* nombreArchivoDeUsuarios, int puerto, Logger* logger) {
 	this->nivelActual = 0;
 	this->gameComplete = false;
 	this->inicializarDatosNiveles();
+	this->contadorJugadores = 0;
 }
 
 Servidor::~Servidor() {
@@ -720,32 +721,36 @@ Escenario* Servidor::getNivelActual()
 
 void Servidor::calcularPuntajes()
 {
-	string mensajeJugador = "";
-	string mensajePuntajesString = "8|" + to_string(modoJuegoElegido.first) + "|";
-	usleep (1000000);
-	for (int i = 0; i < jugadores->size(); i++){
-		Jugador* jugador = jugadores->at(i);
-		jugador->resetMov();
-		jugador->puntajeTotal += jugador->puntaje;
-		mensajePuntajesString += jugador->getNombre() + "," + to_string(jugador->puntaje) + "," + to_string(jugador->puntajeTotal);
-		if (modoJuegoElegido.first == 3){
-			if (equipoAlfa.at(0) == jugador->getNombre() || equipoAlfa.at(1) == jugador->getNombre()){
-				mensajePuntajesString += ",alfa";
+	if (contadorJugadores % this->jugadores->size() == 0)
+	{
+		cout << "Contador: " << contadorJugadores << endl;
+		string mensajeJugador = "";
+		string mensajePuntajesString = "8|" + to_string(modoJuegoElegido.first) + "|";
+		for (int i = 0; i < jugadores->size(); i++){
+			Jugador* jugador = jugadores->at(i);
+			jugador->resetMov();
+			jugador->puntajeTotal += jugador->puntaje;
+			mensajePuntajesString += jugador->getNombre() + "," + to_string(jugador->puntaje) + "," + to_string(jugador->puntajeTotal);
+			if (modoJuegoElegido.first == 3){
+				if (equipoAlfa.at(0) == jugador->getNombre() || equipoAlfa.at(1) == jugador->getNombre()){
+					mensajePuntajesString += ",alfa";
+				}
+				else{
+					mensajePuntajesString += ",beta";
+				}
 			}
-			else{
-				mensajePuntajesString += ",beta";
+			if (i < jugadores->size() - 1){
+				mensajePuntajesString += ";";
 			}
 		}
-		if (i < jugadores->size() - 1){
-			mensajePuntajesString += ";";
-		}
+		mensajePuntajesString += "#";
+		Mensaje* mensajePuntajes = new Mensaje("Servidor","Todos",mensajePuntajesString);
+		encolarMensajeProcesadoParaCadaCliente(*mensajePuntajes,mensajePuntajesString);
+		mensajePuntajes->~Mensaje();
+		this->getNivelActual()->vaciarVectores();
+		this->getNivelActual()->avanzoDeNivel = true;
 	}
-	mensajePuntajesString += "#";
-	Mensaje* mensajePuntajes = new Mensaje("Servidor","Todos",mensajePuntajesString);
-	encolarMensajeProcesadoParaCadaCliente(*mensajePuntajes,mensajePuntajesString);
-	mensajePuntajes->~Mensaje();
-	this->getNivelActual()->vaciarVectores();
-	this->getNivelActual()->avanzoDeNivel = true;
+	contadorJugadores ++;
 	usleep(5000000); //tiempo para mostrar la pantalla de puntajes antes de pasar al proximo nivel
 }
 

@@ -515,6 +515,8 @@ void* verificarPasarDeNivel(void* arg)
 		if (servidor->getNivelActual()->levelClear)
 		{
 			cout << "Level clear" << endl;
+			//servidor->getNivelActual()->avanzoDeNivel = true;
+			//usleep(1000000); //tiempo para mostrar la pantalla de puntajes antes de pasar al proximo nivel
 			servidor->calcularPuntajes();
 		}
 		if (servidor->getNivelActual()->avanzoDeNivel)

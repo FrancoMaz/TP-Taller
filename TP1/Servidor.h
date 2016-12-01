@@ -77,6 +77,7 @@ private:
 	int posicionXInicial;
 	int nivelActual;
 	bool gameComplete;
+	int contadorJugadores;
 
 public:
 	Servidor();
