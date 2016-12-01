@@ -106,13 +106,29 @@ string XmlParser::serializarSprites(vector<SpriteDto*> sprites, vector<string> c
 	string spriteConcatenado="";
 	for (int i = 0; i < sprites.size(); i++)
 	{
-		for (int j = 0; j < colores.size(); j++)
+		if (stringTerminaCon(sprites.at(i)->getID(),"_"))
+		{
+			for (int j = 0; j < colores.size(); j++)
+			{
+				spriteConcatenado += sprites.at(i)->getID();
+				spriteConcatenado += colores.at(j);
+				spriteConcatenado += ",";
+				spriteConcatenado += sprites.at(i)->getCantidadDeFotogramas();
+				spriteConcatenado += ",";
+				spriteConcatenado += sprites.at(i)->getAncho();
+				spriteConcatenado += ",";
+				spriteConcatenado += sprites.at(i)->getAlto();
+				spriteConcatenado += ",";
+				spriteConcatenado += sprites.at(i)->getPath();
+				spriteConcatenado += colores.at(j);
+				spriteConcatenado += ",";
+				spriteConcatenado += sprites.at(i)->getZIndex();
+				spriteConcatenado += ";";
+			}
+		}
+		else
 		{
 			spriteConcatenado += sprites.at(i)->getID();
-			if (stringTerminaCon(sprites.at(i)->getID(),"_"))
-			{
-				spriteConcatenado += colores.at(j);
-			}
 			spriteConcatenado += ",";
 			spriteConcatenado += sprites.at(i)->getCantidadDeFotogramas();
 			spriteConcatenado += ",";
@@ -121,15 +137,12 @@ string XmlParser::serializarSprites(vector<SpriteDto*> sprites, vector<string> c
 			spriteConcatenado += sprites.at(i)->getAlto();
 			spriteConcatenado += ",";
 			spriteConcatenado += sprites.at(i)->getPath();
-			if (stringTerminaCon(sprites.at(i)->getPath(),"_"))
-			{
-				spriteConcatenado += colores.at(j);
-			}
 			spriteConcatenado += ",";
 			spriteConcatenado += sprites.at(i)->getZIndex();
 			spriteConcatenado += ";";
 		}
 	}
+	cout << "Sprite: " << spriteConcatenado << endl;
 	return spriteConcatenado;
 }
 string XmlParser::serializarSetDeSprites(vector<string> colores){
