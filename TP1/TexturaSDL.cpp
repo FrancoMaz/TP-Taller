@@ -295,3 +295,7 @@ int TexturaSDL::getAltoSprite(){
 void TexturaSDL::setVelocidadDisminuida(int valor){
 	this->velocidadFrameDisminuida = valor;
 }
+
+void TexturaSDL::setColor(Uint8 rojo, Uint8 verde, Uint8 azul){
+	SDL_SetTextureColorMod(this->textura,rojo,verde,azul);
+}

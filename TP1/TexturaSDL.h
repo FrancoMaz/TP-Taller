@@ -80,6 +80,9 @@ public:
 	//Establece la velocidad del sprite (cuanto mayor sea el valor, menor será la velocidad de los fotogramas)
 	void setVelocidadDisminuida(int valor);
 
+	//Realiza una mezcla del color establecido por parámetro con los que hay en la textura
+	void setColor(Uint8 rojo, Uint8 verde, Uint8 azul);
+
 	//Obtengo el ancho y el alto
 	int getAncho();
 	int getAlto();
