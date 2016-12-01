@@ -362,19 +362,18 @@ void* enemigoActivo(void* arg) {
 	Mensaje* mensaje = new Mensaje(nombre,"Todos",mensajeEnemigo);
 	parametrosEnemigo->servidor->encolarMensajeProcesadoParaCadaCliente(*mensaje,mensajeEnemigo);
 	mensaje->~Mensaje();
+	mensajeEnemigo = "4|1|";
+	mensajeEnemigo += enemigo->getInformacionDelEnemigo();
+	mensaje = new Mensaje(nombre,"Todos",mensajeEnemigo);
+	parametrosEnemigo->servidor->encolarMensajeProcesadoParaCadaCliente(*mensaje,mensajeEnemigo);
+	mensaje->~Mensaje();
 	auto start_time = chrono::high_resolution_clock::now();
 	bool yaDisparo = false;
 	while (!enemigo->getEstaMuerto() && (!parametrosEnemigo->servidor->getNivelActual()->enemigoPerdido(enemigo->getId(),&servidor->camara)) && !servidor->getNivelActual()->levelClear) {
 		int tiempoTranscurrido = chrono::duration_cast<chrono::seconds>(chrono::high_resolution_clock::now() - start_time).count();
 		usleep(50000);
-		mensajeEnemigo = "4|1|";
-		mensajeEnemigo += enemigo->getInformacionDelEnemigo();
-		mensaje = new Mensaje(nombre,"Todos",mensajeEnemigo);
-		parametrosEnemigo->servidor->encolarMensajeProcesadoParaCadaCliente(*mensaje,mensajeEnemigo);
-		mensaje->~Mensaje();
 		if (enemigo->estado == 1) {
 			if (tiempoTranscurrido %2 == 0 && enemigo->estaDisparando() && !yaDisparo) {
-			//usleep(2000000);
 				Proyectil* proyectil = enemigo->dispararProyectil();
 				yaDisparo = true;
 				pthread_mutex_lock(&mutexIdProyectil);
