@@ -45,18 +45,18 @@
 	<ItemArmas>
 		<Item1>
 			<Arma>HeavyMachineGun</Arma>
-			<PosicionX>320</PosicionX>
+			<PosicionX>200</PosicionX>
 			<PosicionY>476</PosicionY>
 		</Item1>
 		<Item2>
 			<Arma>RocketLauncher</Arma>
 			<PosicionX>508</PosicionX>
-			<PosicionY>310</PosicionY>
+			<PosicionY>476</PosicionY>
 		</Item2>
 		<Item3>
 			<Arma>FlameShot</Arma>
-			<PosicionX>740</PosicionX>
-			<PosicionY>476</PosicionY>
+			<PosicionX>1000</PosicionX>
+			<PosicionY>310</PosicionY>
 		</Item3>
 		<Item4>
 			<Arma>RocketLauncher</Arma>
@@ -67,77 +67,13 @@
 	
 	<Enemigos>
 		<Enemigo1>
-			<PosicionX>1000</PosicionX>
+			<PosicionX>700</PosicionX>
 			<PosicionY>415</PosicionY>
 		</Enemigo1>
 		<Enemigo2>
-			<PosicionX>1350</PosicionX>
-			<PosicionY>415</PosicionY>
+			<PosicionX>900</PosicionX>
+			<PosicionY>248</PosicionY>
 		</Enemigo2>
-		<Enemigo3>
-			<PosicionX>1700</PosicionX>
-			<PosicionY>415</PosicionY>
-		</Enemigo3>
-		<Enemigo4>
-			<PosicionX>2000</PosicionX>
-			<PosicionY>415</PosicionY>
-		</Enemigo4>
-		<Enemigo5>
-			<PosicionX>2050</PosicionX>
-			<PosicionY>415</PosicionY>
-		</Enemigo5>
-		<Enemigo6>
-			<PosicionX>2200</PosicionX>
-			<PosicionY>415</PosicionY>
-		</Enemigo6>
-		<Enemigo7>
-			<PosicionX>2500</PosicionX>
-			<PosicionY>415</PosicionY>
-		</Enemigo7>
-		<Enemigo8>
-			<PosicionX>3000</PosicionX>
-			<PosicionY>415</PosicionY>
-		</Enemigo8>
-		<Enemigo9>
-			<PosicionX>3500</PosicionX>
-			<PosicionY>415</PosicionY>
-		</Enemigo9>
-		<Enemigo10>
-			<PosicionX>4000</PosicionX>
-			<PosicionY>415</PosicionY>
-		</Enemigo10>
-		<Enemigo11>
-			<PosicionX>5000</PosicionX>
-			<PosicionY>415</PosicionY>
-		</Enemigo11>
-		<Enemigo12>
-			<PosicionX>575</PosicionX>
-			<PosicionY>248</PosicionY>
-		</Enemigo12>
-		<Enemigo13>
-			<PosicionX>1630</PosicionX>
-			<PosicionY>248</PosicionY>
-		</Enemigo13>
-		<Enemigo14>
-			<PosicionX>2100</PosicionX>
-			<PosicionY>248</PosicionY>
-		</Enemigo14>
-		<Enemigo15>
-			<PosicionX>2370</PosicionX>
-			<PosicionY>248</PosicionY>
-		</Enemigo15>
-		<Enemigo16>
-			<PosicionX>3500</PosicionX>
-			<PosicionY>248</PosicionY>
-		</Enemigo16>
-		<Enemigo17>
-			<PosicionX>4700</PosicionX>
-			<PosicionY>248</PosicionY>
-		</Enemigo17>
-		<Enemigo18>
-			<PosicionX>5000</PosicionX>
-			<PosicionY>248</PosicionY>
-		</Enemigo18>
 	</Enemigos>
 	
 	<Boss>

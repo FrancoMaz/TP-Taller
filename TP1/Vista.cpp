@@ -544,10 +544,10 @@ void Vista::actualizarPantalla(int anchoVentana, int anchoCapaPrincipal) {
 		texturaEnemigo = vistaEnemigo->textura;
 		texturaEnemigo->aplicarPosicion(vistaEnemigo->x - camara.x, vistaEnemigo->y - camara.y,0,SDL_FLIP_NONE);
 	}
-	if (this->vistaBoss != NULL)
+	if (!this->vistaBoss.empty())
 	{
-		texturaBoss = this->vistaBoss->textura;
-		texturaBoss->aplicarPosicion(vistaBoss->x - camara.x, vistaBoss->y - camara.y,0,vistaBoss->flip);
+		texturaBoss = this->vistaBoss.at(0)->textura;
+		texturaBoss->aplicarPosicion(vistaBoss.at(0)->x - camara.x, vistaBoss.at(0)->y - camara.y,0,vistaBoss.at(0)->flip);
 	}
 
 	for (int i = 0; i < vistaJugadores.size(); i++) {
@@ -745,17 +745,17 @@ void Vista::actualizarBoss(string boss, int x, int y, string sprite, string sent
 	if (boss == "0")
 	{
 		VistaEnemigo* vistaBoss = new VistaEnemigo(x,y,(ventana->crearTextura("Recursos/" + sprite + ".png", cantFotogramas)),0, sentido);
-		this->vistaBoss = vistaBoss;
+		this->vistaBoss.push_back(vistaBoss);
 	}
 	else if (boss == "1")
 	{
-		vistaBoss->x = x;
-		vistaBoss->y = y;
-		vistaBoss->verificarSentido(sentido);
+		this->vistaBoss.at(0)->x = x;
+		this->vistaBoss.at(0)->y = y;
+		this->vistaBoss.at(0)->verificarSentido(sentido);
 	}
 	else if (boss == "2")
 	{
-		vistaBoss->~VistaEnemigo();
+		this->vistaBoss.clear();
 	}
 }
 
@@ -791,6 +791,9 @@ void Vista::vaciarDatos() {
 }
 
 void Vista::vaciarVectores() {
-	this->vistaJugadores.clear();
+	//this->vistaJugadores.clear();
 	this->vectorCapas.clear();
+	this->vistaBalas.clear();
+	this->vistaEnemigos.clear();
+	this->vistaItems.clear();
 }

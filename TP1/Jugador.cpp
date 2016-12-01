@@ -518,3 +518,9 @@ void Jugador::resetMov(){
 	this->movIzquierda = false;
 	this->disparar = false;
 }
+
+void Jugador::setearPlataformas(vector<pair<string,string>> plataformas)
+{
+	this->vectorPlataforma.clear();
+	this->vectorPlataforma = plataformas;
+}

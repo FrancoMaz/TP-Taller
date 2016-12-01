@@ -22,9 +22,8 @@ using namespace std;
 
 class Escenario {
 private:
-	vector<pair<int, int>> enemigosPorNivel;
-	vector<Enemigo*> enemigosActivos;
 	vector<Proyectil*> proyectiles;
+	//XmlParser* parserNivel;
 public:
 	Escenario(string rutaXml);
 	virtual ~Escenario();
@@ -46,10 +45,15 @@ public:
 	bool enemigoPerdido(int id, SDL_Rect* camara);
 	void eliminarEnemigoActivo(int id);
 	pthread_mutex_t mutexEnemigosActivos = PTHREAD_MUTEX_INITIALIZER;
-	Boss* boss;
+	vector<Boss*> boss;
 	vector<string> capas;
 	void agregarItemBonus(Item* item);
 	int bonusColisionado;
+	bool avanzoDeNivel;
+	vector<pair<int, int>> enemigosPorNivel;
+	vector<Enemigo*> enemigosActivos;
+	void vaciarVectores();
+	void inicializarDatosNivel();
 };
 
 #endif /* ESCENARIO_H_ */

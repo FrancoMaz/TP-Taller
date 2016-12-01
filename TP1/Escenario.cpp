@@ -16,44 +16,21 @@ Escenario::Escenario(string rutaXml) {
 	this->idEnemigo = 0;
 	this->plataformas = parserNivel->getPlataformas();
 	this->items = parserNivel->getItemArmas();
-	this->boss = parserNivel->getBoss();
+	this->boss.push_back(parserNivel->getBoss());
 	this->capas = parserNivel->getCapas();
 	this->enemigosPorNivel = parserNivel->getEnemigos();
 	this->levelClear = false;
-	/*int posX = 1000;
-	for(int i = 0; i < 15; i++) {
-		pair<int,int> lala(posX, 415);
-		this->enemigosPorNivel.push_back(lala);
-		posX += 350;
-	}
-	// estos enemigos son para las plataformas del nivel 1
-	pair<int,int> plataforma12(575, 354-106);
-	this->enemigosPorNivel.push_back(plataforma12);
-	pair<int,int> plataforma2(1630, 354-106);
-	this->enemigosPorNivel.push_back(plataforma2);
-	pair<int,int> plataforma3(2100, 354-106);
-	this->enemigosPorNivel.push_back(plataforma3);
-	pair<int,int> plataforma4(2370, 354-106);
-	this->enemigosPorNivel.push_back(plataforma4);
-	pair<int,int> plataforma5(2635, 354-106);
-	this->enemigosPorNivel.push_back(plataforma5);
-	pair<int,int> plataforma61(3500, 354-106);
-	this->enemigosPorNivel.push_back(plataforma61);
-	pair<int,int> plataforma62(3700, 354-106);
-	this->enemigosPorNivel.push_back(plataforma62);
-	pair<int,int> plataforma71(4700, 354-106);
-	this->enemigosPorNivel.push_back(plataforma71);
-	pair<int,int> plataforma72(5000, 354-106);
-	this->enemigosPorNivel.push_back(plataforma72);
-	pair<int,int> plataforma8(5900, 354-106);
-	this->enemigosPorNivel.push_back(plataforma8);
-	pair<int,int> plataforma9(6950, 354-106);
-	this->enemigosPorNivel.push_back(plataforma9);*/
 	this->ordenarEnemigos();
+	this->avanzoDeNivel = true;
 }
 
 Escenario::~Escenario() {
 	// TODO Auto-generated destructor stub
+}
+
+void Escenario::inicializarDatosNivel()
+{
+
 }
 
 uint64_t Escenario::rdtsc() {
@@ -151,9 +128,9 @@ bool Escenario::verificarColisionConEnemigo(Proyectil* proyectil) {
 			}
 		}
 	}
-	if (this->colisionaronObjetos(proyectil->getBoxCollider(),this->boss->boxCollider))
+	if (this->colisionaronObjetos(proyectil->getBoxCollider(),this->boss.at(0)->boxCollider))
 	{
-		this->boss->daniarseCon(proyectil->getDanio());
+		this->boss.at(0)->daniarseCon(proyectil->getDanio());
 		return true;
 	}
 	//pthread_mutex_unlock(&mutexEnemigosActivos);
@@ -234,11 +211,22 @@ void Escenario::eliminarEnemigoActivo(int id) {
 
 bool Escenario::despertarBoss(SDL_Rect camara)
 {
-	if (this->boss != NULL)
+	if (!this->boss.empty())
 	{
-		if (this->boss->posX < camara.x + camara.w && this->boss->posX > camara.x)
+		if (this->boss.at(0)->posX < camara.x + camara.w && this->boss.at(0)->posX > camara.x)
 		{
-			boss->visto = true;
+			boss.at(0)->visto = true;
 		}
 	}
+}
+
+void Escenario::vaciarVectores()
+{
+	this->proyectiles.clear();
+	this->items.clear();
+	this->plataformas.clear();
+	this->capas.clear();
+	this->enemigosPorNivel.clear();
+	this->enemigosActivos.clear();
+	this->boss.clear();
 }

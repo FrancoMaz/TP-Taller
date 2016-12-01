@@ -97,5 +97,6 @@ public:
 	int puntajeTotal;
 	bool subirPlataforma;
 	void resetMov();
+	void setearPlataformas(vector<pair<string,string>> plataformas);
 };
 #endif /* JUGADOR_H_ */

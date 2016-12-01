@@ -240,7 +240,7 @@ void Servidor::autenticar(string nombre, string contrasenia, list<string>& usuar
 				Jugador* jugador = new Jugador(usuario.nombre, this->vectorEquipos.at(posicionVector), posicionXInicial, this->vectorNiveles.at(this->nivelActual)->plataformas);
 				jugador->setConectado();
 				if (this->modoJuegoElegido.first == 3){
-					if (! (this->equipoAlfa.size() == 2)){
+					if (this->posicionVector % 2 == 0){
 						this->equipoAlfa.push_back(jugador->getNombre());
 					}
 					else{
@@ -744,6 +744,7 @@ void Servidor::avanzarDeNivel()
 	Mensaje* mensajePuntajes = new Mensaje("Servidor","Todos",mensajePuntajesString);
 	encolarMensajeProcesadoParaCadaCliente(*mensajePuntajes,mensajePuntajesString);
 	mensajePuntajes->~Mensaje();
+	this->getNivelActual()->vaciarVectores();
 	usleep(5000000); //tiempo para mostrar la pantalla de puntajes antes de pasar al proximo nivel
 	this->nivelActual++;
 	if (this->nivelActual > CANTIDADNIVELES)
@@ -752,7 +753,12 @@ void Servidor::avanzarDeNivel()
 	}
 	if (!this->gameComplete)
 	{
+		this->getNivelActual()->avanzoDeNivel = true;
 		this->resetearPosiciones();
+		//this->getNivelActual()->inicializarDatosNivel();
+		for (int i = 0; i < jugadores->size(); i++){
+			jugadores->at(i)->setearPlataformas(this->getNivelActual()->plataformas);
+		}
 		string mensajeAvanzarNivel = "9|0|0|" + serializarCapas() + "#";
 		Mensaje* mensajeNivel = new Mensaje("Servidor","Todos",mensajeAvanzarNivel);
 		encolarMensajeProcesadoParaCadaCliente(*mensajeNivel,mensajeAvanzarNivel);

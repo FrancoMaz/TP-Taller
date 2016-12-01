@@ -53,7 +53,7 @@ private:
 	vector<VistaBala*> vistaBalas;
 	vector<VistaEnemigo*> vistaEnemigos;
 	vector<Item*> vistaItems;
-	VistaEnemigo* vistaBoss;
+	vector<VistaEnemigo*> vistaBoss;
 
 public:
 	Vista();

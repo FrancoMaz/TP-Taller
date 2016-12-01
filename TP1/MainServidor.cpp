@@ -293,23 +293,7 @@ void* enviarObjetosEnCamara(void* arg)
 			}
 		}
 	}
-}
-
-void* verificarPasarDeNivel(void* arg)
-{
-	ParametrosMovimiento* parametros = (ParametrosMovimiento*)arg;
-	Servidor* servidor = parametros->servidor;
-	Jugador* jugador = parametros->jugador;
-	while(servidor->escuchando)
-	{
-		usleep(50000);
-		if (servidor->getNivelActual()->levelClear)
-		{
-			cout << "Level clear" << endl;
-			//servidor->getNivelActual()->~Escenario();
-			servidor->avanzarDeNivel();
-		}
-	}
+	servidor->getNivelActual()->items.clear();
 }
 
 void* actualizarPosicionesJugador(void* arg)
@@ -319,12 +303,6 @@ void* actualizarPosicionesJugador(void* arg)
 	Jugador* jugador = parametros->jugador;
 	parametros->nombrePersonaje = jugador->getNombre();
 	string mensajeJugadorPosActualizada = "";
-	pthread_t threadObjetos;
-	pthread_t threadNiveles;
-	pthread_create(&threadNiveles, NULL, &verificarPasarDeNivel, parametros);
-	pthread_detach(threadNiveles);
-	pthread_create(&threadObjetos, NULL, &enviarObjetosEnCamara, parametros);
-	pthread_detach(threadObjetos);
 	while (jugador->getConectado() && !jugador->getEstaMuerto()){
 		pthread_mutex_lock(&servidor->mutexVectorJugadores);
 		jugador->mover(servidor->camara);
@@ -386,7 +364,7 @@ void* enemigoActivo(void* arg) {
 	mensaje->~Mensaje();
 	auto start_time = chrono::high_resolution_clock::now();
 	bool yaDisparo = false;
-	while (!enemigo->getEstaMuerto() && (!parametrosEnemigo->servidor->getNivelActual()->enemigoPerdido(enemigo->getId(),&servidor->camara))) {
+	while (!enemigo->getEstaMuerto() && (!parametrosEnemigo->servidor->getNivelActual()->enemigoPerdido(enemigo->getId(),&servidor->camara)) && !servidor->getNivelActual()->levelClear) {
 		int tiempoTranscurrido = chrono::duration_cast<chrono::seconds>(chrono::high_resolution_clock::now() - start_time).count();
 		usleep(50000);
 		mensajeEnemigo = "4|1|";
@@ -438,6 +416,7 @@ void* controlDeEnemigos(void* arg) {
 	ParametrosMovimiento* parametroRecibido= (ParametrosMovimiento*) arg;
 	Servidor* servidor = parametroRecibido->servidor;
 	while (servidor->escuchando) {
+		usleep(50000);
 		servidor->getNivelActual()->despertarEnemigos(&servidor->camara);
 		for (int i = 0; i < servidor->getNivelActual()->getEnemigosActivos().size(); i++) {
 			Enemigo* enemigo = servidor->getNivelActual()->getEnemigoActivo(i);
@@ -451,7 +430,6 @@ void* controlDeEnemigos(void* arg) {
 				parametrosEnemigo->~ParametrosMovimiento();
 			}
 		}
-		usleep(50000);
 	}
 }
 
@@ -510,9 +488,10 @@ void* verificarBossEnCamara(void* arg)
 	ParametrosMovimiento* parametroRecibido= (ParametrosMovimiento*) arg;
 	Servidor* servidor = parametroRecibido->servidor;
 	Jugador* jugador = parametroRecibido->jugador;
-	Boss* bossNivel = servidor->getNivelActual()->boss;
+	Boss* bossNivel = servidor->getNivelActual()->boss.at(0);
 	ParametrosMovimiento* parametrosBoss = new ParametrosMovimiento(servidor, jugador);
-	while (servidor->escuchando) {
+	while (!servidor->getNivelActual()->levelClear) {
+		usleep(50000);
 		//servidor->getNivelActual()->despertarBoss(servidor->camara);
 		if (bossNivel != NULL && bossNivel->boxCollider.x <= (servidor->camara.x + servidor->camara.w) && !bossNivel->visto) {
 			parametrosBoss->boss = bossNivel;
@@ -521,9 +500,28 @@ void* verificarBossEnCamara(void* arg)
 			pthread_detach(threadBoss);
 			bossNivel->visto = true;
 		}
-		usleep(50000);
 	}
 
+}
+
+void* verificarPasarDeNivel(void* arg)
+{
+	ParametrosMovimiento* parametros = (ParametrosMovimiento*)arg;
+	Servidor* servidor = parametros->servidor;
+	Jugador* jugador = parametros->jugador;
+	while(servidor->escuchando)
+	{
+		usleep(50000);
+		if (servidor->getNivelActual()->levelClear)
+		{
+			cout << "Level clear" << endl;
+			//servidor->getNivelActual()->~Escenario();
+			servidor->avanzarDeNivel();
+			pthread_t threadVerificarBoss;
+			pthread_create(&threadVerificarBoss, NULL, &verificarBossEnCamara, parametros);
+			pthread_detach(threadVerificarBoss);
+		}
+	}
 }
 
 void iniciarThreadMovimientoJugador(Servidor* servidor, string nombre)
@@ -534,16 +532,21 @@ void iniciarThreadMovimientoJugador(Servidor* servidor, string nombre)
 	ParametrosMovimiento * parametros = new ParametrosMovimiento(servidor,jugador);/*ParametrosActPosicion parametros;
 	parametros.jugador = jugador;
 	parametros.servidor = this;*/
+	pthread_t threadMov = jugador->getThreadMovimiento();
+	pthread_t threadNiveles;
 	pthread_t threadEnemigosPetutos;
 	pthread_t threadVerificarBoss;
-	pthread_t threadMov = jugador->getThreadMovimiento();
+	pthread_t threadObjetos;
 	pthread_create(&threadMov, NULL, &actualizarPosicionesJugador, parametros);
 	pthread_detach(threadMov);
-
+	pthread_create(&threadNiveles, NULL, &verificarPasarDeNivel, parametros);
+	pthread_detach(threadNiveles);
 	pthread_create(&threadEnemigosPetutos, NULL, &controlDeEnemigos, parametros);
 	pthread_detach(threadEnemigosPetutos);
 	pthread_create(&threadVerificarBoss, NULL, &verificarBossEnCamara, parametros);
 	pthread_detach(threadVerificarBoss);
+	pthread_create(&threadObjetos, NULL, &enviarObjetosEnCamara, parametros);
+	pthread_detach(threadObjetos);
 	jugador->setThreadMovimiento(threadMov);
 }
 
