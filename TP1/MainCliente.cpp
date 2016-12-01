@@ -65,8 +65,8 @@ int stringToInt(string atributo) {
 bool chequearSocket(string ip, int puerto) {
 	//string ipServer = "192.168.1.11";
 
-	//string ipServer = "127.0.0.1";
-	string ipServer = "192.168.1.11";
+	string ipServer = "127.0.0.1";
+	//string ipServer = "192.168.1.11";
 	int puertoDeEscucha = 7891;
 
 	return (ip == ipServer && puerto == puertoDeEscucha);
@@ -229,12 +229,13 @@ void procesarUltimosMensajes(string mensajes, Cliente* cliente, UpdateJugador* u
 					string spriteEnemigo = msjContenido.at(5);
 					int idEnemigo = stringToInt(msjContenido.at(6));
 					int cantFotogramas;
-					for (int i = 0; i < setsSprites.size(); i++) {
-						vector<SpriteDto*> listaSprites = setsSprites.at(i)->getSprites();
-						for (int j = 0; j < listaSprites.size(); j++) {
-							if (spriteEnemigo == listaSprites.at(j)->getID()) {
-								cantFotogramas = stringToInt(listaSprites.at(j)->getCantidadDeFotogramas());
-							}
+
+					vector<SpriteDto*> listaSprites = setsSprites.at(4)->getSprites();
+					if (spriteEnemigo == "Enemigo_quieto") {
+						cantFotogramas = stringToInt(listaSprites.at(0)->getCantidadDeFotogramas());
+					} else {
+						if (spriteEnemigo == "Enemigo_disparando") {
+							cantFotogramas = stringToInt(listaSprites.at(2)->getCantidadDeFotogramas());
 						}
 					}
 					cout<<endl;
@@ -260,13 +261,12 @@ void procesarUltimosMensajes(string mensajes, Cliente* cliente, UpdateJugador* u
 					string spriteBoss = msjContenido.at(5);
 					string sentido = msjContenido.at(6);
 					int cantFotogramas;
-					for (int i = 0; i < setsSprites.size(); i++) {
-						vector<SpriteDto*> listaSprites = setsSprites.at(i)->getSprites();
-						for (int i = 0; i < listaSprites.size(); i++) {
-							if (spriteBoss == listaSprites.at(i)->getID()) {
-								cantFotogramas = stringToInt(listaSprites.at(i)->getCantidadDeFotogramas());
-							}
-						}
+
+					vector<SpriteDto*> listaSprites = setsSprites.at(5)->getSprites();
+					if (spriteBoss == "Boss_hi_do") {
+						cantFotogramas = stringToInt(listaSprites.at(0)->getCantidadDeFotogramas());
+					} else {
+						cantFotogramas = stringToInt(listaSprites.at(1)->getCantidadDeFotogramas());
 					}
 					vista->actualizarBoss(nuevoBoss, xBoss, yBoss, spriteBoss, sentido, cantFotogramas);
 					break;
