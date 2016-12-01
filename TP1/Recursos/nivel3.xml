@@ -2,48 +2,40 @@
 
 <Configuracion>
 	<Capas>
-		<Capa1>Fondo_Escenario2_capa_1</Capa1>
-		<Capa2>Fondo_Escenario2_capa_2</Capa2>
-		<Capa3>Fondo_Escenario2_capa_3</Capa3>
-		<Capa4>Fondo_Escenario2_capa_4</Capa4>
+		<Capa1>Fondo_Escenario3_capa_1</Capa1>
+		<Capa2>Fondo_Escenario3_capa_2</Capa2>
+		<Capa3>Fondo_Escenario3_capa_3</Capa3>
+		<Capa4>Fondo_Escenario3_capa_4</Capa4>
 	</Capas>
 	<Plataformas>
 		<Plataforma1>
-			<Comienzo>402</Comienzo>
-			<Final>761</Final>
+			<Comienzo>2076</Comienzo>
+			<Final>2548</Final>
 		</Plataforma1>
 		<Plataforma2>
-			<Comienzo>1547</Comienzo>
-			<Final>1786</Final>
+			<Comienzo>2707</Comienzo>
+			<Final>3082</Final>
 		</Plataforma2>
 		<Plataforma3>
-			<Comienzo>2087</Comienzo>
-			<Final>2326</Final>
+			<Comienzo>3200</Comienzo>
+			<Final>3635</Final>
 		</Plataforma3>
 		<Plataforma4>
-			<Comienzo>2453</Comienzo>
-			<Final>2573</Final>
+			<Comienzo>4915</Comienzo>
+			<Final>5105</Final>
 		</Plataforma4>
 		<Plataforma5>
-			<Comienzo>2708</Comienzo>
-			<Final>2828</Final>
+			<Comienzo>5426</Comienzo>
+			<Final>5615</Final>
 		</Plataforma5>
 		<Plataforma6>
-			<Comienzo>3369</Comienzo>
-			<Final>3848</Final>
+			<Comienzo>5734</Comienzo>
+			<Final>6168</Final>
 		</Plataforma6>
 		<Plataforma7>
-			<Comienzo>4590</Comienzo>
-			<Final>5308</Final>
+			<Comienzo>6400</Comienzo>
+			<Final>6695</Final>
 		</Plataforma7>
-		<Plataforma8>
-			<Comienzo>5795</Comienzo>
-			<Final>6154</Final>
-		</Plataforma8>
-		<Plataforma9>
-			<Comienzo>6878</Comienzo>
-			<Final>7117</Final>
-		</Plataforma9>
 	</Plataformas>
 	
 	<ItemArmas>
