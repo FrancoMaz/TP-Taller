@@ -222,7 +222,6 @@ void Jugador::mover(SDL_Rect camara){
 		if (angulo > (PI + (PI/25)) || (posicion.second == PLATAFORMA && this->esPlataforma(boxCollider.x) && angulo > PI/2 && subirPlataforma)){
 			if (angulo > (PI + (PI/25)))
 			{
-				cout << "Entra" << endl;
 				subirPlataforma = false;
 			}
 			angulo = 0;

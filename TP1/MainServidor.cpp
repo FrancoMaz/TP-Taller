@@ -515,11 +515,15 @@ void* verificarPasarDeNivel(void* arg)
 		if (servidor->getNivelActual()->levelClear)
 		{
 			cout << "Level clear" << endl;
-			//servidor->getNivelActual()->~Escenario();
+			servidor->calcularPuntajes();
+		}
+		if (servidor->getNivelActual()->avanzoDeNivel)
+		{
 			servidor->avanzarDeNivel();
 			pthread_t threadVerificarBoss;
 			pthread_create(&threadVerificarBoss, NULL, &verificarBossEnCamara, parametros);
 			pthread_detach(threadVerificarBoss);
+			servidor->getNivelActual()->avanzoDeNivel = false;
 		}
 	}
 }

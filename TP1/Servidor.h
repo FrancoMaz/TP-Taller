@@ -151,6 +151,7 @@ public:
 	vector<string> equipoAlfa;
 	vector<string> equipoBeta;
 	void resetearPosiciones();
+	void calcularPuntajes();
 };
 
 #endif /* TP1_SERVIDOR_H_ */

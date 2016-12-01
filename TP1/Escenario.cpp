@@ -21,7 +21,7 @@ Escenario::Escenario(string rutaXml) {
 	this->enemigosPorNivel = parserNivel->getEnemigos();
 	this->levelClear = false;
 	this->ordenarEnemigos();
-	this->avanzoDeNivel = true;
+	this->avanzoDeNivel = false;
 }
 
 Escenario::~Escenario() {

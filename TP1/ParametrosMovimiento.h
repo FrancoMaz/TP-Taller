@@ -25,6 +25,7 @@ public:
 	Boss* boss;
 	Personaje * personaje;
 	ParametrosMovimiento(Servidor* servidorActual, Jugador* jugadorActual);
+	ParametrosMovimiento(Servidor* servidorActual);
 	virtual ~ParametrosMovimiento();
 };
 

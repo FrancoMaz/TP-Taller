@@ -718,7 +718,7 @@ Escenario* Servidor::getNivelActual()
 	return (this->vectorNiveles.at(nivelActual));
 }
 
-void Servidor::avanzarDeNivel()
+void Servidor::calcularPuntajes()
 {
 	string mensajeJugador = "";
 	string mensajePuntajesString = "8|" + to_string(modoJuegoElegido.first) + "|";
@@ -745,7 +745,12 @@ void Servidor::avanzarDeNivel()
 	encolarMensajeProcesadoParaCadaCliente(*mensajePuntajes,mensajePuntajesString);
 	mensajePuntajes->~Mensaje();
 	this->getNivelActual()->vaciarVectores();
+	this->getNivelActual()->avanzoDeNivel = true;
 	usleep(5000000); //tiempo para mostrar la pantalla de puntajes antes de pasar al proximo nivel
+}
+
+void Servidor::avanzarDeNivel()
+{
 	this->nivelActual++;
 	if (this->nivelActual > CANTIDADNIVELES)
 	{
@@ -753,9 +758,7 @@ void Servidor::avanzarDeNivel()
 	}
 	if (!this->gameComplete)
 	{
-		this->getNivelActual()->avanzoDeNivel = true;
 		this->resetearPosiciones();
-		//this->getNivelActual()->inicializarDatosNivel();
 		for (int i = 0; i < jugadores->size(); i++){
 			jugadores->at(i)->setearPlataformas(this->getNivelActual()->plataformas);
 		}

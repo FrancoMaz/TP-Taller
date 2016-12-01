@@ -12,6 +12,10 @@ ParametrosMovimiento::ParametrosMovimiento(Servidor* servidorActual, Jugador* ju
 	this->jugador = jugadorActual;
 }
 
+ParametrosMovimiento::ParametrosMovimiento(Servidor* servidorActual) {
+	this->servidor = servidorActual;
+}
+
 ParametrosMovimiento::~ParametrosMovimiento() {
 	// TODO Auto-generated destructor stub
 }
