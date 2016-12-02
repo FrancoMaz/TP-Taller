@@ -192,14 +192,27 @@ void procesarUltimosMensajes(string mensajes, Cliente* cliente, UpdateJugador* u
 					int idBala = stringToInt(msjContenido.at(6));
 					string sentido = msjContenido.at(7);
 					double angulo = calcularAngulo(stringToInt(msjContenido.at(8)), sentido);
-
 					int cantFotogramas;
-					for (int i = 0; i < setsSprites.size(); i++) {
-						vector<SpriteDto*> listaSprites = setsSprites.at(i)->getSprites();
-						for (int i = 0; i < listaSprites.size(); i++) {
-							if (spriteBala == listaSprites.at(i)->getID()) {
-								cantFotogramas = stringToInt(listaSprites.at(i)->getCantidadDeFotogramas());
+
+					vector<SpriteDto*> listaSprites = setsSprites.at(1)->getSprites();
+					if (spriteBala == "HeavyMachineGun") {
+						cantFotogramas = stringToInt(listaSprites.at(0)->getCantidadDeFotogramas());
+					} else {
+						if (spriteBala == "RocketLauncher") {
+							cantFotogramas = stringToInt(listaSprites.at(1)->getCantidadDeFotogramas());
+						} else {
+							if (spriteBala == "FlameShot") {
+								cantFotogramas = stringToInt(listaSprites.at(2)->getCantidadDeFotogramas());
 							}
+						}
+					}
+
+					listaSprites = setsSprites.at(5)->getSprites();
+					if (spriteBala == "Boss_tani_oh_disparo_laser") {
+						cantFotogramas = stringToInt(listaSprites.at(8)->getCantidadDeFotogramas());
+					} else {
+						if (spriteBala == "Boss_hi_do_bomba") {
+							cantFotogramas = stringToInt(listaSprites.at(1)->getCantidadDeFotogramas());
 						}
 					}
 					vista->actualizarProyectil(nuevaBala,xBala,yBala,spriteBala,idBala,cantFotogramas,sentido,angulo);
@@ -238,7 +251,6 @@ void procesarUltimosMensajes(string mensajes, Cliente* cliente, UpdateJugador* u
 							cantFotogramas = stringToInt(listaSprites.at(2)->getCantidadDeFotogramas());
 						}
 					}
-					cout<<endl;
 					vista->actualizarEnemigo(nuevoEnemigo, xEnemigo, yEnemigo, spriteEnemigo, idEnemigo, cantFotogramas);
 					break;
 				}
@@ -266,7 +278,9 @@ void procesarUltimosMensajes(string mensajes, Cliente* cliente, UpdateJugador* u
 					if (spriteBoss == "Boss_hi_do") {
 						cantFotogramas = stringToInt(listaSprites.at(0)->getCantidadDeFotogramas());
 					} else {
-						cantFotogramas = stringToInt(listaSprites.at(1)->getCantidadDeFotogramas());
+						if (spriteBoss == "Boss_tani_oh") {
+							cantFotogramas = stringToInt(listaSprites.at(5)->getCantidadDeFotogramas());
+						}
 					}
 					vista->actualizarBoss(nuevoBoss, xBoss, yBoss, spriteBoss, sentido, cantFotogramas);
 					break;

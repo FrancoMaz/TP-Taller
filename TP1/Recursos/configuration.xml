@@ -534,14 +534,6 @@
 		    <Imagen>Boss_tani_oh_disparo_laser</Imagen>
 		    <z-index>1</z-index>
 		</Sprite9>
-		<Sprite10>
-	  		<Id>Boss_tani_oh_disparo_laser</Id>
-		    <CantFotogramas>1</CantFotogramas>
-		    <Ancho>70</Ancho>
-		    <Alto>425</Alto>
-		    <Imagen>Boss_tani_oh_disparo_laser</Imagen>
-		    <z-index>1</z-index>
-		</Sprite10>
 	  </SetBosses>
 	</Sprites>
 
