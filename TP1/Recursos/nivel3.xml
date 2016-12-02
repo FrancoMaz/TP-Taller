@@ -41,23 +41,23 @@
 	<ItemArmas>
 		<Item1>
 			<Arma>HeavyMachineGun</Arma>
-			<PosicionX>320</PosicionX>
+			<PosicionX>2000</PosicionX>
 			<PosicionY>476</PosicionY>
 		</Item1>
 		<Item2>
 			<Arma>RocketLauncher</Arma>
-			<PosicionX>508</PosicionX>
-			<PosicionY>310</PosicionY>
+			<PosicionX>320</PosicionX>
+			<PosicionY>476</PosicionY>
 		</Item2>
 		<Item3>
 			<Arma>FlameShot</Arma>
-			<PosicionX>740</PosicionX>
+			<PosicionX>5000</PosicionX>
 			<PosicionY>476</PosicionY>
 		</Item3>
 		<Item4>
 			<Arma>RocketLauncher</Arma>
-			<PosicionX>1600</PosicionX>
-			<PosicionY>310</PosicionY>
+			<PosicionX>7500</PosicionX>
+			<PosicionY>476</PosicionY>
 		</Item4>
 	</ItemArmas>
 	
@@ -107,31 +107,31 @@
 			<PosicionY>415</PosicionY>
 		</Enemigo11>
 		<Enemigo12>
-			<PosicionX>575</PosicionX>
+			<PosicionX>2100</PosicionX>
 			<PosicionY>248</PosicionY>
 		</Enemigo12>
 		<Enemigo13>
-			<PosicionX>1630</PosicionX>
+			<PosicionX>2750</PosicionX>
 			<PosicionY>248</PosicionY>
 		</Enemigo13>
 		<Enemigo14>
-			<PosicionX>2100</PosicionX>
+			<PosicionX>3300</PosicionX>
 			<PosicionY>248</PosicionY>
 		</Enemigo14>
 		<Enemigo15>
-			<PosicionX>2370</PosicionX>
+			<PosicionX>4950</PosicionX>
 			<PosicionY>248</PosicionY>
 		</Enemigo15>
 		<Enemigo16>
-			<PosicionX>3500</PosicionX>
+			<PosicionX>5450</PosicionX>
 			<PosicionY>248</PosicionY>
 		</Enemigo16>
 		<Enemigo17>
-			<PosicionX>4700</PosicionX>
+			<PosicionX>5800</PosicionX>
 			<PosicionY>248</PosicionY>
 		</Enemigo17>
 		<Enemigo18>
-			<PosicionX>5000</PosicionX>
+			<PosicionX>6450</PosicionX>
 			<PosicionY>248</PosicionY>
 		</Enemigo18>
 	</Enemigos>

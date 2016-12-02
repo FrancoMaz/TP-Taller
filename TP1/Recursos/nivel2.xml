@@ -45,23 +45,23 @@
 	<ItemArmas>
 		<Item1>
 			<Arma>HeavyMachineGun</Arma>
-			<PosicionX>200</PosicionX>
+			<PosicionX>400</PosicionX>
 			<PosicionY>476</PosicionY>
 		</Item1>
 		<Item2>
 			<Arma>RocketLauncher</Arma>
-			<PosicionX>508</PosicionX>
+			<PosicionX>2500</PosicionX>
 			<PosicionY>476</PosicionY>
 		</Item2>
 		<Item3>
 			<Arma>FlameShot</Arma>
-			<PosicionX>1000</PosicionX>
-			<PosicionY>310</PosicionY>
+			<PosicionX>3500</PosicionX>
+			<PosicionY>476</PosicionY>
 		</Item3>
 		<Item4>
 			<Arma>RocketLauncher</Arma>
-			<PosicionX>1600</PosicionX>
-			<PosicionY>310</PosicionY>
+			<PosicionX>7500</PosicionX>
+			<PosicionY>476</PosicionY>
 		</Item4>
 	</ItemArmas>
 	
@@ -71,14 +71,66 @@
 			<PosicionY>415</PosicionY>
 		</Enemigo1>
 		<Enemigo2>
-			<PosicionX>900</PosicionX>
+			<PosicionX>800</PosicionX>
 			<PosicionY>248</PosicionY>
 		</Enemigo2>
+		<Enemigo3>
+			<PosicionX>1400</PosicionX>
+			<PosicionY>248</PosicionY>
+		</Enemigo3>
+		<Enemigo4>
+			<PosicionX>2170</PosicionX>
+			<PosicionY>248</PosicionY>
+		</Enemigo4>
+		<Enemigo5>
+			<PosicionX>3945</PosicionX>
+			<PosicionY>248</PosicionY>
+		</Enemigo5>
+		<Enemigo6>
+			<PosicionX>5770</PosicionX>
+			<PosicionY>248</PosicionY>
+		</Enemigo6>
+		<Enemigo7>
+			<PosicionX>6500</PosicionX>
+			<PosicionY>248</PosicionY>
+		</Enemigo7>
+		<Enemigo8>
+			<PosicionX>1300</PosicionX>
+			<PosicionY>415</PosicionY>
+		</Enemigo8>
+		<Enemigo9>
+			<PosicionX>2000</PosicionX>
+			<PosicionY>415</PosicionY>
+		</Enemigo9>
+		<Enemigo10>
+			<PosicionX>3500</PosicionX>
+			<PosicionY>415</PosicionY>
+		</Enemigo10>
+		<Enemigo11>
+			<PosicionX>5000</PosicionX>
+			<PosicionY>415</PosicionY>
+		</Enemigo11>
+		<Enemigo12>
+			<PosicionX>7500</PosicionX>
+			<PosicionY>415</PosicionY>
+		</Enemigo12>
+		<Enemigo13>
+			<PosicionX>2900</PosicionX>
+			<PosicionY>248</PosicionY>
+		</Enemigo13>
+		<Enemigo14>
+			<PosicionX>4700</PosicionX>
+			<PosicionY>248</PosicionY>
+		</Enemigo14>
+		<Enemigo15>
+			<PosicionX>6000</PosicionX>
+			<PosicionY>415</PosicionY>
+		</Enemigo15>
 	</Enemigos>
 	
 	<Boss>
 		<Nombre>tani_oh</Nombre>
-		<PosicionX>1000</PosicionX>
+		<PosicionX>8000</PosicionX>
 		<PosicionY>338</PosicionY>
 	</Boss>
 </Configuracion>
