@@ -142,7 +142,6 @@ string XmlParser::serializarSprites(vector<SpriteDto*> sprites, vector<string> c
 			spriteConcatenado += ";";
 		}
 	}
-	cout << "Sprite: " << spriteConcatenado << endl;
 	return spriteConcatenado;
 }
 string XmlParser::serializarSetDeSprites(vector<string> colores){
