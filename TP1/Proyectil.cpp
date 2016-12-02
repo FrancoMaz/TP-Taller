@@ -14,15 +14,8 @@ Proyectil::Proyectil(int danioEnPorcentaje, int puntosPorDisparo, string spriteB
 	this->puntosPorDisparo = puntosPorDisparo;
 	this->spriteBala = spriteBala;
 	this->boxCollider = boxCollider;
-	/*if (disparadoPor == 2) {
-		this->posicion.first = posicionX+25;
-		this->posicion.second = posicionY-106;
-		this->boxCollider.x += 25;
-		this->boxCollider.y -= 106;
-	} else {*/
-		this->posicion.first = posicionX;
-		this->posicion.second = posicionY;
-	//}
+	this->posicion.first = posicionX;
+	this->posicion.second = posicionY;
 	this->sentido = sentido;
 	this->angulo = angulo;
 	this->cortoAlcance = cortoAlcance;

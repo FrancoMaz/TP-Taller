@@ -192,14 +192,27 @@ void procesarUltimosMensajes(string mensajes, Cliente* cliente, UpdateJugador* u
 					int idBala = stringToInt(msjContenido.at(6));
 					string sentido = msjContenido.at(7);
 					double angulo = calcularAngulo(stringToInt(msjContenido.at(8)), sentido);
-
 					int cantFotogramas;
-					for (int i = 0; i < setsSprites.size(); i++) {
-						vector<SpriteDto*> listaSprites = setsSprites.at(i)->getSprites();
-						for (int i = 0; i < listaSprites.size(); i++) {
-							if (spriteBala == listaSprites.at(i)->getID()) {
-								cantFotogramas = stringToInt(listaSprites.at(i)->getCantidadDeFotogramas());
+
+					vector<SpriteDto*> listaSprites = setsSprites.at(1)->getSprites();
+					if (spriteBala == "HeavyMachineGun") {
+						cantFotogramas = stringToInt(listaSprites.at(0)->getCantidadDeFotogramas());
+					} else {
+						if (spriteBala == "RocketLauncher") {
+							cantFotogramas = stringToInt(listaSprites.at(1)->getCantidadDeFotogramas());
+						} else {
+							if (spriteBala == "FlameShot") {
+								cantFotogramas = stringToInt(listaSprites.at(2)->getCantidadDeFotogramas());
 							}
+						}
+					}
+
+					listaSprites = setsSprites.at(5)->getSprites();
+					if (spriteBala == "Boss_tani_oh_disparo_laser") {
+						cantFotogramas = stringToInt(listaSprites.at(8)->getCantidadDeFotogramas());
+					} else {
+						if (spriteBala == "Boss_hi_do_bomba") {
+							cantFotogramas = stringToInt(listaSprites.at(1)->getCantidadDeFotogramas());
 						}
 					}
 					vista->actualizarProyectil(nuevaBala,xBala,yBala,spriteBala,idBala,cantFotogramas,sentido,angulo);
@@ -229,12 +242,13 @@ void procesarUltimosMensajes(string mensajes, Cliente* cliente, UpdateJugador* u
 					string spriteEnemigo = msjContenido.at(5);
 					int idEnemigo = stringToInt(msjContenido.at(6));
 					int cantFotogramas;
-					for (int i = 0; i < setsSprites.size(); i++) {
-						vector<SpriteDto*> listaSprites = setsSprites.at(i)->getSprites();
-						for (int j = 0; j < listaSprites.size(); j++) {
-							if (spriteEnemigo == listaSprites.at(j)->getID()) {
-								cantFotogramas = stringToInt(listaSprites.at(j)->getCantidadDeFotogramas());
-							}
+
+					vector<SpriteDto*> listaSprites = setsSprites.at(4)->getSprites();
+					if (spriteEnemigo == "Enemigo_quieto") {
+						cantFotogramas = stringToInt(listaSprites.at(0)->getCantidadDeFotogramas());
+					} else {
+						if (spriteEnemigo == "Enemigo_disparando") {
+							cantFotogramas = stringToInt(listaSprites.at(2)->getCantidadDeFotogramas());
 						}
 					}
 					vista->actualizarEnemigo(nuevoEnemigo, xEnemigo, yEnemigo, spriteEnemigo, idEnemigo, cantFotogramas);
@@ -259,12 +273,13 @@ void procesarUltimosMensajes(string mensajes, Cliente* cliente, UpdateJugador* u
 					string spriteBoss = msjContenido.at(5);
 					string sentido = msjContenido.at(6);
 					int cantFotogramas;
-					for (int i = 0; i < setsSprites.size(); i++) {
-						vector<SpriteDto*> listaSprites = setsSprites.at(i)->getSprites();
-						for (int i = 0; i < listaSprites.size(); i++) {
-							if (spriteBoss == listaSprites.at(i)->getID()) {
-								cantFotogramas = stringToInt(listaSprites.at(i)->getCantidadDeFotogramas());
-							}
+
+					vector<SpriteDto*> listaSprites = setsSprites.at(5)->getSprites();
+					if (spriteBoss == "Boss_hi_do") {
+						cantFotogramas = stringToInt(listaSprites.at(0)->getCantidadDeFotogramas());
+					} else {
+						if (spriteBoss == "Boss_tani_oh") {
+							cantFotogramas = stringToInt(listaSprites.at(5)->getCantidadDeFotogramas());
 						}
 					}
 					vista->actualizarBoss(nuevoBoss, xBoss, yBoss, spriteBoss, sentido, cantFotogramas);
