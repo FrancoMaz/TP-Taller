@@ -340,7 +340,7 @@ void* recibirPosicionJugadores(void* arg) {
 				SDL_Delay( SCREEN_TICKS_PER_FRAME - frameTicks );
 			}
 		} else {
-			usleep(5000000);
+			//usleep(5000000);
 			//vista->controlador->setCerrarVentana();
 			terminoConQ = true;
 			terminoComunicacion = true;
@@ -364,6 +364,7 @@ void* enviarEventos(void* arg) {
 	int countedFrames = 0;
 	fpsTimer.start();
 	while(!vista->controlador->comprobarCierreVentana()){
+		usleep(100);
 		while(SDL_PollEvent(&evento)){
 			if (vista->pantallaPuntajes){
 				//si estoy en la pantalla de puntajes no envio nada mas

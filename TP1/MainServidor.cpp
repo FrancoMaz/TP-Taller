@@ -569,6 +569,7 @@ void* cicloEscuchaCliente(void* arg) {
 	bool conectado = true;
 	servidor->setJugadorConectado(nombre);
 	while (conectado and servidor->escuchando) {
+		usleep(100);
 		//en este loop se van a gestionar los send y receive del cliente. aca se va a distinguir que es lo que quiere hacer y actuar segun lo que quiera el cliente.
 		string datosRecibidos;
 		int largoRequest = recv(socketCliente, bufferRecibido, BUFFER_MAX_SIZE,0); //recibo por primera vez

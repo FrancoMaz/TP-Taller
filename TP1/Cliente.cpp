@@ -370,7 +370,16 @@ string Cliente::recibir() {
 	send(this->socketCliente, recibir, strlen(recibir), 0);
 	string datosRecibidos = "";
 	int largoRequest;
-	largoRequest = recv(this->socketCliente, colaMensajes, BUFFER_MAX_SIZE, 0);
+	//largoRequest = recv(this->socketCliente, colaMensajes, BUFFER_MAX_SIZE, 0);
+	//Resolveria que no se desconecte despues de un tiempo colgado
+	auto start_time = chrono::high_resolution_clock::now();
+	int tiempoTranscurrido;
+	do {
+		tiempoTranscurrido = chrono::duration_cast<chrono::seconds>(chrono::high_resolution_clock::now() - start_time).count();
+		largoRequest = recv(this->socketCliente, colaMensajes, BUFFER_MAX_SIZE, 0);
+		//cout << "segundo: " << tiempoTranscurrido << endl;
+	} while (largoRequest == 0 && tiempoTranscurrido <= 5);
+
 	datosRecibidos += string(colaMensajes);
 	memset(colaMensajes, '\0', strlen(colaMensajes));
 	if (largoRequest > 0) {
