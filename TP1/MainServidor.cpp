@@ -293,7 +293,6 @@ void* enviarObjetosEnCamara(void* arg)
 			}
 		}
 	}
-	servidor->getNivelActual()->items.clear();
 }
 
 void* actualizarPosicionesJugador(void* arg)
@@ -477,7 +476,7 @@ void* bossActivo(void* arg)
 	mensaje = new Mensaje(nombre,"Todos",mensajeBoss);
 	servidor->encolarMensajeProcesadoParaCadaCliente(*mensaje,mensajeBoss);
 	servidor->getNivelActual()->levelClear = true;
-	bossNivel->~Boss();
+	//bossNivel->~Boss();
 	mensaje->~Mensaje();
 	pthread_exit(NULL);
 }
@@ -514,8 +513,7 @@ void* verificarPasarDeNivel(void* arg)
 		if (servidor->getNivelActual()->levelClear)
 		{
 			cout << "Level clear" << endl;
-			//servidor->getNivelActual()->avanzoDeNivel = true;
-			//usleep(1000000); //tiempo para mostrar la pantalla de puntajes antes de pasar al proximo nivel
+			usleep(2000000);
 			servidor->calcularPuntajes();
 		}
 		if (servidor->getNivelActual()->avanzoDeNivel)
