@@ -523,3 +523,8 @@ void Jugador::setearPlataformas(vector<pair<string,string>> plataformas)
 	this->vectorPlataforma.clear();
 	this->vectorPlataforma = plataformas;
 }
+
+bool Jugador::armaActualEsCortoAlcance()
+{
+	return this->armas.at(this->armaActual)->cortoAlcance;
+}

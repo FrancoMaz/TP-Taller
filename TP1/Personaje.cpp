@@ -37,6 +37,10 @@ bool Personaje::estaDisparando(){
 	return this->disparar;
 }
 
+void Personaje::setDisparando(bool disparando){
+	this->disparar = disparando;;
+}
+
 Proyectil* Personaje::dispararProyectil() {
 
 }
