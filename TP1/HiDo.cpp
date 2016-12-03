@@ -75,7 +75,7 @@ void HiDo::comportamiento(SDL_Rect camara,  bool tieneQueDisparar)
 				SDL_Rect box = {this->boxCollider.x + 78,this->boxCollider.y + 115,24,50};
 				for (int i = 0; i < 2; i++)
 				{
-					this->proyectilesADisparar.first.push_back(new Proyectil(20,0,"4",box.x,box.y, this->sentido, 4, box, false,2,"",make_pair(78,115)));
+					this->proyectilesADisparar.first.push_back(new Proyectil(20,0,"3",box.x,box.y, this->sentido, 4, box, false,2,"",make_pair(78,115)));
 				}
 				break;
 			}
