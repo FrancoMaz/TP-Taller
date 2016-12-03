@@ -17,7 +17,7 @@ class Item {
 private:
 	string sprite;
 public:
-	Item(string nombre, string x, string y, int idItem);
+	Item(string nombre, string x, string y, int idItem, string sprite);
 	Item(int x, int y, TexturaSDL* textura);
 	virtual ~Item();
 	string getStringItem();

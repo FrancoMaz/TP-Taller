@@ -20,10 +20,10 @@ Enemigo::Enemigo(int posX, int posY, int id, int estado) {
 	this->anguloBala = 0;
 	this->agachado = false;
 	if (estado == 1) {
-		this->spriteEnemigo = "Enemigo_disparando";
+		this->spriteEnemigo = "2"; //"Enemigo_disparando"
 		this->disparar = true;
 	} else {
-		this->spriteEnemigo = "Enemigo_quieto";
+		this->spriteEnemigo = "0"; //Enemigo_quieto"
 		this->disparar = false;
 	}
 	this->estado = estado;

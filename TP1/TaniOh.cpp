@@ -46,13 +46,13 @@ void TaniOh::comportamiento(SDL_Rect camara, bool tieneQueDisparar)
 			case 0:
 			{
 				SDL_Rect box = {this->boxCollider.x + 20,this->boxCollider.y + 64,32,30};
-				this->proyectilADisparar = new Proyectil(20,0,"HeavyMachineGun",box.x,box.y, this->sentido, 0, box, false,2,"");
+				this->proyectilADisparar = new Proyectil(20,0,"0",box.x,box.y, this->sentido, 0, box, false,2,"");
 				break;
 			}
 			case 1:
 			{
 				SDL_Rect box = {this->boxCollider.x + 158,this->boxCollider.y - 412,32,30};
-				this->proyectilADisparar = new Proyectil(20,0,"Boss_tani_oh_disparo_laser",box.x,box.y, this->sentido, 5, box, false,2,"");
+				this->proyectilADisparar = new Proyectil(20,0,"4",box.x,box.y, this->sentido, 5, box, false,2,"");
 				break;
 			}
 		}

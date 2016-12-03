@@ -57,7 +57,8 @@ Proyectil* RocketLauncher::disparar(int posicionX,int posicionY, string condicio
 	//this->proyectil = new Proyectil(80, 40, this->nombreArma, posX, posY, condicion, anguloBala, this->boxCollider, this->cortoAlcance, disparadoPor, nombreJugador);
 	this->municiones -= 1;
 	//return this->proyectil;
-	return new Proyectil(80, 40, this->nombreArma, posX, posY, condicion, anguloBala, this->boxCollider, this->cortoAlcance, disparadoPor, nombreJugador);
+	//se le pasa un 1 al constructor de proyectil porque este es la posicion en donde se encuentra en el setSprites
+	return new Proyectil(80, 40, "1", posX, posY, condicion, anguloBala, this->boxCollider, this->cortoAlcance, disparadoPor, nombreJugador);
 }
 
 bool RocketLauncher::sinMuniciones()
