@@ -250,12 +250,12 @@ void procesarUltimosMensajes(string mensajes, Cliente* cliente, UpdateJugador* u
 					string sentido = msjContenido.at(6);
 					int cantFotogramas;
 
-					vector<SpriteDto*> listaSprites = setsSprites.at(5)->getSprites();
+					vector<SpriteDto*> listaSprites = setsSprites.at(4)->getSprites();
 					if (spriteBoss == "Boss_hi_do") {
 						cantFotogramas = stringToInt(listaSprites.at(0)->getCantidadDeFotogramas());
 					} else {
 						if (spriteBoss == "Boss_tani_oh") {
-							cantFotogramas = stringToInt(listaSprites.at(5)->getCantidadDeFotogramas());
+							cantFotogramas = stringToInt(listaSprites.at(4)->getCantidadDeFotogramas());
 						}
 					}
 					vista->actualizarBoss(nuevoBoss, xBoss, yBoss, spriteBoss, sentido, cantFotogramas);
