@@ -15,7 +15,7 @@ Item::Item(string nombre, string x, string y, int idItem, string sprite) {
 		this->sprite = "0";
 	} else if (this->nombre == "RocketLauncher") {
 		this->sprite = "1";
-	} else if(this->sprite == "FlameShot") {
+	} else if(this->nombre == "FlameShot") {
 		this->sprite = "2";
 	} else {
 		this->sprite = sprite;
