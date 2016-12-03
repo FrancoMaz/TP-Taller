@@ -410,9 +410,25 @@
 	     <Imagen>FlameShot</Imagen>
 	     <z-index>1</z-index>
 	    </Sprite3>
+	    <Sprite4>
+	  		<Id>Boss_hi_do_bomba</Id>
+		    <CantFotogramas>0</CantFotogramas>
+		    <Ancho>24</Ancho>
+		    <Alto>50</Alto>
+		    <Imagen>Boss_hi_do_bomba</Imagen>
+		    <z-index>1</z-index>
+		</Sprite4>
+		<Sprite5>
+	  		<Id>Boss_tani_oh_disparo_laser</Id>
+		    <CantFotogramas>1</CantFotogramas>
+		    <Ancho>70</Ancho>
+		    <Alto>425</Alto>
+		    <Imagen>Boss_tani_oh_disparo_laser</Imagen>
+		    <z-index>1</z-index>
+		</Sprite5>
 	  </SetBalas>
-	  <SetItemArmas>
-	   <Carpeta>ItemArmas</Carpeta>
+	  <SetItemArmasYBonus>
+	   <Carpeta>ItemArmasYBonus</Carpeta>
 	   <Sprite1>
 	     <Id>Item_HeavyMachineGun</Id>
 	     <CantFotogramas>0</CantFotogramas>
@@ -437,26 +453,23 @@
 	     <Imagen>Item_FlameShot</Imagen>
 	     <z-index>1</z-index>
 	   </Sprite3>
-	  </SetItemArmas>
-	  <SetItemBonus>
-	  	<Carpeta>ItemBonus</Carpeta>
-	  	 <Sprite1>
+	  	<Sprite4>
 	     <Id>Item_KillAll</Id>
 	     <CantFotogramas>6</CantFotogramas>
 	     <Ancho>276</Ancho>
 	     <Alto>76</Alto>
 	     <Imagen>Item_KillAll</Imagen>
 	     <z-index>1</z-index>
-	    </Sprite1>
-	    <Sprite2>
+	    </Sprite4>
+	    <Sprite5>
 	     <Id>Item_Power</Id>
 	     <CantFotogramas>11</CantFotogramas>
 	     <Ancho>594</Ancho>
 	     <Alto>68</Alto>
 	     <Imagen>Item_Power</Imagen>
 	     <z-index>1</z-index>
-	    </Sprite2>
-	  </SetItemBonus>
+    	</Sprite5>
+	  </SetItemArmasYBonus>
 	  <SetEnemigos>
 	  	<Carpeta>Enemigos</Carpeta>
 	  	<Sprite1>
@@ -495,69 +508,53 @@
 		    <z-index>1</z-index>
 		</Sprite1>
 		<Sprite2>
-	  		<Id>Boss_hi_do_bomba</Id>
-		    <CantFotogramas>0</CantFotogramas>
-		    <Ancho>24</Ancho>
-		    <Alto>50</Alto>
-		    <Imagen>Boss_hi_do_bomba</Imagen>
-		    <z-index>1</z-index>
-		</Sprite2>
-		<Sprite3>
 	  		<Id>Boss_hi_do_disparo</Id>
 		    <CantFotogramas>0</CantFotogramas>
 		    <Ancho>32</Ancho>
 		    <Alto>30</Alto>
 		    <Imagen>Boss_hi_do_disparo</Imagen>
 		    <z-index>1</z-index>
-		</Sprite3>
-		<Sprite4>
+		</Sprite2>
+		<Sprite3>
 	  		<Id>Boss_hi_do_colisionado</Id>
 		    <CantFotogramas>3</CantFotogramas>
 		    <Ancho>600</Ancho>
 		    <Alto>172</Alto>
 		    <Imagen>Boss_hi_do_colisionado</Imagen>
 		    <z-index>1</z-index>
-		</Sprite4>
-		<Sprite5>
+		</Sprite3>
+		<Sprite4>
 	  		<Id>Boss_hi_do_destruido</Id>
 		    <CantFotogramas>3</CantFotogramas>
 		    <Ancho>600</Ancho>
 		    <Alto>172</Alto>
 		    <Imagen>Boss_hi_do_destruido</Imagen>
 		    <z-index>1</z-index>
-		</Sprite5>
-		<Sprite6>
+		</Sprite4>
+		<Sprite5>
 	  		<Id>Boss_tani_oh</Id>
 		    <CantFotogramas>4</CantFotogramas>
 		    <Ancho>1468</Ancho>
 		    <Alto>182</Alto>
 		    <Imagen>Boss_tani_oh</Imagen>
 		    <z-index>1</z-index>
-		</Sprite6>
-		<Sprite7>
+		</Sprite5>
+		<Sprite6>
 	  		<Id>Boss_tani_oh_colisionado</Id>
 		    <CantFotogramas>4</CantFotogramas>
 		    <Ancho>1468</Ancho>
 		    <Alto>182</Alto>
 		    <Imagen>Boss_tani_oh_colisionado</Imagen>
 		    <z-index>1</z-index>
-		</Sprite7>
-		<Sprite8>
+		</Sprite6>
+		<Sprite7>
 	  		<Id>Boss_tani_oh_destruido</Id>
 		    <CantFotogramas>4</CantFotogramas>
 		    <Ancho>1468</Ancho>
 		    <Alto>182</Alto>
 		    <Imagen>Boss_tani_oh_destruido</Imagen>
 		    <z-index>1</z-index>
-		</Sprite8>
-		<Sprite9>
-	  		<Id>Boss_tani_oh_disparo_laser</Id>
-		    <CantFotogramas>1</CantFotogramas>
-		    <Ancho>70</Ancho>
-		    <Alto>425</Alto>
-		    <Imagen>Boss_tani_oh_disparo_laser</Imagen>
-		    <z-index>1</z-index>
-		</Sprite9>
+		</Sprite7>
 	  </SetBosses>
 	</Sprites>
 
