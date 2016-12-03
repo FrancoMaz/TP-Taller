@@ -54,17 +54,17 @@
 		</Item1>
 		<Item2>
 			<Arma>RocketLauncher</Arma>
-			<PosicionX>508</PosicionX>
+			<PosicionX>1550</PosicionX>
 			<PosicionY>310</PosicionY>
 		</Item2>
 		<Item3>
 			<Arma>FlameShot</Arma>
-			<PosicionX>740</PosicionX>
+			<PosicionX>4000</PosicionX>
 			<PosicionY>476</PosicionY>
 		</Item3>
 		<Item4>
 			<Arma>RocketLauncher</Arma>
-			<PosicionX>1600</PosicionX>
+			<PosicionX>7000</PosicionX>
 			<PosicionY>310</PosicionY>
 		</Item4>
 	</ItemArmas>
