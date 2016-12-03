@@ -52,9 +52,10 @@ void HiDo::comportamiento(SDL_Rect camara,  bool tieneQueDisparar)
 			{
 				this->proyectilesADisparar.first.clear();
 				SDL_Rect box = {this->boxCollider.x + 27,this->boxCollider.y + 142,32,30};
+
 				for (int i = 0; i < 3; i++)
 				{
-					this->proyectilesADisparar.first.push_back(new Proyectil(20,0,"RocketLauncher",box.x,box.y, this->sentido, 3, box, false,2,"",make_pair(27,142)));
+					this->proyectilesADisparar.first.push_back(new Proyectil(20,0,"1",box.x,box.y, this->sentido, 3, box, false,2,"",make_pair(27,142)));
 				}
 				break;
 			}
@@ -64,7 +65,7 @@ void HiDo::comportamiento(SDL_Rect camara,  bool tieneQueDisparar)
 				SDL_Rect box = {this->boxCollider.x + 27,this->boxCollider.y + 142,32,30};
 				for (int i = 0; i < 3; i++)
 				{
-					this->proyectilesADisparar.first.push_back(new Proyectil(20,0,"RocketLauncher",box.x,box.y, this->sentido, 3, box, false,2,"",make_pair(27,142)));
+					this->proyectilesADisparar.first.push_back(new Proyectil(20,0,"1",box.x,box.y, this->sentido, 3, box, false,2,"",make_pair(27,142)));
 				}
 				break;
 			}
@@ -74,7 +75,7 @@ void HiDo::comportamiento(SDL_Rect camara,  bool tieneQueDisparar)
 				SDL_Rect box = {this->boxCollider.x + 78,this->boxCollider.y + 115,24,50};
 				for (int i = 0; i < 2; i++)
 				{
-					this->proyectilesADisparar.first.push_back(new Proyectil(20,0,"Boss_hi_do_bomba",box.x,box.y, this->sentido, 4, box, false,2,"",make_pair(78,115)));
+					this->proyectilesADisparar.first.push_back(new Proyectil(20,0,"4",box.x,box.y, this->sentido, 4, box, false,2,"",make_pair(78,115)));
 				}
 				break;
 			}

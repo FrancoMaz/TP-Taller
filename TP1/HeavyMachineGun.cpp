@@ -69,7 +69,8 @@ Proyectil* HeavyMachineGun::disparar(int posicionX,int posicionY, string condici
 	//this->proyectil = new Proyectil(20, 15, this->nombreArma,posX,posY, condicion, anguloBala, this->boxCollider, this->cortoAlcance, disparadoPor, nombreJugador);
 	this->municiones -= 1;
 	//return this->proyectil;
-	return new Proyectil(20, 15, this->nombreArma,posX,posY, condicion, anguloBala, this->boxCollider, this->cortoAlcance, disparadoPor, nombreJugador,make_pair(0,0));
+	// 0 porque es heavyMachine
+	return new Proyectil(20, 15, "0", posX, posY, condicion, anguloBala, this->boxCollider, this->cortoAlcance, disparadoPor, nombreJugador,make_pair(0,0));
 }
 
 bool HeavyMachineGun::sinMuniciones()
