@@ -110,9 +110,9 @@ double calcularAngulo(int numero, string sentido)
 		case 3:
 		{
 			if (sentido == "Normal"){
-				angulo = -45;
+				angulo = 135;
 			} else {
-				angulo = 45;
+				angulo = -135;
 			}
 			break;
 		}

@@ -60,7 +60,7 @@
 		</Item3>
 		<Item4>
 			<Arma>RocketLauncher</Arma>
-			<PosicionX>7500</PosicionX>
+			<PosicionX>6200</PosicionX>
 			<PosicionY>476</PosicionY>
 		</Item4>
 	</ItemArmas>
@@ -111,7 +111,7 @@
 			<PosicionY>415</PosicionY>
 		</Enemigo11>
 		<Enemigo12>
-			<PosicionX>7500</PosicionX>
+			<PosicionX>6100</PosicionX>
 			<PosicionY>415</PosicionY>
 		</Enemigo12>
 		<Enemigo13>
@@ -130,7 +130,7 @@
 	
 	<Boss>
 		<Nombre>tani_oh</Nombre>
-		<PosicionX>8000</PosicionX>
+		<PosicionX>6000</PosicionX>
 		<PosicionY>338</PosicionY>
 	</Boss>
 </Configuracion>
