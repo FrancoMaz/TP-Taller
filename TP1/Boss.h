@@ -25,9 +25,11 @@ public:
 	string getStringBoss();
 	SDL_Rect boxCollider;
 	bool disparando;
-	Proyectil* proyectilADisparar;
+	vector<Proyectil*> proyectilesADisparar;
 	string getNombre();
 	int armaADisparar;
+	int despX;
+	int despY;
 };
 
 #endif /* BOSS_H_ */

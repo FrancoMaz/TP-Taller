@@ -57,7 +57,7 @@ Proyectil* RocketLauncher::disparar(int posicionX,int posicionY, string condicio
 	//this->proyectil = new Proyectil(80, 40, this->nombreArma, posX, posY, condicion, anguloBala, this->boxCollider, this->cortoAlcance, disparadoPor, nombreJugador);
 	this->municiones -= 1;
 	//return this->proyectil;
-	return new Proyectil(80, 40, this->nombreArma, posX, posY, condicion, anguloBala, this->boxCollider, this->cortoAlcance, disparadoPor, nombreJugador);
+	return new Proyectil(80, 40, this->nombreArma, posX, posY, condicion, anguloBala, this->boxCollider, this->cortoAlcance, disparadoPor, nombreJugador,make_pair(0,0));
 }
 
 bool RocketLauncher::sinMuniciones()

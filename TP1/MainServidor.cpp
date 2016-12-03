@@ -431,6 +431,26 @@ void* controlDeEnemigos(void* arg) {
 	}
 }
 
+void* disparoBoss(void* arg)
+{
+	ParametrosMovimiento* parametrosBoss = (ParametrosMovimiento*) arg;
+	Servidor* servidor = parametrosBoss->servidor;
+	Boss* boss = parametrosBoss->boss;
+	vector<Proyectil*> proyectiles = parametrosBoss->proyectiles;
+	for (int i = 0; i < proyectiles.size(); i++)
+	{
+		pthread_t threadDisparoBoss;
+		parametrosBoss->proyectil = proyectiles.at(i);
+		parametrosBoss->personaje = boss;
+		parametrosBoss->proyectil->posicion = make_pair(boss->posX + parametrosBoss->proyectil->desp.first,boss->posY + parametrosBoss->proyectil->desp.second);
+		parametrosBoss->proyectil->boxCollider.x = boss->posX + parametrosBoss->proyectil->desp.first;
+		parametrosBoss->proyectil->boxCollider.y = boss->posY + parametrosBoss->proyectil->desp.second;
+		pthread_create(&threadDisparoBoss, NULL, &disparoProyectil, parametrosBoss);
+		pthread_detach(threadDisparoBoss);
+		usleep (300000);
+	}
+}
+
 void* bossActivo(void* arg)
 {
 	ParametrosMovimiento* parametrosBoss = (ParametrosMovimiento*) arg;
@@ -447,11 +467,11 @@ void* bossActivo(void* arg)
 	while (!bossNivel->getEstaMuerto()) {
 		usleep(50000);
 		int tiempoTranscurrido = chrono::duration_cast<chrono::seconds>(chrono::high_resolution_clock::now() - start_time).count();
-		if (tiempoTranscurrido %2 == 0 && !bossNivel->disparando && !tieneQueDisparar)
+		if (tiempoTranscurrido %3 == 0 && !bossNivel->disparando && !tieneQueDisparar)
 		{
 			tieneQueDisparar = true;
 		}
-		else if (tiempoTranscurrido %2 != 0)
+		else if (tiempoTranscurrido %3 != 0)
 		{
 			bossNivel->disparando = false;
 		}
@@ -463,11 +483,10 @@ void* bossActivo(void* arg)
 		mensaje->~Mensaje();
 		if (tieneQueDisparar)
 		{
-			pthread_t threadDisparoBoss;
-			parametrosBoss->proyectil = bossNivel->proyectilADisparar;
-			parametrosBoss->personaje = bossNivel;
-			pthread_create(&threadDisparoBoss, NULL, &disparoProyectil, parametrosBoss);
-			pthread_detach(threadDisparoBoss);
+			pthread_t bossDisparar;
+			parametrosBoss->proyectiles = bossNivel->proyectilesADisparar;
+			pthread_create(&bossDisparar, NULL, &disparoBoss, parametrosBoss);
+			pthread_detach(bossDisparar);
 			tieneQueDisparar = false;
 		}
 	}

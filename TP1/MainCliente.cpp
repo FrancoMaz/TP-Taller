@@ -110,9 +110,9 @@ double calcularAngulo(int numero, string sentido)
 		case 3:
 		{
 			if (sentido == "Normal"){
-				angulo = 45;
-			} else {
 				angulo = -45;
+			} else {
+				angulo = 45;
 			}
 			break;
 		}
@@ -122,6 +122,11 @@ double calcularAngulo(int numero, string sentido)
 			break;
 		}
 		case 5:
+		{
+			angulo = 0;
+			break;
+		}
+		case 6:
 		{
 			angulo = 0;
 			break;
@@ -160,9 +165,9 @@ void procesarUltimosMensajes(string mensajes, Cliente* cliente, UpdateJugador* u
 					string spriteAEjecutar = msjContenido.at(5);
 					for (int i = 0; i < setsSprites.size(); i++){
 						vector<SpriteDto*> listaSprites = setsSprites.at(i)->getSprites();
-						for (int i = 0; i < listaSprites.size(); i++) {
-							if (spriteAEjecutar == listaSprites.at(i)->getID()) {
-								update->setSpriteActual(listaSprites.at(i));
+						for (int j = 0; j < listaSprites.size(); j++) {
+							if (spriteAEjecutar == listaSprites.at(j)->getID()) {
+								update->setSpriteActual(listaSprites.at(j));
 							}
 						}
 					}

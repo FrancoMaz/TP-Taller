@@ -9,7 +9,7 @@
 #include <iostream>
 using namespace std;
 
-Proyectil::Proyectil(int danioEnPorcentaje, int puntosPorDisparo, string spriteBala,int posicionX, int posicionY, string sentido, int angulo, SDL_Rect boxCollider, bool cortoAlcance, int disparadoPor, string nombreJugador) {
+Proyectil::Proyectil(int danioEnPorcentaje, int puntosPorDisparo, string spriteBala,int posicionX, int posicionY, string sentido, int angulo, SDL_Rect boxCollider, bool cortoAlcance, int disparadoPor, string nombreJugador, pair<int,int> desp) {
 	this->danioEnPorcentaje = danioEnPorcentaje;
 	this->puntosPorDisparo = puntosPorDisparo;
 	this->spriteBala = spriteBala;
@@ -23,6 +23,7 @@ Proyectil::Proyectil(int danioEnPorcentaje, int puntosPorDisparo, string spriteB
 	this->disparadoPor = disparadoPor;
 	this->jugadorQueLoDisparo = nombreJugador;
 	this->colisionPersonaje = false;
+	this->desp = desp;
 }
 
 Proyectil::~Proyectil() {
@@ -93,6 +94,12 @@ void Proyectil::mover()
 				{
 					break;
 				}
+				case 6:
+				{
+					this->posicion.first -= VELOCIDAD;
+					this->boxCollider.x -= VELOCIDAD;
+					break;
+				}
 			}
 		}
 		else
@@ -138,6 +145,12 @@ void Proyectil::mover()
 				}
 				case 5:
 				{
+					break;
+				}
+				case 6:
+				{
+					this->posicion.first += VELOCIDAD;
+					this->boxCollider.x += VELOCIDAD;
 					break;
 				}
 			}

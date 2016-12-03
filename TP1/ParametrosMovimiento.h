@@ -24,6 +24,7 @@ public:
 	string nombrePersonaje;
 	Boss* boss;
 	Personaje * personaje;
+	vector<Proyectil*> proyectiles;
 	ParametrosMovimiento(Servidor* servidorActual, Jugador* jugadorActual);
 	ParametrosMovimiento(Servidor* servidorActual);
 	virtual ~ParametrosMovimiento();
