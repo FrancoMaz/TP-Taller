@@ -7,8 +7,7 @@
 
 #ifndef HIDO_H_
 #define HIDO_H_
-#define VELOCIDADHIDO 10
-#define VELOCIDADHIDOMAX 6
+#define VELOCIDADHIDO 6
 #include "Boss.h"
 #include "Proyectil.h"
 
