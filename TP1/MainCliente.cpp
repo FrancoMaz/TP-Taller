@@ -231,26 +231,7 @@ void procesarUltimosMensajes(string mensajes, Cliente* cliente, UpdateJugador* u
 					int cantFotogramas;
 
 					vector<SpriteDto*> listaSprites = setsSprites.at(2)->getSprites();
-					if (spriteItem == "Item_HeavyMachineGun") {
-						cantFotogramas = stringToInt(listaSprites.at(0)->getCantidadDeFotogramas());
-					} else {
-						if (spriteItem == "Item_RocketLauncher") {
-							cantFotogramas = stringToInt(listaSprites.at(1)->getCantidadDeFotogramas());
-						} else {
-							if (spriteItem == "Item_FlameShot") {
-								cantFotogramas = stringToInt(listaSprites.at(2)->getCantidadDeFotogramas());
-							}
-						}
-					}
-
-					listaSprites = setsSprites.at(3)->getSprites();
-					if (spriteItem == "Item_KillAll") {
-						cantFotogramas = stringToInt(listaSprites.at(0)->getCantidadDeFotogramas());
-					} else {
-						if (spriteItem == "Item_Power") {
-							cantFotogramas = stringToInt(listaSprites.at(1)->getCantidadDeFotogramas());
-						}
-					}
+					cantFotogramas = stringToInt(listaSprites.at(stringToInt(spriteItem))->getCantidadDeFotogramas());
 					vista->agregarVistaItem(borrarItem,spriteItem,xItem,yItem,cantFotogramas);
 					break;
 				}
