@@ -30,3 +30,7 @@ void VistaEnemigo::verificarSentido(string sentido)
 		this->flip = SDL_FLIP_HORIZONTAL;
 	}
 }
+
+void VistaEnemigo::setTexturaSprite(TexturaSDL* nuevaTextura) {
+	this->textura = nuevaTextura;
+}

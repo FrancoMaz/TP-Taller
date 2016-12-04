@@ -47,128 +47,113 @@ void Proyectil::fueDisparadoPor(string nombreJugador)
 
 void Proyectil::mover()
 {
-	if (!cortoAlcance)
+	if (this->sentido == "Normal")
 	{
-		if (this->sentido == "Normal")
+		switch (this->angulo)
 		{
-			switch (this->angulo)
+			case 0:
 			{
-				case 0:
-				{
-					this->posicion.first += VELOCIDAD;
-					this->boxCollider.x += VELOCIDAD;
-					break;
-				}
-				case 1:
-				{
-					this->posicion.second -= VELOCIDAD;
-					this->boxCollider.y -= VELOCIDAD;
-					break;
-				}
-				case 2:
-				{
-					int velocidad_Y = VELOCIDAD;
-					this->posicion.first += VELOCIDAD;
-					this->boxCollider.x += VELOCIDAD;
-					this->posicion.second -= (velocidad_Y/2);
-					this->boxCollider.y -= (velocidad_Y/2);
-					break;
-				}
-				case 3:
-				{
-					int velocidad_Y = VELOCIDAD;
-					this->posicion.first -= VELOCIDAD;
-					this->boxCollider.x -= VELOCIDAD;
-					this->posicion.second += VELOCIDAD;
-					this->boxCollider.y += VELOCIDAD;
-					break;
-				}
-				case 4:
-				{
-					int velocidad_Y = VELOCIDAD;
-					this->posicion.second += VELOCIDAD;
-					this->boxCollider.y += VELOCIDAD;
-					break;
-				}
-				case 5:
-				{
-					break;
-				}
-				case 6:
-				{
-					this->posicion.first -= VELOCIDAD;
-					this->boxCollider.x -= VELOCIDAD;
-					break;
-				}
+				this->posicion.first += VELOCIDAD;
+				this->boxCollider.x += VELOCIDAD;
+				break;
 			}
-		}
-		else
-		{
-			switch (this->angulo)
+			case 1:
 			{
-				case 0:
-				{
-					this->posicion.first -= VELOCIDAD;
-					this->boxCollider.x -= VELOCIDAD;
-					break;
-				}
-				case 1:
-				{
-					this->posicion.second -= VELOCIDAD;
-					this->boxCollider.y -= VELOCIDAD;
-					break;
-				}
-				case 2:
-				{
-					int velocidad_Y = VELOCIDAD;
-					this->posicion.first -= VELOCIDAD;
-					this->boxCollider.x -= VELOCIDAD;
-					this->posicion.second -= (velocidad_Y/2);
-					this->boxCollider.y -= (velocidad_Y/2);
-					break;
-				}
-				case 3:
-				{
-					int velocidad_Y = VELOCIDAD;
-					this->posicion.first += VELOCIDAD;
-					this->boxCollider.x += VELOCIDAD;
-					this->posicion.second += VELOCIDAD;
-					this->boxCollider.y += VELOCIDAD;
-					break;
-				}
-				case 4:
-				{
-					int velocidad_Y = VELOCIDAD;
-					this->posicion.second += VELOCIDAD;
-					this->boxCollider.y += VELOCIDAD;
-					break;
-				}
-				case 5:
-				{
-					break;
-				}
-				case 6:
-				{
-					this->posicion.first += VELOCIDAD;
-					this->boxCollider.x += VELOCIDAD;
-					break;
-				}
+				this->posicion.second -= VELOCIDAD;
+				this->boxCollider.y -= VELOCIDAD;
+				break;
+			}
+			case 2:
+			{
+				int velocidad_Y = VELOCIDAD;
+				this->posicion.first += VELOCIDAD;
+				this->boxCollider.x += VELOCIDAD;
+				this->posicion.second -= (velocidad_Y/2);
+				this->boxCollider.y -= (velocidad_Y/2);
+				break;
+			}
+			case 3:
+			{
+				int velocidad_Y = VELOCIDAD;
+				this->posicion.first -= VELOCIDAD;
+				this->boxCollider.x -= VELOCIDAD;
+				this->posicion.second += VELOCIDAD;
+				this->boxCollider.y += VELOCIDAD;
+				break;
+			}
+			case 4:
+			{
+				int velocidad_Y = VELOCIDAD;
+				this->posicion.second += VELOCIDAD;
+				this->boxCollider.y += VELOCIDAD;
+				break;
+			}
+			case 5:
+			{
+				this->posicion.first -= 3;
+				this->boxCollider.x -= 3;
+				break;
+			}
+			case 6:
+			{
+				this->posicion.first -= VELOCIDAD;
+				this->boxCollider.x -= VELOCIDAD;
+				break;
 			}
 		}
 	}
 	else
 	{
-		if (aumentoAncho || this->boxCollider.w == 91)
+		switch (this->angulo)
 		{
-			this->boxCollider.w += 91;
-			aumentoAncho = true;
-		}
-		else
-		{
-			if (!aumentoAncho || this->boxCollider.w == 364)
+			case 0:
 			{
-				this->boxCollider.w -= 91;
-				aumentoAncho = false;
+				this->posicion.first -= VELOCIDAD;
+				this->boxCollider.x -= VELOCIDAD;
+				break;
+			}
+			case 1:
+			{
+				this->posicion.second -= VELOCIDAD;
+				this->boxCollider.y -= VELOCIDAD;
+				break;
+			}
+			case 2:
+			{
+				int velocidad_Y = VELOCIDAD;
+				this->posicion.first -= VELOCIDAD;
+				this->boxCollider.x -= VELOCIDAD;
+				this->posicion.second -= (velocidad_Y/2);
+				this->boxCollider.y -= (velocidad_Y/2);
+				break;
+			}
+			case 3:
+			{
+				int velocidad_Y = VELOCIDAD;
+				this->posicion.first += VELOCIDAD;
+				this->boxCollider.x += VELOCIDAD;
+				this->posicion.second += VELOCIDAD;
+				this->boxCollider.y += VELOCIDAD;
+				break;
+			}
+			case 4:
+			{
+				int velocidad_Y = VELOCIDAD;
+				this->posicion.second += VELOCIDAD;
+				this->boxCollider.y += VELOCIDAD;
+				break;
+			}
+			case 5:
+			{
+				this->posicion.first += 3;
+				this->boxCollider.x += 3;
+				break;
+			}
+			case 6:
+			{
+				this->posicion.first += VELOCIDAD;
+				this->boxCollider.x += VELOCIDAD;
+				break;
 			}
 		}
 	}

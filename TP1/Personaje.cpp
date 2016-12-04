@@ -20,7 +20,7 @@ Personaje::~Personaje() {
 }
 
 void Personaje::daniarseCon(int danio) {
-	if (this->vida > 0 && danio <= this->vida) {
+	if (this->vida > 0 && danio < this->vida) {
 		this->vida -= danio;
 		cout << "Vida del enemigo petuto: " << vida << endl;
 	} else {

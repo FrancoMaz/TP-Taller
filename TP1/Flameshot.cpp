@@ -9,7 +9,7 @@
 
 Flameshot::Flameshot() {
 	this->disparoDiagonal = false;
-	this->cortoAlcance = true;
+	this->cortoAlcance = false;
 	this->municiones = 30;
 	this->nombre = "_lanzallamas_";
 	this->municionesPorRepuesto = 15;
@@ -27,29 +27,29 @@ Proyectil* Flameshot::disparar(int posicionX,int posicionY, string condicion, in
 		case 0:
 			if (!agachar){
 				if (condicion == "Normal"){
-					posX = posicionX+183;
-					posY = posicionY+120;
+					posX = posicionX+187;
+					posY = posicionY+115;
 				} else {
-					posX = posicionX-332;
-					posY = posicionY+120;
+					posX = posicionX-85;
+					posY = posicionY+115;
 				}
 			} else {
 				if (condicion == "Normal"){
-					posX = posicionX+173;
-					posY = posicionY+145;
+					posX = posicionX+187;
+					posY = posicionY+140;
 				} else {
-					posX = posicionX-332;
-					posY = posicionY+145;
+					posX = posicionX-85;
+					posY = posicionY+140;
 				}
 			}
 			break;
 		case 1:
 			if (condicion == "Normal"){
-				posX = posicionX-60;
-				posY = posicionY-154;
+				posX = posicionX+60;
+				posY = posicionY-50;
 			} else {
-				posX = posicionX-80;
-				posY = posicionY-154;
+				posX = posicionX+50;
+				posY = posicionY-50;
 			}
 			break;
 	}

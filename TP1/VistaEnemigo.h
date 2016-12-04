@@ -19,6 +19,7 @@ public:
 	int id;
 	SDL_RendererFlip flip;
 	void verificarSentido(string sentido);
+	void setTexturaSprite(TexturaSDL* nuevaTextura);
 	virtual ~VistaEnemigo();
 };
 

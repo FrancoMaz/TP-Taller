@@ -64,3 +64,6 @@ int Enemigo::getPosY()
 {
 	return this->posY;
 }
+void Enemigo::setSprite(string spriteNuevo) {
+	this->spriteEnemigo = spriteNuevo;
+}

@@ -172,14 +172,19 @@ void* disparoProyectil(void* arg)
 		}
 	} else {
 		// disparado por un enemigo
-		while (!servidor->verificarColision(servidor->camara, proyectil, true)) {
+		auto start_time = chrono::high_resolution_clock::now();
+		int tiempo = chrono::duration_cast<chrono::seconds>(chrono::high_resolution_clock::now() - start_time).count();
+		while ((!proyectil->cortoAlcance && !servidor->verificarColision(servidor->camara, proyectil, true)) || (proyectil->cortoAlcance && tiempo % 2 == 0)) {
 			usleep(50000);
 			proyectil->mover();
 			mensajeProyectilString = "2|1|";
 			mensajeProyectilString += proyectil->getStringProyectil();
 			mensajeProyectil = new Mensaje(parametros->nombrePersonaje,"Todos",mensajeProyectilString);
 			servidor->encolarMensajeProcesadoParaCadaCliente(*mensajeProyectil,mensajeProyectilString);
+			servidor->verificarColision(servidor->camara, proyectil, true);
 			mensajeProyectil->~Mensaje();
+
+			tiempo = chrono::duration_cast<chrono::seconds>(chrono::high_resolution_clock::now() - start_time).count();
 		}
 		if (proyectil->colisionPersonaje)
 		{ //si colisiono con un personaje (jugador) y no contra un margen, resto la vida.
@@ -344,12 +349,12 @@ void generarBonus(int estado, int x, int y, Escenario* nivelActual)
 		}
 		case 1:
 		{
-			nivelActual->agregarItemBonus(new Item("KillAll",to_string(x),to_string(y+30),1,"3"));
+			nivelActual->agregarItemBonus(new Item("KillAll",to_string(x+87),to_string(y+30),1,"3"));
 			break;
 		}
 		case 2:
 		{
-			nivelActual->agregarItemBonus(new Item("Power",to_string(x),to_string(y+38),2,"4"));
+			nivelActual->agregarItemBonus(new Item("Power",to_string(x+85),to_string(y+38),2,"4"));
 			break;
 		}
 	}
@@ -402,8 +407,14 @@ void* enemigoActivo(void* arg) {
 			//actualizarPosicionProyectil(parametrosEnemigo);
 	}
 	mensajeEnemigo = "4|2|";
+	enemigo->setSprite("3");
 	mensajeEnemigo += enemigo->getInformacionDelEnemigo();
 	mensaje = new Mensaje(nombre,"Todos",mensajeEnemigo);
+	parametrosEnemigo->servidor->encolarMensajeProcesadoParaCadaCliente(*mensaje,mensajeEnemigo);
+	usleep(900000);
+	mensajeEnemigo = "4|3|";
+	mensajeEnemigo += enemigo->getInformacionDelEnemigo();
+	mensaje->setTexto(mensajeEnemigo);
 	srand(parametrosEnemigo->servidor->getNivelActual()->rdtsc());
 	int estadoBonus = rand() % 3;
 	generarBonus(estadoBonus, enemigo->getPosX(), enemigo->getPosY(), parametrosEnemigo->servidor->getNivelActual());
@@ -497,12 +508,12 @@ void* bossActivo(void* arg)
 			tieneQueDisparar = false;
 		}
 	}
+	bossNivel->nombre += "_destruido";
 	mensajeBoss = "7|2|";
 	mensajeBoss += bossNivel->getStringBoss();
 	mensaje = new Mensaje(nombre,"Todos",mensajeBoss);
 	servidor->encolarMensajeProcesadoParaCadaCliente(*mensaje,mensajeBoss);
 	servidor->getNivelActual()->levelClear = true;
-	//bossNivel->~Boss();
 	mensaje->~Mensaje();
 	pthread_exit(NULL);
 }

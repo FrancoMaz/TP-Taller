@@ -396,8 +396,8 @@
 	    </Sprite2>
 	     <Sprite3>
 	     <Id>FlameShot</Id>
-	     <CantFotogramas>7</CantFotogramas>
-	     <Ancho>2532</Ancho>
+	     <CantFotogramas>6</CantFotogramas>
+	     <Ancho>693</Ancho>
 	     <Alto>80</Alto>
 	     <Imagen>FlameShot</Imagen>
 	     <z-index>1</z-index>
@@ -488,6 +488,14 @@
 		    <Imagen>Enemigo_disparando</Imagen>
 		    <z-index>1</z-index>
 		</Sprite3>
+		<Sprite4>
+	  		<Id>Enemigo_muerto</Id>
+		    <CantFotogramas>11</CantFotogramas>
+		    <Ancho>2409</Ancho>
+		    <Alto>106</Alto>
+		    <Imagen>Enemigo_muerto</Imagen>
+		    <z-index>1</z-index>
+		</Sprite4>
 	  </SetEnemigos>
 	  <SetBosses>
 	  	<Carpeta>Bosses</Carpeta>

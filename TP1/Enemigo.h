@@ -35,6 +35,7 @@ public:
 	Proyectil* dispararProyectil();
 	string getNombre();
 	int estado;
+	void setSprite(string spriteNuevo);
 };
 
 #endif /* ENEMIGO_H_ */
