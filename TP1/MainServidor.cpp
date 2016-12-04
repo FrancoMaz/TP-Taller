@@ -349,12 +349,12 @@ void generarBonus(int estado, int x, int y, Escenario* nivelActual)
 		}
 		case 1:
 		{
-			nivelActual->agregarItemBonus(new Item("KillAll",to_string(x),to_string(y+30),1,"3"));
+			nivelActual->agregarItemBonus(new Item("KillAll",to_string(x+87),to_string(y+30),1,"3"));
 			break;
 		}
 		case 2:
 		{
-			nivelActual->agregarItemBonus(new Item("Power",to_string(x),to_string(y+38),2,"4"));
+			nivelActual->agregarItemBonus(new Item("Power",to_string(x+85),to_string(y+38),2,"4"));
 			break;
 		}
 	}
