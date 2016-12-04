@@ -610,7 +610,7 @@ string Servidor::concatenarMensajes(queue<Mensaje>* colaDeMensajes) {
 
 	Mensaje mensaje;
 	string mensajesConcatenados = "";
-	pthread_mutex_lock(&mutexListaProcesados);
+	//pthread_mutex_lock(&mutexListaProcesados);
 	if (colaDeMensajes->empty()) {
 		string noHayMensajes = "#noHayMensajes#";
 		mensajesConcatenados.append(noHayMensajes);
@@ -622,7 +622,7 @@ string Servidor::concatenarMensajes(queue<Mensaje>* colaDeMensajes) {
 		mensajesConcatenados += "|";
 		mensajesConcatenados += mensaje.getTexto();
 	}
-	pthread_mutex_unlock(&mutexListaProcesados);
+	//pthread_mutex_unlock(&mutexListaProcesados);
 	string lala = mensajesConcatenados.substr(0, mensajesConcatenados.length() -1);
 	lala += "@";
 

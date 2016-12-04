@@ -767,7 +767,8 @@ void Vista::actualizarBoss(string boss, int x, int y, string sprite, string sent
 	}
 	else if (boss == "2")
 	{
-		this->vistaBoss.clear();
+		this->vistaBoss.at(0)->setTexturaSprite(ventana->crearTextura("Recursos/" + sprite + ".png", cantFotogramas));
+		//this->vistaBoss.clear();
 	}
 }
 
@@ -823,4 +824,6 @@ void Vista::vaciarVectores() {
 		delete vistaItems.at(i);
 	}
 	this->vistaItems.clear();
+	delete vistaBoss.at(0);
+	this->vistaBoss.clear();
 }

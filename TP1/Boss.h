@@ -12,7 +12,6 @@
 
 class Boss: public Personaje {
 protected:
-	string nombre;
 	string sentido;
 	pair<int,int> velocidades;
 public:
@@ -31,6 +30,7 @@ public:
 	int despX;
 	int despY;
 	bool disparoDoble;
+	string nombre;
 };
 
 #endif /* BOSS_H_ */

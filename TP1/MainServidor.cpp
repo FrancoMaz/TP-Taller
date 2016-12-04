@@ -508,12 +508,12 @@ void* bossActivo(void* arg)
 			tieneQueDisparar = false;
 		}
 	}
+	bossNivel->nombre += "_destruido";
 	mensajeBoss = "7|2|";
 	mensajeBoss += bossNivel->getStringBoss();
 	mensaje = new Mensaje(nombre,"Todos",mensajeBoss);
 	servidor->encolarMensajeProcesadoParaCadaCliente(*mensaje,mensajeBoss);
 	servidor->getNivelActual()->levelClear = true;
-	//bossNivel->~Boss();
 	mensaje->~Mensaje();
 	pthread_exit(NULL);
 }
