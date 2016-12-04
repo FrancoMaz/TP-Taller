@@ -32,16 +32,16 @@ Jugador::Jugador(string nombre, string equipo, int posicionX, vector<pair<string
 	this->puntaje = 0;
 	this->puntajeTotal = 0;
 	this->subirPlataforma = false;
-	if (this->equipo == "Rojo"){
+	if (this->equipo == "rojo"){
 		equipoIndice = 0;
 	}
-	else if (this->equipo == "Verde"){
+	else if (this->equipo == "verde"){
 		equipoIndice = 1;
 	}
-	else if (this->equipo == "Amarillo"){
+	else if (this->equipo == "amarillo"){
 		equipoIndice = 2;
 	}
-	else if (this->equipo == "Azul"){
+	else if (this->equipo == "azul"){
 		equipoIndice = 3;
 	}
 }
@@ -598,12 +598,8 @@ int Jugador::obtenerIdSpriteAEjecutar(){
 			idSprite = 14 + this->armaActual;
 		}
 		else if (disparar && arriba){
-			//CUBRE IDS 17,31,32 Y 33
-			if (this->armaActual == 0){
-				idSprite = 17;
-			}else{
-				idSprite = 31 + this->armaActual;
-			}
+			//CUBRE IDS 31,32 Y 33
+			idSprite = 31 + this->armaActual;
 		}
 	}
 	return idSprite;

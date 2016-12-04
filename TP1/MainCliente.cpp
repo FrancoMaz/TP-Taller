@@ -165,7 +165,6 @@ void procesarUltimosMensajes(string mensajes, Cliente* cliente, UpdateJugador* u
 					update->setY(msjContenido.at(4));
 					int idColor = stringToInt(msjContenido.at(5));
 					int idSprite = stringToInt(msjContenido.at(6));
-					cout << matrizSpritesJugadores.at(idColor).at(idSprite)->id << endl;
 					update->setSpriteActual(matrizSpritesJugadores.at(idColor).at(idSprite));
 					update->setCondicion(msjContenido.at(7));
 					//string spriteAEjecutar = msjContenido.at(5);

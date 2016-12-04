@@ -582,7 +582,7 @@ void Vista::actualizarPantalla(int anchoVentana, int anchoCapaPrincipal) {
 			VistaJugador* jugador = vistaJugadores.at(i);
 			string nombre = jugador->nombre;
 			if (modoJuego == 3){
-				nombre += "(Equipo " + jugador->equipo + ")";
+				nombre = jugador->equipo + " " + nombre;
 			}
 			textura[i + 19]->actualizarTexto(nombre + "                " + to_string(jugador->valorPuntaje), {255,255,255});
 			textura[i + 19]->aplicarPosicion(ANCHO_VENTANA/2 - textura[i+19]->getAncho()/2, 120 + i * 40,0,SDL_FLIP_NONE);

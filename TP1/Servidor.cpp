@@ -733,11 +733,16 @@ void Servidor::calcularPuntajes()
 			jugador->puntajeTotal += jugador->puntaje;
 			mensajePuntajesString += jugador->getNombre() + "," + to_string(jugador->puntaje) + "," + to_string(jugador->puntajeTotal);
 			if (modoJuegoElegido.first == 3){
-				if (equipoAlfa.at(0) == jugador->getNombre() || equipoAlfa.at(1) == jugador->getNombre()){
-					mensajePuntajesString += ",alfa";
+				for (int i = 0; i < equipoAlfa.size(); i++){
+					if (equipoAlfa.at(i) == jugador->getNombre()){
+						mensajePuntajesString += ",alfa";
+						break;
+					}
 				}
-				else{
-					mensajePuntajesString += ",beta";
+				for (int i = 0; i < equipoBeta.size(); i++){
+					if (equipoBeta.at(i) == jugador->getNombre()){
+						mensajePuntajesString += ",beta";
+					}
 				}
 			}
 			if (i < jugadores->size() - 1){
