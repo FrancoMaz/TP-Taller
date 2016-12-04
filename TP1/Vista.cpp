@@ -542,7 +542,7 @@ void Vista::actualizarPantalla(int anchoVentana, int anchoCapaPrincipal) {
 	for (int i = 0; i < vistaEnemigos.size(); i++) {
 		VistaEnemigo* vistaEnemigo = vistaEnemigos.at(i);
 		texturaEnemigo = vistaEnemigo->textura;
-		texturaEnemigo->aplicarPosicion(vistaEnemigo->x - camara.x, vistaEnemigo->y - camara.y,0,SDL_FLIP_NONE);
+		texturaEnemigo->aplicarPosicion(vistaEnemigo->x - camara.x, vistaEnemigo->y - camara.y,0,vistaEnemigo->flip);
 	}
 	if (!this->vistaBoss.empty())
 	{
@@ -651,10 +651,10 @@ void Vista::actualizarProyectil(string nuevaBala, int x, int y, string sprite, i
 	}
 }
 
-void Vista::actualizarEnemigo(string enemigo, int x, int y, string sprite, int id, int cantFotogramas) {
+void Vista::actualizarEnemigo(string enemigo, int x, int y, string sprite, int id, string sentido, int cantFotogramas) {
 	//si viene un nuevo enemigo
 	if (enemigo == "0") {
-		VistaEnemigo* vistaEnemigo = new VistaEnemigo(x,y,(ventana->crearTextura("Recursos/" + sprite + ".png", cantFotogramas)),id, "Normal");
+		VistaEnemigo* vistaEnemigo = new VistaEnemigo(x,y,(ventana->crearTextura("Recursos/" + sprite + ".png", cantFotogramas)),id, sentido);
 		vistaEnemigos.push_back(vistaEnemigo);
 	} else {
 		//si viene un enemigo ya existente
@@ -664,10 +664,11 @@ void Vista::actualizarEnemigo(string enemigo, int x, int y, string sprite, int i
 				if (vistaEnemigo->id == id) {
 					vistaEnemigo->x = x;
 					vistaEnemigo->y = y;
+					vistaEnemigo->verificarSentido(sentido);
 				}
 			}
 		} else {
-			//si ese enemigo se murio
+			//si ese enemigo tiene que cambiar de sprite
 			if (enemigo == "2") {
 				for (int i = 0; i < vistaEnemigos.size(); i++){
 					VistaEnemigo* vistaEnemigo = vistaEnemigos.at(i);

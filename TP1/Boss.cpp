@@ -32,3 +32,8 @@ string Boss::getNombre()
 {
 	return "Boss";
 }
+
+Enemigo* Boss::liberarSoldado()
+{
+	return NULL;
+}

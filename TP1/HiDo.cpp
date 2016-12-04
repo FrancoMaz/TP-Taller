@@ -18,6 +18,8 @@ HiDo::HiDo(string nombre, string x, string y) {
 	this->armas = {0,1,2};
 	this->armaADisparar = 0;
 	this->proyectilesADisparar.second = 1;
+	this->tiempoEntreArmas = 3;
+	this->liberaSoldados = false;
 }
 
 HiDo::~HiDo() {

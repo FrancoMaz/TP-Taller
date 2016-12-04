@@ -366,18 +366,18 @@ void* enemigoActivo(void* arg) {
 	Enemigo* enemigo = parametrosEnemigo->enemigo;
 	string nombre = "Enemigo";
 	string mensajeEnemigo = "4|0|";
-	mensajeEnemigo += parametrosEnemigo->enemigo->getInformacionDelEnemigo();
+	mensajeEnemigo += enemigo->getInformacionDelEnemigo();
 	Mensaje* mensaje = new Mensaje(nombre,"Todos",mensajeEnemigo);
-	parametrosEnemigo->servidor->encolarMensajeProcesadoParaCadaCliente(*mensaje,mensajeEnemigo);
+	servidor->encolarMensajeProcesadoParaCadaCliente(*mensaje,mensajeEnemigo);
 	mensaje->~Mensaje();
 	mensajeEnemigo = "4|1|";
 	mensajeEnemigo += enemigo->getInformacionDelEnemigo();
 	mensaje = new Mensaje(nombre,"Todos",mensajeEnemigo);
-	parametrosEnemigo->servidor->encolarMensajeProcesadoParaCadaCliente(*mensaje,mensajeEnemigo);
+	servidor->encolarMensajeProcesadoParaCadaCliente(*mensaje,mensajeEnemigo);
 	mensaje->~Mensaje();
 	auto start_time = chrono::high_resolution_clock::now();
 	bool yaDisparo = false;
-	while (!enemigo->getEstaMuerto() && (!parametrosEnemigo->servidor->getNivelActual()->enemigoPerdido(enemigo->getId(),&servidor->camara)) && !servidor->getNivelActual()->levelClear) {
+	while (!enemigo->getEstaMuerto() && (!servidor->getNivelActual()->enemigoPerdido(enemigo->getId(),&servidor->camara)) && !servidor->getNivelActual()->levelClear) {
 		int tiempoTranscurrido = chrono::duration_cast<chrono::seconds>(chrono::high_resolution_clock::now() - start_time).count();
 		usleep(50000);
 		if (enemigo->estado == 1) {
@@ -404,13 +404,41 @@ void* enemigoActivo(void* arg) {
 				yaDisparo = false;
 			}
 		}
-			//actualizarPosicionProyectil(parametrosEnemigo);
+		else if (enemigo->estado == 2)
+		{
+			enemigo->caer();
+			mensajeEnemigo = "4|1|";
+			mensajeEnemigo += enemigo->getInformacionDelEnemigo();
+			mensaje = new Mensaje(nombre,"Todos",mensajeEnemigo);
+			servidor->encolarMensajeProcesadoParaCadaCliente(*mensaje,mensajeEnemigo);
+			mensaje->~Mensaje();
+			if (enemigo->tieneQueDejarDeCaer(servidor->getNivelActual()->plataformas))
+			{
+				enemigo->estado = 3; //Empieza a caminar
+				enemigo->setSprite("4");
+				enemigo->setYCaida();
+				mensajeEnemigo = "4|2|";
+				mensajeEnemigo += enemigo->getInformacionDelEnemigo();
+				mensaje = new Mensaje(nombre,"Todos",mensajeEnemigo);
+				servidor->encolarMensajeProcesadoParaCadaCliente(*mensaje,mensajeEnemigo);
+				mensaje->~Mensaje();
+			}
+		}
+		else if (enemigo->estado == 3)
+		{
+			enemigo->caminar(servidor->camara);
+			mensajeEnemigo = "4|1|";
+			mensajeEnemigo += enemigo->getInformacionDelEnemigo();
+			mensaje = new Mensaje(nombre,"Todos",mensajeEnemigo);
+			servidor->encolarMensajeProcesadoParaCadaCliente(*mensaje,mensajeEnemigo);
+			mensaje->~Mensaje();
+		}
 	}
 	mensajeEnemigo = "4|2|";
 	enemigo->setSprite("3");
 	mensajeEnemigo += enemigo->getInformacionDelEnemigo();
 	mensaje = new Mensaje(nombre,"Todos",mensajeEnemigo);
-	parametrosEnemigo->servidor->encolarMensajeProcesadoParaCadaCliente(*mensaje,mensajeEnemigo);
+	servidor->encolarMensajeProcesadoParaCadaCliente(*mensaje,mensajeEnemigo);
 	usleep(900000);
 	mensajeEnemigo = "4|3|";
 	mensajeEnemigo += enemigo->getInformacionDelEnemigo();
@@ -418,8 +446,8 @@ void* enemigoActivo(void* arg) {
 	srand(parametrosEnemigo->servidor->getNivelActual()->rdtsc());
 	int estadoBonus = rand() % 3;
 	generarBonus(estadoBonus, enemigo->getPosX(), enemigo->getPosY(), parametrosEnemigo->servidor->getNivelActual());
-	parametrosEnemigo->servidor->getNivelActual()->eliminarEnemigoActivo(enemigo->getId());
-	parametrosEnemigo->servidor->encolarMensajeProcesadoParaCadaCliente(*mensaje,mensajeEnemigo);
+	servidor->getNivelActual()->eliminarEnemigoActivo(enemigo->getId());
+	servidor->encolarMensajeProcesadoParaCadaCliente(*mensaje,mensajeEnemigo);
 	mensaje->~Mensaje();
 	pthread_exit(NULL);
 }
@@ -485,11 +513,11 @@ void* bossActivo(void* arg)
 	while (!bossNivel->getEstaMuerto()) {
 		usleep(50000);
 		int tiempoTranscurrido = chrono::duration_cast<chrono::seconds>(chrono::high_resolution_clock::now() - start_time).count();
-		if (tiempoTranscurrido %3 == 0 && !bossNivel->disparando && !tieneQueDisparar)
+		if (tiempoTranscurrido % bossNivel->tiempoEntreArmas == 0 && !bossNivel->disparando && !tieneQueDisparar)
 		{
 			tieneQueDisparar = true;
 		}
-		else if (tiempoTranscurrido %3 != 0)
+		else if (tiempoTranscurrido % bossNivel->tiempoEntreArmas != 0)
 		{
 			bossNivel->disparando = false;
 		}
@@ -502,9 +530,23 @@ void* bossActivo(void* arg)
 		if (tieneQueDisparar)
 		{
 			pthread_t bossDisparar;
-			parametrosBoss->proyectiles = bossNivel->proyectilesADisparar;
-			pthread_create(&bossDisparar, NULL, &disparoBoss, parametrosBoss);
-			pthread_detach(bossDisparar);
+			if (!bossNivel->liberaSoldados)
+			{
+				parametrosBoss->proyectiles = bossNivel->proyectilesADisparar;
+				pthread_create(&bossDisparar, NULL, &disparoBoss, parametrosBoss);
+				pthread_detach(bossDisparar);
+			}
+			else
+			{
+				if (tiempoTranscurrido != 0)
+				{
+					parametrosBoss->enemigo = bossNivel->liberarSoldado();
+					parametrosBoss->enemigo->setId(servidor->getNivelActual()->idEnemigo);
+					pthread_create(&bossDisparar, NULL, &enemigoActivo, parametrosBoss);
+					pthread_detach(bossDisparar);
+					servidor->getNivelActual()->idEnemigo++;
+				}
+			}
 			tieneQueDisparar = false;
 		}
 	}

@@ -137,8 +137,8 @@
 	</Enemigos>
 	
 	<Boss>
-		<Nombre>hi_do</Nombre>
+		<Nombre>airbuster_riberts</Nombre>
 		<PosicionX>1000</PosicionX>
-		<PosicionY>300</PosicionY>
+		<PosicionY>100</PosicionY>
 	</Boss>
 </Configuracion>

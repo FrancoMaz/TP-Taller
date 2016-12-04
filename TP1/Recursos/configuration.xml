@@ -426,6 +426,14 @@
 		    <Imagen>Boss_tani_oh_disparo_laser</Imagen>
 		    <z-index>1</z-index>
 		</Sprite5>
+		<Sprite6>
+	  		<Id>Boss_airbuster_enemigo_bala</Id>
+		    <CantFotogramas>1</CantFotogramas>
+		    <Ancho>78</Ancho>
+		    <Alto>13</Alto>
+		    <Imagen>Boss_airbuster_enemigo_bala</Imagen>
+		    <z-index>1</z-index>
+		</Sprite6>
 	  </SetBalas>
 	  <SetItemArmasYBonus>
 	   <Carpeta>ItemArmasYBonus</Carpeta>
@@ -504,6 +512,46 @@
 		    <Imagen>Enemigo_muerto</Imagen>
 		    <z-index>1</z-index>
 		</Sprite4>
+		<Sprite5>
+	  		<Id>Boss_airbuster_enemigo_caminando</Id>
+		    <CantFotogramas>12</CantFotogramas>
+		    <Ancho>2628</Ancho>
+		    <Alto>106</Alto>
+		    <Imagen>Boss_airbuster_enemigo_caminando</Imagen>
+		    <z-index>1</z-index>
+		</Sprite5>
+		<Sprite6>
+	  		<Id>Boss_airbuster_enemigo_disparando</Id>
+		    <CantFotogramas>3</CantFotogramas>
+		    <Ancho>657</Ancho>
+		    <Alto>106</Alto>
+		    <Imagen>Boss_airbuster_enemigo_disparando</Imagen>
+		    <z-index>1</z-index>
+		</Sprite6>
+		<Sprite7>
+	  		<Id>Boss_airbuster_enemigo_disparando_paracaidas</Id>
+		    <CantFotogramas>3</CantFotogramas>
+		    <Ancho>657</Ancho>
+		    <Alto>197</Alto>
+		    <Imagen>Boss_airbuster_enemigo_disparando_paracaidas</Imagen>
+		    <z-index>1</z-index>
+		</Sprite7>
+		<Sprite8>
+	  		<Id>Boss_airbuster_enemigo_muerto</Id>
+		    <CantFotogramas>11</CantFotogramas>
+		    <Ancho>2409</Ancho>
+		    <Alto>106</Alto>
+		    <Imagen>Boss_airbuster_enemigo_muerto</Imagen>
+		    <z-index>1</z-index>
+		</Sprite8>
+		<Sprite9>
+	  		<Id>Boss_airbuster_enemigo_quieto_paracaidas</Id>
+		    <CantFotogramas>1</CantFotogramas>
+		    <Ancho>219</Ancho>
+		    <Alto>197</Alto>
+		    <Imagen>Boss_airbuster_enemigo_quieto_paracaidas</Imagen>
+		    <z-index>1</z-index>
+		</Sprite9>
 	  </SetEnemigos>
 	  <SetBosses>
 	  	<Carpeta>Bosses</Carpeta>
@@ -563,6 +611,14 @@
 		    <Imagen>Boss_tani_oh_destruido</Imagen>
 		    <z-index>1</z-index>
 		</Sprite7>
+		<Sprite8>
+	  		<Id>Boss_airbuster_riberts</Id>
+		    <CantFotogramas>3</CantFotogramas>
+		    <Ancho>978</Ancho>
+		    <Alto>200</Alto>
+		    <Imagen>Boss_airbuster_riberts</Imagen>
+		    <z-index>1</z-index>
+		</Sprite8>
 	  </SetBosses>
 	</Sprites>
 

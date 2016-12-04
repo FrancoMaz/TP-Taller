@@ -13,7 +13,9 @@ TaniOh::TaniOh(string nombre, string x, string y) {
 	this->posY = atoi(y.c_str());
 	this->boxCollider = {posX,posY,367,182};
 	this->armaADisparar = 0;
-	this->disparoDoble = true;
+	this->disparando = false;
+	this->tiempoEntreArmas = 3;
+	this->liberaSoldados = false;
 }
 
 TaniOh::~TaniOh() {
@@ -87,4 +89,3 @@ void TaniOh::comportamiento(SDL_Rect camara, bool tieneQueDisparar)
 		}
 	}
 }
-

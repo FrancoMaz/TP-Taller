@@ -211,7 +211,7 @@ Boss* XmlParser::devolverBoss(string nombre, string x, string y)
 	{
 		return new TaniOh(nombre, x, y);
 	}
-	else if (nombre == "airbuster_rivers")
+	else if (nombre == "airbuster_riberts")
 	{
 		return new AirbusterRiberts(nombre, x, y);
 	}
