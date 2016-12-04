@@ -90,6 +90,8 @@ void Proyectil::mover()
 			}
 			case 5:
 			{
+				this->posicion.first -= 3;
+				this->boxCollider.x -= 3;
 				break;
 			}
 			case 6:
@@ -143,6 +145,8 @@ void Proyectil::mover()
 			}
 			case 5:
 			{
+				this->posicion.first += 3;
+				this->boxCollider.x += 3;
 				break;
 			}
 			case 6:

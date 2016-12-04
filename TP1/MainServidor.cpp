@@ -172,14 +172,19 @@ void* disparoProyectil(void* arg)
 		}
 	} else {
 		// disparado por un enemigo
-		while (!servidor->verificarColision(servidor->camara, proyectil, true)) {
+		auto start_time = chrono::high_resolution_clock::now();
+		int tiempo = chrono::duration_cast<chrono::seconds>(chrono::high_resolution_clock::now() - start_time).count();
+		while ((!proyectil->cortoAlcance && !servidor->verificarColision(servidor->camara, proyectil, true)) || (proyectil->cortoAlcance && tiempo % 2 == 0)) {
 			usleep(50000);
 			proyectil->mover();
 			mensajeProyectilString = "2|1|";
 			mensajeProyectilString += proyectil->getStringProyectil();
 			mensajeProyectil = new Mensaje(parametros->nombrePersonaje,"Todos",mensajeProyectilString);
 			servidor->encolarMensajeProcesadoParaCadaCliente(*mensajeProyectil,mensajeProyectilString);
+			servidor->verificarColision(servidor->camara, proyectil, true);
 			mensajeProyectil->~Mensaje();
+
+			tiempo = chrono::duration_cast<chrono::seconds>(chrono::high_resolution_clock::now() - start_time).count();
 		}
 		if (proyectil->colisionPersonaje)
 		{ //si colisiono con un personaje (jugador) y no contra un margen, resto la vida.
