@@ -279,14 +279,6 @@
 	      <Imagen>Jugador_cuchillo_agachado_</Imagen>
 	      <z-index>1</z-index>
 	    </Sprite25>
-	    <Sprite26>
-	      <Id>Jugador_desconectado</Id>
-	      <CantFotogramas>0</CantFotogramas>
-	      <Ancho>219</Ancho>
-	      <Alto>220</Alto>
-	      <Imagen>Jugador_desconectado</Imagen>
-	      <z-index>1</z-index>
-	    </Sprite26>
 	    <Sprite27>
 	      <Id>Jugador_corriendo_mirando_arriba_</Id>
 	      <CantFotogramas>9</CantFotogramas>
@@ -620,6 +612,17 @@
 		    <z-index>1</z-index>
 		</Sprite8>
 	  </SetBosses>
+	  <SetDesconectado>
+	  	<Carpeta>Desconectado</Carpeta>
+	  	<Sprite1>
+	      <Id>Jugador_desconectado</Id>
+	      <CantFotogramas>0</CantFotogramas>
+	      <Ancho>219</Ancho>
+	      <Alto>220</Alto>
+	      <Imagen>Jugador_desconectado</Imagen>
+	      <z-index>1</z-index>
+	  	</Sprite1>
+	  </SetDesconectado>
 	</Sprites>
 
 	<Ventana>

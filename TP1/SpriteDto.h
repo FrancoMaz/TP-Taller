@@ -16,13 +16,13 @@ using namespace std;
 
 class SpriteDto {
 private:
-	string id;
 	string cantidadDeFotogramas;
 	string ancho;
 	string alto;
 	string path;
 	string zIndex;
 public:
+	string id;
 	SpriteDto(string id, string cantidadDeFotogramas, string ancho, string alto, string path, string zIndex);
 	string getID();
 	string getCantidadDeFotogramas();

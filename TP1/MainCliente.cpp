@@ -138,7 +138,9 @@ double calcularAngulo(int numero, string sentido)
 void procesarUltimosMensajes(string mensajes, Cliente* cliente, UpdateJugador* update, bool primeraVez) {
 	string mensajeVacio = "#noHayMensajes@";
 	vector<SetDeSpritesDto*> setsSprites = handshakeDeserializado->getSprites();
+	vector<vector<SpriteDto*>> matrizSpritesJugadores = handshakeDeserializado->matrizSpritesJugadores;
 	if(mensajes != mensajeVacio && mensajes != "") {
+
 		primeraVez = false;
 		mensajes[mensajes.length() - 1] = '#';
 		string s = mensajes;
@@ -161,16 +163,19 @@ void procesarUltimosMensajes(string mensajes, Cliente* cliente, UpdateJugador* u
 					update->setDestinatario(msjContenido.at(2));
 					update->setX(msjContenido.at(3));
 					update->setY(msjContenido.at(4));
-					update->setCondicion(msjContenido.at(6));
-					string spriteAEjecutar = msjContenido.at(5);
-					for (int i = 0; i < setsSprites.size(); i++){
+					int idColor = stringToInt(msjContenido.at(5));
+					int idSprite = stringToInt(msjContenido.at(6));
+					update->setSpriteActual(matrizSpritesJugadores.at(idColor).at(idSprite));
+					update->setCondicion(msjContenido.at(7));
+					//string spriteAEjecutar = msjContenido.at(5);
+					/*for (int i = 0; i < setsSprites.size(); i++){
 						vector<SpriteDto*> listaSprites = setsSprites.at(i)->getSprites();
 						for (int j = 0; j < listaSprites.size(); j++) {
 							if (spriteAEjecutar == listaSprites.at(j)->getID()) {
 								update->setSpriteActual(listaSprites.at(j));
 							}
 						}
-					}
+					}*/
 					vista->actualizarPosJugador(update,stringToInt(handshakeDeserializado->getAncho()),stringToInt(handshakeDeserializado->getImagenes().at(0)->getAncho()));
 					break;
 				}
