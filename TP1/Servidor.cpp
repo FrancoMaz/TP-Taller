@@ -22,7 +22,7 @@ Servidor::Servidor(char* nombreArchivoDeUsuarios, int puerto, Logger* logger) {
 	/* Set port number, using htons function to use proper byte order */
 	this->serverAddr.sin_port = htons(puerto);
 	/* Set IP address to localhost */
-	//this->serverAddr.sin_addr.s_addr = inet_addr("192.168.1.11");
+	//this->serverAddr.sin_addr.s_addr = inet_addr("192.168.1.10");
 	this->serverAddr.sin_addr.s_addr = inet_addr("127.0.0.1");
 
 	//this->serverAddr.sin_addr.s_addr = inet_addr("10.1.77.13");
@@ -610,6 +610,7 @@ string Servidor::concatenarMensajes(queue<Mensaje>* colaDeMensajes) {
 
 	Mensaje mensaje;
 	string mensajesConcatenados = "";
+	pthread_mutex_lock(&mutexColasProcesadas);
 	if (colaDeMensajes->empty()) {
 		string noHayMensajes = "#noHayMensajes#";
 		mensajesConcatenados.append(noHayMensajes);
@@ -621,6 +622,7 @@ string Servidor::concatenarMensajes(queue<Mensaje>* colaDeMensajes) {
 		mensajesConcatenados += "|";
 		mensajesConcatenados += mensaje.getTexto();
 	}
+	pthread_mutex_unlock(&mutexColasProcesadas);
 	string lala = mensajesConcatenados.substr(0, mensajesConcatenados.length() -1);
 	lala += "@";
 
