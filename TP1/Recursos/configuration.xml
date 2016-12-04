@@ -404,8 +404,8 @@
 	    </Sprite2>
 	     <Sprite3>
 	     <Id>FlameShot</Id>
-	     <CantFotogramas>7</CantFotogramas>
-	     <Ancho>2532</Ancho>
+	     <CantFotogramas>6</CantFotogramas>
+	     <Ancho>693</Ancho>
 	     <Alto>80</Alto>
 	     <Imagen>FlameShot</Imagen>
 	     <z-index>1</z-index>
