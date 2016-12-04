@@ -216,6 +216,10 @@ void actualizarPosicionProyectil(ParametrosMovimiento* paramDisparo) {
 			pthread_create(&threadDisparo, NULL, &disparoProyectil, paramDisparo);
 			pthread_detach(threadDisparo);
 		}
+		if (!paramDisparo->jugador->armaActualEsCortoAlcance()){
+			//si no es corto alcance, la dejo como esta.
+			paramDisparo->jugador->setDisparando(false);
+		}
 		usleep(50000);//no se si tiene sentido este usleep
 	}
 }

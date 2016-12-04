@@ -98,5 +98,6 @@ public:
 	bool subirPlataforma;
 	void resetMov();
 	void setearPlataformas(vector<pair<string,string>> plataformas);
+	bool armaActualEsCortoAlcance();
 };
 #endif /* JUGADOR_H_ */

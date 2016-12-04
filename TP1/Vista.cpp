@@ -792,8 +792,23 @@ void Vista::vaciarDatos() {
 
 void Vista::vaciarVectores() {
 	//this->vistaJugadores.clear();
+	for (int i = 0; i < this->vectorCapas.size() ; i++){
+		delete vectorCapas.at(i);
+	}
 	this->vectorCapas.clear();
+
+	for (int i = 0; i < this->vistaBalas.size() ; i++){
+		delete vistaBalas.at(i);
+	}
 	this->vistaBalas.clear();
+
+	for (int i = 0; i < this->vistaEnemigos.size() ; i++){
+		delete vistaEnemigos.at(i);
+	}
 	this->vistaEnemigos.clear();
+
+	for (int i = 0; i < this->vistaItems.size() ; i++){
+		delete vistaItems.at(i);
+	}
 	this->vistaItems.clear();
 }

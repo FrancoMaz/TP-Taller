@@ -30,6 +30,7 @@ public:
 	virtual void setEstaMuerto();
 	virtual void vidaCompleta();
 	virtual void revivir();
+	virtual void setDisparando(bool disparando);
 };
 
 #endif /* PERSONAJE_H_ */
