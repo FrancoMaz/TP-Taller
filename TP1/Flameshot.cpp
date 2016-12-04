@@ -9,7 +9,7 @@
 
 Flameshot::Flameshot() {
 	this->disparoDiagonal = false;
-	this->cortoAlcance = true;
+	this->cortoAlcance = false;
 	this->municiones = 30;
 	this->nombre = "_lanzallamas_";
 	this->municionesPorRepuesto = 15;
