@@ -7,8 +7,8 @@
 
 #include "Enemigo.h"
 
-Enemigo::Enemigo(int posX, int posY, int id, int estado) {
-	this->vida = 100;
+Enemigo::Enemigo(int posX, int posY, int id, int estado, int vida) {
+	this->vida = vida;
 	this->armas.push_back(new HeavyMachineGun());
 	this->estaMuerto = false;
 	this->posX = posX;
@@ -60,9 +60,9 @@ int Enemigo::getPosX() {
 	return this->posX;
 }
 
-Proyectil* Enemigo::dispararProyectil() {
+Proyectil* Enemigo::dispararProyectil(int angulo, string bala, int x, int y, int w, int h, int danio) {
 	// le paso un 2 al final para indicar que el proyectil fue disparado por un jugador
-	string sentidoBala = "";
+	/*string sentidoBala = "";
 	if (condicionSprite == "Normal")
 	{
 		sentidoBala = "Espejado";
@@ -70,8 +70,8 @@ Proyectil* Enemigo::dispararProyectil() {
 	else
 	{
 		sentidoBala = "Normal";
-	}
-	return new Proyectil(20, 15, "0", posX + 25, posY + 10, sentidoBala, anguloBala, {posX + 25, posY + 10, 22, 13}, false, 2, "", make_pair(0,0));
+	}*/
+	return new Proyectil(danio, 15, bala, posX + x, posY + y, this->condicionSprite, angulo, {posX + x, posY + y, w, h}, false, 2, "", make_pair(0,0));
 }
 
 string Enemigo::getNombre() {

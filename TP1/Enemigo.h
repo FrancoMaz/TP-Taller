@@ -28,7 +28,7 @@ private:
 	string sentido;
 
 public:
-	Enemigo(int posX, int posY, int id, int estado);
+	Enemigo(int posX, int posY, int id, int estado, int vida);
 	virtual ~Enemigo();
 	int getId();
 	void setId(int id);
@@ -37,7 +37,7 @@ public:
 	int getPosX();
 	int getPosY();
 	bool threadAsociado;
-	Proyectil* dispararProyectil();
+	Proyectil* dispararProyectil(int angulo, string bala, int x, int y, int w, int h, int danio);
 	string getNombre();
 	int estado;
 	void setSprite(string spriteNuevo);
