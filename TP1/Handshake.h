@@ -31,6 +31,7 @@ public:
 	string getAncho();
 	string getAlto();
 	string getCantidadMaximaJugadores();
+	vector<vector<SpriteDto*>> matrizSpritesJugadores;
 };
 
 #endif /* HANDSHAKE_H_ */

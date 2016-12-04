@@ -50,6 +50,7 @@ private:
 	bool arriba = false;
 	double angulo;
 	string spriteAEjecutar;
+	int idSpriteAEjecutar;
 	bool conectado = false;
 	pthread_t thrMov;
 	SDL_Keycode ultimaTeclaPresionada = SDLK_RIGHT;
@@ -99,5 +100,8 @@ public:
 	void resetMov();
 	void setearPlataformas(vector<pair<string,string>> plataformas);
 	bool armaActualEsCortoAlcance();
+	int equipoIndice;
+	int idSprite;
+	int obtenerIdSpriteAEjecutar();
 };
 #endif /* JUGADOR_H_ */

@@ -32,6 +32,18 @@ Jugador::Jugador(string nombre, string equipo, int posicionX, vector<pair<string
 	this->puntaje = 0;
 	this->puntajeTotal = 0;
 	this->subirPlataforma = false;
+	if (this->equipo == "Rojo"){
+		equipoIndice = 0;
+	}
+	else if (this->equipo == "Verde"){
+		equipoIndice = 1;
+	}
+	else if (this->equipo == "Amarillo"){
+		equipoIndice = 2;
+	}
+	else if (this->equipo == "Azul"){
+		equipoIndice = 3;
+	}
 }
 
 Jugador::~Jugador() {
@@ -87,6 +99,7 @@ void Jugador::condicionesMovimiento()
 }
 
 void Jugador::mover(SDL_Rect camara){
+	this->idSprite = obtenerIdSpriteAEjecutar();
 	if (velocidades.first > VELMAX)
 	{
 		velocidades.first = VELMAX;
@@ -354,7 +367,8 @@ void Jugador::setDesconectado()
 
 string Jugador::getStringJugador()
 {
-	return ("0|" + nombre + "|" + to_string(posicion.first) + "|" + to_string(posicion.second) + "|" + spriteAEjecutar + "|" + condicionSprite + "#");
+	return ("0|" + nombre + "|" + to_string(posicion.first) + "|" + to_string(posicion.second) + "|" + to_string(equipoIndice) + "|" + to_string(idSprite) + "|" + condicionSprite + "#");
+	//return ("0|" + nombre + "|" + to_string(posicion.first) + "|" + to_string(posicion.second) + "|" + spriteAEjecutar + "|" + condicionSprite + "#");
 }
 
 string Jugador::getNombre()
@@ -528,3 +542,70 @@ bool Jugador::armaActualEsCortoAlcance()
 {
 	return this->armas.at(this->armaActual)->cortoAlcance;
 }
+
+
+int Jugador::obtenerIdSpriteAEjecutar(){
+	//devuelve la posicion en la matriz del sprite a ejecutar
+	int idSprite;
+	if (saltar){
+		//CUBRE IDS 0,1 Y 2
+		idSprite = 0 + this->armaActual;
+	}
+	else if (agachar){
+		if (!disparar){
+			//CUBRE IDS 18,19 Y 20
+			idSprite = 18 + this->armaActual;
+		}
+		else{
+			//CUBRE IDS 21,22 Y 23
+			idSprite = 21 + this->armaActual;
+		}
+	}
+	else if(movDerecha || movIzquierda){
+		if (!disparar && !arriba){
+			//CUBRE IDS 3,4 Y 5
+			idSprite = 3 + this->armaActual;
+		}
+		else if (!disparar && arriba){
+			//CUBRE IDS 25,26 Y 27
+			idSprite = 25 + this->armaActual;
+		}
+		else if (disparar && !arriba){
+			//CUBRE IDS 7,8 Y 9
+			idSprite = 7 + this->armaActual;
+		}
+		else if (disparar && arriba){
+			//CUBRE IDS 10,28,29 Y 30
+			if (this->armaActual == 0){
+				idSprite = 10;
+			}
+			else{
+				idSprite = 28 + this->armaActual;
+			}
+		}
+	}
+	else{
+		if (!disparar && !arriba){
+			//CUBRE IDS 11,12 Y 13
+			idSprite = 11 + this->armaActual;
+		}
+		else if (!disparar && arriba){
+			//CUBRE IDS 34,35 Y 36
+			idSprite = 34 + this->armaActual;
+		}
+		else if (disparar && !arriba){
+			//CUBRE IDS 14,15 Y 16
+			idSprite = 14 + this->armaActual;
+		}
+		else if (disparar && arriba){
+			//CUBRE IDS 17,31,32 Y 33
+			if (this->armaActual == 0){
+				idSprite = 17;
+			}else{
+				idSprite = 31 + this->armaActual;
+			}
+		}
+	}
+	return idSprite;
+}
+
