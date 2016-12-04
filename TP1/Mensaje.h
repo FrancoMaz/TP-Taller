@@ -27,6 +27,7 @@ public:
 	string getRemitente();
 	string getDestinatario();
 	SDL_Keycode deserializar(string evento);
+	void setTexto(string nuevoMensaje);
 	bool sePresionoTecla();
 
 private:

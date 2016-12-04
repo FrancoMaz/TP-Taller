@@ -27,6 +27,10 @@ string Mensaje::getTexto(){
 	return this->textoMensaje;
 }
 
+void Mensaje::setTexto(string nuevoMensaje) {
+	this->textoMensaje = nuevoMensaje;
+}
+
 string Mensaje::getStringDatos(){
 	return (this->clienteRemitente + '|' + this->clienteDestinatario + '|' + this->textoMensaje + '#');
 }

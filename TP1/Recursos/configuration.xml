@@ -496,6 +496,14 @@
 		    <Imagen>Enemigo_disparando</Imagen>
 		    <z-index>1</z-index>
 		</Sprite3>
+		<Sprite4>
+	  		<Id>Enemigo_muerto</Id>
+		    <CantFotogramas>11</CantFotogramas>
+		    <Ancho>2409</Ancho>
+		    <Alto>106</Alto>
+		    <Imagen>Enemigo_muerto</Imagen>
+		    <z-index>1</z-index>
+		</Sprite4>
 	  </SetEnemigos>
 	  <SetBosses>
 	  	<Carpeta>Bosses</Carpeta>

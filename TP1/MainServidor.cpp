@@ -402,8 +402,14 @@ void* enemigoActivo(void* arg) {
 			//actualizarPosicionProyectil(parametrosEnemigo);
 	}
 	mensajeEnemigo = "4|2|";
+	enemigo->setSprite("3");
 	mensajeEnemigo += enemigo->getInformacionDelEnemigo();
 	mensaje = new Mensaje(nombre,"Todos",mensajeEnemigo);
+	parametrosEnemigo->servidor->encolarMensajeProcesadoParaCadaCliente(*mensaje,mensajeEnemigo);
+	usleep(900000);
+	mensajeEnemigo = "4|3|";
+	mensajeEnemigo += enemigo->getInformacionDelEnemigo();
+	mensaje->setTexto(mensajeEnemigo);
 	srand(parametrosEnemigo->servidor->getNivelActual()->rdtsc());
 	int estadoBonus = rand() % 3;
 	generarBonus(estadoBonus, enemigo->getPosX(), enemigo->getPosY(), parametrosEnemigo->servidor->getNivelActual());
