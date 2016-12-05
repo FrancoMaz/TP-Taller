@@ -178,8 +178,8 @@ datosConexion Vista::cargarPantallaIngresoDatos(bool aviso, int numeroPantalla){
 			//campoUno = this->datos.puerto;
 			campoUno = "7891";
 			//campoDos = this->datos.ip;
-			//campoDos = "127.0.0.1";
-			campoDos = "192.168.1.10";
+			campoDos = "127.0.0.1";
+			//campoDos = "192.168.1.10";
 			textoIngresePuerto->actualizarTexto("Ingrese el puerto:",colorTexto);
 			textoIngreseIP->actualizarTexto("Ingrese la IP del servidor:",colorTexto);
 			textoDatosNoCoinciden->actualizarTexto("La dirección de ip o el puerto no permiten esta conexión",colorTextoAmarillo);
@@ -460,7 +460,10 @@ void Vista::actualizarPosJugador(UpdateJugador* update, int anchoVentana, int an
 			vistaJugador->y = atoi(update->getY().c_str());
 			if(update->getSpriteAnterior() != update->getSpriteActual()){
 				update->setSpriteAnterior(update->getSpriteActual());
-				texturaJugadorX->cargarImagen("Recursos/" + update->getSpriteActual()->getPath() + ".png");
+				if (update->getSpriteActual()->id == "Jugador_lanzallamas_saltando_rojo") {
+					update->getSpriteActual()->setCantFotogramas("9");
+				}
+				texturaJugadorX->cargarImagen("Recursos/" + update->getSpriteActual()->id + ".png");
 				texturaJugadorX->generarSprite(atoi(update->getSpriteActual()->getCantidadDeFotogramas().c_str()));
 			}
 			if (update->getCondicion() == "Normal")
