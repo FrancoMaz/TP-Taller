@@ -453,7 +453,7 @@ void* enemigoActivo(void* arg) {
 			}
 			case 3:
 			{
-				enemigo->caminar(servidor->camara);
+				enemigo->caminar(servidor->camara,servidor->getNivelActual()->plataformas);
 				mensajeEnemigo = "4|1|";
 				mensajeEnemigo += enemigo->getInformacionDelEnemigo();
 				mensaje = new Mensaje(nombre,"Todos",mensajeEnemigo);
@@ -531,7 +531,14 @@ void* enemigoActivo(void* arg) {
 		}
 	}
 	mensajeEnemigo = "4|2|";
-	enemigo->setSprite("3");
+	if (!enemigo->esEnemigoBoss)
+	{
+		enemigo->setSprite("3");
+	}
+	else
+	{
+		enemigo->setSprite("7");
+	}
 	mensajeEnemigo += enemigo->getInformacionDelEnemigo();
 	mensaje = new Mensaje(nombre,"Todos",mensajeEnemigo);
 	servidor->encolarMensajeProcesadoParaCadaCliente(*mensaje,mensajeEnemigo);
@@ -557,7 +564,7 @@ void* controlDeEnemigos(void* arg) {
 		servidor->getNivelActual()->despertarEnemigos(&servidor->camara);
 		for (int i = 0; i < servidor->getNivelActual()->getEnemigosActivos().size(); i++) {
 			Enemigo* enemigo = servidor->getNivelActual()->getEnemigoActivo(i);
-			if (enemigo != NULL && !enemigo->threadAsociado) {
+			if (enemigo != NULL && !enemigo->threadAsociado && !enemigo->esEnemigoBoss) {
 				enemigo->threadAsociado = true;
 				pthread_t threadEnemigo;
 				ParametrosMovimiento* parametrosEnemigo = new ParametrosMovimiento(servidor,NULL);
@@ -586,6 +593,10 @@ void* disparoBoss(void* arg)
 			parametrosBoss->proyectil->posicion = make_pair(boss->posX + parametrosBoss->proyectil->desp.first,boss->posY + parametrosBoss->proyectil->desp.second);
 			parametrosBoss->proyectil->boxCollider.x = boss->posX + parametrosBoss->proyectil->desp.first;
 			parametrosBoss->proyectil->boxCollider.y = boss->posY + parametrosBoss->proyectil->desp.second;
+			pthread_mutex_lock(&mutexIdProyectil);
+			parametrosBoss->proyectil->id = idProyectil;
+			idProyectil += 1;
+			pthread_mutex_unlock(&mutexIdProyectil);
 			pthread_create(&threadDisparoBoss, NULL, &disparoProyectil, parametrosBoss);
 			pthread_detach(threadDisparoBoss);
 		}
@@ -638,7 +649,7 @@ void* bossActivo(void* arg)
 				{
 					parametrosBoss->enemigo = bossNivel->liberarSoldado(parametrosBoss->jugador->getPosicion().first);
 					parametrosBoss->enemigo->setId(servidor->getNivelActual()->idEnemigo);
-					//servidor->getNivelActual()->agregarEnemigoActivo(parametrosBoss->enemigo);
+					servidor->getNivelActual()->agregarEnemigoActivo(parametrosBoss->enemigo);
 					pthread_create(&bossDisparar, NULL, &enemigoActivo, parametrosBoss);
 					pthread_detach(bossDisparar);
 					servidor->getNivelActual()->idEnemigo++;

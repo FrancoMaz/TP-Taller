@@ -7,7 +7,7 @@
 
 #include "Enemigo.h"
 
-Enemigo::Enemigo(int posX, int posY, int id, int estado, int vida) {
+Enemigo::Enemigo(int posX, int posY, int id, int estado, int vida, bool esBoss) {
 	this->vida = vida;
 	this->armas.push_back(new HeavyMachineGun());
 	this->estaMuerto = false;
@@ -36,6 +36,7 @@ Enemigo::Enemigo(int posX, int posY, int id, int estado, int vida) {
 		this->boxCollider.h = 197;
 	}
 	this->estado = estado;
+	this->esEnemigoBoss = esBoss;
 }
 
 Enemigo::~Enemigo() {
@@ -86,6 +87,7 @@ void Enemigo::setSprite(string spriteNuevo) {
 void Enemigo::caer()
 {
 	this->posY += VELOCIDADCAIDA;
+	this->boxCollider.y += VELOCIDADCAIDA;
 }
 
 bool Enemigo::tieneQueDejarDeCaer(vector<pair<string,string>> plataformas)
@@ -109,13 +111,27 @@ bool Enemigo::esPlataforma(vector<pair<string,string>> plataformas)
 	return false;
 }
 
-void Enemigo::caminar(SDL_Rect camara)
+pair<int,int> Enemigo::buscarPlataforma(vector<pair<string,string>> plataformas)
+{
+	for (int i = 0; i < plataformas.size(); i++)
+	{
+		if ((this->posX + boxCollider.w >= atoi(plataformas.at(i).first.c_str())) && (this->posX <= atoi(plataformas.at(i).second.c_str())))
+		{
+			pair<int,int> plat;
+			plat.first = atoi(plataformas.at(i).first.c_str());
+			plat.second = atoi(plataformas.at(i).second.c_str());
+			return plat;
+		}
+	}
+}
+
+void Enemigo::caminar(SDL_Rect camara, vector<pair<string,string>> plataformas)
 {
 	if (this->condicionSprite == "Normal")
 	{
 		this->posX -= VELOCIDADCAMINAR;
 		this->boxCollider.x -= VELOCIDADCAMINAR;
-		if (this->boxCollider.x <= camara.x)
+		if ((!this->esPlataforma(plataformas) && this->boxCollider.x <= camara.x) || (this->esPlataforma(plataformas) && this->boxCollider.x <= this->buscarPlataforma(plataformas).first))
 		{
 			this->condicionSprite = "Espejado";
 		}
@@ -124,7 +140,7 @@ void Enemigo::caminar(SDL_Rect camara)
 	{
 		this->posX += VELOCIDADCAMINAR;
 		this->boxCollider.x += VELOCIDADCAMINAR;
-		if (this->boxCollider.x + this->boxCollider.w >= camara.x + camara.w)
+		if ((!this->esPlataforma(plataformas) && this->boxCollider.x + this->boxCollider.w >= camara.x + camara.w) || (this->esPlataforma(plataformas) && this->boxCollider.x + this->boxCollider.w >= this->buscarPlataforma(plataformas).second))
 		{
 			this->condicionSprite = "Normal";
 		}
@@ -139,6 +155,6 @@ void Enemigo::setId(int id)
 void Enemigo::setYCaida()
 {
 	this->posY += 91;
-	this->boxCollider.y = 91;
+	this->boxCollider.y += 91;
 	this->boxCollider.h = 106;
 }

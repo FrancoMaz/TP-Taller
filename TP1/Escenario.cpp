@@ -166,7 +166,7 @@ void Escenario::despertarEnemigos(SDL_Rect* camara) {
 				srand(rdtsc());
 				int estado = rand() % 2;
 				if (this->enemigosPorNivel.at(0).first < camara->x + camara->w && this->enemigosPorNivel.at(0).first > camara->x) {
-					Enemigo* enemigo = new Enemigo(this->enemigosPorNivel.at(0).first,this->enemigosPorNivel.at(0).second,this->idEnemigo, estado, 100);
+					Enemigo* enemigo = new Enemigo(this->enemigosPorNivel.at(0).first,this->enemigosPorNivel.at(0).second,this->idEnemigo, estado, 100, false);
 					pthread_mutex_lock(&mutexEnemigosActivos);
 					this->enemigosActivos.push_back(enemigo);
 					pthread_mutex_unlock(&mutexEnemigosActivos);

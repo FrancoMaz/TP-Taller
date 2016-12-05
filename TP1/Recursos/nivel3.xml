@@ -138,7 +138,7 @@
 	
 	<Boss>
 		<Nombre>airbuster_riberts</Nombre>
-		<PosicionX>1000</PosicionX>
-		<PosicionY>100</PosicionY>
+		<PosicionX>4400</PosicionX>
+		<PosicionY>50</PosicionY>
 	</Boss>
 </Configuracion>

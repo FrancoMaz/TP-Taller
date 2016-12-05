@@ -46,7 +46,7 @@ void AirbusterRiberts::comportamiento(SDL_Rect camara,  bool tieneQueDisparar)
 
 Enemigo* AirbusterRiberts::liberarSoldado(int xJugador)
 {
-	Enemigo* enemigoADevolver = new Enemigo(this->posX + 88, this->posY + 15, 0, 2, 200);
+	Enemigo* enemigoADevolver = new Enemigo(this->posX + 88, this->posY + 15, 0, 2, 200, true);
 	if (xJugador >= enemigoADevolver->getPosX())
 	{
 		enemigoADevolver->condicionSprite = "Espejado";

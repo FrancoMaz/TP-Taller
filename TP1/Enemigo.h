@@ -27,7 +27,7 @@ private:
 	string sentido;
 
 public:
-	Enemigo(int posX, int posY, int id, int estado, int vida);
+	Enemigo(int posX, int posY, int id, int estado, int vida, bool esBoss);
 	virtual ~Enemigo();
 	int getId();
 	void setId(int id);
@@ -43,9 +43,11 @@ public:
 	void caer();
 	bool tieneQueDejarDeCaer(vector<pair<string,string>> plataformas);
 	bool esPlataforma(vector<pair<string,string>> plataformas);
-	void caminar(SDL_Rect camara);
+	void caminar(SDL_Rect camara, vector<pair<string,string>> plataformas);
 	void setYCaida();
+	pair<int,int> buscarPlataforma(vector<pair<string,string>>);
 	string condicionSprite;
+	bool esEnemigoBoss;
 };
 
 #endif /* ENEMIGO_H_ */
