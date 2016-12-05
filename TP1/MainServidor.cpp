@@ -16,6 +16,7 @@
 #include <chrono>
 #include "Servidor.h"
 #include <pthread.h>
+#include <cmath>
 #include "ParametrosMovimiento.h"
 using namespace std;
 
@@ -360,10 +361,17 @@ void generarBonus(int estado, int x, int y, Escenario* nivelActual)
 	}
 }
 
+int calcularDistancia(Enemigo* enemigo, Jugador* jugador)
+{
+	return (abs(enemigo->getPosX() - jugador->getPosicion().first));
+}
+
+
 void* enemigoActivo(void* arg) {
 	ParametrosMovimiento* parametrosEnemigo = (ParametrosMovimiento*) arg;
 	Servidor* servidor = parametrosEnemigo->servidor;
 	Enemigo* enemigo = parametrosEnemigo->enemigo;
+	Jugador* jugador = parametrosEnemigo->jugador;
 	string nombre = "Enemigo";
 	string mensajeEnemigo = "4|0|";
 	mensajeEnemigo += enemigo->getInformacionDelEnemigo();
@@ -451,7 +459,7 @@ void* enemigoActivo(void* arg) {
 				mensaje = new Mensaje(nombre,"Todos",mensajeEnemigo);
 				servidor->encolarMensajeProcesadoParaCadaCliente(*mensaje,mensajeEnemigo);
 				mensaje->~Mensaje();
-				if (tiempoTranscurrido % 2 == 0 && !yaDisparo && tiempoTranscurrido != 0)
+				if (calcularDistancia(enemigo,jugador) <= 300)
 				{
 					enemigo->estado = 5;
 					enemigo->setSprite("5");
@@ -460,10 +468,6 @@ void* enemigoActivo(void* arg) {
 					mensaje = new Mensaje(nombre,"Todos",mensajeEnemigo);
 					servidor->encolarMensajeProcesadoParaCadaCliente(*mensaje,mensajeEnemigo);
 					mensaje->~Mensaje();
-				}
-				else if (tiempoTranscurrido % 2 != 0)
-				{
-					yaDisparo = false;
 				}
 				break;
 			}
@@ -511,6 +515,16 @@ void* enemigoActivo(void* arg) {
 				else if (tiempoTranscurrido % 2 != 0)
 				{
 					yaDisparo = false;
+				}
+				if (calcularDistancia(enemigo,jugador) > 300)
+				{
+					enemigo->estado = 3;
+					enemigo->setSprite("4");
+					mensajeEnemigo = "4|2|";
+					mensajeEnemigo += enemigo->getInformacionDelEnemigo();
+					mensaje = new Mensaje(nombre,"Todos",mensajeEnemigo);
+					servidor->encolarMensajeProcesadoParaCadaCliente(*mensaje,mensajeEnemigo);
+					mensaje->~Mensaje();
 				}
 				break;
 			}
@@ -622,7 +636,7 @@ void* bossActivo(void* arg)
 			{
 				if (tiempoTranscurrido != 0)
 				{
-					parametrosBoss->enemigo = bossNivel->liberarSoldado();
+					parametrosBoss->enemigo = bossNivel->liberarSoldado(parametrosBoss->jugador->getPosicion().first);
 					parametrosBoss->enemigo->setId(servidor->getNivelActual()->idEnemigo);
 					//servidor->getNivelActual()->agregarEnemigoActivo(parametrosBoss->enemigo);
 					pthread_create(&bossDisparar, NULL, &enemigoActivo, parametrosBoss);

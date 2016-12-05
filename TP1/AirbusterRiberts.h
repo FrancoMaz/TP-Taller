@@ -15,7 +15,7 @@ public:
 	AirbusterRiberts(string nombre, string x, string y);
 	virtual ~AirbusterRiberts();
 	void comportamiento(SDL_Rect camara,  bool tieneQueDisparar);
-	Enemigo* liberarSoldado();
+	Enemigo* liberarSoldado(int xJugador);
 };
 
 #endif /* AIRBUSTERRIBERTS_H_ */

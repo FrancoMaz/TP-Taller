@@ -62,16 +62,13 @@ int Enemigo::getPosX() {
 
 Proyectil* Enemigo::dispararProyectil(int angulo, string bala, int x, int y, int w, int h, int danio) {
 	// le paso un 2 al final para indicar que el proyectil fue disparado por un jugador
-	/*string sentidoBala = "";
-	if (condicionSprite == "Normal")
+	int despX = x;
+	int despY = y;
+	if (condicionSprite == "Espejado" && angulo == 6 && bala == "5")
 	{
-		sentidoBala = "Espejado";
+		despX = 209;
 	}
-	else
-	{
-		sentidoBala = "Normal";
-	}*/
-	return new Proyectil(danio, 15, bala, posX + x, posY + y, this->condicionSprite, angulo, {posX + x, posY + y, w, h}, false, 2, "", make_pair(0,0));
+	return new Proyectil(danio, 15, bala, posX + despX, posY + despY, this->condicionSprite, angulo, {posX + x, posY + y, w, h}, false, 2, "", make_pair(0,0));
 }
 
 string Enemigo::getNombre() {

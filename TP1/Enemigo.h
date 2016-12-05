@@ -22,7 +22,6 @@ private:
 	int posY;
 	string spriteEnemigo;
 	SDL_Rect boxCollider;
-	string condicionSprite;
 	int anguloBala;
 	bool agachado;
 	string sentido;
@@ -46,6 +45,7 @@ public:
 	bool esPlataforma(vector<pair<string,string>> plataformas);
 	void caminar(SDL_Rect camara);
 	void setYCaida();
+	string condicionSprite;
 };
 
 #endif /* ENEMIGO_H_ */

@@ -128,7 +128,7 @@ double calcularAngulo(int numero, string sentido)
 		}
 		case 6:
 		{
-			angulo = 0;
+			angulo = 180;
 			break;
 		}
 	}

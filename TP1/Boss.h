@@ -34,7 +34,7 @@ public:
 	string nombre;
 	int tiempoEntreArmas;
 	bool liberaSoldados;
-	virtual Enemigo* liberarSoldado();
+	virtual Enemigo* liberarSoldado(int xJugador);
 };
 
 #endif /* BOSS_H_ */
