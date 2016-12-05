@@ -178,8 +178,8 @@ datosConexion Vista::cargarPantallaIngresoDatos(bool aviso, int numeroPantalla){
 			//campoUno = this->datos.puerto;
 			campoUno = "7891";
 			//campoDos = this->datos.ip;
-			campoDos = "127.0.0.1";
-			//campoDos = "192.168.1.11";
+			//campoDos = "127.0.0.1";
+			campoDos = "192.168.1.10";
 			textoIngresePuerto->actualizarTexto("Ingrese el puerto:",colorTexto);
 			textoIngreseIP->actualizarTexto("Ingrese la IP del servidor:",colorTexto);
 			textoDatosNoCoinciden->actualizarTexto("La dirección de ip o el puerto no permiten esta conexión",colorTextoAmarillo);
@@ -824,6 +824,9 @@ void Vista::vaciarVectores() {
 		delete vistaItems.at(i);
 	}
 	this->vistaItems.clear();
-	delete vistaBoss.at(0);
+
+	for (int i = 0; i < this->vistaBoss.size() ; i++){
+		delete vistaBoss.at(i);
+	}
 	this->vistaBoss.clear();
 }
