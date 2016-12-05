@@ -841,6 +841,7 @@ void Vista::vaciarVectores() {
 		delete vistaItems.at(i);
 	}
 	this->vistaItems.clear();
+
 	for (int i = 0; i < this->vistaBoss.size() ; i++){
 		vistaBoss.at(i)->textura->limpiarTextura();
 		delete vistaBoss.at(i)->textura;
