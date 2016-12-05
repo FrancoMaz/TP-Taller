@@ -65,8 +65,8 @@ int stringToInt(string atributo) {
 bool chequearSocket(string ip, int puerto) {
 	//string ipServer = "192.168.1.11";
 
-	string ipServer = "127.0.0.1";
-	//string ipServer = "192.168.1.11";
+	//string ipServer = "127.0.0.1";
+	string ipServer = "192.168.1.12";
 	int puertoDeEscucha = 7891;
 
 	return (ip == ipServer && puerto == puertoDeEscucha);
@@ -199,6 +199,7 @@ void procesarUltimosMensajes(string mensajes, Cliente* cliente, UpdateJugador* u
 					int xBala = stringToInt(msjContenido.at(3));
 					int yBala = stringToInt(msjContenido.at(4));
 					string spriteBalaId = msjContenido.at(5);
+					cout << "Id: " << spriteBalaId << endl;
 					int idBala = stringToInt(msjContenido.at(6));
 					string sentido = msjContenido.at(7);
 					double angulo = calcularAngulo(stringToInt(msjContenido.at(8)), sentido);
@@ -318,6 +319,7 @@ void* recibirPosicionJugadores(void* arg) {
 		 //Start cap timer
 		capTimer.start();
 		datosRecibidos = cliente->recibir();
+		//cout << "Datos recibidos: " << datosRecibidos << endl;
 		if(datosRecibidos != "0"){
 			procesarUltimosMensajes(datosRecibidos, cliente, update, &primeraVez);
 			//si se procesa antes, espero lo que tengo que resta.

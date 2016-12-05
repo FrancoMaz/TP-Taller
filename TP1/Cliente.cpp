@@ -381,7 +381,7 @@ string Cliente::recibir() {
 	} while (largoRequest == 0 && tiempoTranscurrido <= 5);
 
 	datosRecibidos += string(colaMensajes);
-	memset(colaMensajes, '\0', strlen(colaMensajes));
+	memset(colaMensajes, '\0', BUFFER_MAX_SIZE);
 	if (largoRequest > 0) {
 		while (largoRequest >= BUFFER_MAX_SIZE and !stringTerminaCon(datosRecibidos, "@")) //mientras el largoRequest sea del tamaño del max size, sigo pidiendo
 		{
@@ -395,7 +395,7 @@ string Cliente::recibir() {
 			if (largo > 0){
 				datosRecibidos += string(colaMensajes);
 			}
-			memset(colaMensajes, '\0', strlen(colaMensajes));
+			memset(colaMensajes, '\0', BUFFER_MAX_SIZE);
 		}
 		pthread_mutex_unlock(&mutexSocket);
 		return datosRecibidos;

@@ -76,7 +76,7 @@ bool Escenario::verificarColision(SDL_Rect camara, Proyectil* proyectil, bool di
 }
 
 bool Escenario::verificarColisionConItem(Jugador* jugador)
-{	//pthread_mutex_lock(&mutexItems);
+{	pthread_mutex_lock(&mutexItems);
 	for (int i = 0; i < items.size(); i++)
 	{
 		if (this->colisionaronObjetos(jugador->boxCollider, items.at(i)->boxCollider))
@@ -107,39 +107,43 @@ bool Escenario::verificarColisionConItem(Jugador* jugador)
 			}
 			this->bonusColisionado = items.at(i)->idItem;
 			items.at(i)->fueObtenido = true;
-			//pthread_mutex_unlock(&mutexItems);
+			pthread_mutex_unlock(&mutexItems);
 			return true;
 
 		}
 	}
-	//pthread_mutex_unlock(&mutexItems);
+	pthread_mutex_unlock(&mutexItems);
 	return false;
 
 }
 
 void Escenario::agregarItemBonus(Item* item)
-{	//pthread_mutex_lock(&mutexItems);
+{	pthread_mutex_lock(&mutexItems);
 	this->items.push_back(item);
-	//pthread_mutex_unlock(&mutexItems);
+	pthread_mutex_unlock(&mutexItems);
 }
 
 bool Escenario::verificarColisionConEnemigo(Proyectil* proyectil) {
-	//pthread_mutex_lock(&mutexEnemigosActivos);
+	pthread_mutex_lock(&mutexEnemigosActivos);
 	for (int i = 0; i < this->enemigosActivos.size(); i++) {
 		if(!this->enemigosActivos.at(i)->getEstaMuerto()){
 			if (this->colisionaronObjetos(proyectil->getBoxCollider(),this->enemigosActivos.at(i)->getBoxCollider())) {
 				this->enemigosActivos.at(i)->daniarseCon(proyectil->getDanio());
 				cout << "Enemigo colisiono con bala" << endl;
-				//pthread_mutex_unlock(&mutexEnemigosActivos);
+				pthread_mutex_unlock(&mutexEnemigosActivos);
 				return true;
 			}
 		}
 	}
+	pthread_mutex_unlock(&mutexEnemigosActivos);
 	//no se si falta poner mutex para el vector de boss
-	if (this->colisionaronObjetos(proyectil->getBoxCollider(),this->boss.at(0)->boxCollider))
+	if (!this->boss.empty())
 	{
-		this->boss.at(0)->daniarseCon(proyectil->getDanio());
-		return true;
+		if (this->colisionaronObjetos(proyectil->getBoxCollider(),this->boss.at(0)->boxCollider))
+		{
+			this->boss.at(0)->daniarseCon(proyectil->getDanio());
+			return true;
+		}
 	}
 	//
 	return false;

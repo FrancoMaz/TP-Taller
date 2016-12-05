@@ -115,7 +115,7 @@ void* procesar(void* arg) {
 		strcpy(buffer, mensajesProcesados.c_str());
 	}
 	ok = send(socket, buffer, strlen(buffer), 0);
-	//cout << "mensaje: " << mensajesProcesados << endl;
+	//cout << "mensaje: " << buffer << endl;
 	return NULL;
 }
 
@@ -548,7 +548,10 @@ void* enemigoActivo(void* arg) {
 	mensaje->setTexto(mensajeEnemigo);
 	srand(parametrosEnemigo->servidor->getNivelActual()->rdtsc());
 	int estadoBonus = rand() % 3;
-	generarBonus(estadoBonus, enemigo->getPosX(), enemigo->getPosY(), parametrosEnemigo->servidor->getNivelActual());
+	if (!enemigo->esEnemigoBoss)
+	{
+		generarBonus(estadoBonus, enemigo->getPosX(), enemigo->getPosY(), parametrosEnemigo->servidor->getNivelActual());
+	}
 	servidor->getNivelActual()->eliminarEnemigoActivo(enemigo->getId());
 	servidor->encolarMensajeProcesadoParaCadaCliente(*mensaje,mensajeEnemigo);
 	mensaje->~Mensaje();
