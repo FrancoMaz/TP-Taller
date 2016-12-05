@@ -13,7 +13,9 @@ TaniOh::TaniOh(string nombre, string x, string y) {
 	this->posY = atoi(y.c_str());
 	this->boxCollider = {posX,posY,367,182};
 	this->armaADisparar = 0;
-	this->disparoDoble = true;
+	this->disparando = false;
+	this->tiempoEntreArmas = 3;
+	this->liberaSoldados = false;
 }
 
 TaniOh::~TaniOh() {
@@ -48,7 +50,7 @@ void TaniOh::comportamiento(SDL_Rect camara, bool tieneQueDisparar)
 			{
 				this->proyectilesADisparar.first.clear();
 				this->proyectilesADisparar.second = 2;
-				for (int i = 0; i < 3; i++)
+				for (int i = 0; i < 1; i++)
 				{
 					SDL_Rect box = {this->boxCollider.x + 27,this->boxCollider.y + 142,32,30};
 					this->proyectilesADisparar.first.push_back(new Proyectil(20,0,"0",box.x,box.y, this->sentido, 6, box, false,2,"",make_pair(27,142)));
@@ -61,7 +63,7 @@ void TaniOh::comportamiento(SDL_Rect camara, bool tieneQueDisparar)
 			{
 				this->proyectilesADisparar.first.clear();
 				this->proyectilesADisparar.second = 2;
-				for (int i = 0; i < 3; i++)
+				for (int i = 0; i < 1; i++)
 				{
 					SDL_Rect box = {this->boxCollider.x + 27,this->boxCollider.y + 142,32,30};
 					this->proyectilesADisparar.first.push_back(new Proyectil(20,0,"0",box.x,box.y, this->sentido, 6, box, false,2,"",make_pair(27,142)));
@@ -87,4 +89,3 @@ void TaniOh::comportamiento(SDL_Rect camara, bool tieneQueDisparar)
 		}
 	}
 }
-

@@ -8,6 +8,7 @@
 #ifndef BOSS_H_
 #define BOSS_H_
 #include "Personaje.h"
+#include "Enemigo.h"
 #include <time.h>
 
 class Boss: public Personaje {
@@ -31,6 +32,9 @@ public:
 	int despY;
 	bool disparoDoble;
 	string nombre;
+	int tiempoEntreArmas;
+	bool liberaSoldados;
+	virtual Enemigo* liberarSoldado(int xJugador);
 };
 
 #endif /* BOSS_H_ */

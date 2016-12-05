@@ -52,7 +52,7 @@ Servidor::Servidor(char* nombreArchivoDeUsuarios, int puerto, Logger* logger) {
 		abscisas.second = 0;
 		abscisasCapas.push_back(abscisas);
 	}
-	this->nivelActual = 0;
+	this->nivelActual = 2;
 	this->gameComplete = false;
 	this->inicializarDatosNiveles();
 	this->contadorJugadores = 0;

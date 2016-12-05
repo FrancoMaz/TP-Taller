@@ -542,7 +542,7 @@ void Vista::actualizarPantalla(int anchoVentana, int anchoCapaPrincipal) {
 	for (int i = 0; i < vistaEnemigos.size(); i++) {
 		VistaEnemigo* vistaEnemigo = vistaEnemigos.at(i);
 		texturaEnemigo = vistaEnemigo->textura;
-		texturaEnemigo->aplicarPosicion(vistaEnemigo->x - camara.x, vistaEnemigo->y - camara.y,0,SDL_FLIP_NONE);
+		texturaEnemigo->aplicarPosicion(vistaEnemigo->x - camara.x, vistaEnemigo->y - camara.y,0,vistaEnemigo->flip);
 	}
 	if (!this->vistaBoss.empty())
 	{
@@ -642,7 +642,9 @@ void Vista::actualizarProyectil(string nuevaBala, int x, int y, string sprite, i
 					VistaBala* vistaBala = vistaBalas.at(i);
 					if (vistaBala->id == id) {
 						vistaBalas.erase(vistaBalas.begin() + i);
-						vistaBala->~VistaBala();
+						vistaBala->textura->limpiarTextura();
+						delete vistaBala->textura;
+						delete vistaBala;
 						break;
 					}
 				}
@@ -651,10 +653,10 @@ void Vista::actualizarProyectil(string nuevaBala, int x, int y, string sprite, i
 	}
 }
 
-void Vista::actualizarEnemigo(string enemigo, int x, int y, string sprite, int id, int cantFotogramas) {
+void Vista::actualizarEnemigo(string enemigo, int x, int y, string sprite, int id, string sentido, int cantFotogramas) {
 	//si viene un nuevo enemigo
 	if (enemigo == "0") {
-		VistaEnemigo* vistaEnemigo = new VistaEnemigo(x,y,(ventana->crearTextura("Recursos/" + sprite + ".png", cantFotogramas)),id, "Normal");
+		VistaEnemigo* vistaEnemigo = new VistaEnemigo(x,y,(ventana->crearTextura("Recursos/" + sprite + ".png", cantFotogramas)),id, sentido);
 		vistaEnemigos.push_back(vistaEnemigo);
 	} else {
 		//si viene un enemigo ya existente
@@ -664,10 +666,11 @@ void Vista::actualizarEnemigo(string enemigo, int x, int y, string sprite, int i
 				if (vistaEnemigo->id == id) {
 					vistaEnemigo->x = x;
 					vistaEnemigo->y = y;
+					vistaEnemigo->verificarSentido(sentido);
 				}
 			}
 		} else {
-			//si ese enemigo se murio
+			//si ese enemigo tiene que cambiar de sprite
 			if (enemigo == "2") {
 				for (int i = 0; i < vistaEnemigos.size(); i++){
 					VistaEnemigo* vistaEnemigo = vistaEnemigos.at(i);
@@ -683,7 +686,9 @@ void Vista::actualizarEnemigo(string enemigo, int x, int y, string sprite, int i
 						VistaEnemigo* vistaEnemigo = vistaEnemigos.at(i);
 						if (vistaEnemigo->id == id) {
 							vistaEnemigos.erase(vistaEnemigos.begin() + i);
-							vistaEnemigo->~VistaEnemigo();
+							vistaEnemigo->textura->limpiarTextura();
+							delete vistaEnemigo->textura;
+							delete vistaEnemigo;
 							break;
 						}
 					}
@@ -708,6 +713,9 @@ void Vista::agregarVistaItem(string borrarItem, string sprite, int x, int y, int
 			if (vistaItem->boxCollider.x == x)
 			{
 				vistaItems.erase(vistaItems.begin() + i);
+				vistaItem->textura->limpiarTextura();
+				delete vistaItem->textura;
+				delete vistaItem;
 				break;
 			}
 		}
@@ -806,26 +814,37 @@ void Vista::vaciarDatos() {
 void Vista::vaciarVectores() {
 	//this->vistaJugadores.clear();
 	for (int i = 0; i < this->vectorCapas.size() ; i++){
+		delete vectorCapas.at(i)->imagen;
+		vectorCapas.at(i)->textura->limpiarTextura();
+		delete vectorCapas.at(i)->textura;
 		delete vectorCapas.at(i);
 	}
 	this->vectorCapas.clear();
 
 	for (int i = 0; i < this->vistaBalas.size() ; i++){
+		vistaBalas.at(i)->textura->limpiarTextura();
+		delete vistaBalas.at(i)->textura;
 		delete vistaBalas.at(i);
 	}
 	this->vistaBalas.clear();
 
 	for (int i = 0; i < this->vistaEnemigos.size() ; i++){
+		vistaEnemigos.at(i)->textura->limpiarTextura();
+		delete vistaEnemigos.at(i)->textura;
 		delete vistaEnemigos.at(i);
 	}
 	this->vistaEnemigos.clear();
 
 	for (int i = 0; i < this->vistaItems.size() ; i++){
+		vistaItems.at(i)->textura->limpiarTextura();
+		delete vistaItems.at(i)->textura;
 		delete vistaItems.at(i);
 	}
 	this->vistaItems.clear();
 
 	for (int i = 0; i < this->vistaBoss.size() ; i++){
+		vistaBoss.at(i)->textura->limpiarTextura();
+		delete vistaBoss.at(i)->textura;
 		delete vistaBoss.at(i);
 	}
 	this->vistaBoss.clear();

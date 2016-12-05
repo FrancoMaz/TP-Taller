@@ -23,8 +23,8 @@ TexturaSDL::TexturaSDL(SDL_Renderer* renderer){
 }
 
 TexturaSDL::~TexturaSDL(){
-	this->limpiarTextura();
-	this->limpiarFuente();
+	/*this->limpiarTextura();
+	this->limpiarFuente();*/
 }
 
 void TexturaSDL::cargarImagen(string ruta){

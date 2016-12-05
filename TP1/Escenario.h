@@ -55,6 +55,7 @@ public:
 	vector<Enemigo*> enemigosActivos;
 	void vaciarVectores();
 	void inicializarDatosNivel();
+	void agregarEnemigoActivo(Enemigo* enemigo);
 };
 
 #endif /* ESCENARIO_H_ */
