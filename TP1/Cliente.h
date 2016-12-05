@@ -32,7 +32,7 @@
 #include "Handshake.h"
 #include <chrono>
 
-#define BUFFER_MAX_SIZE 1024
+#define BUFFER_MAX_SIZE 2048
 const int SCREEN_FPS = 30;
 const int SCREEN_TICKS_PER_FRAME = 1000 / SCREEN_FPS;
 using namespace std;

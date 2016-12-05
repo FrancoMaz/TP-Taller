@@ -13,7 +13,7 @@ AirbusterRiberts::AirbusterRiberts(string nombre, string x, string y) {
 	this->posY = atoi(y.c_str());
 	this->boxCollider = {posX,posY,326,200};
 	this->disparando = false;
-	this->tiempoEntreArmas = 7;
+	this->tiempoEntreArmas = 5;
 	this->liberaSoldados = true;
 }
 
