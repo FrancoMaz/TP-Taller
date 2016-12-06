@@ -682,6 +682,7 @@ void Vista::actualizarEnemigo(string enemigo, int x, int y, string sprite, int i
 				for (int i = 0; i < vistaEnemigos.size(); i++){
 					VistaEnemigo* vistaEnemigo = vistaEnemigos.at(i);
 					if (vistaEnemigo->id == id) {
+						delete vistaEnemigo->textura;
 						vistaEnemigo->setTexturaSprite(ventana->crearTextura("Recursos/" + sprite + ".png", cantFotogramas));
 						break;
 					}
@@ -783,6 +784,7 @@ void Vista::actualizarBoss(string boss, int x, int y, string sprite, string sent
 	else if (boss == "2")
 	{
 		this->vistaBoss.at(0)->setTexturaSprite(ventana->crearTextura("Recursos/" + sprite + ".png", cantFotogramas));
+		delete vistaBoss.at(0)->textura;
 		//this->vistaBoss.clear();
 	}
 }
