@@ -179,8 +179,8 @@ datosConexion Vista::cargarPantallaIngresoDatos(bool aviso, int numeroPantalla){
 			campoUno = "7891";
 			//campoDos = this->datos.ip;
 			//campoDos = "127.0.0.1";
-			//campoDos = "192.168.1.11";
-			campoDos = "127.0.0.1";
+			campoDos = "192.168.1.11";
+			//campoDos = "127.0.0.1";
 			//campoDos = "192.168.1.10";
 			textoIngresePuerto->actualizarTexto("Ingrese el puerto:",colorTexto);
 			textoIngreseIP->actualizarTexto("Ingrese la IP del servidor:",colorTexto);
@@ -783,8 +783,9 @@ void Vista::actualizarBoss(string boss, int x, int y, string sprite, string sent
 	}
 	else if (boss == "2")
 	{
-		this->vistaBoss.at(0)->setTexturaSprite(ventana->crearTextura("Recursos/" + sprite + ".png", cantFotogramas));
 		delete vistaBoss.at(0)->textura;
+		this->vistaBoss.at(0)->setTexturaSprite(ventana->crearTextura("Recursos/" + sprite + ".png", cantFotogramas));
+
 		//this->vistaBoss.clear();
 	}
 }
