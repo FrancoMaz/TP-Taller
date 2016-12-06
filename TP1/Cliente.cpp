@@ -210,7 +210,7 @@ void Cliente::recibirHandshake(){
        int largoRequest;
        do {
                largoRequest = recv(this->socketCliente, colaMensaje, BUFFER_MAX_SIZE, 0);
-       } while (largoRequest == 0);
+       } while (largoRequest <= 0);
 
        datosRecibidos += string(colaMensaje);
        memset(colaMensaje, '\0', strlen(colaMensaje));
@@ -378,7 +378,7 @@ string Cliente::recibir() {
 		tiempoTranscurrido = chrono::duration_cast<chrono::seconds>(chrono::high_resolution_clock::now() - start_time).count();
 		largoRequest = recv(this->socketCliente, colaMensajes, BUFFER_MAX_SIZE, 0);
 		//cout << "segundo: " << tiempoTranscurrido << endl;
-	} while (largoRequest == 0 && tiempoTranscurrido <= 5);
+	} while (largoRequest == 0 && tiempoTranscurrido <= 0);
 
 	datosRecibidos += string(colaMensajes);
 	memset(colaMensajes, '\0', BUFFER_MAX_SIZE);

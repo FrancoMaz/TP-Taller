@@ -7,7 +7,7 @@
 
 #ifndef ENEMIGO_H_
 #define ENEMIGO_H_
-#define VELOCIDADCAIDA 2
+#define VELOCIDADCAIDA 4
 #define VELOCIDADCAMINAR 4
 #define PISO 520
 #define PLATAFORMA 354

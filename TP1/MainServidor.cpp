@@ -281,6 +281,7 @@ void* enviarObjetosEnCamara(void* arg)
 	string mensajeObjetosString = "";
 	while (servidor->escuchando){
 		usleep(50000);
+		pthread_mutex_lock(&servidor->getNivelActual()->mutexItems);
 		for (int i = 0; i < servidor->getNivelActual()->items.size(); i++)
 		{
 			SDL_Rect box = servidor->getNivelActual()->items.at(i)->boxCollider;
@@ -292,16 +293,20 @@ void* enviarObjetosEnCamara(void* arg)
 				mensajeObjetosString += servidor->getNivelActual()->items.at(i)->getStringItem();
 				mensajeObjetos = new Mensaje(jugador->getNombre(),"Todos",mensajeObjetosString);
 				servidor->encolarMensajeProcesadoParaCadaCliente(*mensajeObjetos,mensajeObjetosString);
+				mensajeObjetos->~Mensaje();
 			}
-			if (servidor->getNivelActual()->items.at(i)->fueObtenido)
-			{
+		}
+		for (int i = 0; i < servidor->getNivelActual()->items.size(); i++) {
+			if (servidor->getNivelActual()->items.at(i)->fueObtenido) {
 				mensajeObjetosString = "3|1|";
 				mensajeObjetosString += servidor->getNivelActual()->items.at(i)->getStringItem();
 				mensajeObjetos = new Mensaje(jugador->getNombre(),"Todos",mensajeObjetosString);
 				servidor->encolarMensajeProcesadoParaCadaCliente(*mensajeObjetos,mensajeObjetosString);
+				mensajeObjetos->~Mensaje();
 				servidor->getNivelActual()->items.erase(servidor->getNivelActual()->items.begin()+i);
 			}
 		}
+		pthread_mutex_unlock(&servidor->getNivelActual()->mutexItems);
 	}
 }
 
@@ -565,6 +570,7 @@ void* controlDeEnemigos(void* arg) {
 	while (servidor->escuchando) {
 		usleep(50000);
 		servidor->getNivelActual()->despertarEnemigos(&servidor->camara);
+		pthread_mutex_lock(&servidor->getNivelActual()->mutexEnemigosActivos);
 		for (int i = 0; i < servidor->getNivelActual()->getEnemigosActivos().size(); i++) {
 			Enemigo* enemigo = servidor->getNivelActual()->getEnemigoActivo(i);
 			if (enemigo != NULL && !enemigo->threadAsociado && !enemigo->esEnemigoBoss) {
@@ -577,6 +583,7 @@ void* controlDeEnemigos(void* arg) {
 				parametrosEnemigo->~ParametrosMovimiento();
 			}
 		}
+		pthread_mutex_unlock(&servidor->getNivelActual()->mutexEnemigosActivos);
 	}
 }
 

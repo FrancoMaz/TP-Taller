@@ -179,7 +179,7 @@ datosConexion Vista::cargarPantallaIngresoDatos(bool aviso, int numeroPantalla){
 			campoUno = "7891";
 			//campoDos = this->datos.ip;
 			//campoDos = "127.0.0.1";
-			campoDos = "192.168.1.12";
+			campoDos = "192.168.1.10";
 			//campoDos = "127.0.0.1";
 			//campoDos = "192.168.1.10";
 			textoIngresePuerto->actualizarTexto("Ingrese el puerto:",colorTexto);

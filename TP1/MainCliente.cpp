@@ -66,7 +66,7 @@ bool chequearSocket(string ip, int puerto) {
 	//string ipServer = "192.168.1.11";
 
 	//string ipServer = "127.0.0.1";
-	string ipServer = "192.168.1.12";
+	string ipServer = "192.168.1.10";
 	int puertoDeEscucha = 7891;
 
 	return (ip == ipServer && puerto == puertoDeEscucha);
@@ -318,7 +318,6 @@ void* recibirPosicionJugadores(void* arg) {
 		 //Start cap timer
 		capTimer.start();
 		datosRecibidos = cliente->recibir();
-		cout << "Datos recibidos: " << datosRecibidos << endl;
 		if(datosRecibidos != "0"){
 			procesarUltimosMensajes(datosRecibidos, cliente, update, &primeraVez);
 			//si se procesa antes, espero lo que tengo que resta.
