@@ -378,7 +378,7 @@ string Cliente::recibir() {
 		tiempoTranscurrido = chrono::duration_cast<chrono::seconds>(chrono::high_resolution_clock::now() - start_time).count();
 		largoRequest = recv(this->socketCliente, colaMensajes, BUFFER_MAX_SIZE, 0);
 		//cout << "segundo: " << tiempoTranscurrido << endl;
-	} while (largoRequest == 0 && tiempoTranscurrido <= 0);
+	} while (largoRequest <= 0 && tiempoTranscurrido <= 5);
 
 	datosRecibidos += string(colaMensajes);
 	memset(colaMensajes, '\0', BUFFER_MAX_SIZE);

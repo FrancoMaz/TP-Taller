@@ -30,7 +30,7 @@
 #include "Capa.h"
 #include "Escenario.h"
 #define MAX_CANT_CLIENTES 6
-#define BUFFER_MAX_SIZE 2000
+#define BUFFER_MAX_SIZE 1000
 #define CANTIDADNIVELES 3
 const int INFO = 1;
 const int DEBUG = 2;

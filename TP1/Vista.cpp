@@ -412,14 +412,16 @@ void Vista::cargarVistaInicialJugador(string nombre, int x, int y, SpriteDto* sp
 
 void Vista::actualizarCamara(int x, int y, vector<pair<int,int>> abscisasCapas, int anchoVentana)
 {
-	for (int i=vectorCapas.size()-1; i>=0; i--)
-	{
-		vectorCapas.at(i)->rectangulo.x = abscisasCapas.at(i).first;
-		vectorCapas.at(i)->vel = abscisasCapas.at(i).second;
-		vectorCapas.at(i)->paralajeInfinito(anchoVentana, i);
+	if (!vectorCapas.empty()) {
+		for (int i=vectorCapas.size()-1; i>=0; i--)
+		{
+			vectorCapas.at(i)->rectangulo.x = abscisasCapas.at(i).first;
+			vectorCapas.at(i)->vel = abscisasCapas.at(i).second;
+			vectorCapas.at(i)->paralajeInfinito(anchoVentana, i);
+		}
+		camara.x = vectorCapas.at(0)->rectangulo.x;
+		camara.y = vectorCapas.at(0)->rectangulo.y;
 	}
-	camara.x = vectorCapas.at(0)->rectangulo.x;
-	camara.y = vectorCapas.at(0)->rectangulo.y;
 }
 
 void Vista::inicializarCamara(int camaraX, int camaraY, int anchoVentana, int altoVentana, vector<pair<int,int>> abscisasCapas, vector<ImagenDto*> imagenes, vector<string> nombreCapas)
