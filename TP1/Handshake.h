@@ -16,7 +16,6 @@
 class Handshake {
 
 private:
-	vector<ImagenDto*> imagenes;
 	vector<SetDeSpritesDto*> sprites;
 	string alto;
 	string ancho;
@@ -32,6 +31,7 @@ public:
 	string getAlto();
 	string getCantidadMaximaJugadores();
 	vector<vector<SpriteDto*>> matrizSpritesJugadores;
+	vector<ImagenDto*> imagenes;
 };
 
 #endif /* HANDSHAKE_H_ */

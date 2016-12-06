@@ -589,7 +589,7 @@ bool Cliente::checkearInicioJuego(Vista* vista)
 			texto.erase(0,posAux+delimitador.length());
 		}
 		s.erase(0,pos+delimitadorFinal.length());
-		vista->inicializarCamara(atoi(camaraX.c_str()),atoi(camaraY.c_str()),atoi(handshake->getAncho().c_str()), atoi(handshake->getAlto().c_str()), abscisasCapas, handshake->getImagenes(), nombreCapas);
+		vista->inicializarCamara(atoi(camaraX.c_str()),atoi(camaraY.c_str()),atoi(handshake->getAncho().c_str()), atoi(handshake->getAlto().c_str()), abscisasCapas, handshake->imagenes, nombreCapas);
 	}
 	return true;
 }

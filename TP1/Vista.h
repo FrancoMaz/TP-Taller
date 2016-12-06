@@ -74,7 +74,7 @@ public:
 	void cargarVistaInicialJugador(string nombre, int x, int y, SpriteDto* sprite);
 	void actualizarCamara(int x, int y, vector<pair<int,int>> abscisasCapas, int anchoVentana);
 	SDL_Rect camara;
-	void inicializarCamara(int camaraX, int camaraY, int anchoVentana, int altoVentana, vector<pair<int,int>> abscisasCapas, vector<ImagenDto*> imagenes, vector<string> nombreCapas);
+	void inicializarCamara(int camaraX, int camaraY, int anchoVentana, int altoVentana, vector<pair<int,int>> abscisasCapas, vector<ImagenDto*> &imagenes, vector<string> nombreCapas);
 	void resetearVistas(int anchoCapaPrincipal);
 	Controlador* controlador;
 	bool salto;
@@ -98,6 +98,9 @@ public:
 	void split(const std::string &s, char delim, std::vector<std::string> &elems);
 	void vaciarDatos();
 	void vaciarVectores();
+	bool juegoTerminado;
+	void mostrarPantallaFinDeJuego();
+	void cargarSiguienteNivel(int camaraX, int camaraY, int anchoVentana, int altoVentana, vector<pair<int,int>> abscisasCapas, vector<ImagenDto*> &imagenes, vector<string> nombreCapas);
 };
 
 #endif /* TP2_VISTA_H_ */

@@ -65,8 +65,8 @@ int stringToInt(string atributo) {
 bool chequearSocket(string ip, int puerto) {
 	//string ipServer = "192.168.1.11";
 
-	//string ipServer = "127.0.0.1";
-	string ipServer = "192.168.1.11";
+	string ipServer = "127.0.0.1";
+	//string ipServer = "192.168.1.11";
 	int puertoDeEscucha = 7891;
 
 	return (ip == ipServer && puerto == puertoDeEscucha);
@@ -190,6 +190,10 @@ void procesarUltimosMensajes(string mensajes, Cliente* cliente, UpdateJugador* u
 						abscisas.first = stringToInt(capa.at(1));
 						abscisas.second = stringToInt(capa.at(2));
 						abscisasCapas.push_back(abscisas);
+						cout << "Nombre: " << nombreCapa << endl;
+						cout << "X: " << abscisas.first << endl;
+						cout << "Vel: " << abscisas.second << endl;
+						cout << endl;
 					}
 					vista->actualizarCamara(x,y,abscisasCapas,stringToInt(handshakeDeserializado->getAncho()));
 					break;
@@ -296,12 +300,18 @@ void procesarUltimosMensajes(string mensajes, Cliente* cliente, UpdateJugador* u
 						abscisas.second = stringToInt(capa.at(2));
 						abscisasCapas.push_back(abscisas);
 					}
-					vista->inicializarCamara(xCamara,yCamara,atoi(handshakeDeserializado->getAncho().c_str()), atoi(handshakeDeserializado->getAlto().c_str()), abscisasCapas, handshakeDeserializado->getImagenes(), nombreCapas);
+					vista->cargarSiguienteNivel(xCamara,yCamara,atoi(handshakeDeserializado->getAncho().c_str()), atoi(handshakeDeserializado->getAlto().c_str()), abscisasCapas, handshakeDeserializado->imagenes, nombreCapas);
 					break;
+				}
+				case 10:
+				{
+					vista->mostrarPantallaFinDeJuego();
+					usleep(5000000);
+					vista->juegoTerminado = true;
 				}
 			}
 		}
-		vista->actualizarPantalla(stringToInt(handshakeDeserializado->getAncho()), stringToInt(handshakeDeserializado->getImagenes().at(0)->getAncho()));
+		vista->actualizarPantalla(stringToInt(handshakeDeserializado->getAncho()), stringToInt(handshakeDeserializado->imagenes.at(0)->getAncho()));
 	}
 }
 
@@ -313,7 +323,7 @@ void* recibirPosicionJugadores(void* arg) {
 	 //The frames per second timer
 	LTimer capTimer;
 	usleep(50000);
-	while(!vista->controlador->comprobarCierreVentana()){
+	while(!vista->controlador->comprobarCierreVentana() && !vista->juegoTerminado){
 		usleep(100);
 		 //Start cap timer
 		capTimer.start();
@@ -350,7 +360,7 @@ void* enviarEventos(void* arg) {
 	//Start counting frames per second
 	int countedFrames = 0;
 	fpsTimer.start();
-	while(!vista->controlador->comprobarCierreVentana()){
+	while(!vista->controlador->comprobarCierreVentana() && !vista->juegoTerminado){
 		usleep(100);
 		while(SDL_PollEvent(&evento)){
 			if (vista->pantallaPuntajes){
@@ -462,8 +472,7 @@ void* cicloConexion(void* arg) {
 			pthread_detach(threadEnviarEventos);
 			pthread_create(&threadRecibirPosicionJugadores, NULL, &recibirPosicionJugadores,cliente);
 			pthread_detach(threadRecibirPosicionJugadores);
-			vector<ImagenDto*> imagenes = handshakeDeserializado->getImagenes();
-			vista->cargarEscenario(imagenes, stringToInt(handshakeDeserializado->getAncho()), stringToInt(handshakeDeserializado->getAlto()));
+			vista->cargarEscenario(handshakeDeserializado->getImagenes(), stringToInt(handshakeDeserializado->getAncho()), stringToInt(handshakeDeserializado->getAlto()));
 			while(!terminoComunicacion) {
 				usleep(100);
 			}
@@ -477,16 +486,16 @@ void* cicloConexion(void* arg) {
 int main() {
 	bool primeraVez = true;
 	while (!vista->ventanaCerrada()) {
-	bool esValido = false;
-	bool socketOk = false;
-	pthread_t thrComu;
-	if (primeraVez) {
-		while (!vista->inicializar()) {
-			cout << "El programa no pudo ejecutarse." << endl;
+		bool esValido = false;
+		bool socketOk = false;
+		pthread_t thrComu;
+		if (primeraVez) {
+			while (!vista->inicializar()) {
+				cout << "El programa no pudo ejecutarse." << endl;
+			}
+			vista->cargarArchivos();
+			vista->cargarPrimeraPantalla();
 		}
-		vista->cargarArchivos();
-		vista->cargarPrimeraPantalla();
-	}
 		bool datosIncorrectos = false;
 		while ((!socketOk)&&(!vista->ventanaCerrada())) {
 			datosCliente = vista->cargarSegundaPantalla(datosIncorrectos);
