@@ -190,10 +190,6 @@ void procesarUltimosMensajes(string mensajes, Cliente* cliente, UpdateJugador* u
 						abscisas.first = stringToInt(capa.at(1));
 						abscisas.second = stringToInt(capa.at(2));
 						abscisasCapas.push_back(abscisas);
-						cout << "Nombre: " << nombreCapa << endl;
-						cout << "X: " << abscisas.first << endl;
-						cout << "Vel: " << abscisas.second << endl;
-						cout << endl;
 					}
 					vista->actualizarCamara(x,y,abscisasCapas,stringToInt(handshakeDeserializado->getAncho()));
 					break;

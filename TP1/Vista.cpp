@@ -865,7 +865,6 @@ void Vista::vaciarVectores() {
 		delete vistaBoss.at(i);
 	}
 	vector<VistaEnemigo*>().swap(vistaBoss);
-	cout << "Esperando" << endl;
 	usleep(2000000);
 }
 
