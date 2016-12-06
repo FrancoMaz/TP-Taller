@@ -22,8 +22,8 @@ Servidor::Servidor(char* nombreArchivoDeUsuarios, int puerto, Logger* logger) {
 	/* Set port number, using htons function to use proper byte order */
 	this->serverAddr.sin_port = htons(puerto);
 	/* Set IP address to localhost */
-	this->serverAddr.sin_addr.s_addr = inet_addr("192.168.1.10");
-	//this->serverAddr.sin_addr.s_addr = inet_addr("127.0.0.1");
+	//this->serverAddr.sin_addr.s_addr = inet_addr("192.168.1.11");
+	this->serverAddr.sin_addr.s_addr = inet_addr("127.0.0.1");
 
 	//this->serverAddr.sin_addr.s_addr = inet_addr("10.1.77.13");
 	/* Set all bits of the padding field to 0 */
@@ -157,7 +157,6 @@ void Servidor::enviarHandshake(int socket, char* cliente){
 	handshake += this->parser->serializarSetDeSprites(this->vectorEquipos);
 	handshake += this->parser->serializarVentana();
 	handshake += "#@";
-	cout << "Handshake: " << handshake << endl;
 	int largo = strlen(handshake.c_str());
 	std::ostringstream oss;
 	oss << largo;

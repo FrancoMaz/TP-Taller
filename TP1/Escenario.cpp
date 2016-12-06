@@ -165,7 +165,8 @@ bool Escenario::colisionaronObjetos(SDL_Rect boxCollider1, SDL_Rect boxCollider2
 
 void Escenario::despertarEnemigos(SDL_Rect* camara) {
 	if (!this->enemigosPorNivel.empty()) {
-		for (int i = 0; i < 7; i++) {
+		int cantidadEnemigos = enemigosPorNivel.size();
+		for (int i = 0; i < cantidadEnemigos ; i++) {
 			if (!this->enemigosPorNivel.empty()) {
 				srand(rdtsc());
 				int estado = rand() % 2;
