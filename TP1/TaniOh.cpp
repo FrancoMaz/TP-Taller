@@ -16,6 +16,7 @@ TaniOh::TaniOh(string nombre, string x, string y) {
 	this->disparando = false;
 	this->tiempoEntreArmas = 3;
 	this->liberaSoldados = false;
+	this->sentidoMovimientoTaniOh = "Izquierda";
 }
 
 TaniOh::~TaniOh() {
@@ -24,24 +25,25 @@ TaniOh::~TaniOh() {
 
 void TaniOh::comportamiento(SDL_Rect camara, bool tieneQueDisparar)
 {
-	if (this->sentido == "Normal")
+	if (this->sentidoMovimientoTaniOh == "Izquierda")
 	{
 		this->posX -= VELOCIDADTANIOH;
 		this->boxCollider.x -= VELOCIDADTANIOH;
 		if (this->boxCollider.x <= camara.x)
 		{
-			this->sentido = "Espejado";
+			this->sentidoMovimientoTaniOh = "Derecha";
 		}
 	}
-	else if (this->sentido == "Espejado")
+	else if (this->sentidoMovimientoTaniOh == "Derecha")
 	{
 		this->posX += VELOCIDADTANIOH;
 		this->boxCollider.x += VELOCIDADTANIOH;
 		if (this->boxCollider.x + this->boxCollider.w >= camara.x + camara.w)
 		{
-			this->sentido = "Normal";
+			this->sentidoMovimientoTaniOh = "Izquierda";
 		}
 	}
+
 	if (tieneQueDisparar && !disparando)
 	{
 		switch (armaADisparar)
@@ -52,10 +54,10 @@ void TaniOh::comportamiento(SDL_Rect camara, bool tieneQueDisparar)
 				this->proyectilesADisparar.second = 2;
 				for (int i = 0; i < 1; i++)
 				{
-					SDL_Rect box = {this->boxCollider.x + 27,this->boxCollider.y + 142,32,30};
-					this->proyectilesADisparar.first.push_back(new Proyectil(20,0,"0",box.x,box.y, this->sentido, 6, box, false,2,"",make_pair(27,142)));
-					box = {this->boxCollider.x + 300,this->boxCollider.y + 55,32,30};
-					this->proyectilesADisparar.first.push_back(new Proyectil(20,0,"0",box.x,box.y, this->sentido, 0, box, false,2,"",make_pair(300,55)));
+					SDL_Rect proyectilIzquierda = {this->boxCollider.x + 25,this->boxCollider.y + 70,78,13};
+					SDL_Rect proyectilDerecha = {this->boxCollider.x + 288,this->boxCollider.y + 63,78,13};
+					this->proyectilesADisparar.first.push_back(new Proyectil(20,0,"5",proyectilIzquierda.x,proyectilIzquierda.y, "Normal", 6, proyectilIzquierda, false,2,"",make_pair(25,70)));
+					this->proyectilesADisparar.first.push_back(new Proyectil(20,0,"5",proyectilDerecha.x,proyectilDerecha.y, "Espejado", 0, proyectilDerecha, false,2,"",make_pair(288,63)));
 				}
 				break;
 			}
@@ -65,10 +67,10 @@ void TaniOh::comportamiento(SDL_Rect camara, bool tieneQueDisparar)
 				this->proyectilesADisparar.second = 2;
 				for (int i = 0; i < 1; i++)
 				{
-					SDL_Rect box = {this->boxCollider.x + 27,this->boxCollider.y + 142,32,30};
-					this->proyectilesADisparar.first.push_back(new Proyectil(20,0,"0",box.x,box.y, this->sentido, 6, box, false,2,"",make_pair(27,142)));
-					box = {this->boxCollider.x + 300,this->boxCollider.y + 55,32,30};
-					this->proyectilesADisparar.first.push_back(new Proyectil(20,0,"0",box.x,box.y, this->sentido, 0, box, false,2,"",make_pair(300,55)));
+					SDL_Rect proyectilIzquierda = {this->boxCollider.x + 25,this->boxCollider.y + 70,78,13};
+					SDL_Rect proyectilDerecha = {this->boxCollider.x + 288,this->boxCollider.y + 63,78,13};
+					this->proyectilesADisparar.first.push_back(new Proyectil(20,0,"5",proyectilIzquierda.x,proyectilIzquierda.y, "Normal", 6, proyectilIzquierda, false,2,"",make_pair(25,70)));
+					this->proyectilesADisparar.first.push_back(new Proyectil(20,0,"5",proyectilDerecha.x,proyectilDerecha.y, "Espejado", 0, proyectilDerecha, false,2,"",make_pair(288,63)));
 				}
 				break;
 			}
@@ -76,11 +78,18 @@ void TaniOh::comportamiento(SDL_Rect camara, bool tieneQueDisparar)
 			{
 				this->proyectilesADisparar.first.clear();
 				this->proyectilesADisparar.second = 1;
+				string sentidoTanque;
 				SDL_Rect box = {this->boxCollider.x + 158,this->boxCollider.y - 390,70,425};
-				this->proyectilesADisparar.first.push_back(new Proyectil(20,0,"4",box.x,box.y, this->sentido, 5, box, true,2,"",make_pair(158,-412)));
+				if(this->sentidoMovimientoTaniOh == "Izquierda"){
+					sentidoTanque = "Normal";
+				} else {
+					sentidoTanque = "Espejado";
+				}
+				this->proyectilesADisparar.first.push_back(new Proyectil(20,0,"4",box.x,box.y, sentidoTanque, 5, box, true,2,"",make_pair(158,-412)));
 				break;
 			}
 		}
+
 		this->disparando = true;
 		this->armaADisparar++;
 		if (this->armaADisparar > 2)
