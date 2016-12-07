@@ -113,17 +113,19 @@ bool Enemigo::esPlataforma(vector<pair<string,string>> plataformas)
 
 pair<int,int> Enemigo::buscarPlataforma(vector<pair<string,string>> plataformas)
 {
+	pair<int,int> plat;
 	for (int i = 0; i < plataformas.size(); i++)
 	{
 		if ((this->posX + boxCollider.w >= atoi(plataformas.at(i).first.c_str())) && (this->posX <= atoi(plataformas.at(i).second.c_str())))
 		{
-			pair<int,int> plat;
 			plat.first = atoi(plataformas.at(i).first.c_str());
 			plat.second = atoi(plataformas.at(i).second.c_str());
 			return plat;
 		}
 	}
-	return NULL;
+	plat.first = 0;
+	plat.second = 0;
+	return plat;
 }
 
 void Enemigo::caminar(SDL_Rect camara, vector<pair<string,string>> plataformas)
@@ -131,8 +133,10 @@ void Enemigo::caminar(SDL_Rect camara, vector<pair<string,string>> plataformas)
 	pair<int,int> dimensionesPlataforma;
 	dimensionesPlataforma = this->buscarPlataforma(plataformas);
 	if (this->condicionSprite == "Normal") {
-		if (dimensionesPlataforma != NULL) {
-			if ((this->boxCollider.x-VELOCIDADCAMINAR) <= dimensionesPlataforma.first) {
+		if (dimensionesPlataforma.first != dimensionesPlataforma.second) {
+			cout << "boxCollider: " << boxCollider.x - VELOCIDADCAMINAR << endl;
+			cout << "x comienzoPlataforma: " << dimensionesPlataforma.first << endl;
+			if (this->boxCollider.x - VELOCIDADCAMINAR - 42 <= dimensionesPlataforma.first) {
 				this->condicionSprite = "Espejado";
 				this->posX += VELOCIDADCAMINAR;
 				this->boxCollider.x += VELOCIDADCAMINAR;
@@ -151,10 +155,8 @@ void Enemigo::caminar(SDL_Rect camara, vector<pair<string,string>> plataformas)
 			}
 		}
 	} else if (this->condicionSprite == "Espejado") {
-		//this->posX -= VELOCIDADCAMINAR;
-		//this->boxCollider.x -= VELOCIDADCAMINAR;
-		if (dimensionesPlataforma != NULL) {
-			if (this->boxCollider.x + this->boxCollider.w+VELOCIDADCAMINAR >= dimensionesPlataforma.second) {
+		if (dimensionesPlataforma.first != dimensionesPlataforma.second) {
+			if (this->boxCollider.x + this->boxCollider.w + VELOCIDADCAMINAR >= dimensionesPlataforma.second) {
 				this->condicionSprite = "Normal";
 				this->posX -= VELOCIDADCAMINAR;
 				this->boxCollider.x -= VELOCIDADCAMINAR;
@@ -162,29 +164,17 @@ void Enemigo::caminar(SDL_Rect camara, vector<pair<string,string>> plataformas)
 				this->posX += VELOCIDADCAMINAR;
 				this->boxCollider.x += VELOCIDADCAMINAR;
 			}
-		} else {//Terminar esto para el otro sentido
-				if (this->boxCollider.x-VELOCIDADCAMINAR <= camara.x) {
-					this->condicionSprite = "Espejado";
-					this->posX += VELOCIDADCAMINAR;
-					this->boxCollider.x += VELOCIDADCAMINAR;
-				} else {
+		} else {
+				if (this->boxCollider.x + this->boxCollider.w + VELOCIDADCAMINAR >= camara.x  + camara.w) {
+					this->condicionSprite = "Normal";
 					this->posX -= VELOCIDADCAMINAR;
 					this->boxCollider.x -= VELOCIDADCAMINAR;
+				} else {
+					this->posX += VELOCIDADCAMINAR;
+					this->boxCollider.x += VELOCIDADCAMINAR;
 				}
-		/*if ((!this->esPlataforma(plataformas) && this->boxCollider.x <= camara.x) || (this->esPlataforma(plataformas) && this->boxCollider.x <= this->buscarPlataforma(plataformas).first))
-		{
-			this->condicionSprite = "Espejado";
 		}
 	}
-	else if (this->condicionSprite == "Espejado")
-	{
-		this->posX += VELOCIDADCAMINAR;
-		this->boxCollider.x += VELOCIDADCAMINAR;
-		if ((!this->esPlataforma(plataformas) && this->boxCollider.x + this->boxCollider.w >= camara.x + camara.w) || (this->esPlataforma(plataformas) && this->boxCollider.x + this->boxCollider.w >= this->buscarPlataforma(plataformas).second))
-		{
-			this->condicionSprite = "Normal";
-		}
-	}*/
 }
 
 void Enemigo::setId(int id)

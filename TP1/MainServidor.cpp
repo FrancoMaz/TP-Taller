@@ -447,8 +447,8 @@ void* enemigoActivo(void* arg) {
 				} else if (tiempoTranscurrido %2 != 0) {
 					yaDisparo = false;
 				}
-				enemigo->walk();
-				//enemigo->caminar(servidor->camara,servidor->getNivelActual()->plataformas);
+				//enemigo->walk();
+				enemigo->caminar(servidor->camara,servidor->getNivelActual()->plataformas);
 				mensajeEnemigo = "4|1|";
 				mensajeEnemigo += enemigo->getInformacionDelEnemigo();
 				mensaje = new Mensaje(nombre,"Todos",mensajeEnemigo);
@@ -503,8 +503,8 @@ void* enemigoActivo(void* arg) {
 			}
 			case 3:
 			{
-				enemigo->walk();
-				//enemigo->caminar(servidor->camara,servidor->getNivelActual()->plataformas);
+				//enemigo->walk();
+				enemigo->caminar(servidor->camara,servidor->getNivelActual()->plataformas);
 				mensajeEnemigo = "4|1|";
 				mensajeEnemigo += enemigo->getInformacionDelEnemigo();
 				mensaje = new Mensaje(nombre,"Todos",mensajeEnemigo);
