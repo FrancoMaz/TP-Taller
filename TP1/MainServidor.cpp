@@ -409,7 +409,7 @@ void* enemigoActivo(void* arg) {
 					if (enemigo->condicionSprite == "Normal") {
 						x = 25;
 					} else {
-						x = 50;
+						x = 150;
 					}
 					Proyectil* proyectil1 = enemigo->dispararProyectil(6,"0",x,10,22,13,10);
 					yaDisparo = true;

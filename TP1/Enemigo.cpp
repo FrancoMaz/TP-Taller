@@ -134,8 +134,6 @@ void Enemigo::caminar(SDL_Rect camara, vector<pair<string,string>> plataformas)
 	dimensionesPlataforma = this->buscarPlataforma(plataformas);
 	if (this->condicionSprite == "Normal") {
 		if (dimensionesPlataforma.first != dimensionesPlataforma.second && this->posY != 415 ) {
-			//cout << "boxCollider: " << boxCollider.x - VELOCIDADCAMINAR << endl;
-			//cout << "x comienzoPlataforma: " << dimensionesPlataforma.first << endl;
 			if (this->boxCollider.x - VELOCIDADCAMINAR - 42 <= dimensionesPlataforma.first) {
 				this->condicionSprite = "Espejado";
 				this->posX += VELOCIDADCAMINAR;
