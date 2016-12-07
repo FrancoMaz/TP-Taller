@@ -51,26 +51,26 @@ void TaniOh::comportamiento(SDL_Rect camara, bool tieneQueDisparar)
 			case 0:
 			{
 				this->proyectilesADisparar.first.clear();
-				this->proyectilesADisparar.second = 2;
+				this->proyectilesADisparar.second = 1;
 				for (int i = 0; i < 1; i++)
 				{
 					SDL_Rect proyectilIzquierda = {this->boxCollider.x + 25,this->boxCollider.y + 70,78,13};
 					SDL_Rect proyectilDerecha = {this->boxCollider.x + 288,this->boxCollider.y + 63,78,13};
 					this->proyectilesADisparar.first.push_back(new Proyectil(20,0,"5",proyectilIzquierda.x,proyectilIzquierda.y, "Normal", 6, proyectilIzquierda, false,2,"",make_pair(25,70)));
-					this->proyectilesADisparar.first.push_back(new Proyectil(20,0,"5",proyectilDerecha.x,proyectilDerecha.y, "Espejado", 0, proyectilDerecha, false,2,"",make_pair(288,63)));
+					this->proyectilesADisparar.first.push_back(new Proyectil(20,0,"5",proyectilDerecha.x,proyectilDerecha.y, "Espejado", 6, proyectilDerecha, false,2,"",make_pair(288,70)));
 				}
 				break;
 			}
 			case 1:
 			{
 				this->proyectilesADisparar.first.clear();
-				this->proyectilesADisparar.second = 2;
+				this->proyectilesADisparar.second = 1;
 				for (int i = 0; i < 1; i++)
 				{
 					SDL_Rect proyectilIzquierda = {this->boxCollider.x + 25,this->boxCollider.y + 70,78,13};
-					SDL_Rect proyectilDerecha = {this->boxCollider.x + 288,this->boxCollider.y + 63,78,13};
+					SDL_Rect proyectilDerecha = {this->boxCollider.x + 288,this->boxCollider.y + 70,78,13};
 					this->proyectilesADisparar.first.push_back(new Proyectil(20,0,"5",proyectilIzquierda.x,proyectilIzquierda.y, "Normal", 6, proyectilIzquierda, false,2,"",make_pair(25,70)));
-					this->proyectilesADisparar.first.push_back(new Proyectil(20,0,"5",proyectilDerecha.x,proyectilDerecha.y, "Espejado", 0, proyectilDerecha, false,2,"",make_pair(288,63)));
+					this->proyectilesADisparar.first.push_back(new Proyectil(20,0,"5",proyectilDerecha.x,proyectilDerecha.y, "Espejado", 6, proyectilDerecha, false,2,"",make_pair(288,70)));
 				}
 				break;
 			}

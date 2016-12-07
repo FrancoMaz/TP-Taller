@@ -41,8 +41,8 @@
 			<Final>6154</Final>
 		</Plataforma8>
 		<Plataforma9>
-			<Comienzo>6878</Comienzo>
-			<Final>7117</Final>
+			<Comienzo>6662</Comienzo>
+			<Final>6900</Final>
 		</Plataforma9>
 	</Plataformas>
 	
@@ -64,7 +64,7 @@
 		</Item3>
 		<Item4>
 			<Arma>RocketLauncher</Arma>
-			<PosicionX>7000</PosicionX>
+			<PosicionX>6750</PosicionX>
 			<PosicionY>310</PosicionY>
 		</Item4>
 	</ItemArmas>
@@ -127,7 +127,7 @@
 			<PosicionY>248</PosicionY>
 		</Enemigo14>
 		<Enemigo15>
-			<PosicionX>2370</PosicionX>
+			<PosicionX>2460</PosicionX>
 			<PosicionY>248</PosicionY>
 		</Enemigo15>
 		<Enemigo16>
@@ -142,11 +142,19 @@
 			<PosicionX>5000</PosicionX>
 			<PosicionY>248</PosicionY>
 		</Enemigo18>
+		<Enemigo19>
+			<PosicionX>5850</PosicionX>
+			<PosicionY>415</PosicionY>
+		</Enemigo19>
+		<Enemigo20>
+			<PosicionX>6000</PosicionX>
+			<PosicionY>248</PosicionY>
+		</Enemigo20>
 	</Enemigos>
 	
 	<Boss>
 		<Nombre>hi_do</Nombre>
-		<PosicionX>5500</PosicionX>
+		<PosicionX>7100</PosicionX>
 		<PosicionY>100</PosicionY>
 	</Boss>
 </Configuracion>
