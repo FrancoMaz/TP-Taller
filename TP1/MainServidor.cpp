@@ -280,34 +280,41 @@ void* enviarObjetosEnCamara(void* arg)
 	Jugador* jugador = parametros->jugador;
 	Mensaje* mensajeObjetos;
 	string mensajeObjetosString = "";
-	while (servidor->escuchando && !servidor->gameComplete){
+	while (servidor->escuchando){
 		usleep(50000);
-		pthread_mutex_lock(&servidor->getNivelActual()->mutexItems);
-		for (int i = 0; i < servidor->getNivelActual()->items.size(); i++)
+		if (!servidor->gameComplete)
 		{
-			SDL_Rect box = servidor->getNivelActual()->items.at(i)->boxCollider;
-			bool visto = servidor->getNivelActual()->items.at(i)->visto;
-			if (box.x <= (servidor->camara.x + servidor->camara.w) && !visto)
+			pthread_mutex_lock(&servidor->getNivelActual()->mutexItems);
+			for (int i = 0; i < servidor->getNivelActual()->items.size(); i++)
 			{
-				mensajeObjetosString = "3|0|";
-				servidor->getNivelActual()->items.at(i)->visto = true;
-				mensajeObjetosString += servidor->getNivelActual()->items.at(i)->getStringItem();
-				mensajeObjetos = new Mensaje(jugador->getNombre(),"Todos",mensajeObjetosString);
-				servidor->encolarMensajeProcesadoParaCadaCliente(*mensajeObjetos,mensajeObjetosString);
-				mensajeObjetos->~Mensaje();
+				SDL_Rect box = servidor->getNivelActual()->items.at(i)->boxCollider;
+				bool visto = servidor->getNivelActual()->items.at(i)->visto;
+				if (box.x <= (servidor->camara.x + servidor->camara.w) && !visto)
+				{
+					mensajeObjetosString = "3|0|";
+					servidor->getNivelActual()->items.at(i)->visto = true;
+					mensajeObjetosString += servidor->getNivelActual()->items.at(i)->getStringItem();
+					mensajeObjetos = new Mensaje(jugador->getNombre(),"Todos",mensajeObjetosString);
+					servidor->encolarMensajeProcesadoParaCadaCliente(*mensajeObjetos,mensajeObjetosString);
+					mensajeObjetos->~Mensaje();
+				}
 			}
-		}
-		for (int i = 0; i < servidor->getNivelActual()->items.size(); i++) {
-			if (servidor->getNivelActual()->items.at(i)->fueObtenido) {
-				mensajeObjetosString = "3|1|";
-				mensajeObjetosString += servidor->getNivelActual()->items.at(i)->getStringItem();
-				mensajeObjetos = new Mensaje(jugador->getNombre(),"Todos",mensajeObjetosString);
-				servidor->encolarMensajeProcesadoParaCadaCliente(*mensajeObjetos,mensajeObjetosString);
-				mensajeObjetos->~Mensaje();
-				servidor->getNivelActual()->items.erase(servidor->getNivelActual()->items.begin()+i);
+			for (int i = 0; i < servidor->getNivelActual()->items.size(); i++) {
+				if (servidor->getNivelActual()->items.at(i)->fueObtenido) {
+					mensajeObjetosString = "3|1|";
+					mensajeObjetosString += servidor->getNivelActual()->items.at(i)->getStringItem();
+					mensajeObjetos = new Mensaje(jugador->getNombre(),"Todos",mensajeObjetosString);
+					servidor->encolarMensajeProcesadoParaCadaCliente(*mensajeObjetos,mensajeObjetosString);
+					mensajeObjetos->~Mensaje();
+					servidor->getNivelActual()->items.erase(servidor->getNivelActual()->items.begin()+i);
+				}
 			}
+			pthread_mutex_unlock(&servidor->getNivelActual()->mutexItems);
 		}
-		pthread_mutex_unlock(&servidor->getNivelActual()->mutexItems);
+		else
+		{
+			break;
+		}
 	}
 }
 
@@ -621,21 +628,28 @@ void* controlDeEnemigos(void* arg) {
 	Servidor* servidor = parametroRecibido->servidor;
 	while (servidor->escuchando && !servidor->gameComplete) {
 		usleep(50000);
-		servidor->getNivelActual()->despertarEnemigos(&servidor->camara);
-		pthread_mutex_lock(&servidor->getNivelActual()->mutexEnemigosActivos);
-		for (int i = 0; i < servidor->getNivelActual()->getEnemigosActivos().size(); i++) {
-			Enemigo* enemigo = servidor->getNivelActual()->getEnemigoActivo(i);
-			if (enemigo != NULL && !enemigo->threadAsociado && !enemigo->esEnemigoBoss) {
-				enemigo->threadAsociado = true;
-				pthread_t threadEnemigo;
-				ParametrosMovimiento* parametrosEnemigo = new ParametrosMovimiento(servidor,parametroRecibido->jugador);
-				parametrosEnemigo->enemigo = enemigo;
-				pthread_create(&threadEnemigo, NULL, &enemigoActivo, parametrosEnemigo);
-				pthread_detach(threadEnemigo);
-				parametrosEnemigo->~ParametrosMovimiento();
+		if (!servidor->gameComplete)
+		{
+			servidor->getNivelActual()->despertarEnemigos(&servidor->camara);
+			pthread_mutex_lock(&servidor->getNivelActual()->mutexEnemigosActivos);
+			for (int i = 0; i < servidor->getNivelActual()->getEnemigosActivos().size(); i++) {
+				Enemigo* enemigo = servidor->getNivelActual()->getEnemigoActivo(i);
+				if (enemigo != NULL && !enemigo->threadAsociado && !enemigo->esEnemigoBoss) {
+					enemigo->threadAsociado = true;
+					pthread_t threadEnemigo;
+					ParametrosMovimiento* parametrosEnemigo = new ParametrosMovimiento(servidor,parametroRecibido->jugador);
+					parametrosEnemigo->enemigo = enemigo;
+					pthread_create(&threadEnemigo, NULL, &enemigoActivo, parametrosEnemigo);
+					pthread_detach(threadEnemigo);
+					parametrosEnemigo->~ParametrosMovimiento();
+				}
 			}
+			pthread_mutex_unlock(&servidor->getNivelActual()->mutexEnemigosActivos);
 		}
-		pthread_mutex_unlock(&servidor->getNivelActual()->mutexEnemigosActivos);
+		else
+		{
+			break;
+		}
 	}
 }
 
@@ -768,10 +782,17 @@ void* verificarPasarDeNivel(void* arg)
 		if (servidor->getNivelActual()->avanzoDeNivel)
 		{
 			servidor->avanzarDeNivel();
-			pthread_t threadVerificarBoss;
-			pthread_create(&threadVerificarBoss, NULL, &verificarBossEnCamara, parametros);
-			pthread_detach(threadVerificarBoss);
-			servidor->getNivelActual()->avanzoDeNivel = false;
+			if (!servidor->gameComplete)
+			{
+				pthread_t threadVerificarBoss;
+				pthread_create(&threadVerificarBoss, NULL, &verificarBossEnCamara, parametros);
+				pthread_detach(threadVerificarBoss);
+				servidor->getNivelActual()->avanzoDeNivel = false;
+			}
+			else
+			{
+				break;
+			}
 		}
 	}
 }

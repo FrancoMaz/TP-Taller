@@ -292,8 +292,7 @@ void procesarUltimosMensajes(string mensajes, Cliente* cliente, UpdateJugador* u
 				}
 				case 10:
 				{
-					vista->mostrarPantallaFinDeJuego();
-					usleep(5000000);
+					vista->pantallaPuntajes = false;
 					vista->juegoTerminado = true;
 				}
 			}

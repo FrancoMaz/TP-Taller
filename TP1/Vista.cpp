@@ -632,8 +632,8 @@ void Vista::actualizarPantalla(int anchoVentana, int anchoCapaPrincipal) {
 			textoTotal->actualizarTexto("Puntaje Equipo Beta Nivel: " + to_string(puntajeEquipoBeta) + ". Acumulado: " + to_string(puntajeTotalEquipoBeta), {255,255,255});
 			textoTotal->aplicarPosicion(ANCHO_VENTANA/2 - textoTotal->getAncho()/2, 520,0,SDL_FLIP_NONE);
 		}
-		textoNivel->~TexturaSDL();
-		textoTotal->~TexturaSDL();
+		delete textoNivel;
+		delete textoTotal;
 	}
 
 	if (vistaJugadores.empty())
@@ -641,6 +641,13 @@ void Vista::actualizarPantalla(int anchoVentana, int anchoCapaPrincipal) {
 		texturaPuntajesFondo->aplicarPosicion(0,0,0,SDL_FLIP_NONE);
 		textoGameOver->actualizarTexto("GAME OVER",{255,255,255});
 		textoGameOver->aplicarPosicion(ANCHO_VENTANA/2 - textoGameOver->getAncho()/2, ALTO_VENTANA/2, 0, SDL_FLIP_NONE);
+	}
+
+	if (juegoTerminado)
+	{
+		texturaPuntajesFondo->aplicarPosicion(0,0,0,SDL_FLIP_NONE);
+		textoJuegoCompletado->actualizarTexto("JUEGO COMPLETADO",{255,255,255});
+		textoJuegoCompletado->aplicarPosicion(ANCHO_VENTANA/2 - textoJuegoCompletado->getAncho()/2, ALTO_VENTANA/2, 0, SDL_FLIP_NONE);
 	}
 
 	if (texturaBotonDesconectar->aplicarPosicionDeBoton(10,10,&evento)) {
@@ -846,34 +853,28 @@ void Vista::vaciarVectores() {
 		delete vectorCapas.at(i)->textura;
 		delete vectorCapas.at(i);
 	}
-	vector<Capa*>().swap(vectorCapas);
+	vectorCapas.clear();
 	for (int i = 0; i < this->vistaBalas.size() ; i++){
 		delete vistaBalas.at(i)->textura;
 		delete vistaBalas.at(i);
 	}
-	vector<VistaBala*>().swap(vistaBalas);
+	vistaBalas.clear();
 	for (int i = 0; i < this->vistaEnemigos.size() ; i++){
 		delete vistaEnemigos.at(i)->textura;
 		delete vistaEnemigos.at(i);
 	}
-	vector<VistaEnemigo*>().swap(vistaEnemigos);
+	vistaEnemigos.clear();
 	for (int i = 0; i < this->vistaItems.size() ; i++){
 		delete vistaItems.at(i)->textura;
 		delete vistaItems.at(i);
 	}
-	vector<Item*>().swap(vistaItems);
+	vistaItems.clear();
 	for (int i = 0; i < this->vistaBoss.size() ; i++){
 		delete vistaBoss.at(i)->textura;
 		delete vistaBoss.at(i);
 	}
-	vector<VistaEnemigo*>().swap(vistaBoss);
-	usleep(2000000);
-}
-
-void Vista::mostrarPantallaFinDeJuego()
-{
-	textoJuegoCompletado->actualizarTexto("JUEGO COMPLETADO",{255,255,255});
-	textoJuegoCompletado->aplicarPosicion(ANCHO_VENTANA/2 - textoJuegoCompletado->getAncho()/2, ALTO_VENTANA/2, 0, SDL_FLIP_NONE);
+	vistaBoss.clear();
+	usleep(1000000);
 }
 
 void Vista::vaciarJugadores()
