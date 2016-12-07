@@ -632,6 +632,8 @@ void Vista::actualizarPantalla(int anchoVentana, int anchoCapaPrincipal) {
 			textoTotal->actualizarTexto("Puntaje Equipo Beta Nivel: " + to_string(puntajeEquipoBeta) + ". Acumulado: " + to_string(puntajeTotalEquipoBeta), {255,255,255});
 			textoTotal->aplicarPosicion(ANCHO_VENTANA/2 - textoTotal->getAncho()/2, 520,0,SDL_FLIP_NONE);
 		}
+		textoNivel->~TexturaSDL();
+		textoTotal->~TexturaSDL();
 	}
 
 	if (vistaJugadores.empty())
