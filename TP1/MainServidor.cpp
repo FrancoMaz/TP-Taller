@@ -405,8 +405,13 @@ void* enemigoActivo(void* arg) {
 					mensaje = new Mensaje(nombre,"Todos",mensajeEnemigo);
 					servidor->encolarMensajeProcesadoParaCadaCliente(*mensaje,mensajeEnemigo);
 					mensaje->~Mensaje();
-
-					Proyectil* proyectil1 = enemigo->dispararProyectil(6,"0",25,10,22,13,10);
+					int x;
+					if (enemigo->condicionSprite == "Normal") {
+						x = 25;
+					} else {
+						x = 50;
+					}
+					Proyectil* proyectil1 = enemigo->dispararProyectil(6,"0",x,10,22,13,10);
 					yaDisparo = true;
 					pthread_mutex_lock(&mutexIdProyectil);
 					proyectil1->id = idProyectil;
@@ -422,7 +427,7 @@ void* enemigoActivo(void* arg) {
 					pthread_detach(threadDisparo1);
 					parametrosProyectil1->~ParametrosMovimiento();
 					usleep(400000);
-					Proyectil* proyectil2 = enemigo->dispararProyectil(6,"0",25,10,22,13,10);
+					Proyectil* proyectil2 = enemigo->dispararProyectil(6,"0",x,10,22,13,10);
 					pthread_mutex_lock(&mutexIdProyectil);
 					proyectil2->id = idProyectil;
 					idProyectil += 1;
