@@ -21,7 +21,7 @@ Enemigo::Enemigo(int posX, int posY, int id, int estado, int vida, bool esBoss) 
 	this->agachado = false;
 	if (estado == 1)
 	{
-		this->spriteEnemigo = "2"; //"Enemigo_disparando"
+		this->spriteEnemigo = "1"; //"Enemigo_caminando"
 		this->disparar = true;
 	}
 	else if (estado == 0)
@@ -113,39 +113,69 @@ bool Enemigo::esPlataforma(vector<pair<string,string>> plataformas)
 
 pair<int,int> Enemigo::buscarPlataforma(vector<pair<string,string>> plataformas)
 {
+	pair<int,int> plat;
+
 	for (int i = 0; i < plataformas.size(); i++)
 	{
 		if ((this->posX + boxCollider.w >= atoi(plataformas.at(i).first.c_str())) && (this->posX <= atoi(plataformas.at(i).second.c_str())))
 		{
-			pair<int,int> plat;
 			plat.first = atoi(plataformas.at(i).first.c_str());
 			plat.second = atoi(plataformas.at(i).second.c_str());
 			return plat;
 		}
 	}
+	plat.first = 0;
+	plat.second = 0;
+	return plat;
 }
 
 void Enemigo::caminar(SDL_Rect camara, vector<pair<string,string>> plataformas)
 {
-	if (this->condicionSprite == "Normal")
-	{
-		this->posX -= VELOCIDADCAMINAR;
-		this->boxCollider.x -= VELOCIDADCAMINAR;
-		if ((!this->esPlataforma(plataformas) && this->boxCollider.x <= camara.x) || (this->esPlataforma(plataformas) && this->boxCollider.x <= this->buscarPlataforma(plataformas).first))
-		{
-			this->condicionSprite = "Espejado";
+	pair<int,int> dimensionesPlataforma;
+	dimensionesPlataforma = this->buscarPlataforma(plataformas);
+	if (this->condicionSprite == "Normal") {
+		if (dimensionesPlataforma.first != dimensionesPlataforma.second && this->posY != 415 ) {
+			if (this->boxCollider.x - VELOCIDADCAMINAR - 42 <= dimensionesPlataforma.first) {
+				this->condicionSprite = "Espejado";
+				this->posX += VELOCIDADCAMINAR;
+				this->boxCollider.x += VELOCIDADCAMINAR;
+			} else {
+				this->posX -= VELOCIDADCAMINAR;
+				this->boxCollider.x -= VELOCIDADCAMINAR;
+			}
+		} else {
+			if (this->boxCollider.x-VELOCIDADCAMINAR <= camara.x) {
+				this->condicionSprite = "Espejado";
+				this->posX += VELOCIDADCAMINAR;
+				this->boxCollider.x += VELOCIDADCAMINAR;
+			} else {
+				this->posX -= VELOCIDADCAMINAR;
+				this->boxCollider.x -= VELOCIDADCAMINAR;
+			}
 		}
-	}
-	else if (this->condicionSprite == "Espejado")
-	{
-		this->posX += VELOCIDADCAMINAR;
-		this->boxCollider.x += VELOCIDADCAMINAR;
-		if ((!this->esPlataforma(plataformas) && this->boxCollider.x + this->boxCollider.w >= camara.x + camara.w) || (this->esPlataforma(plataformas) && this->boxCollider.x + this->boxCollider.w >= this->buscarPlataforma(plataformas).second))
-		{
-			this->condicionSprite = "Normal";
+	} else if (this->condicionSprite == "Espejado") {
+		if (dimensionesPlataforma.first != dimensionesPlataforma.second && this->posY != 415) {
+			if (this->boxCollider.x + this->boxCollider.w + VELOCIDADCAMINAR >= dimensionesPlataforma.second) {
+				this->condicionSprite = "Normal";
+				this->posX -= VELOCIDADCAMINAR;
+				this->boxCollider.x -= VELOCIDADCAMINAR;
+			} else {
+				this->posX += VELOCIDADCAMINAR;
+				this->boxCollider.x += VELOCIDADCAMINAR;
+			}
+		} else {
+				if (this->boxCollider.x + this->boxCollider.w + VELOCIDADCAMINAR >= camara.x  + camara.w) {
+					this->condicionSprite = "Normal";
+					this->posX -= VELOCIDADCAMINAR;
+					this->boxCollider.x -= VELOCIDADCAMINAR;
+				} else {
+					this->posX += VELOCIDADCAMINAR;
+					this->boxCollider.x += VELOCIDADCAMINAR;
+				}
 		}
 	}
 }
+
 
 void Enemigo::setId(int id)
 {
@@ -157,4 +187,15 @@ void Enemigo::setYCaida()
 	this->posY += 91;
 	this->boxCollider.y += 91;
 	this->boxCollider.h = 106;
+}
+
+void Enemigo::walk() {
+	if (this->condicionSprite == "Normal") {
+		this->posX -= VELOCIDADCAMINAR;
+		this->boxCollider.x -= VELOCIDADCAMINAR;
+	}
+	else {
+		this->posX += VELOCIDADCAMINAR;
+		this->boxCollider.x += VELOCIDADCAMINAR;
+	}
 }
