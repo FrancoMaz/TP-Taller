@@ -101,6 +101,7 @@ public:
 	bool juegoTerminado;
 	void mostrarPantallaFinDeJuego();
 	void cargarSiguienteNivel(int camaraX, int camaraY, int anchoVentana, int altoVentana, vector<pair<int,int>> abscisasCapas, vector<ImagenDto*> &imagenes, vector<string> nombreCapas);
+	void vaciarJugadores();
 };
 
 #endif /* TP2_VISTA_H_ */

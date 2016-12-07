@@ -167,15 +167,6 @@ void procesarUltimosMensajes(string mensajes, Cliente* cliente, UpdateJugador* u
 					int idSprite = stringToInt(msjContenido.at(6));
 					update->setSpriteActual(matrizSpritesJugadores.at(idColor).at(idSprite));
 					update->setCondicion(msjContenido.at(7));
-					//string spriteAEjecutar = msjContenido.at(5);
-					/*for (int i = 0; i < setsSprites.size(); i++){
-						vector<SpriteDto*> listaSprites = setsSprites.at(i)->getSprites();
-						for (int j = 0; j < listaSprites.size(); j++) {
-							if (spriteAEjecutar == listaSprites.at(j)->getID()) {
-								update->setSpriteActual(listaSprites.at(j));
-							}
-						}
-					}*/
 					vista->actualizarPosJugador(update,stringToInt(handshakeDeserializado->getAncho()),stringToInt(handshakeDeserializado->getImagenes().at(0)->getAncho()));
 					break;
 				}
@@ -518,6 +509,7 @@ int main() {
 				cout << "Desconectado del servidor.." << endl;
 				cliente->vaciarClientesDisponibles();
 				primeraVez = false;
+				vista->vaciarJugadores();
 				vista->vaciarVectores();
 				cliente->salir();
 				//}

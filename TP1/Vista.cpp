@@ -873,3 +873,8 @@ void Vista::mostrarPantallaFinDeJuego()
 	textoJuegoCompletado->actualizarTexto("JUEGO COMPLETADO",{255,255,255});
 	textoJuegoCompletado->aplicarPosicion(ANCHO_VENTANA/2 - textoJuegoCompletado->getAncho()/2, ALTO_VENTANA/2, 0, SDL_FLIP_NONE);
 }
+
+void Vista::vaciarJugadores()
+{
+	this->vistaJugadores.clear();
+}

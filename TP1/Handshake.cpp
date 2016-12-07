@@ -42,6 +42,10 @@ Handshake::Handshake(vector<ImagenDto*> imagenes, vector<SetDeSpritesDto*> sprit
 
 		}
 	}
+	vectorRojo.push_back(sprites.at(5)->getSprites().at(0));
+	vectorVerde.push_back(sprites.at(5)->getSprites().at(0));
+	vectorAmarillo.push_back(sprites.at(5)->getSprites().at(0));
+	vectorAzul.push_back(sprites.at(5)->getSprites().at(0));
 	this->matrizSpritesJugadores.push_back(vectorRojo);
 	this->matrizSpritesJugadores.push_back(vectorVerde);
 	this->matrizSpritesJugadores.push_back(vectorAmarillo);

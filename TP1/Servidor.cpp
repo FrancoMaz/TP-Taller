@@ -698,6 +698,7 @@ void Servidor::verificarDesconexion(string nombre)
 			jugador->setSprite("Jugador_desconectado");
 			Mensaje* mensaje;
 			string mensajeDesconectado = "";
+			jugador->idSprite = 37;
 			mensajeDesconectado = jugador->getStringJugador();
 			mensaje = new Mensaje(jugador->getNombre(),"Todos",mensajeDesconectado);
 			encolarMensajeProcesadoParaCadaCliente(*mensaje,mensajeDesconectado);
