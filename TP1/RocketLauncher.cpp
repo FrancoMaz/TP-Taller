@@ -42,6 +42,7 @@ Proyectil* RocketLauncher::disparar(int posicionX,int posicionY, string condicio
 					posY = posicionY+160;
 				}
 			}
+			this->boxCollider = {posX,posY,82,24};
 			break;
 		case 1:
 			if (condicion == "Normal"){
@@ -51,9 +52,10 @@ Proyectil* RocketLauncher::disparar(int posicionX,int posicionY, string condicio
 				posX = posicionX+62;
 				posY = posicionY+43;
 			}
+			this->boxCollider = {posX+24,posY,24,82};
 			break;
 	}
-	this->boxCollider = {posX,posY,82,24};
+
 	//this->proyectil = new Proyectil(80, 40, this->nombreArma, posX, posY, condicion, anguloBala, this->boxCollider, this->cortoAlcance, disparadoPor, nombreJugador);
 	this->municiones -= 1;
 	//return this->proyectil;
