@@ -409,6 +409,9 @@ bool Jugador::chequearCambiarCamara(SDL_Rect camara, int anchoVentana, pair<int,
 		camara.x = posicionMasAtras;
 		return false;
 	}
+	if (camara.x + anchoVentana >= 7100){
+		camara.x = 7100;
+	}
 
 	if (this->velocidades.first <= 0)
 	{

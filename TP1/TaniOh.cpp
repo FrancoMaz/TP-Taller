@@ -51,7 +51,7 @@ void TaniOh::comportamiento(SDL_Rect camara, bool tieneQueDisparar)
 			case 0:
 			{
 				this->proyectilesADisparar.first.clear();
-				this->proyectilesADisparar.second = 2;
+				this->proyectilesADisparar.second = 1;
 				for (int i = 0; i < 1; i++)
 				{
 					SDL_Rect proyectilIzquierda = {this->boxCollider.x + 25,this->boxCollider.y + 70,78,13};
@@ -64,7 +64,7 @@ void TaniOh::comportamiento(SDL_Rect camara, bool tieneQueDisparar)
 			case 1:
 			{
 				this->proyectilesADisparar.first.clear();
-				this->proyectilesADisparar.second = 2;
+				this->proyectilesADisparar.second = 1;
 				for (int i = 0; i < 1; i++)
 				{
 					SDL_Rect proyectilIzquierda = {this->boxCollider.x + 25,this->boxCollider.y + 70,78,13};

@@ -37,8 +37,8 @@
 			<Final>5972</Final>
 		</Plataforma7>
 		<Plataforma8>
-			<Comienzo>6412</Comienzo>
-			<Final>7029</Final>
+			<Comienzo>6575</Comienzo>
+			<Final>6878</Final>
 		</Plataforma8>
 	</Plataformas>
 	
@@ -91,7 +91,7 @@
 			<PosicionY>248</PosicionY>
 		</Enemigo6>
 		<Enemigo7>
-			<PosicionX>6500</PosicionX>
+			<PosicionX>6670</PosicionX>
 			<PosicionY>248</PosicionY>
 		</Enemigo7>
 		<Enemigo8>
@@ -130,7 +130,7 @@
 	
 	<Boss>
 		<Nombre>tani_oh</Nombre>
-		<PosicionX>6000</PosicionX>
+		<PosicionX>7100</PosicionX>
 		<PosicionY>338</PosicionY>
 	</Boss>
 </Configuracion>
