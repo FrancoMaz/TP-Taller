@@ -42,6 +42,12 @@ Proyectil* Flameshot::disparar(int posicionX,int posicionY, string condicion, in
 					posY = posicionY+140;
 				}
 			}
+
+			if(condicion == "Normal"){
+				this->boxCollider = {posX,posY+18,4,50};
+			} else {
+				this->boxCollider = {posX+111,posY+18,4,50};
+			}
 			break;
 		case 1:
 			if (condicion == "Normal"){
@@ -51,9 +57,9 @@ Proyectil* Flameshot::disparar(int posicionX,int posicionY, string condicion, in
 				posX = posicionX+50;
 				posY = posicionY-50;
 			}
+			this->boxCollider = {posX,posY+111,50,4};
 			break;
 	}
-	this->boxCollider = {posX,posY,91,80};
 	//this->proyectil = new Proyectil(35, 40, this->nombreArma, posX, posY, condicion, anguloBala, this->boxCollider, this->cortoAlcance, disparadoPor, nombreJugador);
 	this->municiones -= 1;
 	//return this->proyectil;
