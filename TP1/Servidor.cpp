@@ -592,7 +592,7 @@ list<string> Servidor::agregarDestinatarios(string remitente) {
 }
 string Servidor::traerMensajesProcesados(string nombreCliente) {
 
-	queue<Mensaje>* colaDeMensajes;
+	queue<Mensaje>* colaDeMensajes = NULL;
 
 	for (list<Servidor::MensajesProcesados>::iterator datoActual = listaMensajesProcesados->begin();
 			datoActual != listaMensajesProcesados->end(); datoActual++) {
@@ -604,10 +604,12 @@ string Servidor::traerMensajesProcesados(string nombreCliente) {
 		}
 	}
 
-	string mensajesConcatenados = concatenarMensajes(colaDeMensajes);
-
-	return mensajesConcatenados;
-
+	if (colaDeMensajes != NULL) {
+		string mensajesConcatenados = concatenarMensajes(colaDeMensajes);
+		return mensajesConcatenados;
+	} else {
+		return "";
+	}
 }
 string Servidor::concatenarMensajes(queue<Mensaje>* colaDeMensajes) {
 
