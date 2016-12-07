@@ -22,7 +22,7 @@
 
 #define velocidad 3
 #define PI 3.14159265
-#define VELMAX 10
+#define VELMAX 15
 #define MARGENIZQ 15
 #define MARGENDER ANCHO_VENTANA/2
 #define DER 1
@@ -103,5 +103,6 @@ public:
 	int equipoIndice;
 	int idSprite;
 	int obtenerIdSpriteAEjecutar();
+	Arma* getArmaActual();
 };
 #endif /* JUGADOR_H_ */

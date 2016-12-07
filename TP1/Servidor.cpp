@@ -788,7 +788,7 @@ void Servidor::avanzarDeNivel()
 		Mensaje* mensajeJuegoTerminado = new Mensaje("Servidor","Todos",stringJuegoTerminado);
 		encolarMensajeProcesadoParaCadaCliente(*mensajeJuegoTerminado,stringJuegoTerminado);
 		mensajeJuegoTerminado->~Mensaje();
-		//usleep (5000000);
+		usleep (5000000);
 	}
 }
 

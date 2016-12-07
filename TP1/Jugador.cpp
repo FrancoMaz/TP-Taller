@@ -608,3 +608,7 @@ int Jugador::obtenerIdSpriteAEjecutar(){
 	return idSprite;
 }
 
+Arma* Jugador::getArmaActual()
+{
+	return this->armas.at(armaActual);
+}

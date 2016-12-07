@@ -21,6 +21,7 @@ public:
 	int valorPuntaje;
 	int puntajeTotal;
 	int valorEnergia;
+	int municiones;
 	string equipo;
 	string nombre;
 	TexturaSDL* texturaNombre;

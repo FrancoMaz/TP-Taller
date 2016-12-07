@@ -15,7 +15,6 @@ using namespace std;
 class Arma {
 
 protected:
-	int municiones;
 	int municionesPorRepuesto;
 	SDL_Rect boxCollider;
 
@@ -31,6 +30,7 @@ public:
 	string nombreArma = "miss";
 	bool disparoDiagonal = false;
 	bool cortoAlcance = false;
+	int municiones;
 };
 
 

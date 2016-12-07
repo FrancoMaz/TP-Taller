@@ -70,7 +70,7 @@ public:
 	void cerrar();
 	void actualizarJugador(UpdateJugador* update, int anchoVentana, int anchoCapaPrincipal);
 	void actualizarPosJugador(UpdateJugador* update, int anchoVentana, int anchoCapaPrincipal);
-	void actualizarPantalla(int anchoVentana, int anchoCapaPrincipal);
+	void actualizarPantalla(int anchoVentana, int anchoCapaPrincipal, string nombreJugador);
 	void cargarVistaInicialJugador(string nombre, int x, int y, SpriteDto* sprite);
 	void actualizarCamara(int x, int y, vector<pair<int,int>> abscisasCapas, int anchoVentana);
 	SDL_Rect camara;
@@ -102,6 +102,7 @@ public:
 	void mostrarPantallaFinDeJuego();
 	void cargarSiguienteNivel(int camaraX, int camaraY, int anchoVentana, int altoVentana, vector<pair<int,int>> abscisasCapas, vector<ImagenDto*> &imagenes, vector<string> nombreCapas);
 	void vaciarJugadores();
+	void actualizarMuniciones(string jugador, int municiones);
 };
 
 #endif /* TP2_VISTA_H_ */

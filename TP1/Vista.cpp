@@ -74,6 +74,7 @@ void Vista::cargarArchivos(){
 	textura.push_back(ventana->crearTexto("Recursos/font_puntajes.ttf",22));
 	textura.push_back(ventana->crearTexto("Recursos/msserif_bold.ttf",30));
 	textura.push_back(ventana->crearTexto("Recursos/msserif_bold.ttf",30));
+	textura.push_back(ventana->crearTexto("Recursos/msserif_bold.ttf",16));
 
 	//Defino constantes para cada textura (para evitar llamarlos por índices)
 	#define texturaMenuFondo textura[0]
@@ -101,6 +102,7 @@ void Vista::cargarArchivos(){
 	#define textoPuntajesGlobal textura[26]
 	#define textoGameOver textura[32]
 	#define textoJuegoCompletado textura[33]
+	#define textoMuniciones textura[34]
 }
 
 
@@ -181,8 +183,7 @@ datosConexion Vista::cargarPantallaIngresoDatos(bool aviso, int numeroPantalla){
 			//campoUno = this->datos.puerto;
 			campoUno = "7891";
 			//campoDos = this->datos.ip;
-			//campoDos = "127.0.0.1";
-			//campoDos = "192.168.1.11";
+			//campoDos = "192.168.1.10";
 			campoDos = "127.0.0.1";
 			textoIngresePuerto->actualizarTexto("Ingrese el puerto:",colorTexto);
 			textoIngreseIP->actualizarTexto("Ingrese la IP del servidor:",colorTexto);
@@ -409,6 +410,7 @@ void Vista::cargarVistaInicialJugador(string nombre, int x, int y, SpriteDto* sp
 	TexturaSDL* texturaNombre = ventana->crearTexto("Recursos/msserif_bold.ttf", 18);
 	vistaJugador = new VistaJugador(nombre,x,y,(ventana->crearTextura("Recursos/" + sprite->getPath() + ".png", atoi(fotogramas.c_str()))), SDL_FLIP_NONE,energia,imgEnergia,puntaje,imgPuntaje, texturaNombre);
 	vistaJugador->texturaNombre->actualizarTexto(vistaJugador->nombre,{255,255,255});
+	vistaJugador->municiones = 200;
 	vistaJugadores.push_back(vistaJugador);
 }
 
@@ -539,7 +541,7 @@ void Vista::actualizarVida(string jugador, int vida){
 	}
 }
 
-void Vista::actualizarPantalla(int anchoVentana, int anchoCapaPrincipal) {
+void Vista::actualizarPantalla(int anchoVentana, int anchoCapaPrincipal, string nombreJugador) {
 	this->ventana->limpiar();
 
 	for (int i=vectorCapas.size()-1; i>=0; i--)
@@ -590,6 +592,11 @@ void Vista::actualizarPantalla(int anchoVentana, int anchoCapaPrincipal) {
 		vistaJugador->puntaje->aplicarPosicion(vistaJugador->x - camara.x + texturaJugadorX->getAnchoSprite()/2 + 35, vistaJugador->y + 80, 0, SDL_FLIP_NONE);
 		vistaJugador->puntaje->actualizarTexto(to_string(vistaJugador->valorPuntaje),{255,255,255});
 		vistaJugador->texturaNombre->aplicarPosicion(vistaJugador->x - camara.x + texturaJugadorX->getAnchoSprite()/2 - vistaJugador->texturaNombre->getAncho()/2,vistaJugador->y + 60, 0, SDL_FLIP_NONE);
+		if (vistaJugador->nombre == nombreJugador)
+		{
+			textoMuniciones->actualizarTexto(to_string(vistaJugador->municiones), {255,255,255});
+			textoMuniciones->aplicarPosicion(750, 10, 0, SDL_FLIP_NONE);
+		}
 	}
 
 	if (pantallaPuntajes){
@@ -881,4 +888,16 @@ void Vista::vaciarVectores() {
 void Vista::vaciarJugadores()
 {
 	this->vistaJugadores.clear();
+}
+
+void Vista::actualizarMuniciones(string jugador, int municiones)
+{
+	for (int i = 0; i < vistaJugadores.size(); i++){
+		VistaJugador* vistaJugador = vistaJugadores.at(i);
+		if (vistaJugador->nombre == jugador)
+		{
+			vistaJugador->municiones = municiones;
+			break;
+		}
+	}
 }

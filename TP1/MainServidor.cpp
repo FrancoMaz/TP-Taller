@@ -154,6 +154,11 @@ void* disparoProyectil(void* arg)
 
 	// disparado por un jugador
 	if (proyectil->disparadoPor == 1) {
+		Mensaje* mensajeMuniciones;
+		string mensajeMunicionesString = "11|" + jugador->getNombre() + "|" + to_string(jugador->getArmaActual()->municiones) + "#";
+		mensajeMuniciones = new Mensaje(jugador->getNombre(),"Todos",mensajeMunicionesString);
+		servidor->encolarMensajeProcesadoParaCadaCliente(*mensajeMuniciones,mensajeMunicionesString);
+		mensajeMuniciones->~Mensaje();
 		while (!servidor->getNivelActual()->verificarColision(servidor->camara, proyectil, jugador->estaDisparando())) {
 			usleep(50000);
 			proyectil->mover();
@@ -307,6 +312,11 @@ void* enviarObjetosEnCamara(void* arg)
 					servidor->encolarMensajeProcesadoParaCadaCliente(*mensajeObjetos,mensajeObjetosString);
 					mensajeObjetos->~Mensaje();
 					servidor->getNivelActual()->items.erase(servidor->getNivelActual()->items.begin()+i);
+					Mensaje* mensajeMuniciones;
+					string mensajeMunicionesString = "11|" + jugador->getNombre() + "|" + to_string(jugador->getArmaActual()->municiones) + "#";
+					mensajeMuniciones = new Mensaje(jugador->getNombre(),"Todos",mensajeMunicionesString);
+					servidor->encolarMensajeProcesadoParaCadaCliente(*mensajeMuniciones,mensajeMunicionesString);
+					mensajeMuniciones->~Mensaje();
 				}
 			}
 			pthread_mutex_unlock(&servidor->getNivelActual()->mutexItems);
