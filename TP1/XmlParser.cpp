@@ -76,7 +76,7 @@ vector<ImagenDto*> XmlParser::getEscenario() {
 			this->escenario.push_back(imagen);
 		}
 
-		ImagenDto* imagenTemporal;
+		/*ImagenDto* imagenTemporal;
 
 		for (int i = 0; i < this->escenario.size(); i++) {
 			for (int j = 0; j < this->escenario.size() - 1; j++) {
@@ -86,7 +86,7 @@ vector<ImagenDto*> XmlParser::getEscenario() {
 					this->escenario.at(j+1) = imagenTemporal;
 				}
 			}
-		}
+		}*/
 
 	}
 

@@ -34,6 +34,7 @@ public:
 	string nombre;
 	int tiempoEntreArmas;
 	bool liberaSoldados;
+	string sentidoMovimientoTaniOh;
 	virtual Enemigo* liberarSoldado(int xJugador);
 };
 

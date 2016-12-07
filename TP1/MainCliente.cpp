@@ -167,15 +167,6 @@ void procesarUltimosMensajes(string mensajes, Cliente* cliente, UpdateJugador* u
 					int idSprite = stringToInt(msjContenido.at(6));
 					update->setSpriteActual(matrizSpritesJugadores.at(idColor).at(idSprite));
 					update->setCondicion(msjContenido.at(7));
-					//string spriteAEjecutar = msjContenido.at(5);
-					/*for (int i = 0; i < setsSprites.size(); i++){
-						vector<SpriteDto*> listaSprites = setsSprites.at(i)->getSprites();
-						for (int j = 0; j < listaSprites.size(); j++) {
-							if (spriteAEjecutar == listaSprites.at(j)->getID()) {
-								update->setSpriteActual(listaSprites.at(j));
-							}
-						}
-					}*/
 					vista->actualizarPosJugador(update,stringToInt(handshakeDeserializado->getAncho()),stringToInt(handshakeDeserializado->getImagenes().at(0)->getAncho()));
 					break;
 				}
@@ -296,12 +287,18 @@ void procesarUltimosMensajes(string mensajes, Cliente* cliente, UpdateJugador* u
 						abscisas.second = stringToInt(capa.at(2));
 						abscisasCapas.push_back(abscisas);
 					}
-					vista->inicializarCamara(xCamara,yCamara,atoi(handshakeDeserializado->getAncho().c_str()), atoi(handshakeDeserializado->getAlto().c_str()), abscisasCapas, handshakeDeserializado->getImagenes(), nombreCapas);
+					vista->cargarSiguienteNivel(xCamara,yCamara,atoi(handshakeDeserializado->getAncho().c_str()), atoi(handshakeDeserializado->getAlto().c_str()), abscisasCapas, handshakeDeserializado->imagenes, nombreCapas);
 					break;
+				}
+				case 10:
+				{
+					vista->mostrarPantallaFinDeJuego();
+					usleep(5000000);
+					vista->juegoTerminado = true;
 				}
 			}
 		}
-		vista->actualizarPantalla(stringToInt(handshakeDeserializado->getAncho()), stringToInt(handshakeDeserializado->getImagenes().at(0)->getAncho()));
+		vista->actualizarPantalla(stringToInt(handshakeDeserializado->getAncho()), stringToInt(handshakeDeserializado->imagenes.at(0)->getAncho()));
 	}
 }
 
@@ -313,7 +310,7 @@ void* recibirPosicionJugadores(void* arg) {
 	 //The frames per second timer
 	LTimer capTimer;
 	usleep(50000);
-	while(!vista->controlador->comprobarCierreVentana()){
+	while(!vista->controlador->comprobarCierreVentana() && !vista->juegoTerminado){
 		usleep(100);
 		 //Start cap timer
 		capTimer.start();
@@ -350,7 +347,7 @@ void* enviarEventos(void* arg) {
 	//Start counting frames per second
 	int countedFrames = 0;
 	fpsTimer.start();
-	while(!vista->controlador->comprobarCierreVentana()){
+	while(!vista->controlador->comprobarCierreVentana() && !vista->juegoTerminado){
 		usleep(100);
 		while(SDL_PollEvent(&evento)){
 			if (vista->pantallaPuntajes){
@@ -462,8 +459,7 @@ void* cicloConexion(void* arg) {
 			pthread_detach(threadEnviarEventos);
 			pthread_create(&threadRecibirPosicionJugadores, NULL, &recibirPosicionJugadores,cliente);
 			pthread_detach(threadRecibirPosicionJugadores);
-			vector<ImagenDto*> imagenes = handshakeDeserializado->getImagenes();
-			vista->cargarEscenario(imagenes, stringToInt(handshakeDeserializado->getAncho()), stringToInt(handshakeDeserializado->getAlto()));
+			vista->cargarEscenario(handshakeDeserializado->getImagenes(), stringToInt(handshakeDeserializado->getAncho()), stringToInt(handshakeDeserializado->getAlto()));
 			while(!terminoComunicacion) {
 				usleep(100);
 			}
@@ -477,16 +473,16 @@ void* cicloConexion(void* arg) {
 int main() {
 	bool primeraVez = true;
 	while (!vista->ventanaCerrada()) {
-	bool esValido = false;
-	bool socketOk = false;
-	pthread_t thrComu;
-	if (primeraVez) {
-		while (!vista->inicializar()) {
-			cout << "El programa no pudo ejecutarse." << endl;
+		bool esValido = false;
+		bool socketOk = false;
+		pthread_t thrComu;
+		if (primeraVez) {
+			while (!vista->inicializar()) {
+				cout << "El programa no pudo ejecutarse." << endl;
+			}
+			vista->cargarArchivos();
+			vista->cargarPrimeraPantalla();
 		}
-		vista->cargarArchivos();
-		vista->cargarPrimeraPantalla();
-	}
 		bool datosIncorrectos = false;
 		while ((!socketOk)&&(!vista->ventanaCerrada())) {
 			datosCliente = vista->cargarSegundaPantalla(datosIncorrectos);
@@ -513,6 +509,7 @@ int main() {
 				cout << "Desconectado del servidor.." << endl;
 				cliente->vaciarClientesDisponibles();
 				primeraVez = false;
+				vista->vaciarJugadores();
 				vista->vaciarVectores();
 				cliente->salir();
 				//}

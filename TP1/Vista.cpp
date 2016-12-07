@@ -32,6 +32,7 @@ Vista::Vista(){
 	this->datos.nombre = " ";
 	this->datos.contrasenia = " ";
 	this->pantallaPuntajes = false;
+	this->juegoTerminado = false;
 }
 
 bool Vista::inicializar(){
@@ -72,6 +73,7 @@ void Vista::cargarArchivos(){
 	textura.push_back(ventana->crearTexto("Recursos/font_puntajes.ttf",22));
 	textura.push_back(ventana->crearTexto("Recursos/font_puntajes.ttf",22));
 	textura.push_back(ventana->crearTexto("Recursos/msserif_bold.ttf",30));
+	textura.push_back(ventana->crearTexto("Recursos/msserif_bold.ttf",30));
 
 	//Defino constantes para cada textura (para evitar llamarlos por índices)
 	#define texturaMenuFondo textura[0]
@@ -98,6 +100,7 @@ void Vista::cargarArchivos(){
 	#define textoMisionCompleta textura[25]
 	#define textoPuntajesGlobal textura[26]
 	#define textoGameOver textura[32]
+	#define textoJuegoCompletado textura[33]
 }
 
 
@@ -181,7 +184,6 @@ datosConexion Vista::cargarPantallaIngresoDatos(bool aviso, int numeroPantalla){
 			//campoDos = "127.0.0.1";
 			//campoDos = "192.168.1.11";
 			campoDos = "127.0.0.1";
-			//campoDos = "192.168.1.10";
 			textoIngresePuerto->actualizarTexto("Ingrese el puerto:",colorTexto);
 			textoIngreseIP->actualizarTexto("Ingrese la IP del servidor:",colorTexto);
 			textoDatosNoCoinciden->actualizarTexto("La dirección de ip o el puerto no permiten esta conexión",colorTextoAmarillo);
@@ -424,9 +426,25 @@ void Vista::actualizarCamara(int x, int y, vector<pair<int,int>> abscisasCapas, 
 	}
 }
 
-void Vista::inicializarCamara(int camaraX, int camaraY, int anchoVentana, int altoVentana, vector<pair<int,int>> abscisasCapas, vector<ImagenDto*> imagenes, vector<string> nombreCapas)
+void Vista::inicializarCamara(int camaraX, int camaraY, int anchoVentana, int altoVentana, vector<pair<int,int>> abscisasCapas, vector<ImagenDto*> &imagenes, vector<string> nombreCapas)
 {
-	vectorCapas.clear();
+	camara = {camaraX,camaraY,anchoVentana,altoVentana};
+	for (int i=0; i<abscisasCapas.size(); i++)
+	{
+		SDL_Rect rectangulo = {abscisasCapas.at(i).first,0,anchoVentana,altoVentana};
+		for (int j = 0; j < imagenes.size(); j++)
+		{
+			if (imagenes.at(j)->getPath() == nombreCapas.at(i))
+			{
+				Capa* capa = new Capa(imagenes.at(j), rectangulo, ventana->crearTextura("Recursos/" + imagenes.at(j)->getPath() + ".png",0));
+				vectorCapas.push_back(capa);
+			}
+		}
+	}
+}
+
+void Vista::cargarSiguienteNivel(int camaraX, int camaraY, int anchoVentana, int altoVentana, vector<pair<int,int>> abscisasCapas, vector<ImagenDto*> &imagenes, vector<string> nombreCapas)
+{
 	camara = {camaraX,camaraY,anchoVentana,altoVentana};
 	for (int i=0; i<abscisasCapas.size(); i++)
 	{
@@ -694,7 +712,6 @@ void Vista::actualizarEnemigo(string enemigo, int x, int y, string sprite, int i
 						VistaEnemigo* vistaEnemigo = vistaEnemigos.at(i);
 						if (vistaEnemigo->id == id) {
 							vistaEnemigos.erase(vistaEnemigos.begin() + i);
-							vistaEnemigo->textura->limpiarTextura();
 							delete vistaEnemigo->textura;
 							delete vistaEnemigo;
 							break;
@@ -721,7 +738,6 @@ void Vista::agregarVistaItem(string borrarItem, string sprite, int x, int y, int
 			if (vistaItem->boxCollider.x == x)
 			{
 				vistaItems.erase(vistaItems.begin() + i);
-				vistaItem->textura->limpiarTextura();
 				delete vistaItem->textura;
 				delete vistaItem;
 				break;
@@ -824,38 +840,41 @@ void Vista::vaciarDatos() {
 void Vista::vaciarVectores() {
 	//this->vistaJugadores.clear();
 	for (int i = 0; i < this->vectorCapas.size() ; i++){
-		delete vectorCapas.at(i)->imagen;
-		vectorCapas.at(i)->textura->limpiarTextura();
+		//delete vectorCapas.at(i)->imagen;
 		delete vectorCapas.at(i)->textura;
 		delete vectorCapas.at(i);
 	}
-	this->vectorCapas.clear();
-
+	vector<Capa*>().swap(vectorCapas);
 	for (int i = 0; i < this->vistaBalas.size() ; i++){
-		vistaBalas.at(i)->textura->limpiarTextura();
 		delete vistaBalas.at(i)->textura;
 		delete vistaBalas.at(i);
 	}
-	this->vistaBalas.clear();
-
+	vector<VistaBala*>().swap(vistaBalas);
 	for (int i = 0; i < this->vistaEnemigos.size() ; i++){
-		vistaEnemigos.at(i)->textura->limpiarTextura();
 		delete vistaEnemigos.at(i)->textura;
 		delete vistaEnemigos.at(i);
 	}
-	this->vistaEnemigos.clear();
-
+	vector<VistaEnemigo*>().swap(vistaEnemigos);
 	for (int i = 0; i < this->vistaItems.size() ; i++){
-		vistaItems.at(i)->textura->limpiarTextura();
 		delete vistaItems.at(i)->textura;
 		delete vistaItems.at(i);
 	}
-	this->vistaItems.clear();
-
+	vector<Item*>().swap(vistaItems);
 	for (int i = 0; i < this->vistaBoss.size() ; i++){
-		vistaBoss.at(i)->textura->limpiarTextura();
 		delete vistaBoss.at(i)->textura;
 		delete vistaBoss.at(i);
 	}
-	this->vistaBoss.clear();
+	vector<VistaEnemigo*>().swap(vistaBoss);
+	usleep(2000000);
+}
+
+void Vista::mostrarPantallaFinDeJuego()
+{
+	textoJuegoCompletado->actualizarTexto("JUEGO COMPLETADO",{255,255,255});
+	textoJuegoCompletado->aplicarPosicion(ANCHO_VENTANA/2 - textoJuegoCompletado->getAncho()/2, ALTO_VENTANA/2, 0, SDL_FLIP_NONE);
+}
+
+void Vista::vaciarJugadores()
+{
+	this->vistaJugadores.clear();
 }

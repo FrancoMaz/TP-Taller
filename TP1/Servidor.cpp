@@ -133,7 +133,7 @@ void Servidor::guardarDatosDeConfiguracion() {
 	pair<string, string> ventana = this->parser->getTamanioVentana();
 	const char* cantidadMaximaJugadores = this->parser->getCantidadMaximaDeJugadores();
 
-	ImagenDto* imagenTemporal;
+	/*ImagenDto* imagenTemporal;
 	for (int i = 0; i < escenario.size(); i++) {
 		for (int j = 0; j < escenario.size() - 1; j++) {
 			if (escenario.at(j)->getZIndex() > escenario.at(j+1)->getZIndex()) {
@@ -142,7 +142,7 @@ void Servidor::guardarDatosDeConfiguracion() {
 				escenario.at(j+1) = imagenTemporal;
 			}
 		}
-	}
+	}*/
 
 	this->handshake = new Handshake(escenario, setDeSprites, ventana.first, ventana.second, cantidadMaximaJugadores);
 }
@@ -698,6 +698,7 @@ void Servidor::verificarDesconexion(string nombre)
 			jugador->setSprite("Jugador_desconectado");
 			Mensaje* mensaje;
 			string mensajeDesconectado = "";
+			jugador->idSprite = 37;
 			mensajeDesconectado = jugador->getStringJugador();
 			mensaje = new Mensaje(jugador->getNombre(),"Todos",mensajeDesconectado);
 			encolarMensajeProcesadoParaCadaCliente(*mensaje,mensajeDesconectado);
@@ -766,7 +767,7 @@ void Servidor::calcularPuntajes()
 void Servidor::avanzarDeNivel()
 {
 	this->nivelActual++;
-	if (this->nivelActual > CANTIDADNIVELES)
+	if (this->nivelActual >= CANTIDADNIVELES)
 	{
 		this->gameComplete = true;
 	}
@@ -780,6 +781,14 @@ void Servidor::avanzarDeNivel()
 		Mensaje* mensajeNivel = new Mensaje("Servidor","Todos",mensajeAvanzarNivel);
 		encolarMensajeProcesadoParaCadaCliente(*mensajeNivel,mensajeAvanzarNivel);
 		mensajeNivel->~Mensaje();
+	}
+	else
+	{
+		string stringJuegoTerminado = "10|#";
+		Mensaje* mensajeJuegoTerminado = new Mensaje("Servidor","Todos",stringJuegoTerminado);
+		encolarMensajeProcesadoParaCadaCliente(*mensajeJuegoTerminado,stringJuegoTerminado);
+		mensajeJuegoTerminado->~Mensaje();
+		usleep (5000000);
 	}
 }
 

@@ -52,22 +52,41 @@ void HiDo::comportamiento(SDL_Rect camara,  bool tieneQueDisparar)
 		{
 			case 0:
 			{
+				SDL_Rect box;
+				int desplazamientoX;
+				int desplazamientoY = 142;
 				this->proyectilesADisparar.first.clear();
-				SDL_Rect box = {this->boxCollider.x + 27,this->boxCollider.y + 142,32,30};
+				if(this->sentido == "Normal"){
+					desplazamientoX = 27;
+					box = {this->boxCollider.x + desplazamientoX,this->boxCollider.y + desplazamientoY,32,30};
+				} else {
+					desplazamientoX = 120;
+					box = {this->boxCollider.x + desplazamientoX,this->boxCollider.y + desplazamientoY,32,30};
+				}
 
 				for (int i = 0; i < 1; i++)
 				{
-					this->proyectilesADisparar.first.push_back(new Proyectil(20,0,"1",box.x,box.y, this->sentido, 3, box, false,2,"",make_pair(27,142)));
+					this->proyectilesADisparar.first.push_back(new Proyectil(20,0,"1",box.x,box.y, this->sentido, 3, box, false,2,"",make_pair(desplazamientoX,desplazamientoY)));
 				}
 				break;
 			}
 			case 1:
 			{
+				SDL_Rect box;
+				int desplazamientoX;
+				int desplazamientoY = 142;
 				this->proyectilesADisparar.first.clear();
-				SDL_Rect box = {this->boxCollider.x + 27,this->boxCollider.y + 142,32,30};
+				if(this->sentido == "Normal"){
+					desplazamientoX = 27;
+					box = {this->boxCollider.x + desplazamientoX,this->boxCollider.y + desplazamientoY,32,30};
+				} else {
+					desplazamientoX = 120;
+					box = {this->boxCollider.x + desplazamientoX,this->boxCollider.y + desplazamientoY,32,30};
+				}
+
 				for (int i = 0; i < 1; i++)
 				{
-					this->proyectilesADisparar.first.push_back(new Proyectil(20,0,"1",box.x,box.y, this->sentido, 3, box, false,2,"",make_pair(27,142)));
+					this->proyectilesADisparar.first.push_back(new Proyectil(20,0,"1",box.x,box.y, this->sentido, 3, box, false,2,"",make_pair(desplazamientoX,desplazamientoY)));
 				}
 				break;
 			}

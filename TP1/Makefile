@@ -5,7 +5,7 @@ OBJSSERV = MainServidor.cpp Servidor.cpp Mensaje.cpp Logger.cpp Evento.cpp Jugad
 
 CC = g++ 
 
-COMPILER_FLAGS = -w -g -O0
+COMPILER_FLAGS = -w -g -O0 -Wall
  
 LINKER_FLAGS_CLIENT = -std=c++11 -lpthread -lSDL2 -lSDL2_image -lSDL2_ttf
 LINKER_FLAGS_SERVER = -std=c++11 -lpthread -lSDL2

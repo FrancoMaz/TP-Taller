@@ -254,6 +254,7 @@ void actualizarPosicionCamara(Servidor* servidor, Jugador* jugador) {
 			for (int i = 0; i < servidor->abscisasCapas.size(); i++) {
 				if (i == 0) {
 					servidor->abscisasCapas.at(i).first = servidor->camara.x;
+					servidor->abscisasCapas.at(i).second = jugador->getVelocidadX();
 				} else {
 					servidor->abscisasCapas.at(i).second += jugador->getVelocidadX();
 					servidor->abscisasCapas.at(i).first = abs((servidor->abscisasCapas.at(i).second)*(atoi(servidor->handshake->getImagenes().at(i)->getAncho().c_str()) - atoi(servidor->handshake->getAncho().c_str()))/(atoi(servidor->handshake->getImagenes().at(0)->getAncho().c_str()) - atoi(servidor->handshake->getAncho().c_str())));
@@ -279,7 +280,7 @@ void* enviarObjetosEnCamara(void* arg)
 	Jugador* jugador = parametros->jugador;
 	Mensaje* mensajeObjetos;
 	string mensajeObjetosString = "";
-	while (servidor->escuchando){
+	while (servidor->escuchando && !servidor->gameComplete){
 		usleep(50000);
 		pthread_mutex_lock(&servidor->getNivelActual()->mutexItems);
 		for (int i = 0; i < servidor->getNivelActual()->items.size(); i++)
@@ -317,7 +318,7 @@ void* actualizarPosicionesJugador(void* arg)
 	Jugador* jugador = parametros->jugador;
 	parametros->nombrePersonaje = jugador->getNombre();
 	string mensajeJugadorPosActualizada = "";
-	while (jugador->getConectado() && !jugador->getEstaMuerto()){
+	while (jugador->getConectado() && !jugador->getEstaMuerto() && !servidor->gameComplete){
 		pthread_mutex_lock(&servidor->mutexVectorJugadores);
 		jugador->mover(servidor->camara);
 		//se controla la vida de los proyectiles
@@ -613,7 +614,7 @@ void* controlDeEnemigos(void* arg) {
 
 	ParametrosMovimiento* parametroRecibido= (ParametrosMovimiento*) arg;
 	Servidor* servidor = parametroRecibido->servidor;
-	while (servidor->escuchando) {
+	while (servidor->escuchando && !servidor->gameComplete) {
 		usleep(50000);
 		servidor->getNivelActual()->despertarEnemigos(&servidor->camara);
 		pthread_mutex_lock(&servidor->getNivelActual()->mutexEnemigosActivos);
