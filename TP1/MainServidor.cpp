@@ -397,28 +397,73 @@ void* enemigoActivo(void* arg) {
 		{
 			case 1:
 			{
-				if (tiempoTranscurrido %2 == 0 && enemigo->estaDisparando() && !yaDisparo) {
-					Proyectil* proyectil = enemigo->dispararProyectil(6,"0",25,10,22,13,10);
+				if (tiempoTranscurrido %3 == 0 && enemigo->estaDisparando() && !yaDisparo) {
+
+					enemigo->setSprite("2");
+					mensajeEnemigo = "4|2|";
+					mensajeEnemigo += enemigo->getInformacionDelEnemigo();
+					mensaje = new Mensaje(nombre,"Todos",mensajeEnemigo);
+					servidor->encolarMensajeProcesadoParaCadaCliente(*mensaje,mensajeEnemigo);
+					mensaje->~Mensaje();
+
+					Proyectil* proyectil1 = enemigo->dispararProyectil(6,"0",25,10,22,13,10);
 					yaDisparo = true;
 					pthread_mutex_lock(&mutexIdProyectil);
-					proyectil->id = idProyectil;
+					proyectil1->id = idProyectil;
 					idProyectil += 1;
 					pthread_mutex_unlock(&mutexIdProyectil);
+					ParametrosMovimiento* parametrosProyectil1 = new ParametrosMovimiento(servidor, NULL);
+					parametrosProyectil1->servidor = servidor;
+					parametrosProyectil1->enemigo = enemigo;
+					parametrosProyectil1->proyectil = proyectil1;
+					parametrosProyectil1->nombrePersonaje = "Enemigo";
+					pthread_t threadDisparo1;
+					pthread_create(&threadDisparo1, NULL, &disparoProyectil, parametrosProyectil1);
+					pthread_detach(threadDisparo1);
+					parametrosProyectil1->~ParametrosMovimiento();
+					usleep(400000);
+					Proyectil* proyectil2 = enemigo->dispararProyectil(6,"0",25,10,22,13,10);
+					pthread_mutex_lock(&mutexIdProyectil);
+					proyectil2->id = idProyectil;
+					idProyectil += 1;
+					pthread_mutex_unlock(&mutexIdProyectil);
+					ParametrosMovimiento* parametrosProyectil2 = new ParametrosMovimiento(servidor, NULL);
+					parametrosProyectil2->servidor = servidor;
+					parametrosProyectil2->enemigo = enemigo;
+					parametrosProyectil2->proyectil = proyectil2;
+					parametrosProyectil2->nombrePersonaje = "Enemigo";
+					pthread_t threadDisparo2;
+					pthread_create(&threadDisparo2, NULL, &disparoProyectil, parametrosProyectil2);
+					pthread_detach(threadDisparo2);
+					parametrosProyectil2->~ParametrosMovimiento();
 
-					ParametrosMovimiento* parametrosProyectil = new ParametrosMovimiento(servidor, NULL);
-					parametrosProyectil->servidor = servidor;
-					parametrosProyectil->enemigo = enemigo;
-					parametrosProyectil->proyectil = proyectil;
-					parametrosProyectil->nombrePersonaje = "Enemigo";
-					pthread_t threadDisparo;
-					pthread_create(&threadDisparo, NULL, &disparoProyectil, parametrosProyectil);
-					pthread_detach(threadDisparo);
-					parametrosProyectil->~ParametrosMovimiento();
-				}
-
-				else if (tiempoTranscurrido %2 != 0) {
+					usleep(400000);
+					enemigo->setSprite("1");
+					mensajeEnemigo = "4|2|";
+					mensajeEnemigo += enemigo->getInformacionDelEnemigo();
+					mensaje = new Mensaje(nombre,"Todos",mensajeEnemigo);
+					servidor->encolarMensajeProcesadoParaCadaCliente(*mensaje,mensajeEnemigo);
+					mensaje->~Mensaje();
+				} else if (tiempoTranscurrido %2 != 0) {
 					yaDisparo = false;
 				}
+				enemigo->walk();
+				//enemigo->caminar(servidor->camara,servidor->getNivelActual()->plataformas);
+				mensajeEnemigo = "4|1|";
+				mensajeEnemigo += enemigo->getInformacionDelEnemigo();
+				mensaje = new Mensaje(nombre,"Todos",mensajeEnemigo);
+				servidor->encolarMensajeProcesadoParaCadaCliente(*mensaje,mensajeEnemigo);
+				mensaje->~Mensaje();
+				/*if (calcularDistancia(enemigo,jugador) <= 300)
+				{
+					enemigo->estado = 5;
+					enemigo->setSprite("5");
+					mensajeEnemigo = "4|2|";
+					mensajeEnemigo += enemigo->getInformacionDelEnemigo();
+					mensaje = new Mensaje(nombre,"Todos",mensajeEnemigo);
+					servidor->encolarMensajeProcesadoParaCadaCliente(*mensaje,mensajeEnemigo);
+					mensaje->~Mensaje();
+				}*/
 				break;
 			}
 			case 2:
@@ -458,7 +503,8 @@ void* enemigoActivo(void* arg) {
 			}
 			case 3:
 			{
-				enemigo->caminar(servidor->camara,servidor->getNivelActual()->plataformas);
+				enemigo->walk();
+				//enemigo->caminar(servidor->camara,servidor->getNivelActual()->plataformas);
 				mensajeEnemigo = "4|1|";
 				mensajeEnemigo += enemigo->getInformacionDelEnemigo();
 				mensaje = new Mensaje(nombre,"Todos",mensajeEnemigo);
@@ -576,7 +622,7 @@ void* controlDeEnemigos(void* arg) {
 			if (enemigo != NULL && !enemigo->threadAsociado && !enemigo->esEnemigoBoss) {
 				enemigo->threadAsociado = true;
 				pthread_t threadEnemigo;
-				ParametrosMovimiento* parametrosEnemigo = new ParametrosMovimiento(servidor,NULL);
+				ParametrosMovimiento* parametrosEnemigo = new ParametrosMovimiento(servidor,parametroRecibido->jugador);
 				parametrosEnemigo->enemigo = enemigo;
 				pthread_create(&threadEnemigo, NULL, &enemigoActivo, parametrosEnemigo);
 				pthread_detach(threadEnemigo);

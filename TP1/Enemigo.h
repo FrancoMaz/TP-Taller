@@ -48,6 +48,7 @@ public:
 	pair<int,int> buscarPlataforma(vector<pair<string,string>>);
 	string condicionSprite;
 	bool esEnemigoBoss;
+	void walk();
 };
 
 #endif /* ENEMIGO_H_ */
