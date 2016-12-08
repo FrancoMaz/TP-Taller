@@ -797,10 +797,10 @@ void* verificarPasarDeNivel(void* arg)
 				pthread_t threadVerificarBoss;
 				pthread_create(&threadVerificarBoss, NULL, &verificarBossEnCamara, parametros);
 				pthread_detach(threadVerificarBoss);
-				servidor->getNivelActual()->avanzoDeNivel = false;
 			}
 			else
 			{
+				servidor->getNivelActual()->avanzoDeNivel = false;
 				break;
 			}
 		}
