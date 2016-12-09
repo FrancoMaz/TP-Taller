@@ -46,6 +46,7 @@ public:
 	void eliminarEnemigoActivo(int id);
 	pthread_mutex_t mutexEnemigosActivos = PTHREAD_MUTEX_INITIALIZER;
 	pthread_mutex_t mutexItems = PTHREAD_MUTEX_INITIALIZER;
+	pthread_mutex_t mutexEnemigosPorNivel = PTHREAD_MUTEX_INITIALIZER;
 	vector<Boss*> boss;
 	vector<string> capas;
 	void agregarItemBonus(Item* item);

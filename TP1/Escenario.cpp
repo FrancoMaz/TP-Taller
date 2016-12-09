@@ -164,6 +164,7 @@ bool Escenario::colisionaronObjetos(SDL_Rect boxCollider1, SDL_Rect boxCollider2
 }
 
 void Escenario::despertarEnemigos(SDL_Rect* camara) {
+	pthread_mutex_lock(&mutexEnemigosPorNivel);
 	if (!this->enemigosPorNivel.empty()) {
 		int cantidadEnemigos = enemigosPorNivel.size();
 		for (int i = 0; i < cantidadEnemigos ; i++) {
@@ -181,6 +182,8 @@ void Escenario::despertarEnemigos(SDL_Rect* camara) {
 			}
 		}
 	}
+	pthread_mutex_unlock(&mutexEnemigosPorNivel);
+
 }
 
 Enemigo* Escenario::getEnemigoActivo(int posicion) {
