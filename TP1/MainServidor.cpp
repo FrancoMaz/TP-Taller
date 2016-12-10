@@ -659,7 +659,7 @@ void* controlDeEnemigos(void* arg) {
 					parametrosEnemigo->enemigo = enemigo;
 					pthread_create(&threadEnemigo, NULL, &enemigoActivo, parametrosEnemigo);
 					pthread_detach(threadEnemigo);
-					delete parametrosEnemigo;
+					//delete parametrosEnemigo;
 				}
 			}
 			pthread_mutex_unlock(&servidor->getNivelActual()->mutexEnemigosActivos);
