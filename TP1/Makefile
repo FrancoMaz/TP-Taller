@@ -1,14 +1,14 @@
 
 OBJSCLI = MainCliente.cpp Cliente.cpp Mensaje.cpp Evento.cpp Logger.cpp VentanaSDL.cpp TexturaSDL.cpp Vista.cpp Controlador.cpp SetDeSpritesDto.cpp SpriteDto.cpp ImagenDto.cpp Handshake.cpp VistaJugador.cpp UpdateJugador.cpp Capa.cpp LTimer.cpp VistaBala.cpp VistaEnemigo.cpp Item.cpp
 
-OBJSSERV = MainServidor.cpp Servidor.cpp Mensaje.cpp Logger.cpp Evento.cpp Jugador.cpp XmlParser.cpp SetDeSpritesDto.cpp SpriteDto.cpp ImagenDto.cpp pugixml.hpp pugixml.cpp pugiconfig.hpp Handshake.cpp LTimer.cpp ParametrosMovimiento.cpp Arma.cpp HeavyMachineGun.cpp RocketLauncher.cpp Flameshot.cpp Personaje.cpp Escenario.cpp Proyectil.cpp Enemigo.cpp Item.cpp Boss.cpp HiDo.cpp TaniOh.cpp AirbusterRiberts.cpp
+OBJSSERV = MainServidor.cpp Servidor.cpp Mensaje.cpp Logger.cpp Evento.cpp Jugador.cpp XmlParser.cpp SetDeSpritesDto.cpp SpriteDto.cpp ImagenDto.cpp pugixml.hpp pugixml.cpp pugiconfig.hpp Handshake.cpp LTimer.cpp ParametrosMovimiento.cpp Arma.cpp HeavyMachineGun.cpp RocketLauncher.cpp Flameshot.cpp Personaje.cpp Escenario.cpp Proyectil.cpp Enemigo.cpp Item.cpp Boss.cpp HiDo.cpp TaniOh.cpp AirbusterRiberts.cpp TexturaSDL.cpp
 
 CC = g++ 
 
 COMPILER_FLAGS = -w -g -O0 -Wall
  
 LINKER_FLAGS_CLIENT = -std=c++11 -lpthread -lSDL2 -lSDL2_image -lSDL2_ttf
-LINKER_FLAGS_SERVER = -std=c++11 -lpthread -lSDL2
+LINKER_FLAGS_SERVER = -std=c++11 -lpthread -lSDL2 -lSDL2_image -lSDL2_ttf
 
 OBJCLI_NAME = cliente
 OBJSERV_NAME = servidor

@@ -15,7 +15,8 @@ Capa::Capa(ImagenDto* imagen, SDL_Rect rectangulo, TexturaSDL* textura) {
 }
 
 Capa::~Capa() {
-	// TODO Auto-generated destructor stub
+	delete this->textura;
+	delete this->imagen;
 }
 
 void Capa::paralajeInfinito(int anchoVentana, int indice)

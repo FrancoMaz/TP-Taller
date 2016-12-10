@@ -33,7 +33,7 @@ Item::Item(int x, int y, TexturaSDL* textura) {
 	this->textura = textura;
 }
 Item::~Item() {
-	// TODO Auto-generated destructor stub
+	delete this->textura;
 }
 
 string Item::getStringItem()

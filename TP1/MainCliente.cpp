@@ -317,7 +317,7 @@ void* recibirPosicionJugadores(void* arg) {
 	LTimer capTimer;
 	usleep(50000);
 	while(!vista->controlador->comprobarCierreVentana() && !vista->juegoTerminado){
-		usleep(100);
+		usleep(1000);
 		 //Start cap timer
 		capTimer.start();
 		datosRecibidos = cliente->recibir();
@@ -354,7 +354,7 @@ void* enviarEventos(void* arg) {
 	int countedFrames = 0;
 	fpsTimer.start();
 	while(!vista->controlador->comprobarCierreVentana() && !vista->juegoTerminado){
-		usleep(100);
+		usleep(1000);
 		while(SDL_PollEvent(&evento)){
 			if (vista->pantallaPuntajes){
 				//si estoy en la pantalla de puntajes no envio nada mas
@@ -467,7 +467,7 @@ void* cicloConexion(void* arg) {
 			pthread_detach(threadRecibirPosicionJugadores);
 			vista->cargarEscenario(handshakeDeserializado->getImagenes(), stringToInt(handshakeDeserializado->getAncho()), stringToInt(handshakeDeserializado->getAlto()));
 			while(!terminoComunicacion) {
-				usleep(100);
+				usleep(1000);
 			}
 		}
 		if (!terminoConQ) {

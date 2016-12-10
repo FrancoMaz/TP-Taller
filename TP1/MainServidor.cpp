@@ -151,6 +151,7 @@ void* disparoProyectil(void* arg)
 	mensajeProyectilString += proyectil->getStringProyectil();
 	mensajeProyectil = new Mensaje(parametros->nombrePersonaje,"Todos",mensajeProyectilString);
 	servidor->encolarMensajeProcesadoParaCadaCliente(*mensajeProyectil,mensajeProyectilString);
+	delete mensajeProyectil;
 
 	// disparado por un jugador
 	if (proyectil->disparadoPor == 1) {
@@ -158,7 +159,7 @@ void* disparoProyectil(void* arg)
 		string mensajeMunicionesString = "11|" + jugador->getNombre() + "|" + to_string(jugador->getArmaActual()->municiones) + "#";
 		mensajeMuniciones = new Mensaje(jugador->getNombre(),"Todos",mensajeMunicionesString);
 		servidor->encolarMensajeProcesadoParaCadaCliente(*mensajeMuniciones,mensajeMunicionesString);
-		mensajeMuniciones->~Mensaje();
+		delete mensajeMuniciones;
 		while (!servidor->getNivelActual()->verificarColision(servidor->camara, proyectil, jugador->estaDisparando())) {
 			usleep(50000);
 			proyectil->mover();
@@ -166,7 +167,7 @@ void* disparoProyectil(void* arg)
 			mensajeProyectilString += proyectil->getStringProyectil();
 			mensajeProyectil = new Mensaje(jugador->getNombre(),"Todos",mensajeProyectilString);
 			servidor->encolarMensajeProcesadoParaCadaCliente(*mensajeProyectil,mensajeProyectilString);
-			mensajeProyectil->~Mensaje();
+			delete mensajeProyectil;
 		}
 		if (proyectil->colisionPersonaje)
 		{ //si colisiono con un personaje (un enemigo) y no contra un margen, sumo puntos.
@@ -174,7 +175,7 @@ void* disparoProyectil(void* arg)
 			string mensajePuntajeString = "5|" + jugador->getNombre() + "|" + to_string(jugador->puntaje) + "#";
 			Mensaje* mensajePuntaje = new Mensaje(jugador->getNombre(),"Todos", mensajePuntajeString);
 			servidor->encolarMensajeProcesadoParaCadaCliente(*mensajePuntaje,mensajePuntajeString); //envia mensaje de actualizar puntaje
-			mensajePuntaje->~Mensaje();
+			delete mensajePuntaje;
 		}
 	} else {
 		// disparado por un enemigo
@@ -188,7 +189,7 @@ void* disparoProyectil(void* arg)
 			mensajeProyectil = new Mensaje(parametros->nombrePersonaje,"Todos",mensajeProyectilString);
 			servidor->encolarMensajeProcesadoParaCadaCliente(*mensajeProyectil,mensajeProyectilString);
 			//servidor->verificarColision(servidor->camara, proyectil, true);
-			mensajeProyectil->~Mensaje();
+			delete mensajeProyectil;
 
 			tiempo = chrono::duration_cast<chrono::seconds>(chrono::high_resolution_clock::now() - start_time).count();
 		}
@@ -197,15 +198,15 @@ void* disparoProyectil(void* arg)
 			string mensajeVidaString = "6|" + proyectil->jugadorQueRecibioDisparo + "|" + to_string(proyectil->vidaDelJugadorImpactado) + "#";
 			Mensaje* mensajeVida = new Mensaje(parametros->nombrePersonaje,"Todos", mensajeVidaString);
 			servidor->encolarMensajeProcesadoParaCadaCliente(*mensajeVida,mensajeVidaString);
-			mensajeVida->~Mensaje();
+			delete mensajeVida;
 		}
 	}
 	mensajeProyectilString = "2|2|";
 	mensajeProyectilString += proyectil->getStringProyectil();
 	mensajeProyectil = new Mensaje(parametros->nombrePersonaje,"Todos",mensajeProyectilString);
 	servidor->encolarMensajeProcesadoParaCadaCliente(*mensajeProyectil,mensajeProyectilString);
-	mensajeProyectil->~Mensaje();
-	proyectil->~Proyectil();
+	delete mensajeProyectil;
+	delete proyectil;
 	pthread_exit(NULL);
 }
 
@@ -274,7 +275,7 @@ void actualizarPosicionCamara(Servidor* servidor, Jugador* jugador) {
 		mensajeCamaraString = "1|" + to_string(servidor->camara.x) + "|" + to_string(servidor->camara.y) + "|" + servidor->serializarCapas() + "#";
 		mensajeCamara = new Mensaje(jugador->getNombre(),"Todos",mensajeCamaraString);
 		servidor->encolarMensajeProcesadoParaCadaCliente(*mensajeCamara,mensajeCamaraString);
-		mensajeCamara->~Mensaje();
+		delete mensajeCamara;
 	}
 }
 
@@ -301,7 +302,7 @@ void* enviarObjetosEnCamara(void* arg)
 					mensajeObjetosString += servidor->getNivelActual()->items.at(i)->getStringItem();
 					mensajeObjetos = new Mensaje(jugador->getNombre(),"Todos",mensajeObjetosString);
 					servidor->encolarMensajeProcesadoParaCadaCliente(*mensajeObjetos,mensajeObjetosString);
-					mensajeObjetos->~Mensaje();
+					delete mensajeObjetos;
 				}
 			}
 			for (int i = 0; i < servidor->getNivelActual()->items.size(); i++) {
@@ -310,13 +311,13 @@ void* enviarObjetosEnCamara(void* arg)
 					mensajeObjetosString += servidor->getNivelActual()->items.at(i)->getStringItem();
 					mensajeObjetos = new Mensaje(jugador->getNombre(),"Todos",mensajeObjetosString);
 					servidor->encolarMensajeProcesadoParaCadaCliente(*mensajeObjetos,mensajeObjetosString);
-					mensajeObjetos->~Mensaje();
+					delete mensajeObjetos;
 					servidor->getNivelActual()->items.erase(servidor->getNivelActual()->items.begin()+i);
 					Mensaje* mensajeMuniciones;
 					string mensajeMunicionesString = "11|" + jugador->getNombre() + "|" + to_string(jugador->getArmaActual()->municiones) + "#";
 					mensajeMuniciones = new Mensaje(jugador->getNombre(),"Todos",mensajeMunicionesString);
 					servidor->encolarMensajeProcesadoParaCadaCliente(*mensajeMuniciones,mensajeMunicionesString);
-					mensajeMuniciones->~Mensaje();
+					delete mensajeMuniciones;
 				}
 			}
 			pthread_mutex_unlock(&servidor->getNivelActual()->mutexItems);
@@ -353,9 +354,9 @@ void* actualizarPosicionesJugador(void* arg)
 			string mensajeVidaString = "6|" + jugador->getNombre() + "|" + to_string(jugador->getVida()) + "#";
 			Mensaje* mensajeVida = new Mensaje(jugador->getNombre(),"Todos", mensajeVidaString);
 			servidor->encolarMensajeProcesadoParaCadaCliente(*mensajeVida,mensajeVidaString);
-			mensajeVida->~Mensaje();
+			delete mensajeVida;
 		}
-		mensajeAProcesar->~Mensaje();
+		delete mensajeAProcesar;
 		//----------------------------------------------------------------------------------------------------
 
 		actualizarPosicionCamara(servidor,jugador);
@@ -400,12 +401,12 @@ void* enemigoActivo(void* arg) {
 	mensajeEnemigo += enemigo->getInformacionDelEnemigo();
 	Mensaje* mensaje = new Mensaje(nombre,"Todos",mensajeEnemigo);
 	servidor->encolarMensajeProcesadoParaCadaCliente(*mensaje,mensajeEnemigo);
-	mensaje->~Mensaje();
+	delete mensaje;
 	mensajeEnemigo = "4|1|";
 	mensajeEnemigo += enemigo->getInformacionDelEnemigo();
 	mensaje = new Mensaje(nombre,"Todos",mensajeEnemigo);
 	servidor->encolarMensajeProcesadoParaCadaCliente(*mensaje,mensajeEnemigo);
-	mensaje->~Mensaje();
+	delete mensaje;
 	auto start_time = chrono::high_resolution_clock::now();
 	bool yaDisparo = false;
 	while (!enemigo->getEstaMuerto() && (!servidor->getNivelActual()->enemigoPerdido(enemigo->getId(),&servidor->camara)) && !servidor->getNivelActual()->levelClear) {
@@ -422,7 +423,7 @@ void* enemigoActivo(void* arg) {
 					mensajeEnemigo += enemigo->getInformacionDelEnemigo();
 					mensaje = new Mensaje(nombre,"Todos",mensajeEnemigo);
 					servidor->encolarMensajeProcesadoParaCadaCliente(*mensaje,mensajeEnemigo);
-					mensaje->~Mensaje();
+					delete mensaje;
 					int x;
 					if (enemigo->condicionSprite == "Normal") {
 						x = 25;
@@ -443,7 +444,7 @@ void* enemigoActivo(void* arg) {
 					pthread_t threadDisparo1;
 					pthread_create(&threadDisparo1, NULL, &disparoProyectil, parametrosProyectil1);
 					pthread_detach(threadDisparo1);
-					parametrosProyectil1->~ParametrosMovimiento();
+					//delete parametrosProyectil1;
 					usleep(400000);
 					Proyectil* proyectil2 = enemigo->dispararProyectil(6,"0",x,10,22,13,10);
 					pthread_mutex_lock(&mutexIdProyectil);
@@ -458,7 +459,7 @@ void* enemigoActivo(void* arg) {
 					pthread_t threadDisparo2;
 					pthread_create(&threadDisparo2, NULL, &disparoProyectil, parametrosProyectil2);
 					pthread_detach(threadDisparo2);
-					parametrosProyectil2->~ParametrosMovimiento();
+					//delete parametrosProyectil2;
 
 					usleep(400000);
 					enemigo->setSprite("1");
@@ -466,7 +467,7 @@ void* enemigoActivo(void* arg) {
 					mensajeEnemigo += enemigo->getInformacionDelEnemigo();
 					mensaje = new Mensaje(nombre,"Todos",mensajeEnemigo);
 					servidor->encolarMensajeProcesadoParaCadaCliente(*mensaje,mensajeEnemigo);
-					mensaje->~Mensaje();
+					delete mensaje;
 				} else if (tiempoTranscurrido %2 != 0) {
 					yaDisparo = false;
 				}
@@ -476,7 +477,7 @@ void* enemigoActivo(void* arg) {
 				mensajeEnemigo += enemigo->getInformacionDelEnemigo();
 				mensaje = new Mensaje(nombre,"Todos",mensajeEnemigo);
 				servidor->encolarMensajeProcesadoParaCadaCliente(*mensaje,mensajeEnemigo);
-				mensaje->~Mensaje();
+				delete mensaje;
 				/*if (calcularDistancia(enemigo,jugador) <= 300)
 				{
 					enemigo->estado = 5;
@@ -496,7 +497,7 @@ void* enemigoActivo(void* arg) {
 				mensajeEnemigo += enemigo->getInformacionDelEnemigo();
 				mensaje = new Mensaje(nombre,"Todos",mensajeEnemigo);
 				servidor->encolarMensajeProcesadoParaCadaCliente(*mensaje,mensajeEnemigo);
-				mensaje->~Mensaje();
+				delete mensaje;
 				if (tiempoTranscurrido % 2 == 0 && !yaDisparo && tiempoTranscurrido != 0)
 				{
 					enemigo->estado = 4;
@@ -505,7 +506,7 @@ void* enemigoActivo(void* arg) {
 					mensajeEnemigo += enemigo->getInformacionDelEnemigo();
 					mensaje = new Mensaje(nombre,"Todos",mensajeEnemigo);
 					servidor->encolarMensajeProcesadoParaCadaCliente(*mensaje,mensajeEnemigo);
-					mensaje->~Mensaje();
+					delete mensaje;
 				}
 				else if (tiempoTranscurrido % 2 != 0)
 				{
@@ -520,7 +521,7 @@ void* enemigoActivo(void* arg) {
 					mensajeEnemigo += enemigo->getInformacionDelEnemigo();
 					mensaje = new Mensaje(nombre,"Todos",mensajeEnemigo);
 					servidor->encolarMensajeProcesadoParaCadaCliente(*mensaje,mensajeEnemigo);
-					mensaje->~Mensaje();
+					delete mensaje;
 				}
 				break;
 			}
@@ -532,7 +533,7 @@ void* enemigoActivo(void* arg) {
 				mensajeEnemigo += enemigo->getInformacionDelEnemigo();
 				mensaje = new Mensaje(nombre,"Todos",mensajeEnemigo);
 				servidor->encolarMensajeProcesadoParaCadaCliente(*mensaje,mensajeEnemigo);
-				mensaje->~Mensaje();
+				delete mensaje;
 				if (calcularDistancia(enemigo,jugador) <= 300)
 				{
 					enemigo->estado = 5;
@@ -541,7 +542,7 @@ void* enemigoActivo(void* arg) {
 					mensajeEnemigo += enemigo->getInformacionDelEnemigo();
 					mensaje = new Mensaje(nombre,"Todos",mensajeEnemigo);
 					servidor->encolarMensajeProcesadoParaCadaCliente(*mensaje,mensajeEnemigo);
-					mensaje->~Mensaje();
+					delete mensaje;
 				}
 				break;
 			}
@@ -560,7 +561,7 @@ void* enemigoActivo(void* arg) {
 				pthread_t threadDisparo;
 				pthread_create(&threadDisparo, NULL, &disparoProyectil, parametrosProyectil);
 				pthread_detach(threadDisparo);
-				parametrosProyectil->~ParametrosMovimiento();
+				//delete parametrosProyectil;
 				yaDisparo = true;
 				enemigo->estado = 2;
 				enemigo->setSprite("8");
@@ -583,7 +584,7 @@ void* enemigoActivo(void* arg) {
 					pthread_t threadDisparo;
 					pthread_create(&threadDisparo, NULL, &disparoProyectil, parametrosProyectil);
 					pthread_detach(threadDisparo);
-					parametrosProyectil->~ParametrosMovimiento();
+					//delete parametrosProyectil;
 					yaDisparo = true;
 				}
 				else if (tiempoTranscurrido % 2 != 0)
@@ -598,7 +599,7 @@ void* enemigoActivo(void* arg) {
 					mensajeEnemigo += enemigo->getInformacionDelEnemigo();
 					mensaje = new Mensaje(nombre,"Todos",mensajeEnemigo);
 					servidor->encolarMensajeProcesadoParaCadaCliente(*mensaje,mensajeEnemigo);
-					mensaje->~Mensaje();
+					delete mensaje;
 				}
 				break;
 			}
@@ -628,7 +629,7 @@ void* enemigoActivo(void* arg) {
 	}
 	servidor->getNivelActual()->eliminarEnemigoActivo(enemigo->getId());
 	servidor->encolarMensajeProcesadoParaCadaCliente(*mensaje,mensajeEnemigo);
-	mensaje->~Mensaje();
+	delete mensaje;
 	pthread_exit(NULL);
 }
 
@@ -651,7 +652,7 @@ void* controlDeEnemigos(void* arg) {
 					parametrosEnemigo->enemigo = enemigo;
 					pthread_create(&threadEnemigo, NULL, &enemigoActivo, parametrosEnemigo);
 					pthread_detach(threadEnemigo);
-					parametrosEnemigo->~ParametrosMovimiento();
+					delete parametrosEnemigo;
 				}
 			}
 			pthread_mutex_unlock(&servidor->getNivelActual()->mutexEnemigosActivos);
@@ -701,6 +702,7 @@ void* bossActivo(void* arg)
 	mensajeBoss += bossNivel->getStringBoss();
 	Mensaje* mensaje = new Mensaje(nombre,"Todos",mensajeBoss);
 	servidor->encolarMensajeProcesadoParaCadaCliente(*mensaje,mensajeBoss);
+	delete mensaje;
 	bool tieneQueDisparar = false;
 	auto start_time = chrono::high_resolution_clock::now();
 	while (!bossNivel->getEstaMuerto()) {
@@ -719,7 +721,7 @@ void* bossActivo(void* arg)
 		mensajeBoss += bossNivel->getStringBoss();
 		mensaje = new Mensaje(nombre,"Todos",mensajeBoss);
 		servidor->encolarMensajeProcesadoParaCadaCliente(*mensaje,mensajeBoss);
-		mensaje->~Mensaje();
+		delete mensaje;
 		if (tieneQueDisparar)
 		{
 			pthread_t bossDisparar;
@@ -750,7 +752,7 @@ void* bossActivo(void* arg)
 	mensaje = new Mensaje(nombre,"Todos",mensajeBoss);
 	servidor->encolarMensajeProcesadoParaCadaCliente(*mensaje,mensajeBoss);
 	servidor->getNivelActual()->levelClear = true;
-	mensaje->~Mensaje();
+	delete mensaje;
 	pthread_exit(NULL);
 }
 
@@ -772,7 +774,7 @@ void* verificarBossEnCamara(void* arg)
 			bossNivel->visto = true;
 		}
 	}
-
+	//delete parametrosBoss;
 }
 
 void* verificarPasarDeNivel(void* arg)
@@ -831,6 +833,7 @@ void iniciarThreadMovimientoJugador(Servidor* servidor, string nombre)
 	pthread_create(&threadObjetos, NULL, &enviarObjetosEnCamara, parametros);
 	pthread_detach(threadObjetos);
 	jugador->setThreadMovimiento(threadMov);
+	//delete parametros;
 }
 
 

@@ -24,6 +24,6 @@ VistaBala::VistaBala(int x, int y, TexturaSDL* textura, int id, string sentido, 
 }
 
 VistaBala::~VistaBala() {
-	// TODO Auto-generated destructor stub
+	delete this->textura;
 }
 

@@ -154,7 +154,7 @@
 	
 	<Boss>
 		<Nombre>hi_do</Nombre>
-		<PosicionX>7050</PosicionX>
+		<PosicionX>1000</PosicionX>
 		<PosicionY>100</PosicionY>
 	</Boss>
 </Configuracion>

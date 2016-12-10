@@ -75,6 +75,8 @@ void Vista::cargarArchivos(){
 	textura.push_back(ventana->crearTexto("Recursos/msserif_bold.ttf",30));
 	textura.push_back(ventana->crearTexto("Recursos/msserif_bold.ttf",30));
 	textura.push_back(ventana->crearTexto("Recursos/msserif_bold.ttf",16));
+	textura.push_back(ventana->crearTexto("Recursos/msserif_bold.ttf",25));
+	textura.push_back(ventana->crearTexto("Recursos/msserif_bold.ttf",25));
 
 	//Defino constantes para cada textura (para evitar llamarlos por índices)
 	#define texturaMenuFondo textura[0]
@@ -103,6 +105,8 @@ void Vista::cargarArchivos(){
 	#define textoGameOver textura[32]
 	#define textoJuegoCompletado textura[33]
 	#define textoMuniciones textura[34]
+	#define textoNivel textura[35]
+	#define textoTotal textura[36]
 }
 
 
@@ -549,50 +553,40 @@ void Vista::actualizarPantalla(int anchoVentana, int anchoCapaPrincipal, string 
 	{
 		vectorCapas.at(i)->paralajeInfinito(anchoVentana, i);
 	}
-	TexturaSDL* texturaJugadorX;
-	TexturaSDL* texturaBala;
-	TexturaSDL* texturaEnemigo;
-	TexturaSDL* texturaItem;
-	TexturaSDL* texturaBoss;
 
 	for (int i = 0; i < vistaItems.size(); i++) {
 		Item* vistaItem = vistaItems.at(i);
-		texturaItem = vistaItem->textura;
-		texturaItem->aplicarPosicion(vistaItem->boxCollider.x - camara.x, vistaItem->boxCollider.y - camara.y,0,SDL_FLIP_NONE);
+		vistaItem->textura->aplicarPosicion(vistaItem->boxCollider.x - camara.x, vistaItem->boxCollider.y - camara.y,0,SDL_FLIP_NONE);
 	}
 
 	for (int i = 0; i < vistaEnemigos.size(); i++) {
 		VistaEnemigo* vistaEnemigo = vistaEnemigos.at(i);
-		texturaEnemigo = vistaEnemigo->textura;
-		texturaEnemigo->aplicarPosicion(vistaEnemigo->x - camara.x, vistaEnemigo->y - camara.y,0,vistaEnemigo->flip);
+		vistaEnemigo->textura->aplicarPosicion(vistaEnemigo->x - camara.x, vistaEnemigo->y - camara.y,0,vistaEnemigo->flip);
 	}
 
 	if (!this->vistaBoss.empty())
 	{
-		texturaBoss = this->vistaBoss.at(0)->textura;
-		texturaBoss->aplicarPosicion(vistaBoss.at(0)->x - camara.x, vistaBoss.at(0)->y - camara.y,0,vistaBoss.at(0)->flip);
+		vistaBoss.at(0)->textura->aplicarPosicion(vistaBoss.at(0)->x - camara.x, vistaBoss.at(0)->y - camara.y,0,vistaBoss.at(0)->flip);
 	}
 
 	for (int i = 0; i < vistaBalas.size(); i++) {
 		VistaBala* vistaBala = vistaBalas.at(i);
-		texturaBala = vistaBala->textura;
-		texturaBala->aplicarPosicion(vistaBala->x - camara.x, vistaBala->y - camara.y,vistaBala->angulo,vistaBala->flip);
+		vistaBala->textura->aplicarPosicion(vistaBala->x - camara.x, vistaBala->y - camara.y,vistaBala->angulo,vistaBala->flip);
 	}
 
 	for (int i = 0; i < vistaJugadores.size(); i++) {
 		VistaJugador* vistaJugador = vistaJugadores.at(i);
-		texturaJugadorX = vistaJugador->texturaJugador;
 		if (vistaJugador->x > anchoCapaPrincipal && camara.x == 0) {
 			vistaJugador->x = vistaJugador->x - anchoCapaPrincipal;
 		}
-		texturaJugadorX->aplicarPosicion(vistaJugador->x - camara.x,vistaJugador->y - camara.y,0,vistaJugador->flip);
-		vistaJugador->imagenEnergia->aplicarPosicion(vistaJugador->x - camara.x + texturaJugadorX->getAnchoSprite()/2 - 40, vistaJugador->y + 80, 0, SDL_FLIP_NONE); //44 es la mitad del boxCollider
-		vistaJugador->energia->aplicarPosicion(vistaJugador->x - camara.x + texturaJugadorX->getAnchoSprite()/2 - 20, vistaJugador->y + 80, 0, SDL_FLIP_NONE);
+		vistaJugador->texturaJugador->aplicarPosicion(vistaJugador->x - camara.x,vistaJugador->y - camara.y,0,vistaJugador->flip);
+		vistaJugador->imagenEnergia->aplicarPosicion(vistaJugador->x - camara.x + vistaJugador->texturaJugador->getAnchoSprite()/2 - 40, vistaJugador->y + 80, 0, SDL_FLIP_NONE); //44 es la mitad del boxCollider
+		vistaJugador->energia->aplicarPosicion(vistaJugador->x - camara.x + vistaJugador->texturaJugador->getAnchoSprite()/2 - 20, vistaJugador->y + 80, 0, SDL_FLIP_NONE);
 		vistaJugador->energia->actualizarTexto(to_string(vistaJugador->valorEnergia),{255,255,255});
-		vistaJugador->imagenPuntaje->aplicarPosicion(vistaJugador->x - camara.x + texturaJugadorX->getAnchoSprite()/2 + 15, vistaJugador->y + 80, 0, SDL_FLIP_NONE);
-		vistaJugador->puntaje->aplicarPosicion(vistaJugador->x - camara.x + texturaJugadorX->getAnchoSprite()/2 + 35, vistaJugador->y + 80, 0, SDL_FLIP_NONE);
+		vistaJugador->imagenPuntaje->aplicarPosicion(vistaJugador->x - camara.x + vistaJugador->texturaJugador->getAnchoSprite()/2 + 15, vistaJugador->y + 80, 0, SDL_FLIP_NONE);
+		vistaJugador->puntaje->aplicarPosicion(vistaJugador->x - camara.x + vistaJugador->texturaJugador->getAnchoSprite()/2 + 35, vistaJugador->y + 80, 0, SDL_FLIP_NONE);
 		vistaJugador->puntaje->actualizarTexto(to_string(vistaJugador->valorPuntaje),{255,255,255});
-		vistaJugador->texturaNombre->aplicarPosicion(vistaJugador->x - camara.x + texturaJugadorX->getAnchoSprite()/2 - vistaJugador->texturaNombre->getAncho()/2,vistaJugador->y + 60, 0, SDL_FLIP_NONE);
+		vistaJugador->texturaNombre->aplicarPosicion(vistaJugador->x - camara.x + vistaJugador->texturaJugador->getAnchoSprite()/2 - vistaJugador->texturaNombre->getAncho()/2,vistaJugador->y + 60, 0, SDL_FLIP_NONE);
 		if (vistaJugador->nombre == nombreJugador)
 		{
 			textoMuniciones->actualizarTexto(to_string(vistaJugador->municiones), {255,255,255});
@@ -624,9 +618,6 @@ void Vista::actualizarPantalla(int anchoVentana, int anchoCapaPrincipal, string 
 			textura[i + 28]->aplicarPosicion(ANCHO_VENTANA/2 - textura[i+28]->getAncho()/2, 320 + i * 40,0,SDL_FLIP_NONE);
 		}
 
-		TexturaSDL* textoNivel = ventana->crearTexto("Recursos/msserif_bold.ttf",25);
-		TexturaSDL* textoTotal = ventana->crearTexto("Recursos/msserif_bold.ttf",25);
-
 		if (this->modoJuego == 2){
 			textoNivel->actualizarTexto("Puntaje Acumulado Nivel: " + to_string(puntajeSumadoNivel), {255,255,255});
 			textoNivel->aplicarPosicion(ANCHO_VENTANA/2 - textoNivel->getAncho()/2, 480,0,SDL_FLIP_NONE);
@@ -634,15 +625,11 @@ void Vista::actualizarPantalla(int anchoVentana, int anchoCapaPrincipal, string 
 			textoTotal->aplicarPosicion(ANCHO_VENTANA/2 - textoTotal->getAncho()/2, 520,0,SDL_FLIP_NONE);
 		}
 		else if (this->modoJuego == 3){
-			TexturaSDL* textoNivel = ventana->crearTexto("Recursos/msserif_bold.ttf",25);
-			TexturaSDL* textoTotal = ventana->crearTexto("Recursos/msserif_bold.ttf",25);
 			textoNivel->actualizarTexto("Puntaje Equipo Alfa Nivel: " + to_string(puntajeEquipoAlfa)+ ". Acumulado: " + to_string(puntajeTotalEquipoAlfa), {255,255,255});
 			textoNivel->aplicarPosicion(ANCHO_VENTANA/2 - textoNivel->getAncho()/2, 480,0,SDL_FLIP_NONE);
 			textoTotal->actualizarTexto("Puntaje Equipo Beta Nivel: " + to_string(puntajeEquipoBeta) + ". Acumulado: " + to_string(puntajeTotalEquipoBeta), {255,255,255});
 			textoTotal->aplicarPosicion(ANCHO_VENTANA/2 - textoTotal->getAncho()/2, 520,0,SDL_FLIP_NONE);
 		}
-		delete textoNivel;
-		delete textoTotal;
 	}
 
 	if (vistaJugadores.empty())
@@ -686,7 +673,7 @@ void Vista::actualizarProyectil(string nuevaBala, int x, int y, string sprite, i
 					if (vistaBala->id == id) {
 						vistaBalas.erase(vistaBalas.begin() + i);
 						vistaBala->textura->limpiarTextura();
-						delete vistaBala->textura;
+						//delete vistaBala->textura;
 						delete vistaBala;
 						break;
 					}
@@ -718,7 +705,7 @@ void Vista::actualizarEnemigo(string enemigo, int x, int y, string sprite, int i
 				for (int i = 0; i < vistaEnemigos.size(); i++){
 					VistaEnemigo* vistaEnemigo = vistaEnemigos.at(i);
 					if (vistaEnemigo->id == id) {
-						delete vistaEnemigo->textura;
+						//delete vistaEnemigo->textura;
 						vistaEnemigo->setTexturaSprite(ventana->crearTextura("Recursos/" + sprite + ".png", cantFotogramas));
 						break;
 					}
@@ -730,7 +717,7 @@ void Vista::actualizarEnemigo(string enemigo, int x, int y, string sprite, int i
 						VistaEnemigo* vistaEnemigo = vistaEnemigos.at(i);
 						if (vistaEnemigo->id == id) {
 							vistaEnemigos.erase(vistaEnemigos.begin() + i);
-							delete vistaEnemigo->textura;
+							//delete vistaEnemigo->textura;
 							delete vistaEnemigo;
 							break;
 						}
@@ -756,7 +743,7 @@ void Vista::agregarVistaItem(string borrarItem, string sprite, int x, int y, int
 			if (vistaItem->boxCollider.x == x)
 			{
 				vistaItems.erase(vistaItems.begin() + i);
-				delete vistaItem->textura;
+				//delete vistaItem->textura;
 				delete vistaItem;
 				break;
 			}
@@ -817,7 +804,7 @@ void Vista::actualizarBoss(string boss, int x, int y, string sprite, string sent
 	}
 	else if (boss == "2")
 	{
-		delete vistaBoss.at(0)->textura;
+		//delete vistaBoss.at(0)->textura;
 		this->vistaBoss.at(0)->setTexturaSprite(ventana->crearTextura("Recursos/" + sprite + ".png", cantFotogramas));
 
 		//this->vistaBoss.clear();
@@ -859,31 +846,31 @@ void Vista::vaciarVectores() {
 	//this->vistaJugadores.clear();
 	for (int i = 0; i < this->vectorCapas.size() ; i++){
 		//delete vectorCapas.at(i)->imagen;
-		delete vectorCapas.at(i)->textura;
+		//delete vectorCapas.at(i)->textura;
 		delete vectorCapas.at(i);
 	}
 	vectorCapas.clear();
 	for (int i = 0; i < this->vistaBalas.size() ; i++){
-		delete vistaBalas.at(i)->textura;
+		//delete vistaBalas.at(i)->textura;
 		delete vistaBalas.at(i);
 	}
 	vistaBalas.clear();
 	for (int i = 0; i < this->vistaEnemigos.size() ; i++){
-		delete vistaEnemigos.at(i)->textura;
+		//delete vistaEnemigos.at(i)->textura;
 		delete vistaEnemigos.at(i);
 	}
 	vistaEnemigos.clear();
 	for (int i = 0; i < this->vistaItems.size() ; i++){
-		delete vistaItems.at(i)->textura;
+		//delete vistaItems.at(i)->textura;
 		delete vistaItems.at(i);
 	}
 	vistaItems.clear();
 	for (int i = 0; i < this->vistaBoss.size() ; i++){
-		delete vistaBoss.at(i)->textura;
+		//delete vistaBoss.at(i)->textura;
 		delete vistaBoss.at(i);
 	}
 	vistaBoss.clear();
-	usleep(1000000);
+	//usleep(1000000);
 }
 
 void Vista::vaciarJugadores()

@@ -16,7 +16,7 @@ VistaEnemigo::VistaEnemigo(int x, int y, TexturaSDL* textura, int id, string sen
 }
 
 VistaEnemigo::~VistaEnemigo() {
-	// TODO Auto-generated destructor stub
+	delete this->textura;
 }
 
 void VistaEnemigo::verificarSentido(string sentido)

@@ -355,7 +355,8 @@ void Cliente::enviar(string mensaje, string destinatario) {
 		}
 		pthread_mutex_unlock(&mutexSocket);
 		free(mensajeCadena);
-		mensajeAEnviar->~Mensaje();
+		free(stringDatosMensaje);
+		delete mensajeAEnviar;
 	}
 
 }
@@ -368,6 +369,7 @@ string Cliente::recibir() {
 	char* recibir = strdup(metodo.c_str()); //2 es recibir
 	pthread_mutex_lock(&mutexSocket);
 	send(this->socketCliente, recibir, strlen(recibir), 0);
+	free(recibir);
 	string datosRecibidos = "";
 	int largoRequest;
 	//largoRequest = recv(this->socketCliente, colaMensajes, BUFFER_MAX_SIZE, 0);
