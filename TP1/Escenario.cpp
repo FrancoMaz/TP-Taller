@@ -205,7 +205,7 @@ bool Escenario::enemigoPerdido(int id, SDL_Rect* camara) {
 	for (int i = 0; i < this->enemigosActivos.size(); i++) {
 		Enemigo* enemigo = this->enemigosActivos.at(i);
 		if (enemigo->getId() == id) {
-			if (this->enemigosActivos.at(i)->getPosX() >= camara->x + camara->w && this->enemigosActivos.at(i)->getPosX() <= camara->x) {
+			if (this->enemigosActivos.at(i)->getPosX() >= camara->x + camara->w || this->enemigosActivos.at(i)->getPosX() <= camara->x) {
 				return true;
 			}
 		}

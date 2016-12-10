@@ -21,6 +21,7 @@
 using namespace std;
 
 pthread_mutex_t mutexIdProyectil = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t mutexMensaje = PTHREAD_MUTEX_INITIALIZER;
 int idProyectil = 0;
 struct parametrosThreadCliente {
 	//estructura que sirve para guardar los parametros que se le pasan a la funcion del thread.
@@ -390,6 +391,11 @@ int calcularDistancia(Enemigo* enemigo, Jugador* jugador)
 	return (abs(enemigo->getPosX() - jugador->getPosicion().first));
 }
 
+uint64_t rdtsc() {
+    unsigned int lo,hi;
+    __asm__ __volatile__ ("rdtsc" : "=a" (lo), "=d" (hi));
+    return ((uint64_t)hi << 32) | lo;
+}
 
 void* enemigoActivo(void* arg) {
 	ParametrosMovimiento* parametrosEnemigo = (ParametrosMovimiento*) arg;
@@ -399,7 +405,8 @@ void* enemigoActivo(void* arg) {
 	string nombre = "Enemigo";
 	string mensajeEnemigo = "4|0|";
 	mensajeEnemigo += enemigo->getInformacionDelEnemigo();
-	Mensaje* mensaje = new Mensaje(nombre,"Todos",mensajeEnemigo);
+	Mensaje* mensaje;
+	mensaje = new Mensaje(nombre,"Todos",mensajeEnemigo);
 	servidor->encolarMensajeProcesadoParaCadaCliente(*mensaje,mensajeEnemigo);
 	delete mensaje;
 	mensajeEnemigo = "4|1|";
@@ -621,7 +628,7 @@ void* enemigoActivo(void* arg) {
 	mensajeEnemigo = "4|3|";
 	mensajeEnemigo += enemigo->getInformacionDelEnemigo();
 	mensaje->setTexto(mensajeEnemigo);
-	srand(parametrosEnemigo->servidor->getNivelActual()->rdtsc());
+	srand(rdtsc());
 	int estadoBonus = rand() % 3;
 	if (!enemigo->esEnemigoBoss)
 	{

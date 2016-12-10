@@ -455,7 +455,7 @@ void Servidor::encolarMensajeProcesadoParaCadaCliente(Mensaje mensajeAProcesar, 
 				pthread_mutex_lock(&mutexListaProcesados);
 				listaMensajes.mensajes->push(*mensajePosicionActualizada);
 				pthread_mutex_unlock(&mutexListaProcesados);
-				mensajePosicionActualizada->~Mensaje();
+				delete mensajePosicionActualizada;
 			}
 			pthread_mutex_unlock(&mutexVectorJugadores);
 		}

@@ -75,7 +75,6 @@ private:
 	vector<string> vectorEquipos;
 	int posicionVector;
 	int posicionXInicial;
-	int nivelActual;
 	int contadorJugadores;
 
 public:
@@ -153,6 +152,7 @@ public:
 	void resetearPosiciones();
 	void calcularPuntajes();
 	bool gameComplete;
+	int nivelActual;
 };
 
 #endif /* TP1_SERVIDOR_H_ */
