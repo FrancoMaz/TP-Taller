@@ -768,17 +768,19 @@ void* verificarBossEnCamara(void* arg)
 	ParametrosMovimiento* parametroRecibido= (ParametrosMovimiento*) arg;
 	Servidor* servidor = parametroRecibido->servidor;
 	Jugador* jugador = parametroRecibido->jugador;
-	Boss* bossNivel = servidor->getNivelActual()->boss.at(0);
-	ParametrosMovimiento* parametrosBoss = new ParametrosMovimiento(servidor, jugador);
-	while (!servidor->getNivelActual()->levelClear) {
-		usleep(50000);
-		//servidor->getNivelActual()->despertarBoss(servidor->camara);
-		if (bossNivel != NULL && bossNivel->boxCollider.x <= (servidor->camara.x + servidor->camara.w) && !bossNivel->visto) {
-			parametrosBoss->boss = bossNivel;
-			pthread_t threadBoss;
-			pthread_create(&threadBoss, NULL, &bossActivo, parametrosBoss);
-			pthread_detach(threadBoss);
-			bossNivel->visto = true;
+	if (!servidor->getNivelActual()->boss.empty()) {
+		Boss* bossNivel = servidor->getNivelActual()->boss.at(0);
+		ParametrosMovimiento* parametrosBoss = new ParametrosMovimiento(servidor, jugador);
+		while (!servidor->getNivelActual()->levelClear) {
+			usleep(50000);
+			//servidor->getNivelActual()->despertarBoss(servidor->camara);
+			if (bossNivel != NULL && bossNivel->boxCollider.x <= (servidor->camara.x + servidor->camara.w) && !bossNivel->visto) {
+				parametrosBoss->boss = bossNivel;
+				pthread_t threadBoss;
+				pthread_create(&threadBoss, NULL, &bossActivo, parametrosBoss);
+				pthread_detach(threadBoss);
+				bossNivel->visto = true;
+			}
 		}
 	}
 	//delete parametrosBoss;
@@ -789,7 +791,7 @@ void* verificarPasarDeNivel(void* arg)
 	ParametrosMovimiento* parametros = (ParametrosMovimiento*)arg;
 	Servidor* servidor = parametros->servidor;
 	Jugador* jugador = parametros->jugador;
-	while(servidor->escuchando)
+	while(servidor->escuchando && !servidor->gameComplete && servidor->hayJugadoresVivos())
 	{
 		usleep(50000);
 		if (servidor->getNivelActual()->levelClear)
