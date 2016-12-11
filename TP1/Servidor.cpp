@@ -767,11 +767,12 @@ void Servidor::calcularPuntajes()
 
 void Servidor::avanzarDeNivel() {
 	//if (contadorJugadores%this->jugadores->size() == 0) {
-		if (this->nivelActual < 2) {
+		if (this->nivelActual < 3) {
 			this->nivelActual++;
 			if (this->nivelActual >= CANTIDADNIVELES)
 			{
 				this->gameComplete = true;
+				this->nivelActual--;
 			}
 			if (!this->gameComplete)
 			{
