@@ -416,7 +416,7 @@ void* enemigoActivo(void* arg) {
 	delete mensaje;
 	auto start_time = chrono::high_resolution_clock::now();
 	bool yaDisparo = false;
-	while (!enemigo->getEstaMuerto() && (!servidor->getNivelActual()->enemigoPerdido(enemigo->getId(),&servidor->camara)) && !servidor->getNivelActual()->levelClear) {
+	while (!enemigo->getEstaMuerto() && (!servidor->getNivelActual()->enemigoPerdido(enemigo->getId(),&servidor->camara)) && !servidor->getNivelActual()->levelClear && servidor->hayJugadoresVivos()) {
 		int tiempoTranscurrido = chrono::duration_cast<chrono::seconds>(chrono::high_resolution_clock::now() - start_time).count();
 		usleep(50000);
 		switch (enemigo->estado)
@@ -712,7 +712,7 @@ void* bossActivo(void* arg)
 	delete mensaje;
 	bool tieneQueDisparar = false;
 	auto start_time = chrono::high_resolution_clock::now();
-	while (!bossNivel->getEstaMuerto()) {
+	while (!bossNivel->getEstaMuerto() && servidor->hayJugadoresVivos()) {
 		usleep(50000);
 		int tiempoTranscurrido = chrono::duration_cast<chrono::seconds>(chrono::high_resolution_clock::now() - start_time).count();
 		if (tiempoTranscurrido % bossNivel->tiempoEntreArmas == 0 && !bossNivel->disparando && !tieneQueDisparar)
