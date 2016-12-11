@@ -354,46 +354,6 @@ void Vista::cargarEscenario(vector<ImagenDto*> imagenes, int anchoVentana, int a
 	//this->ventana->actualizar();
 }
 
-void Vista::actualizarJugador(UpdateJugador* update, int anchoVentana, int anchoCapaPrincipal)
-{
-	this->ventana->limpiar();
-	for (int i=vectorCapas.size()-1; i>=0; i--)
-	{
-		vectorCapas.at(i)->paralajeInfinito(anchoVentana, i);
-	}
-	SDL_RendererFlip flip = SDL_FLIP_NONE;
-	TexturaSDL* texturaJugadorX;
-	for (int i = 0; i < vistaJugadores.size(); i++){
-		VistaJugador* vistaJugador = vistaJugadores.at(i);
-		texturaJugadorX = vistaJugador->texturaJugador;
-		if (vistaJugador->nombre == update->getRemitente())
-		{
-			vistaJugador->x = atoi(update->getX().c_str());
-			vistaJugador->y = atoi(update->getY().c_str());
-			texturaJugadorX->cargarImagen("Recursos/" + update->getSpriteActual()->getPath() + ".png");
-			texturaJugadorX->generarSprite(atoi(update->getSpriteActual()->getCantidadDeFotogramas().c_str()));
-			if (update->getCondicion() == "Normal")
-			{
-				vistaJugador->flip = SDL_FLIP_NONE;
-			}
-			else
-			{
-				vistaJugador->flip = SDL_FLIP_HORIZONTAL;
-			}
-		}
-		if (vistaJugador->x > anchoCapaPrincipal && camara.x == 0)
-		{
-			vistaJugador->x = vistaJugador->x - anchoCapaPrincipal;
-		}
-		texturaJugadorX->aplicarPosicion(vistaJugador->x - camara.x,vistaJugador->y - camara.y,0,vistaJugador->flip);
-	}
-	if (texturaBotonDesconectar->aplicarPosicionDeBoton(10,10,&evento))
-	{
-		controlador->setCerrarVentana();
-	}
-	this->ventana->actualizar();
-}
-
 bool Vista::ventanaCerrada(){
 	return controlador->comprobarCierreVentana();
 }
@@ -450,6 +410,7 @@ void Vista::inicializarCamara(int camaraX, int camaraY, int anchoVentana, int al
 
 void Vista::cargarSiguienteNivel(int camaraX, int camaraY, int anchoVentana, int altoVentana, vector<pair<int,int>> abscisasCapas, vector<ImagenDto*> &imagenes, vector<string> nombreCapas)
 {
+	ventana->limpiar();
 	camara = {camaraX,camaraY,anchoVentana,altoVentana};
 	for (int i=0; i<abscisasCapas.size(); i++)
 	{
@@ -463,16 +424,7 @@ void Vista::cargarSiguienteNivel(int camaraX, int camaraY, int anchoVentana, int
 			}
 		}
 	}
-}
-
-void Vista::resetearVistas(int anchoCapaPrincipal)
-{
-	for (int i = 0; i < vistaJugadores.size(); i++)
-	{
-		VistaJugador* vistaJugador = vistaJugadores.at(i);
-		vistaJugador->x = vistaJugador->x - anchoCapaPrincipal;
-		vistaJugador->texturaJugador->aplicarPosicion(vistaJugador->x - camara.x,vistaJugador->y - camara.y,0,vistaJugador->flip);
-	}
+	ventana->actualizar();
 }
 
 void Vista::actualizarPosJugador(UpdateJugador* update, int anchoVentana, int anchoCapaPrincipal)
@@ -670,8 +622,6 @@ void Vista::actualizarProyectil(string nuevaBala, int x, int y, string sprite, i
 					VistaBala* vistaBala = vistaBalas.at(i);
 					if (vistaBala->id == id) {
 						vistaBalas.erase(vistaBalas.begin() + i);
-						vistaBala->textura->limpiarTextura();
-						//delete vistaBala->textura;
 						delete vistaBala;
 						break;
 					}
@@ -703,7 +653,6 @@ void Vista::actualizarEnemigo(string enemigo, int x, int y, string sprite, int i
 				for (int i = 0; i < vistaEnemigos.size(); i++){
 					VistaEnemigo* vistaEnemigo = vistaEnemigos.at(i);
 					if (vistaEnemigo->id == id) {
-						//delete vistaEnemigo->textura;
 						vistaEnemigo->setTexturaSprite(ventana->crearTextura("Recursos/" + sprite + ".png", cantFotogramas));
 						break;
 					}
@@ -715,7 +664,6 @@ void Vista::actualizarEnemigo(string enemigo, int x, int y, string sprite, int i
 						VistaEnemigo* vistaEnemigo = vistaEnemigos.at(i);
 						if (vistaEnemigo->id == id) {
 							vistaEnemigos.erase(vistaEnemigos.begin() + i);
-							//delete vistaEnemigo->textura;
 							delete vistaEnemigo;
 							break;
 						}
@@ -741,7 +689,6 @@ void Vista::agregarVistaItem(string borrarItem, string sprite, int x, int y, int
 			if (vistaItem->boxCollider.x == x)
 			{
 				vistaItems.erase(vistaItems.begin() + i);
-				//delete vistaItem->textura;
 				delete vistaItem;
 				break;
 			}
@@ -802,10 +749,7 @@ void Vista::actualizarBoss(string boss, int x, int y, string sprite, string sent
 	}
 	else if (boss == "2")
 	{
-		//delete vistaBoss.at(0)->textura;
 		this->vistaBoss.at(0)->setTexturaSprite(ventana->crearTextura("Recursos/" + sprite + ".png", cantFotogramas));
-
-		//this->vistaBoss.clear();
 	}
 }
 
@@ -841,34 +785,26 @@ void Vista::vaciarDatos() {
 }
 
 void Vista::vaciarVectores() {
-	//this->vistaJugadores.clear();
 	for (int i = 0; i < this->vectorCapas.size() ; i++){
-		//delete vectorCapas.at(i)->imagen;
-		//delete vectorCapas.at(i)->textura;
 		delete vectorCapas.at(i);
 	}
 	vectorCapas.clear();
 	for (int i = 0; i < this->vistaBalas.size() ; i++){
-		//delete vistaBalas.at(i)->textura;
 		delete vistaBalas.at(i);
 	}
 	vistaBalas.clear();
 	for (int i = 0; i < this->vistaEnemigos.size() ; i++){
-		//delete vistaEnemigos.at(i)->textura;
 		delete vistaEnemigos.at(i);
 	}
 	vistaEnemigos.clear();
 	for (int i = 0; i < this->vistaItems.size() ; i++){
-		//delete vistaItems.at(i)->textura;
 		delete vistaItems.at(i);
 	}
 	vistaItems.clear();
 	for (int i = 0; i < this->vistaBoss.size() ; i++){
-		//delete vistaBoss.at(i)->textura;
 		delete vistaBoss.at(i);
 	}
 	vistaBoss.clear();
-	//usleep(1000000);
 }
 
 void Vista::vaciarJugadores()
