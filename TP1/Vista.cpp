@@ -56,7 +56,6 @@ void Vista::cargarArchivos(){
 	textura.push_back(ventana->crearTexto("Recursos/arial.ttf",19));
 	textura.push_back(ventana->crearTexto("Recursos/msserif_bold.ttf",13));
 	textura.push_back(ventana->crearBoton("Recursos/Boton_Conectar.png"));
-	textura.push_back(ventana->crearTextura("Recursos/Fondo_Escenario_capa_1.png",0));
 	textura.push_back(ventana->crearBoton("Recursos/Boton_Salir.png"));
 	textura.push_back(ventana->crearTexto("Recursos/msserif_bold.ttf",25));
 	textura.push_back(ventana->crearTexto("Recursos/font_puntajes.ttf",22));
@@ -95,18 +94,17 @@ void Vista::cargarArchivos(){
 	#define entradaTextoIP textura[13]
 	#define textoDatosNoCoinciden textura[14]
 	#define texturaBotonConectar textura[15]
-	#define texturaFondoEscenario textura[16]
-	#define texturaBotonDesconectar textura[17]
-	#define textoEsperandoJugadores textura[18]
-	#define texturaPuntajesFondo textura[23]
-	#define textoPuntajesNivel textura[24]
-	#define textoMisionCompleta textura[25]
-	#define textoPuntajesGlobal textura[26]
-	#define textoGameOver textura[32]
-	#define textoJuegoCompletado textura[33]
-	#define textoMuniciones textura[34]
-	#define textoNivel textura[35]
-	#define textoTotal textura[36]
+	#define texturaBotonDesconectar textura[16]
+	#define textoEsperandoJugadores textura[17]
+	#define texturaPuntajesFondo textura[22]
+	#define textoPuntajesNivel textura[23]
+	#define textoMisionCompleta textura[24]
+	#define textoPuntajesGlobal textura[25]
+	#define textoGameOver textura[31]
+	#define textoJuegoCompletado textura[32]
+	#define textoMuniciones textura[33]
+	#define textoNivel textura[34]
+	#define textoTotal textura[35]
 }
 
 
