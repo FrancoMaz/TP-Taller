@@ -354,51 +354,6 @@ void Vista::cargarEscenario(vector<ImagenDto*> imagenes, int anchoVentana, int a
 	//this->ventana->actualizar();
 }
 
-<<<<<<< HEAD
-void Vista::actualizarJugador(UpdateJugador* update, int anchoVentana, int anchoCapaPrincipal)
-{
-	this->ventana->limpiar();
-	/*
-	for (int i=vectorCapas.size()-1; i>=0; i--)
-	{
-		vectorCapas.at(i)->paralajeInfinito(anchoVentana, i);
-	}
-	*/
-	SDL_RendererFlip flip = SDL_FLIP_NONE;
-	TexturaSDL* texturaJugadorX;
-	for (int i = 0; i < vistaJugadores.size(); i++){
-		VistaJugador* vistaJugador = vistaJugadores.at(i);
-		texturaJugadorX = vistaJugador->texturaJugador;
-		if (vistaJugador->nombre == update->getRemitente())
-		{
-			vistaJugador->x = atoi(update->getX().c_str());
-			vistaJugador->y = atoi(update->getY().c_str());
-			texturaJugadorX->cargarImagen("Recursos/" + update->getSpriteActual()->getPath() + ".png");
-			texturaJugadorX->generarSprite(atoi(update->getSpriteActual()->getCantidadDeFotogramas().c_str()));
-			if (update->getCondicion() == "Normal")
-			{
-				vistaJugador->flip = SDL_FLIP_NONE;
-			}
-			else
-			{
-				vistaJugador->flip = SDL_FLIP_HORIZONTAL;
-			}
-		}
-		if (vistaJugador->x > anchoCapaPrincipal && camara.x == 0)
-		{
-			vistaJugador->x = vistaJugador->x - anchoCapaPrincipal;
-		}
-		texturaJugadorX->aplicarPosicion(vistaJugador->x - camara.x,vistaJugador->y - camara.y,0,vistaJugador->flip);
-	}
-	if (texturaBotonDesconectar->aplicarPosicionDeBoton(10,10,&evento))
-	{
-		controlador->setCerrarVentana();
-	}
-	this->ventana->actualizar();
-}
-
-=======
->>>>>>> f7d1132886c8d9a23fc59f046ef56ff212868a56
 bool Vista::ventanaCerrada(){
 	return controlador->comprobarCierreVentana();
 }
@@ -843,11 +798,6 @@ void Vista::vaciarDatos() {
 }
 
 void Vista::vaciarVectores() {
-<<<<<<< HEAD
-	//this->vistaJugadores.clear();
-
-=======
->>>>>>> f7d1132886c8d9a23fc59f046ef56ff212868a56
 	for (int i = 0; i < this->vectorCapas.size() ; i++){
 		delete vectorCapas.at(i);
 	}
@@ -869,10 +819,6 @@ void Vista::vaciarVectores() {
 		delete vistaBoss.at(i);
 	}
 	vistaBoss.clear();
-<<<<<<< HEAD
-
-=======
->>>>>>> f7d1132886c8d9a23fc59f046ef56ff212868a56
 }
 
 void Vista::vaciarJugadores()
