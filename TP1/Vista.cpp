@@ -802,28 +802,40 @@ void Vista::vaciarVectores() {
 		delete vectorCapas.at(i);
 	}
 	vectorCapas.clear();
+	vector<Capa*>().swap(vectorCapas);
 
 	for (int i = 0; i < this->vistaBalas.size() ; i++){
 		delete vistaBalas.at(i);
 	}
 	vistaBalas.clear();
+	vector<VistaBala*>().swap(vistaBalas);
+
 	for (int i = 0; i < this->vistaEnemigos.size() ; i++){
 		delete vistaEnemigos.at(i);
 	}
 	vistaEnemigos.clear();
+	vector<VistaEnemigo*>().swap(vistaEnemigos);
+
 	for (int i = 0; i < this->vistaItems.size() ; i++){
 		delete vistaItems.at(i);
 	}
 	vistaItems.clear();
+	vector<Item*>().swap(vistaItems);
 	for (int i = 0; i < this->vistaBoss.size() ; i++){
 		delete vistaBoss.at(i);
 	}
 	vistaBoss.clear();
+	vector<VistaEnemigo*>().swap(vistaBoss);
 }
 
 void Vista::vaciarJugadores()
 {
-	this->vistaJugadores.clear();
+	for (int i = 0; i < this->vistaJugadores.size() ; i++)
+	{
+		delete vistaJugadores.at(i);
+	}
+	vistaJugadores.clear();
+	vector<VistaJugador*>().swap(vistaJugadores);
 }
 
 void Vista::actualizarMuniciones(string jugador, int municiones)
