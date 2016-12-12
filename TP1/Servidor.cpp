@@ -767,31 +767,33 @@ void Servidor::calcularPuntajes()
 
 void Servidor::avanzarDeNivel() {
 	//if (contadorJugadores%this->jugadores->size() == 0) {
-		this->nivelActual++;
-		if (this->nivelActual >= CANTIDADNIVELES)
-		{
-			this->gameComplete = true;
-		}
-		if (!this->gameComplete)
-		{
-			this->resetearPosiciones();
-			for (int i = 0; i < jugadores->size(); i++){
-				jugadores->at(i)->setearPlataformas(this->getNivelActual()->plataformas);
+		if (this->nivelActual < 3) {
+			this->nivelActual++;
+			if (this->nivelActual >= CANTIDADNIVELES)
+			{
+				this->gameComplete = true;
+				this->nivelActual--;
 			}
-			string mensajeAvanzarNivel = "9|0|0|" + serializarCapas() + "#";
-			Mensaje* mensajeNivel = new Mensaje("Servidor","Todos",mensajeAvanzarNivel);
-			encolarMensajeProcesadoParaCadaCliente(*mensajeNivel,mensajeAvanzarNivel);
-			mensajeNivel->~Mensaje();
+			if (!this->gameComplete)
+			{
+				this->resetearPosiciones();
+				for (int i = 0; i < jugadores->size(); i++){
+					jugadores->at(i)->setearPlataformas(this->getNivelActual()->plataformas);
+				}
+				string mensajeAvanzarNivel = "9|0|0|" + serializarCapas() + "#";
+				Mensaje* mensajeNivel = new Mensaje("Servidor","Todos",mensajeAvanzarNivel);
+				encolarMensajeProcesadoParaCadaCliente(*mensajeNivel,mensajeAvanzarNivel);
+				mensajeNivel->~Mensaje();
+			}
+			else
+			{
+				string stringJuegoTerminado = "10|#";
+				Mensaje* mensajeJuegoTerminado = new Mensaje("Servidor","Todos",stringJuegoTerminado);
+				encolarMensajeProcesadoParaCadaCliente(*mensajeJuegoTerminado,stringJuegoTerminado);
+				mensajeJuegoTerminado->~Mensaje();
+				usleep(5000000);
+			}
 		}
-		else
-		{
-			string stringJuegoTerminado = "10|#";
-			Mensaje* mensajeJuegoTerminado = new Mensaje("Servidor","Todos",stringJuegoTerminado);
-			encolarMensajeProcesadoParaCadaCliente(*mensajeJuegoTerminado,stringJuegoTerminado);
-			mensajeJuegoTerminado->~Mensaje();
-			usleep(5000000);
-		}
-	//}
 }
 
 bool Servidor::verificarColisionConJugadores(Proyectil* proyectil) {
@@ -830,4 +832,16 @@ bool Servidor::verificarColision(SDL_Rect camara, Proyectil* proyectil, bool est
 			return (!estaDisparando);
 		}
 	}
+}
+
+bool Servidor::hayJugadoresVivos() {
+	pthread_mutex_lock(&mutexVectorJugadores);
+	for (int i = 0; i < this->jugadores->size(); i++) {
+		if (!this->jugadores->at(i)->getEstaMuerto()) {
+			pthread_mutex_unlock(&mutexVectorJugadores);
+			return true;
+		}
+	}
+	pthread_mutex_unlock(&mutexVectorJugadores);
+	return false;
 }

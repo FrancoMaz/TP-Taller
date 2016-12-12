@@ -153,6 +153,7 @@ public:
 	void calcularPuntajes();
 	bool gameComplete;
 	int nivelActual;
+	bool hayJugadoresVivos();
 };
 
 #endif /* TP1_SERVIDOR_H_ */

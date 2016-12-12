@@ -354,6 +354,7 @@ void Vista::cargarEscenario(vector<ImagenDto*> imagenes, int anchoVentana, int a
 	//this->ventana->actualizar();
 }
 
+<<<<<<< HEAD
 void Vista::actualizarJugador(UpdateJugador* update, int anchoVentana, int anchoCapaPrincipal)
 {
 	this->ventana->limpiar();
@@ -396,6 +397,8 @@ void Vista::actualizarJugador(UpdateJugador* update, int anchoVentana, int ancho
 	this->ventana->actualizar();
 }
 
+=======
+>>>>>>> f7d1132886c8d9a23fc59f046ef56ff212868a56
 bool Vista::ventanaCerrada(){
 	return controlador->comprobarCierreVentana();
 }
@@ -677,8 +680,6 @@ void Vista::actualizarProyectil(string nuevaBala, int x, int y, string sprite, i
 					VistaBala* vistaBala = vistaBalas.at(i);
 					if (vistaBala->id == id) {
 						vistaBalas.erase(vistaBalas.begin() + i);
-						vistaBala->textura->limpiarTextura();
-						//delete vistaBala->textura;
 						delete vistaBala;
 						break;
 					}
@@ -710,7 +711,6 @@ void Vista::actualizarEnemigo(string enemigo, int x, int y, string sprite, int i
 				for (int i = 0; i < vistaEnemigos.size(); i++){
 					VistaEnemigo* vistaEnemigo = vistaEnemigos.at(i);
 					if (vistaEnemigo->id == id) {
-						//delete vistaEnemigo->textura;
 						vistaEnemigo->setTexturaSprite(ventana->crearTextura("Recursos/" + sprite + ".png", cantFotogramas));
 						break;
 					}
@@ -722,7 +722,6 @@ void Vista::actualizarEnemigo(string enemigo, int x, int y, string sprite, int i
 						VistaEnemigo* vistaEnemigo = vistaEnemigos.at(i);
 						if (vistaEnemigo->id == id) {
 							vistaEnemigos.erase(vistaEnemigos.begin() + i);
-							//delete vistaEnemigo->textura;
 							delete vistaEnemigo;
 							break;
 						}
@@ -748,7 +747,6 @@ void Vista::agregarVistaItem(string borrarItem, string sprite, int x, int y, int
 			if (vistaItem->boxCollider.x == x)
 			{
 				vistaItems.erase(vistaItems.begin() + i);
-				//delete vistaItem->textura;
 				delete vistaItem;
 				break;
 			}
@@ -809,10 +807,7 @@ void Vista::actualizarBoss(string boss, int x, int y, string sprite, string sent
 	}
 	else if (boss == "2")
 	{
-		//delete vistaBoss.at(0)->textura;
 		this->vistaBoss.at(0)->setTexturaSprite(ventana->crearTextura("Recursos/" + sprite + ".png", cantFotogramas));
-
-		//this->vistaBoss.clear();
 	}
 }
 
@@ -848,36 +843,36 @@ void Vista::vaciarDatos() {
 }
 
 void Vista::vaciarVectores() {
+<<<<<<< HEAD
 	//this->vistaJugadores.clear();
 
+=======
+>>>>>>> f7d1132886c8d9a23fc59f046ef56ff212868a56
 	for (int i = 0; i < this->vectorCapas.size() ; i++){
-		//delete vectorCapas.at(i)->imagen;
-		//delete vectorCapas.at(i)->textura;
 		delete vectorCapas.at(i);
 	}
 	vectorCapas.clear();
 
 	for (int i = 0; i < this->vistaBalas.size() ; i++){
-		//delete vistaBalas.at(i)->textura;
 		delete vistaBalas.at(i);
 	}
 	vistaBalas.clear();
 	for (int i = 0; i < this->vistaEnemigos.size() ; i++){
-		//delete vistaEnemigos.at(i)->textura;
 		delete vistaEnemigos.at(i);
 	}
 	vistaEnemigos.clear();
 	for (int i = 0; i < this->vistaItems.size() ; i++){
-		//delete vistaItems.at(i)->textura;
 		delete vistaItems.at(i);
 	}
 	vistaItems.clear();
 	for (int i = 0; i < this->vistaBoss.size() ; i++){
-		//delete vistaBoss.at(i)->textura;
 		delete vistaBoss.at(i);
 	}
 	vistaBoss.clear();
+<<<<<<< HEAD
 
+=======
+>>>>>>> f7d1132886c8d9a23fc59f046ef56ff212868a56
 }
 
 void Vista::vaciarJugadores()

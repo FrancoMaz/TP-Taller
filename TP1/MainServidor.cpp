@@ -416,7 +416,7 @@ void* enemigoActivo(void* arg) {
 	delete mensaje;
 	auto start_time = chrono::high_resolution_clock::now();
 	bool yaDisparo = false;
-	while (!enemigo->getEstaMuerto() && (!servidor->getNivelActual()->enemigoPerdido(enemigo->getId(),&servidor->camara)) && !servidor->getNivelActual()->levelClear) {
+	while (!enemigo->getEstaMuerto() && (!servidor->getNivelActual()->enemigoPerdido(enemigo->getId(),&servidor->camara)) && !servidor->getNivelActual()->levelClear && servidor->hayJugadoresVivos()) {
 		int tiempoTranscurrido = chrono::duration_cast<chrono::seconds>(chrono::high_resolution_clock::now() - start_time).count();
 		usleep(50000);
 		switch (enemigo->estado)
@@ -712,7 +712,7 @@ void* bossActivo(void* arg)
 	delete mensaje;
 	bool tieneQueDisparar = false;
 	auto start_time = chrono::high_resolution_clock::now();
-	while (!bossNivel->getEstaMuerto()) {
+	while (!bossNivel->getEstaMuerto() && servidor->hayJugadoresVivos()) {
 		usleep(50000);
 		int tiempoTranscurrido = chrono::duration_cast<chrono::seconds>(chrono::high_resolution_clock::now() - start_time).count();
 		if (tiempoTranscurrido % bossNivel->tiempoEntreArmas == 0 && !bossNivel->disparando && !tieneQueDisparar)
@@ -768,17 +768,19 @@ void* verificarBossEnCamara(void* arg)
 	ParametrosMovimiento* parametroRecibido= (ParametrosMovimiento*) arg;
 	Servidor* servidor = parametroRecibido->servidor;
 	Jugador* jugador = parametroRecibido->jugador;
-	Boss* bossNivel = servidor->getNivelActual()->boss.at(0);
-	ParametrosMovimiento* parametrosBoss = new ParametrosMovimiento(servidor, jugador);
-	while (!servidor->getNivelActual()->levelClear) {
-		usleep(50000);
-		//servidor->getNivelActual()->despertarBoss(servidor->camara);
-		if (bossNivel != NULL && bossNivel->boxCollider.x <= (servidor->camara.x + servidor->camara.w) && !bossNivel->visto) {
-			parametrosBoss->boss = bossNivel;
-			pthread_t threadBoss;
-			pthread_create(&threadBoss, NULL, &bossActivo, parametrosBoss);
-			pthread_detach(threadBoss);
-			bossNivel->visto = true;
+	if (!servidor->getNivelActual()->boss.empty()) {
+		Boss* bossNivel = servidor->getNivelActual()->boss.at(0);
+		ParametrosMovimiento* parametrosBoss = new ParametrosMovimiento(servidor, jugador);
+		while (!servidor->getNivelActual()->levelClear) {
+			usleep(50000);
+			//servidor->getNivelActual()->despertarBoss(servidor->camara);
+			if (bossNivel != NULL && bossNivel->boxCollider.x <= (servidor->camara.x + servidor->camara.w) && !bossNivel->visto) {
+				parametrosBoss->boss = bossNivel;
+				pthread_t threadBoss;
+				pthread_create(&threadBoss, NULL, &bossActivo, parametrosBoss);
+				pthread_detach(threadBoss);
+				bossNivel->visto = true;
+			}
 		}
 	}
 	//delete parametrosBoss;
@@ -789,7 +791,7 @@ void* verificarPasarDeNivel(void* arg)
 	ParametrosMovimiento* parametros = (ParametrosMovimiento*)arg;
 	Servidor* servidor = parametros->servidor;
 	Jugador* jugador = parametros->jugador;
-	while(servidor->escuchando)
+	while(servidor->escuchando && !servidor->gameComplete && servidor->hayJugadoresVivos())
 	{
 		usleep(50000);
 		if (servidor->getNivelActual()->levelClear)
