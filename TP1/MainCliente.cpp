@@ -139,7 +139,6 @@ void procesarUltimosMensajes(string mensajes, Cliente* cliente, UpdateJugador* u
 	vector<SetDeSpritesDto*> setsSprites = handshakeDeserializado->getSprites();
 	vector<vector<SpriteDto*>> matrizSpritesJugadores = handshakeDeserializado->matrizSpritesJugadores;
 	if(mensajes != mensajeVacio && mensajes != "") {
-
 		primeraVez = false;
 		mensajes[mensajes.length() - 1] = '#';
 		string s = mensajes;
@@ -272,8 +271,6 @@ void procesarUltimosMensajes(string mensajes, Cliente* cliente, UpdateJugador* u
 				}
 				case 9:
 				{
-					vista->pantallaPuntajes = false;
-					vista->vaciarVectores();
 					int xCamara = stringToInt(msjContenido.at(2));
 					int yCamara = stringToInt(msjContenido.at(3));
 					vector<pair<int,int>> abscisasCapas;

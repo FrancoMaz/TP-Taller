@@ -357,10 +357,12 @@ void Vista::cargarEscenario(vector<ImagenDto*> imagenes, int anchoVentana, int a
 void Vista::actualizarJugador(UpdateJugador* update, int anchoVentana, int anchoCapaPrincipal)
 {
 	this->ventana->limpiar();
+	/*
 	for (int i=vectorCapas.size()-1; i>=0; i--)
 	{
 		vectorCapas.at(i)->paralajeInfinito(anchoVentana, i);
 	}
+	*/
 	SDL_RendererFlip flip = SDL_FLIP_NONE;
 	TexturaSDL* texturaJugadorX;
 	for (int i = 0; i < vistaJugadores.size(); i++){
@@ -424,7 +426,7 @@ void Vista::actualizarCamara(int x, int y, vector<pair<int,int>> abscisasCapas, 
 		{
 			vectorCapas.at(i)->rectangulo.x = abscisasCapas.at(i).first;
 			vectorCapas.at(i)->vel = abscisasCapas.at(i).second;
-			vectorCapas.at(i)->paralajeInfinito(anchoVentana, i);
+			//vectorCapas.at(i)->paralajeInfinito(anchoVentana, i);
 		}
 		camara.x = vectorCapas.at(0)->rectangulo.x;
 		camara.y = vectorCapas.at(0)->rectangulo.y;
@@ -450,6 +452,9 @@ void Vista::inicializarCamara(int camaraX, int camaraY, int anchoVentana, int al
 
 void Vista::cargarSiguienteNivel(int camaraX, int camaraY, int anchoVentana, int altoVentana, vector<pair<int,int>> abscisasCapas, vector<ImagenDto*> &imagenes, vector<string> nombreCapas)
 {
+	ventana->limpiar();
+	pantallaPuntajes = false;
+	vaciarVectores();
 	camara = {camaraX,camaraY,anchoVentana,altoVentana};
 	for (int i=0; i<abscisasCapas.size(); i++)
 	{
@@ -463,6 +468,8 @@ void Vista::cargarSiguienteNivel(int camaraX, int camaraY, int anchoVentana, int
 			}
 		}
 	}
+	ventana->actualizar();
+	//usleep(3000000);
 }
 
 void Vista::resetearVistas(int anchoCapaPrincipal)
@@ -842,12 +849,14 @@ void Vista::vaciarDatos() {
 
 void Vista::vaciarVectores() {
 	//this->vistaJugadores.clear();
+
 	for (int i = 0; i < this->vectorCapas.size() ; i++){
 		//delete vectorCapas.at(i)->imagen;
 		//delete vectorCapas.at(i)->textura;
 		delete vectorCapas.at(i);
 	}
 	vectorCapas.clear();
+
 	for (int i = 0; i < this->vistaBalas.size() ; i++){
 		//delete vistaBalas.at(i)->textura;
 		delete vistaBalas.at(i);
@@ -868,7 +877,7 @@ void Vista::vaciarVectores() {
 		delete vistaBoss.at(i);
 	}
 	vistaBoss.clear();
-	//usleep(1000000);
+
 }
 
 void Vista::vaciarJugadores()
