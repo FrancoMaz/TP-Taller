@@ -186,8 +186,8 @@ datosConexion Vista::cargarPantallaIngresoDatos(bool aviso, int numeroPantalla){
 			campoUno = "7891";
 			//campoDos = this->datos.ip;
 			//campoDos = "127.0.0.1";
-			//campoDos = "192.168.1.10";
-			campoDos = "127.0.0.1";
+			campoDos = "192.168.1.10";
+			//campoDos = "127.0.0.1";
 			textoIngresePuerto->actualizarTexto("Ingrese el puerto:",colorTexto);
 			textoIngreseIP->actualizarTexto("Ingrese la IP del servidor:",colorTexto);
 			textoDatosNoCoinciden->actualizarTexto("La dirección de ip o el puerto no permiten esta conexión",colorTextoAmarillo);
@@ -762,15 +762,17 @@ void Vista::actualizarBoss(string boss, int x, int y, string sprite, string sent
 		VistaEnemigo* vistaBoss = new VistaEnemigo(x,y,(ventana->crearTextura("Recursos/" + sprite + ".png", cantFotogramas)),0, sentido);
 		this->vistaBoss.push_back(vistaBoss);
 	}
-	else if (boss == "1")
-	{
-		this->vistaBoss.at(0)->x = x;
-		this->vistaBoss.at(0)->y = y;
-		this->vistaBoss.at(0)->verificarSentido(sentido);
+	else if (boss == "1") {
+		if (!this->vistaBoss.empty()) {
+			this->vistaBoss.at(0)->x = x;
+			this->vistaBoss.at(0)->y = y;
+			this->vistaBoss.at(0)->verificarSentido(sentido);
+		}
 	}
-	else if (boss == "2")
-	{
-		this->vistaBoss.at(0)->setTexturaSprite(ventana->crearTextura("Recursos/" + sprite + ".png", cantFotogramas));
+	else if (boss == "2") {
+		if (!this->vistaBoss.empty()) {
+			this->vistaBoss.at(0)->setTexturaSprite(ventana->crearTextura("Recursos/" + sprite + ".png", cantFotogramas));
+		}
 	}
 }
 

@@ -100,6 +100,7 @@ public:
 	int getCantConexiones();
 	string serializarLista(list<string> datos);
 	pthread_mutex_t mutexColaNoProcesados = PTHREAD_MUTEX_INITIALIZER;
+	pthread_mutex_t mutexEliminarProyectil = PTHREAD_MUTEX_INITIALIZER;
 	pthread_mutex_t mutexListaProcesados = PTHREAD_MUTEX_INITIALIZER;
 	pthread_mutex_t mutexColasProcesadas = PTHREAD_MUTEX_INITIALIZER;
 	pthread_mutex_t mutexEnviarMensajes = PTHREAD_MUTEX_INITIALIZER;

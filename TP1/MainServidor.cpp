@@ -22,6 +22,7 @@ using namespace std;
 
 pthread_mutex_t mutexIdProyectil = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t mutexMensaje = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t mutexNivel = PTHREAD_MUTEX_INITIALIZER;
 int idProyectil = 0;
 struct parametrosThreadCliente {
 	//estructura que sirve para guardar los parametros que se le pasan a la funcion del thread.
@@ -207,7 +208,9 @@ void* disparoProyectil(void* arg)
 	mensajeProyectil = new Mensaje(parametros->nombrePersonaje,"Todos",mensajeProyectilString);
 	servidor->encolarMensajeProcesadoParaCadaCliente(*mensajeProyectil,mensajeProyectilString);
 	delete mensajeProyectil;
+	pthread_mutex_lock(&servidor->mutexEliminarProyectil);
 	delete proyectil;
+	pthread_mutex_unlock(&servidor->mutexEliminarProyectil);
 	pthread_exit(NULL);
 }
 
@@ -794,6 +797,7 @@ void* verificarPasarDeNivel(void* arg)
 	while(servidor->escuchando && !servidor->gameComplete && servidor->hayJugadoresVivos())
 	{
 		usleep(50000);
+		pthread_mutex_lock(&mutexNivel);
 		if (servidor->getNivelActual()->levelClear)
 		{
 			cout << "Level clear" << endl;
@@ -809,12 +813,11 @@ void* verificarPasarDeNivel(void* arg)
 				pthread_create(&threadVerificarBoss, NULL, &verificarBossEnCamara, parametros);
 				pthread_detach(threadVerificarBoss);
 			}
-			else
-			{
-				servidor->getNivelActual()->avanzoDeNivel = false;
-				break;
-			}
+			servidor->getNivelActual()->avanzoDeNivel = false;
+			servidor->getNivelActual()->levelClear = false;
 		}
+
+		pthread_mutex_unlock(&mutexNivel);
 	}
 }
 

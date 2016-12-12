@@ -236,14 +236,19 @@ bool Escenario::despertarBoss(SDL_Rect camara)
 	}
 }
 
-void Escenario::vaciarVectores()
-{
+void Escenario::vaciarVectores() {
 	this->proyectiles.clear();
+
 	this->items.clear();
+
 	this->plataformas.clear();
+
 	this->capas.clear();
+
 	this->enemigosPorNivel.clear();
+
 	this->enemigosActivos.clear();
+
 	this->boss.clear();
 }
 
