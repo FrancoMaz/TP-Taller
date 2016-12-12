@@ -703,6 +703,7 @@ void Servidor::verificarDesconexion(string nombre)
 			mensajeDesconectado = jugador->getStringJugador();
 			mensaje = new Mensaje(jugador->getNombre(),"Todos",mensajeDesconectado);
 			encolarMensajeProcesadoParaCadaCliente(*mensaje,mensajeDesconectado);
+			delete mensaje;
 			while (this->escuchando && !jugador->getConectado())
 			{	usleep(100);
 				if (jugador->getPosicion().first < camara.x)
@@ -711,12 +712,14 @@ void Servidor::verificarDesconexion(string nombre)
 					mensajeDesconectado = jugador->getStringJugador();
 					mensaje = new Mensaje(jugador->getNombre(),"Todos",mensajeDesconectado);
 					encolarMensajeProcesadoParaCadaCliente(*mensaje,mensajeDesconectado);
+					delete mensaje;
 				}
 			}
 			jugador->setSprite("Jugador_" + jugador->getEquipo());
 			mensajeDesconectado = jugador->getStringJugador();
 			mensaje = new Mensaje(jugador->getNombre(),"Todos",mensajeDesconectado);
 			encolarMensajeProcesadoParaCadaCliente(*mensaje,mensajeDesconectado);
+			delete mensaje;
 		}
 	}
 }
