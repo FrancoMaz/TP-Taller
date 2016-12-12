@@ -54,6 +54,7 @@ private:
 	vector<VistaEnemigo*> vistaEnemigos;
 	vector<Item*> vistaItems;
 	vector<VistaEnemigo*> vistaBoss;
+	int indice = 0;
 
 public:
 	Vista();
@@ -103,6 +104,7 @@ public:
 	void cargarSiguienteNivel(int camaraX, int camaraY, int anchoVentana, int altoVentana, vector<pair<int,int>> abscisasCapas, vector<ImagenDto*> &imagenes, vector<string> nombreCapas);
 	void vaciarJugadores();
 	void actualizarMuniciones(string jugador, int municiones);
+	void cargarCapas(vector<ImagenDto*> imagenes);
 };
 
 #endif /* TP2_VISTA_H_ */

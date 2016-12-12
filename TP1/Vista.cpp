@@ -341,6 +341,15 @@ void Vista::transicionDePantalla(){
 	this->opacidad = 230;
 }
 
+void Vista::cargarCapas(vector<ImagenDto*> imagenes)
+{
+	for (int i = 0; i < imagenes.size(); i++)
+	{
+		Capa* capa = new Capa(imagenes.at(i),{0,0,ANCHO_VENTANA,ALTO_VENTANA},ventana->crearTextura("Recursos/" + imagenes.at(i)->getPath() + ".png",0));
+		vectorCapas.push_back(capa);
+	}
+}
+
 void Vista::cargarEscenario(vector<ImagenDto*> imagenes, int anchoVentana, int altoVentana){
 	this->ventana->limpiar();
 	for (int i=vectorCapas.size()-1; i>=0; i--)
@@ -380,14 +389,13 @@ void Vista::cargarVistaInicialJugador(string nombre, int x, int y, SpriteDto* sp
 void Vista::actualizarCamara(int x, int y, vector<pair<int,int>> abscisasCapas, int anchoVentana)
 {
 	if (!vectorCapas.empty()) {
-		for (int i=vectorCapas.size()-1; i>=0; i--)
+		for (int i=indice + 3; i>=indice; i--)
 		{
-			vectorCapas.at(i)->rectangulo.x = abscisasCapas.at(i).first;
-			vectorCapas.at(i)->vel = abscisasCapas.at(i).second;
-			//vectorCapas.at(i)->paralajeInfinito(anchoVentana, i);
+			vectorCapas.at(i)->rectangulo.x = abscisasCapas.at(i%4).first;
+			vectorCapas.at(i)->vel = abscisasCapas.at(i%4).second;
 		}
-		camara.x = vectorCapas.at(0)->rectangulo.x;
-		camara.y = vectorCapas.at(0)->rectangulo.y;
+		camara.x = vectorCapas.at(indice)->rectangulo.x;
+		camara.y = vectorCapas.at(indice)->rectangulo.y;
 	}
 }
 
@@ -397,12 +405,12 @@ void Vista::inicializarCamara(int camaraX, int camaraY, int anchoVentana, int al
 	for (int i=0; i<abscisasCapas.size(); i++)
 	{
 		SDL_Rect rectangulo = {abscisasCapas.at(i).first,0,anchoVentana,altoVentana};
-		for (int j = 0; j < imagenes.size(); j++)
+		for (int j = 0; j < vectorCapas.size(); j++)
 		{
-			if (imagenes.at(j)->getPath() == nombreCapas.at(i))
+			if (vectorCapas.at(j)->imagen->getPath() == nombreCapas.at(i))
 			{
-				Capa* capa = new Capa(imagenes.at(j), rectangulo, ventana->crearTextura("Recursos/" + imagenes.at(j)->getPath() + ".png",0));
-				vectorCapas.push_back(capa);
+				Capa* capa = vectorCapas.at(j);
+				capa->rectangulo = rectangulo;
 			}
 		}
 	}
@@ -417,17 +425,17 @@ void Vista::cargarSiguienteNivel(int camaraX, int camaraY, int anchoVentana, int
 	for (int i=0; i<abscisasCapas.size(); i++)
 	{
 		SDL_Rect rectangulo = {abscisasCapas.at(i).first,0,anchoVentana,altoVentana};
-		for (int j = 0; j < imagenes.size(); j++)
+		for (int j = 0; j < vectorCapas.size(); j++)
 		{
-			if (imagenes.at(j)->getPath() == nombreCapas.at(i))
+			if (vectorCapas.at(j)->imagen->getPath() == nombreCapas.at(i))
 			{
-				Capa* capa = new Capa(imagenes.at(j), rectangulo, ventana->crearTextura("Recursos/" + imagenes.at(j)->getPath() + ".png",0));
-				vectorCapas.push_back(capa);
+				Capa* capa = vectorCapas.at(j);
+				capa->rectangulo = rectangulo;
 			}
 		}
 	}
+	indice += 4;
 	ventana->actualizar();
-	//usleep(3000000);
 }
 
 void Vista::resetearVistas(int anchoCapaPrincipal)
@@ -512,7 +520,7 @@ void Vista::actualizarVida(string jugador, int vida){
 void Vista::actualizarPantalla(int anchoVentana, int anchoCapaPrincipal, string nombreJugador) {
 	this->ventana->limpiar();
 
-	for (int i=vectorCapas.size()-1; i>=0; i--)
+	for (int i=indice + 3; i>=indice; i--)
 	{
 		vectorCapas.at(i)->paralajeInfinito(anchoVentana, i);
 	}
@@ -575,10 +583,10 @@ void Vista::actualizarPantalla(int anchoVentana, int anchoCapaPrincipal, string 
 			if (modoJuego == 3){
 				nombre = jugador->equipo + " " + nombre;
 			}
-			textura[i + 19]->actualizarTexto(nombre + "                " + to_string(jugador->valorPuntaje), {255,255,255});
-			textura[i + 19]->aplicarPosicion(ANCHO_VENTANA/2 - textura[i+19]->getAncho()/2, 120 + i * 40,0,SDL_FLIP_NONE);
-			textura[i + 28]->actualizarTexto(nombre + "                " + to_string(jugador->puntajeTotal), {255,255,255});
-			textura[i + 28]->aplicarPosicion(ANCHO_VENTANA/2 - textura[i+28]->getAncho()/2, 320 + i * 40,0,SDL_FLIP_NONE);
+			textura[i + 18]->actualizarTexto(nombre + "                " + to_string(jugador->valorPuntaje), {255,255,255});
+			textura[i + 18]->aplicarPosicion(ANCHO_VENTANA/2 - textura[i+18]->getAncho()/2, 120 + i * 40,0,SDL_FLIP_NONE);
+			textura[i + 27]->actualizarTexto(nombre + "                " + to_string(jugador->puntajeTotal), {255,255,255});
+			textura[i + 27]->aplicarPosicion(ANCHO_VENTANA/2 - textura[i+27]->getAncho()/2, 320 + i * 40,0,SDL_FLIP_NONE);
 		}
 
 		if (this->modoJuego == 2){
@@ -798,11 +806,11 @@ void Vista::vaciarDatos() {
 }
 
 void Vista::vaciarVectores() {
-	for (int i = 0; i < this->vectorCapas.size() ; i++){
+	/*for (int i = 0; i < this->vectorCapas.size() ; i++){
 		delete vectorCapas.at(i);
 	}
 	vectorCapas.clear();
-	vector<Capa*>().swap(vectorCapas);
+	vector<Capa*>().swap(vectorCapas);*/
 
 	for (int i = 0; i < this->vistaBalas.size() ; i++){
 		delete vistaBalas.at(i);

@@ -458,11 +458,12 @@ void* cicloConexion(void* arg) {
 		}while (!inicio && !vista->ventanaCerrada());
 		if (!vista->ventanaCerrada()){
 			handshakeDeserializado = cliente->getHandshake();
+			vista->cargarCapas(handshakeDeserializado->imagenes);
 			pthread_create(&threadEnviarEventos, NULL, &enviarEventos, cliente);
 			pthread_detach(threadEnviarEventos);
 			pthread_create(&threadRecibirPosicionJugadores, NULL, &recibirPosicionJugadores,cliente);
 			pthread_detach(threadRecibirPosicionJugadores);
-			vista->cargarEscenario(handshakeDeserializado->getImagenes(), stringToInt(handshakeDeserializado->getAncho()), stringToInt(handshakeDeserializado->getAlto()));
+			//vista->cargarEscenario(handshakeDeserializado->getImagenes(), stringToInt(handshakeDeserializado->getAncho()), stringToInt(handshakeDeserializado->getAlto()));
 			while(!terminoComunicacion) {
 				usleep(1000);
 			}

@@ -35,7 +35,7 @@ private:
 
 public:
 	TexturaSDL(SDL_Renderer* renderer);
-	~TexturaSDL();
+	virtual ~TexturaSDL();
 
 	//Elimina las referencias de la textura, liberando memoria
 	void limpiarTextura();
