@@ -67,7 +67,18 @@ Handshake::Handshake(vector<ImagenDto*> imagenes, vector<SetDeSpritesDto*> sprit
 }
 
 Handshake::~Handshake() {
-	// TODO Auto-generated destructor stub
+	for (int i = 0; i < imagenes.size(); i++)
+	{
+		delete imagenes.at(i);
+	}
+	imagenes.clear();
+	vector<ImagenDto*>().swap(imagenes);
+	for (int i = 0; i < sprites.size(); i++)
+	{
+		delete sprites.at(i);
+	}
+	sprites.clear();
+	vector<SetDeSpritesDto*>().swap(sprites);
 }
 
 vector<SetDeSpritesDto*> Handshake::getSprites()

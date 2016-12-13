@@ -894,6 +894,7 @@ void iniciarThreadMovimientoJugador(Servidor* servidor, string nombre)
 	pthread_create(&threadObjetos, NULL, &enviarObjetosEnCamara, parametros);
 	pthread_detach(threadObjetos);
 	pthread_create(&threadReconexion,NULL,&enviarElementosEnCamara,parametros);
+	pthread_detach(threadReconexion);
 	jugador->setThreadMovimiento(threadMov);
 }
 

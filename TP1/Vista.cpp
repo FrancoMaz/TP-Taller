@@ -845,6 +845,12 @@ void Vista::vaciarJugadores()
 	}
 	vistaJugadores.clear();
 	vector<VistaJugador*>().swap(vistaJugadores);
+	for (int i = 0; i < this->vectorCapas.size() ; i++)
+	{
+		delete vectorCapas.at(i);
+	}
+	vectorCapas.clear();
+	vector<Capa*>().swap(vectorCapas);
 }
 
 void Vista::actualizarMuniciones(string jugador, int municiones)

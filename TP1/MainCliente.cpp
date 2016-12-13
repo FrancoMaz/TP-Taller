@@ -470,6 +470,7 @@ void* cicloConexion(void* arg) {
 		if (!terminoConQ) {
 		 	cliente->desconectar();
 		}
+		delete handshakeDeserializado;
 	}
 }
 

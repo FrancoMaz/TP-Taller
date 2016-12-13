@@ -21,6 +21,10 @@ vector<SpriteDto*> SetDeSpritesDto::getSprites() {
 }
 
 SetDeSpritesDto::~SetDeSpritesDto() {
-	// TODO Auto-generated destructor stub
+	for (int i = 0; i < sprites.size(); i++)
+	{
+		delete sprites.at(i);
+	}
+	sprites.clear();
+	vector<SpriteDto*>().swap(sprites);
 }
-
