@@ -380,6 +380,9 @@ string Cliente::recibir() {
 		tiempoTranscurrido = chrono::duration_cast<chrono::seconds>(chrono::high_resolution_clock::now() - start_time).count();
 		largoRequest = recv(this->socketCliente, colaMensajes, BUFFER_MAX_SIZE, 0);
 		//cout << "segundo: " << tiempoTranscurrido << endl;
+		if (largoRequest <= 0) {
+			cout << "Largo request: " << largoRequest << endl;
+		}
 	} while (largoRequest <= 0 && tiempoTranscurrido <= 5);
 
 	datosRecibidos += string(colaMensajes);
@@ -389,13 +392,16 @@ string Cliente::recibir() {
 		{
 			int largo;
 			//mientras haya cosas que leer, sigo recibiendo.
-			auto start_time = chrono::high_resolution_clock::now();
+			auto start_time2 = chrono::high_resolution_clock::now();
 			int tiempo;
 			do {
 				//sigue aca mientras no recibe nada, cuando recibe algo sale de este do while
-				tiempo = chrono::duration_cast<chrono::seconds>(chrono::high_resolution_clock::now() - start_time).count();
+				tiempo = chrono::duration_cast<chrono::seconds>(chrono::high_resolution_clock::now() - start_time2).count();
 				largo = recv(socketCliente, colaMensajes, BUFFER_MAX_SIZE, 0);
 				largoRequest += largo;
+				if (largo <= 0) {
+					cout << "Largo: " << largo << endl;
+				}
 			} while (largo <= 0 && tiempo <= 5);
 			if (largo > 0){
 				datosRecibidos += string(colaMensajes);
