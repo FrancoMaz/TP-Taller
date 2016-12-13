@@ -33,6 +33,7 @@ Vista::Vista(){
 	this->datos.contrasenia = " ";
 	this->pantallaPuntajes = false;
 	this->juegoTerminado = false;
+	this->indice = 0;
 }
 
 bool Vista::inicializar(){
@@ -185,8 +186,8 @@ datosConexion Vista::cargarPantallaIngresoDatos(bool aviso, int numeroPantalla){
 			//campoUno = this->datos.puerto;
 			campoUno = "7891";
 			//campoDos = this->datos.ip;
-			//campoDos = "127.0.0.1";
-			campoDos = "192.168.1.10";
+			campoDos = "127.0.0.1";
+			//campoDos = "192.168.1.10";
 			textoIngresePuerto->actualizarTexto("Ingrese el puerto:",colorTexto);
 			textoIngreseIP->actualizarTexto("Ingrese la IP del servidor:",colorTexto);
 			textoDatosNoCoinciden->actualizarTexto("La dirección de ip o el puerto no permiten esta conexión",colorTextoAmarillo);
@@ -863,4 +864,9 @@ void Vista::actualizarMuniciones(string jugador, int municiones)
 			break;
 		}
 	}
+}
+
+void Vista::setearNivel(int nivel)
+{
+	this->indice = nivel*4;
 }

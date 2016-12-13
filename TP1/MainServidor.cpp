@@ -874,6 +874,12 @@ void* enviarElementosEnCamara(void* arg)
 			servidor->encolarMensajeProcesadoParaCadaCliente(*mensajeAEncolar,mensaje);
 			delete mensajeAEncolar;
 		}
+		mensaje = "";
+		mensaje = "12|";
+		mensaje += to_string(servidor->nivelActual);
+		mensajeAEncolar = new Mensaje(jugador->getNombre(),jugador->getNombre(),mensaje);
+		servidor->encolarMensajeProcesadoParaCadaCliente(*mensajeAEncolar,mensaje);
+		delete mensajeAEncolar;
 		jugador->reconectado = false;
 	}
 }
