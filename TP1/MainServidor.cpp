@@ -865,6 +865,15 @@ void* enviarElementosEnCamara(void* arg)
 				delete mensajeAEncolar;
 			}
 		}
+		mensaje = "";
+		for (int i = 0; i < servidor->jugadores->size(); i++) {
+			mensaje = "6|";
+			mensaje += servidor->jugadores->at(i)->getNombre() + "|";
+			mensaje += to_string(servidor->jugadores->at(i)->getVida()) + "#";
+			mensajeAEncolar = new Mensaje(jugador->getNombre(),jugador->getNombre(),mensaje);
+			servidor->encolarMensajeProcesadoParaCadaCliente(*mensajeAEncolar,mensaje);
+			delete mensajeAEncolar;
+		}
 		jugador->reconectado = false;
 	}
 }
