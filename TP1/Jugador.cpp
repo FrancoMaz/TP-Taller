@@ -44,6 +44,7 @@ Jugador::Jugador(string nombre, string equipo, int posicionX, vector<pair<string
 	else if (this->equipo == "azul"){
 		equipoIndice = 3;
 	}
+	this->reconectado = false;
 }
 
 Jugador::~Jugador() {

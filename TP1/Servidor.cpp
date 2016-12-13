@@ -22,8 +22,8 @@ Servidor::Servidor(char* nombreArchivoDeUsuarios, int puerto, Logger* logger) {
 	/* Set port number, using htons function to use proper byte order */
 	this->serverAddr.sin_port = htons(puerto);
 	/* Set IP address to localhost */
-	this->serverAddr.sin_addr.s_addr = inet_addr("192.168.1.10");
-	//this->serverAddr.sin_addr.s_addr = inet_addr("127.0.0.1");
+	//this->serverAddr.sin_addr.s_addr = inet_addr("192.168.1.10");
+	this->serverAddr.sin_addr.s_addr = inet_addr("127.0.0.1");
 
 	//this->serverAddr.sin_addr.s_addr = inet_addr("10.1.77.13");
 	/* Set all bits of the padding field to 0 */
@@ -262,6 +262,7 @@ void Servidor::autenticar(string nombre, string contrasenia, list<string>& usuar
 				Jugador* jugador = this->obtenerJugador(usuario.nombre);
 				jugador->setConectado();
 				jugador->setSprite("Jugador_" + jugador->getEquipo());
+				jugador->reconectado = true;
 			}
 		} else {
 			usuarios.push_back(usuario.nombre);

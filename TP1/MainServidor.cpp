@@ -821,6 +821,54 @@ void* verificarPasarDeNivel(void* arg)
 	}
 }
 
+void* enviarElementosEnCamara(void* arg)
+{
+	ParametrosMovimiento* parametros = (ParametrosMovimiento*)arg;
+	Servidor* servidor = parametros->servidor;
+	Jugador* jugador = parametros->jugador;
+	if (jugador->reconectado)
+	{
+		Mensaje* mensajeAEncolar;
+		string mensaje = "";
+		mensaje = "1|" + to_string(servidor->camara.x) + "|" + to_string(servidor->camara.y) + "|" + servidor->serializarCapas() + "#";
+		mensajeAEncolar = new Mensaje(jugador->getNombre(),jugador->getNombre(),mensaje);
+		servidor->encolarMensajeProcesadoParaCadaCliente(*mensajeAEncolar,mensaje);
+		delete mensajeAEncolar;
+		mensaje = "";
+		for (int i = 0; i < servidor->getNivelActual()->enemigosActivos.size(); i++)
+		{
+			mensaje = "4|0|";
+			mensaje += servidor->getNivelActual()->enemigosActivos.at(i)->getInformacionDelEnemigo();
+			mensajeAEncolar = new Mensaje("Enemigo",jugador->getNombre(),mensaje);
+			servidor->encolarMensajeProcesadoParaCadaCliente(*mensajeAEncolar,mensaje);
+			delete mensajeAEncolar;
+		}
+		mensaje = "";
+		for (int i = 0; i < servidor->getNivelActual()->boss.size(); i++)
+		{
+			mensaje = "7|0|";
+			mensaje += servidor->getNivelActual()->boss.at(i)->getStringBoss();
+			mensajeAEncolar = new Mensaje(jugador->getNombre(),jugador->getNombre(),mensaje);
+			servidor->encolarMensajeProcesadoParaCadaCliente(*mensajeAEncolar,mensaje);
+			delete mensajeAEncolar;
+		}
+		mensaje = "";
+		for (int i = 0; i < servidor->getNivelActual()->items.size(); i++)
+		{
+			SDL_Rect box = servidor->getNivelActual()->items.at(i)->boxCollider;
+			if (box.x <= (servidor->camara.x + servidor->camara.w))
+			{
+				mensaje = "3|0|";
+				mensaje += servidor->getNivelActual()->items.at(i)->getStringItem();
+				mensajeAEncolar = new Mensaje(jugador->getNombre(),jugador->getNombre(),mensaje);
+				servidor->encolarMensajeProcesadoParaCadaCliente(*mensajeAEncolar,mensaje);
+				delete mensajeAEncolar;
+			}
+		}
+		jugador->reconectado = false;
+	}
+}
+
 void iniciarThreadMovimientoJugador(Servidor* servidor, string nombre)
 {
 	pthread_mutex_lock(&servidor->mutexVectorJugadores);
@@ -834,6 +882,7 @@ void iniciarThreadMovimientoJugador(Servidor* servidor, string nombre)
 	pthread_t threadEnemigosPetutos;
 	pthread_t threadVerificarBoss;
 	pthread_t threadObjetos;
+	pthread_t threadReconexion;
 	pthread_create(&threadMov, NULL, &actualizarPosicionesJugador, parametros);
 	pthread_detach(threadMov);
 	pthread_create(&threadNiveles, NULL, &verificarPasarDeNivel, parametros);
@@ -844,8 +893,8 @@ void iniciarThreadMovimientoJugador(Servidor* servidor, string nombre)
 	pthread_detach(threadVerificarBoss);
 	pthread_create(&threadObjetos, NULL, &enviarObjetosEnCamara, parametros);
 	pthread_detach(threadObjetos);
+	pthread_create(&threadReconexion,NULL,&enviarElementosEnCamara,parametros);
 	jugador->setThreadMovimiento(threadMov);
-	//delete parametros;
 }
 
 

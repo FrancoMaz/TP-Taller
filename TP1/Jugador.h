@@ -104,5 +104,6 @@ public:
 	int idSprite;
 	int obtenerIdSpriteAEjecutar();
 	Arma* getArmaActual();
+	bool reconectado;
 };
 #endif /* JUGADOR_H_ */
